@@ -1,0 +1,26 @@
+{
+  "name": "@tiles/entity-system",
+  "version": "0.0.1",
+  "description": "data oriented entity component system",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/Heliks/tiles-entity-system"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:prod": "npm run build",
+    "lint": "eslint 'src/**' --config .eslintrc.json",
+    "test": "jest --config ../../jest.config.js",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "typescript": "^3.7.5"
+  }
+}

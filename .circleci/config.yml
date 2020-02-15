@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/tiles
+    docker:
+      - image: circleci/node:12.10.0
+    steps:
+      - checkout
+      - run:
+          name: npm-update
+          command: 'sudo npm install -g npm@latest'
+      - run:
+          name: install-yarn
+          command: npm install -g yarn
+      - run:
+          name: install-deps
+          command: yarn install
+      - run:
+          name: lerna-bootstrap
+          command: npx lerna bootstrap
+      - run:
+          name: run-linter
+          command: yarn run lint
+      - run:
+          name: run-unit-tests
+          command: yarn test
+

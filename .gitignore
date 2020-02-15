@@ -1,0 +1,12 @@
+# IDEs
+.idea/
+
+# Dependencies
+node_modules/
+**/node_modules
+
+# Common build targets
+**/lib
+**/test
+
+lerna-debug.log

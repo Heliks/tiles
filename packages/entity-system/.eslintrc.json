@@ -1,0 +1,6 @@
+{
+  "extends": ["heliks"],
+  "rules": {
+    "indent": ["error", 2]
+  }
+}
