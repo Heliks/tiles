@@ -16,9 +16,6 @@ jobs:
           name: install-deps
           command: yarn install
       - run:
-          name: lerna-bootstrap
-          command: npx lerna bootstrap
-      - run:
           name: run-linter
           command: yarn run lint
       - run:

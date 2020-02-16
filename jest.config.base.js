@@ -1,5 +1,9 @@
+/**
+ * Default configuration for ts-jest projects.
+ */
 // noinspection JSUnresolvedVariable
 module.exports = {
+  "verbose": true,
   collectCoverageFrom: [
     "./src/**/*.ts"
   ],

@@ -1,0 +1,28 @@
+{
+  "name": "@tiles/injector",
+  "version": "0.0.1",
+  "description": "Simple dependency injector.",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --config ./jest.config.js",
+    "lint": "eslint src/**.ts --config ../../.eslintrc.json",
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.3.3333"
+  },
+  "keywords": [
+    "dependency injection",
+    "typescript",
+    "ioc"
+  ]
+}

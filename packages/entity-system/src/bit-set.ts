@@ -39,7 +39,7 @@ export class BitSet {
     return true;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  // Noinspection JSUnusedGlobalSymbols
   /** Sets all bits in this set to "0". */
   public clear(): void {
     this.value = 0;
