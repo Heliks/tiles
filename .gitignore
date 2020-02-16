@@ -7,6 +7,6 @@ node_modules/
 
 # Common build targets
 **/lib
-**/test
+**/dist
 
 lerna-debug.log

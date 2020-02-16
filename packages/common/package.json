@@ -8,10 +8,10 @@
   "license": "ISC",
   "scripts": {
     "build": "tsc",
-    "build:prod": "npm run build",
+    "build:watch": "tsc -w",
     "lint": "eslint 'src/**' --config ../../.eslintrc.json",
     "test": "echo 'Hello World'",
-    "watch": "tsc -w"
+    "postinstall": "yarn run build"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",

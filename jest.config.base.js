@@ -3,7 +3,6 @@
  */
 // noinspection JSUnresolvedVariable
 module.exports = {
-  "verbose": true,
   collectCoverageFrom: [
     "./src/**/*.ts"
   ],
@@ -21,5 +20,6 @@ module.exports = {
     "jsx",
     "json",
     "node"
-  ]
+  ],
+  verbose: true
 };
