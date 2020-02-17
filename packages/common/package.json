@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "lint": "eslint 'src/**' --config ../../.eslintrc.json",
+    "lint": "eslint 'src/**' --config ../../.eslintrc.json --ignore-path=../../.eslintignore",
     "test": "echo 'Hello World'",
     "postinstall": "yarn run build"
   },
