@@ -1,4 +1,4 @@
-import { METADATA_KEY, InjectionMetaData } from './types';
+import { InjectionMetaData, METADATA_KEY } from './types';
 
 export function getMetadata(target: object): InjectionMetaData {
   return Reflect.getMetadata(METADATA_KEY, target) || {};

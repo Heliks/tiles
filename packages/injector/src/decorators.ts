@@ -82,7 +82,7 @@ export function Inject(symbol: BindingSymbol, optional = false): ParameterDecora
   return (target: object, key: string | symbol, index: number) => {
     const metaData = getMetadata(target);
 
-    if (! metaData.paramOverrides) {
+    if (!metaData.paramOverrides) {
       metaData.paramOverrides = [];
     }
 

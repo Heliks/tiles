@@ -1,6 +1,7 @@
 {
   "extends": ["heliks"],
   "rules": {
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "space-unary-ops": ["off"]
   }
 }
