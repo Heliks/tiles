@@ -3,6 +3,8 @@
   "compilerOptions": {
     "baseUrl": "src/",
     "outDir": "lib/",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "types": [
       "jest"
     ]
