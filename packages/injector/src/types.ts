@@ -2,18 +2,18 @@ export const METADATA_KEY = Symbol();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ClassType<T = any> = new (...params: any[]) => T;
-export type BindingSymbol = string | symbol | ClassType;
+export type InjectorToken = string | symbol | ClassType;
 export type BindingFactory<T> = (container: Container) => T;
 
 export interface ImmutableContainer {
 
   /**
-   * Resolves a binding symbol
+   * Resolves a binding token
    *
-   * @param symbol The symbol that should be resolved.
+   * @param token The token that should be resolved.
    * @returns The bindings resolved value.
    */
-  get<T = unknown>(symbol: BindingSymbol): T;
+  get<T = unknown>(token: InjectorToken): T;
 
   /**
    * Creates a new instance of the given class. If custom parameters are given
@@ -34,11 +34,11 @@ export interface ImmutableContainer {
 export interface Container extends ImmutableContainer {
 
   /**
-   * Binds a value to a symbol.
+   * Binds a value to a token.
    *
    * ### Example
    *
-   * You can bind any kind of value to a valid {@link BindingSymbol}. The most common use
+   * You can bind any kind of value to a valid {@link InjectorToken}. The most common use
    * case is to bind the instance of a class to its own type:
    *
    * ```typescript
@@ -48,11 +48,11 @@ export interface Container extends ImmutableContainer {
    * console.log(container.get(Foo) instanceof Foo);
    * ```
    *
-   * @param symbol The symbol to which the value is bound.
-   * @param value The value that is bound to the given symbol.
+   * @param token The token to which the value is bound.
+   * @param value The value that is bound to the given token.
    * @returns this
    */
-  bind<T = unknown>(symbol: BindingSymbol, value: T): this;
+  bind<T = unknown>(token: InjectorToken, value: T): this;
 
   /**
    * Binds one or more instances to their own class type.
@@ -94,15 +94,11 @@ export interface Container extends ImmutableContainer {
    * console.log(container.get(Foo).id); // => 1
    * console.log(container.get(Foo).id); // => 1
    * ```
-   *
-   * @param symbol
-   * @param factory
-   * @returns this
    */
-  singleton<T = unknown>(symbol: BindingSymbol, factory: BindingFactory<T>): this;
+  singleton<T = unknown>(token: InjectorToken, factory: BindingFactory<T>): this;
 
   /**
-   * Binds a factory that is called every time the symbol is injected.
+   * Binds a factory that is called every time the token is injected.
    *
    * ### Example
    *
@@ -125,12 +121,12 @@ export interface Container extends ImmutableContainer {
    * console.log(foo.number2); // 2
    * ```
    *
-   * @param symbol A binding symbol.
+   * @param token A binding token.
    * @param factory The factory that produces the value that is injected
-   *      for the given symbol.
+   *      for the given token.
    * @returns this
    */
-  factory<T = unknown>(symbol: BindingSymbol, factory: BindingFactory<T>): this;
+  factory<T = unknown>(token: InjectorToken, factory: BindingFactory<T>): this;
 
   /**
    * Merges the given `container` into this one.
@@ -163,7 +159,7 @@ export interface Binding<T = unknown> {
 
 export interface ParamInjection {
   /** The symbol that should be injected. */
-  symbol: BindingSymbol;
+  token: InjectorToken;
   /** The index of the parameter in the parameter list. */
   index: number;
   /** If `true` the container will pass `undefined` if a binding can not be resolved. */
@@ -173,8 +169,8 @@ export interface ParamInjection {
 }
 
 export interface InjectionMetaData {
-  /** Overrides injections of `paramSymbols`. */
+  /** Overrides injections of `params`. */
   paramOverrides?: ParamInjection[];
-  /** The binding symbols that should be resolved for constructor parameters. */
-  params?: BindingSymbol[];
+  /** The tokens that should be resolved for constructor parameters. */
+  params?: InjectorToken[];
 }

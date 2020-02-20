@@ -1,4 +1,4 @@
-import { BindingSymbol } from './types';
+import { InjectorToken } from './types';
 import { getMetadata, setMetadata } from './utils';
 
 /**
@@ -42,12 +42,12 @@ export function Injectable(): ClassDecorator {
 }
 
 /**
- * Decorator to manually set which symbol should be injected at the target.
+ * Decorator to manually set which token should be injected at the target.
  *
  * ```ts
  * @Injectable()
  * class Foo {
- *     // Manually set that we want to inject the `'hello'` symbol into
+ *     // Manually set that we want to inject the `'hello'` token into
  *     // the `text` property.
  *     constructor(@Inject('hello') public text: string) {}
  * }
@@ -60,7 +60,7 @@ export function Injectable(): ClassDecorator {
  * console.log(foo.text);
  * ```
  *
- * Injections can be optional, meaning that if the binding symbol can not
+ * Injections can be optional, meaning that if the binding token can not
  * be resolved `undefined` will be injected instead.
  *
  * ```ts
@@ -78,7 +78,7 @@ export function Injectable(): ClassDecorator {
  * console.log(foo.text);
  * ```
  */
-export function Inject(symbol: BindingSymbol, optional = false): ParameterDecorator {
+export function Inject(token: InjectorToken, optional = false): ParameterDecorator {
   return (target: object, key: string | symbol, index: number) => {
     const metaData = getMetadata(target);
 
@@ -90,7 +90,7 @@ export function Inject(symbol: BindingSymbol, optional = false): ParameterDecora
       index,
       key,
       optional,
-      symbol
+      token: token
     });
 
     setMetadata(target, metaData);
@@ -101,8 +101,8 @@ export function Inject(symbol: BindingSymbol, optional = false): ParameterDecora
  * Decorator that is a nicer way of writing `@Inject('foo', true)`
  * @see Inject()
  */
-export function Optional(symbol: BindingSymbol): ParameterDecorator {
+export function Optional(token: InjectorToken): ParameterDecorator {
   // eslint-disable-next-line new-cap
-  return Inject(symbol, true);
+  return Inject(token, true);
 }
 

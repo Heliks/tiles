@@ -29,12 +29,12 @@ describe('Container', () => {
     expect(container.bind('bar', true).get('bar')).toBe(true);
   });
 
-  it('should resolve values bound to a symbol', () => {
-    const symbol1 = Symbol();
-    const symbol2 = Symbol();
+  it('should resolve bindings', () => {
+    const token1 = Symbol();
+    const token2 = Symbol();
 
-    expect(container.bind(symbol1, 'foo').get(symbol1)).toBe('foo');
-    expect(container.bind(symbol2, 'bar').get(symbol2)).toBe('bar');
+    expect(container.bind(token1, 'foo').get(token1)).toBe('foo');
+    expect(container.bind(token2, 'bar').get(token2)).toBe('bar');
   });
 
   it('should bind an instance', () => {
