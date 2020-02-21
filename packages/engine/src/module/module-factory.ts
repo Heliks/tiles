@@ -1,7 +1,24 @@
 import { Container } from '@tiles/injector';
 import { ClassType } from '@tiles/common';
-import { Module, ModuleData } from './types';
+import { Module, ModuleData, Provider } from './types';
 import { getModuleMetadata } from './meta';
+
+/**
+ * Sets up the given `provider` and binds it to the given `container`
+ * accordingly.
+ */
+export function setupProvider(container: Container, provider: Provider): void {
+  if (typeof provider === 'function') {
+    container.instance(container.make(provider));
+  }
+  // Custom provider
+  else {
+    container.bind(
+      provider.token,
+      provider.value
+    );
+  }
+}
 
 export class ModuleFactory {
 
@@ -67,17 +84,7 @@ export class ModuleFactory {
     // Instantiate and bind providers.
     if (data.provides) {
       for (const item of data.provides) {
-
-        if (typeof item === 'function') {
-          container.instance(container.make(item));
-        }
-        // Custom provider
-        else {
-          container.bind(
-            item.token,
-            item.value
-          );
-        }
+        setupProvider(container, item);
       }
     }
 

@@ -2,21 +2,7 @@ import 'reflect-metadata';
 import { ClassType } from '@tiles/common';
 import { World } from './world';
 import { Game } from './game';
-import { Container } from '@tiles/injector';
-import { ModuleData, ModuleFactory, Provider } from './module';
-
-function setupProvider(container: Container, provider: Provider): void {
-  if (typeof provider === 'function') {
-    container.instance(container.make(provider));
-  }
-  // Custom provider
-  else {
-    container.bind(
-      provider.token,
-      provider.value
-    );
-  }
-}
+import { ModuleData, ModuleFactory, Provider, setupProvider } from './module';
 
 export interface GameBuilderOperation {
   /** Executes the builder operation. */

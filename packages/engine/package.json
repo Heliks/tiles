@@ -21,6 +21,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "@tiles/common": "^0.0.1",
     "@tiles/entity-system": "^0.0.1",
     "@tiles/injector": "^0.0.1",
     "reflect-metadata": "^0.1.13"
