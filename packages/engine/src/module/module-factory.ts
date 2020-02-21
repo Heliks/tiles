@@ -74,7 +74,7 @@ export class ModuleFactory {
         // Custom provider
         else {
           container.bind(
-            item.symbol,
+            item.token,
             item.value
           );
         }
@@ -123,6 +123,11 @@ export class ModuleFactory {
     return typeof module === 'function'
       ? this.fromClass(module)
       : this.fromData(module);
+  }
+
+  /** Returns a readonly version of {@link modules}. */
+  public getModules(): ReadonlyMap<ClassType<unknown>, Module> {
+    return this.modules;
   }
 
 }

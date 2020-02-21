@@ -1,9 +1,7 @@
 import 'reflect-metadata';
-import { Container, Injectable } from '@tiles/injector';
-import { ClassType } from '@tiles/common';
-import { Module, ModuleData, ModuleOptions } from '../types';
+import { Container } from '@tiles/injector';
 import { ModuleDesc } from '../meta';
-import { ModuleFactory } from '../module';
+import { ModuleFactory } from '../module-factory';
 
 describe('ModuleFactory', () => {
   let factory: ModuleFactory;
@@ -80,8 +78,8 @@ describe('ModuleFactory', () => {
     const module = factory.fromData({
       module: NoopModule,
       provides: [
-        { symbol: 'A', value: 'foo' },
-        { symbol: 'B', value: 'bar' }
+        { token: 'A', value: 'foo' },
+        { token: 'B', value: 'bar' }
       ]
     });
 

@@ -6,12 +6,12 @@
     "strict": true,
     "sourceMap": true,
     "declaration": true,
-    "removeComments": false
+    "removeComments": false,
+    "outDir": "./dist"
   },
   "exclude": [
     "**/__test__/**",
     "**/node_modules/**",
-    "packages/*/lib",
-    "packages/*/dist"
+    "lib"
   ]
 }

@@ -7,28 +7,22 @@
   "author": "Felix Wolf",
   "license": "MIT",
   "scripts": {
-    "test": "jest --config ./jest.config.js",
+    "test": "echo 'OK'",
     "lint": "eslint src/**.ts --config ../../.eslintrc.json --ignore-path=../../.eslintignore",
     "build": "tsc",
     "build:watch": "tsc -w",
     "postinstall": "yarn run build"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.2",
     "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
-    "jest": "^25.1.0",
-    "ts-jest": "^25.2.0",
     "typescript": "^3.3.3333"
   },
-  "keywords": [
-    "dependency injection",
-    "typescript",
-    "ioc"
-  ],
+  "keywords": [],
   "files": [
     "lib"
   ],
   "dependencies": {
-    "@tiles/common": "^0.0.1"
+    "@tiles/common": "^0.0.1",
+    "@tiles/engine": "^0.0.1"
   }
 }

@@ -1,11 +1,11 @@
-import { Container } from '@tiles/injector';
+import { Container, InjectorToken } from '@tiles/injector';
 import { ClassType } from '@tiles/common';
 
 /** A custom value that can be injected via DI in services of this module. */
 export interface CustomProvider {
-  /** The symbol that should be used to bind */
-  symbol: any;
-  value: any;
+  /** The token that should be used to bind */
+  token: InjectorToken;
+  value: unknown;
 }
 
 export type Provider = ClassType<unknown> | CustomProvider;

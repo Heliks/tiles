@@ -4,7 +4,7 @@
 // noinspection JSUnresolvedVariable
 module.exports = {
   collectCoverageFrom: [
-    "./src/**/*.ts"
+    "src/**/*.ts"
   ],
   transform: {
     "^.+\\.(t|j)sx?$": "ts-jest"
@@ -15,11 +15,11 @@ module.exports = {
   setupFiles: [],
   moduleFileExtensions: [
     "ts",
-    "tsx",
-    "js",
+    "tsx",    "js",
     "jsx",
     "json",
     "node"
   ],
+  modulePathIgnorePatterns: ["node_modules"],
   verbose: true
 };

@@ -102,8 +102,6 @@ export class AssetLoader {
 
       this.complete(handle, data, format, storage);
 
-      // this.onAssetLoaded(data, handle, progress);
-
       return handle;
     });
   }

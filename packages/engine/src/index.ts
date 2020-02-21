@@ -1,9 +1,6 @@
-import 'reflect-metadata';
-import { Container } from '@tiles/injector';
-import { World } from '@tiles/entity-system';
+export * from './game';
+export * from './game-builder';
+export * from './module';
+export * from './ticker';
+export * from './world';
 
-export function foo() {
-  console.log(new World());
-
-  return new Container();
-}

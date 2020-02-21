@@ -1,3 +1,3 @@
 export * from './meta';
-export * from './module';
+export * from './module-factory';
 export * from './types';
