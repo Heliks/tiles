@@ -15,8 +15,7 @@ export class EntityGroup {
   /**
    * @param filter {@see Filter}
    */
-  constructor(public readonly filter: Filter) {
-  }
+  constructor(public readonly filter = new Filter()) {}
 
   /** Returns true if the entity satisfies the groups requirements */
   public test(composition: BitSet): boolean {
