@@ -3,7 +3,10 @@ export type ListenerFn = (delta: number) => void;
 /** The ticker used to run the games update loop. */
 export class Ticker {
 
+  /** Indicates if the ticker is currently running. */
   protected started = false;
+
+  /** Contains all listeners that will be called during `update()`. */
   protected listeners: ListenerFn[] = [];
 
   /** Id of the animation frame request if there is one. */
@@ -20,11 +23,14 @@ export class Ticker {
     return this.started && !this.requestId;
   }
 
+  /** Updates delta times and calls each `ListenerFn`.  */
   public update(currentTime: number) {
     // Call all listeners.
     for (const fn of this.listeners) {
       fn(currentTime);
     }
+
+    this.lastTick = currentTime;
   }
 
   /**
@@ -45,6 +51,7 @@ export class Ticker {
     }
   };
 
+  /** Starts the ticker. */
   public start(): void {
     // Only start the ticker if it isn't already running.
     if (this.canRequestFrame()) {
@@ -53,6 +60,7 @@ export class Ticker {
     }
   }
 
+  /** Stops the ticker. */
   public stop(): void {
     if (this.started) {
       this.started = false;
