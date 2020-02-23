@@ -15,7 +15,7 @@ export interface System {
 }
 
 /** Manages and updates systems. */
-export class SystemManager {
+export class SystemDispatcher {
 
   /** All systems that were added to the manager. */
   protected systems: System[] = [];
@@ -26,13 +26,15 @@ export class SystemManager {
   constructor(public readonly world = new World()) {}
 
   /** Adds the given `system`. */
-  public add(system: System): void {
+  public add(system: System): this {
     // Boot the system if necessary.
     if (system.boot) {
       system.boot(this.world);
     }
 
     this.systems.push(system);
+
+    return this;
   }
 
   /**

@@ -1,10 +1,10 @@
-import { System, SystemManager } from '../system';
+import { System, SystemDispatcher } from '../system';
 
-describe('system', () => {
-  let mgr: SystemManager;
+describe('SystemDispatcher', () => {
+  let mgr: SystemDispatcher;
 
   beforeEach(() => {
-    mgr = new SystemManager();
+    mgr = new SystemDispatcher();
   });
 
   class SystemMock implements System {
