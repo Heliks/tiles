@@ -1,13 +1,13 @@
 import { AssetLoader } from './asset-loader';
-import { ModuleDesc } from '@tiles/engine';
+import { Module } from '@tiles/engine';
+import { GameBuilder } from '@tiles/engine';
 
 /** Module that provides tools for asset loading and management. */
-@ModuleDesc({
-  provides: [
-    AssetLoader
-  ],
-  exports: [
-    AssetLoader
-  ]
-})
-export class AssetsModule {}
+export class AssetsModule implements Module {
+
+  /** {@inheritDoc} */
+  public build(builder: GameBuilder): void {
+    builder.provide(AssetLoader);
+  }
+
+}

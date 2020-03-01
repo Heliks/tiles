@@ -1,0 +1,27 @@
+{
+  "name": "@tiles/pixi",
+  "version": "0.0.1",
+  "description": "Tiles PIXI.JS module",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "scripts": {
+
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "typescript": "^3.3.3333"
+  },
+  "keywords": [],
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@tiles/common": "^0.0.1",
+    "@tiles/engine": "^0.0.1"
+  }
+}

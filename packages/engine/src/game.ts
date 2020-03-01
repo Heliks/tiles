@@ -1,7 +1,7 @@
 import { Container } from '@tiles/injector';
 import { Ticker } from './ticker';
 import { World } from './world';
-import { ModuleFactory } from './module';
+import { SystemDispatcher } from '@tiles/entity-system';
 
 export class Game {
 
@@ -23,18 +23,19 @@ export class Game {
    */
   public readonly ticker = new Ticker();
 
-  /** Creates and caches modules. */
-  public readonly modules = new ModuleFactory();
+  public readonly dispatcher: SystemDispatcher;
 
   constructor() {
+    // Initialize entity system.
     this.world = new World(this.container);
+    this.dispatcher = new SystemDispatcher(this.world);
 
     // Add the update function to the game ticker.
     this.ticker.add(this.update.bind(this));
 
-    // Add some system servies to the service container.
+    // Add some system services to the global container so that modules
+    // can access them.
     this.container.instance(
-      this.modules,
       this.ticker,
       this.world
     );
