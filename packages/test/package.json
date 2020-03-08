@@ -1,0 +1,35 @@
+{
+  "name": "@tiles/test",
+  "version": "0.0.1",
+  "description": "Just trying out things.",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "scripts": {
+    "build:watch": "webpack-dev-server --mode development --hot"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "copy-webpack-plugin": "^5.1.1",
+    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-livereload-plugin": "^2.3.0"
+  },
+  "keywords": [],
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@tiles/assets": "^0.0.1",
+    "@tiles/common": "^0.0.1",
+    "@tiles/engine": "^0.0.1",
+    "@tiles/pixi": "^0.0.1"
+  }
+}
