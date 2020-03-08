@@ -1,7 +1,7 @@
-import { ClassType } from '@tiles/common';
 import { System } from '@tiles/entity-system';
 import { InjectorToken } from '@tiles/injector';
 import { Game } from '../game';
+import { ClassType } from '../types';
 
 /**
  * Provides a value to the service container.

@@ -1,5 +1,5 @@
+import { ClassType } from '../types';
 import { Provider } from './types';
-import { ClassType } from '@tiles/common';
 import { System } from '@tiles/entity-system';
 import { Game } from '../game';
 

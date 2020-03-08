@@ -1,16 +1,13 @@
+import { BaseWorld } from './base-world';
 import { ClassType, Entity } from './types';
 import { StorageManager } from './storage';
 
 export class EntityBuilder {
 
-  /** The entity that this builder is composing. */
-  protected readonly entity: Entity = Symbol();
-
-  /** Indicates if ``build()`` was already called on this builder. */
-  protected isBuilt = false;
-
-  /** World in which this builder was created. */
-  constructor(protected world: StorageManager) {}
+  constructor(
+    protected readonly entity: Entity,
+    protected readonly world: BaseWorld
+  ) {}
 
   /**
    * Adds a component to the entity.
@@ -25,14 +22,14 @@ export class EntityBuilder {
     return this;
   }
 
+  public use<T>(component: object): this {
+    this.world.storage(<ClassType>component.constructor).set(this.entity, component);
+
+    return this;
+  }
+
   /** {@inheritDoc Builder.build()} */
   public build(): Entity {
-    if (this.isBuilt) {
-      throw new Error('Entity is already built');
-    }
-
-    this.isBuilt = true;
-
     return this.entity;
   }
 

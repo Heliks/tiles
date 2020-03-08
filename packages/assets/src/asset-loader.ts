@@ -1,7 +1,7 @@
-import { Injectable, Optional } from '@tiles/injector';
+import { ClassType } from '@tiles/engine';
 import { Format, Handle, LoadType } from './types';
-import { ClassType } from '@tiles/common';
 import { AssetStorage } from './asset-storage';
+import { Injectable, Optional } from '@tiles/injector';
 
 @Injectable()
 export class AssetLoader {
@@ -10,7 +10,7 @@ export class AssetLoader {
    * @param baseUrl (optional) The baseURL that is prepended to every file
    *  path that this loader attempts to load.
    */
-  constructor(@Optional('baseUrl') protected baseUrl = '') {}
+  constructor(@Optional('baseUrl') public baseUrl = '') {}
 
   /** Combines the given `path` with the loaders `baseUrl` and returns it. */
   public getPath(path: string): string {
@@ -18,26 +18,26 @@ export class AssetLoader {
   }
 
   /** Fetches the file at `path` using the given `format`. */
-  protected async fetch<T>(path: string, format: Format<T, unknown>): Promise<T> {
+  protected fetch<T>(path: string, format: Format<T, unknown>): Promise<T> {
     return fetch(this.getPath(path)).then(response => {
       let stream: Promise<unknown>;
 
       // Parse the fetched data according to the type specified
       // in the format.
       switch (format.type) {
-        case LoadType.ArrayBuffer:
-          stream = response.arrayBuffer();
-          break;
-        case LoadType.Blob:
-          stream = response.blob();
-          break;
-        case LoadType.Json:
-          stream = response.json();
-          break;
-        case LoadType.Text:
-        default:
-          stream = response.text();
-          break;
+      case LoadType.ArrayBuffer:
+        stream = response.arrayBuffer();
+        break;
+      case LoadType.Blob:
+        stream = response.blob();
+        break;
+      case LoadType.Json:
+        stream = response.json();
+        break;
+      case LoadType.Text:
+      default:
+        stream = response.text();
+        break;
       }
 
       // Process raw data using the asset format.
@@ -83,7 +83,7 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Similarly to {@link load()} this function will return
+   * Loads a file. Similarly to [[load()]] this function will return
    * a file handle, but only after the asset has finished loading.
    *
    * @param path Path to the file that should be loaded.

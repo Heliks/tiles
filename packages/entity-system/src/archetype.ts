@@ -1,3 +1,4 @@
+import { BaseWorld } from './base-world';
 import { EntityBuilder } from './entity-builder';
 import { ClassType, Entity } from './types';
 import { StorageManager } from './storage';
@@ -18,7 +19,7 @@ export class Archetype {
   /**
    * @param storages Storage manager.
    */
-  constructor(protected storages: StorageManager) {}
+  constructor(protected storages: BaseWorld) {}
 
   /**
    * Adds a component to the builder.

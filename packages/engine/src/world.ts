@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { ClassType } from '@tiles/common';
 import { Container, ImmutableContainer, InjectorToken } from '@tiles/injector';
 import { World as WorldBase } from '@tiles/entity-system';
+import { ClassType } from './types';
 
 export class World extends WorldBase implements ImmutableContainer {
 

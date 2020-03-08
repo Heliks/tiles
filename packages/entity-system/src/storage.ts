@@ -108,7 +108,6 @@ export class Storage<T = unknown> {
 export interface StorageManager {
   /** Registers a component storage.. */
   register<T>(component: ClassType<T>): Storage<T>;
-
   /** Returns the storage of the given component. */
   storage<T>(component: ClassType<T>): Storage<T>;
 }

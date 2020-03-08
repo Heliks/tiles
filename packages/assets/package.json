@@ -10,8 +10,7 @@
     "test": "echo 'OK'",
     "lint": "eslint src/**.ts --config ../../.eslintrc.json --ignore-path=../../.eslintignore",
     "build": "tsc",
-    "build:watch": "tsc -w",
-    "postinstall": "yarn run build"
+    "build:watch": "tsc -w"
   },
   "devDependencies": {
     "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",

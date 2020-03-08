@@ -12,8 +12,8 @@ export enum LoadType {
 /**
  * An asset format.
  *
- * T: The asset data that this format produces
- * R: The kind of data that this format reads.
+ * @typeparam T The asset data that this format produces
+ * @typeparam R The kind of data that this format reads.
  */
 export interface Format<T, R> {
   /** Will be passed down to all assets that are loaded with this format. */
@@ -26,8 +26,8 @@ export interface Format<T, R> {
 
 /**
  * A loaded asset
- * 
- * T: The processed data produced by the format that loaded this asset.
+ *
+ * @typeparam T The processed data produced by the format that loaded this asset.
  */
 export interface Asset<T> {
   /**

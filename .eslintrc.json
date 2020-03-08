@@ -2,6 +2,14 @@
   "extends": ["heliks"],
   "rules": {
     "indent": ["error", 2],
-    "space-unary-ops": ["off"]
+    "space-unary-ops": ["off"],
+    "init-declarations": "off",
+    "new-cap": ["error", {
+      "newIsCapExceptions": [
+        "Injectable",
+        "Inject",
+        "Optional"
+      ]
+    }]
   }
 }

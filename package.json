@@ -9,10 +9,10 @@
     "lerna": "^3.20.2"
   },
   "scripts": {
-    "lint": "yarn workspaces run lint",
+    "lint": "lerna run lint --no-prefix --stream",
     "link": "lerna link",
-    "test": "yarn workspaces run test --coverage --coverage-reporters=text",
+    "test": "lerna run test --no-prefix --stream -- --coverage --coverage-reporters=text",
     "build": "lerna run build",
-    "build:watch": "lerna run build:watch"
+    "build:watch": "lerna run build:watch --no-prefix --parallel"
   }
 }

@@ -1,11 +1,15 @@
-import { GameBuilder as Builder, Module, Provider } from './types';
-import { ClassType } from '@tiles/common';
 import { System } from '@tiles/entity-system';
 import { Game } from '../game';
+import { ClassType } from '../types';
 import { AddProvider, AddSystem, Task } from './tasks';
+import { GameBuilder as Builder, Module, Provider } from './types';
 
 export class GameBuilder implements Builder {
 
+  /**
+   * Contains all tasks that this builder has queued. They will all be invoked
+   * in the same order as they were added during `build()`.
+   */
   protected readonly tasks: Task[] = [];
 
   /** {@inheritDoc} */
@@ -22,6 +26,10 @@ export class GameBuilder implements Builder {
     return this;
   }
 
+  /**
+   * Adds a `module` and immediately invokes the `build()` function to queue
+   * additional tasks from inside the module.
+   */
   public module(module: Module<GameBuilder>): this {
     // Modules will just add additional tasks to the task list,
     // so there is no reason to create an extra task for it.
@@ -30,10 +38,9 @@ export class GameBuilder implements Builder {
     return this;
   }
 
+  /** Builds the game. */
   public build(): Game {
     const game = new Game();
-
-    (<any>game.container).foo = '1';
 
     for (const task of this.tasks) {
       task.exec(game);
