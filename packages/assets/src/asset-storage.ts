@@ -3,23 +3,17 @@ import { Asset, Handle } from './types';
 export class AssetStorage<T> {
 
   /** Maps assets to their file handles. */
-  protected assets = new Map<Handle, Asset<unknown>>();
+  protected assets = new Map<Handle, Asset<T>>();
 
-  public set<T>(handle: Handle, asset: Asset<T>): this {
+  public set(handle: Handle, asset: Asset<T>): this {
     this.assets.set(handle, asset);
 
     return this;
   }
 
   /** Returns the `Asset` stored under the given handle. */
-  public get<T = unknown>(handle: Handle): Asset<T> {
-    const asset = this.assets.get(handle) as Asset<T>;
-
-    if (! handle) {
-      throw new Error('Unknown handle');
-    }
-
-    return asset;
+  public get(handle: Handle): Asset<T> | undefined {
+    return this.assets.get(handle);
   }
 
   /** Returns `true` if an asset is stored under the given handle. */

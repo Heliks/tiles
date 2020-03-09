@@ -7,7 +7,7 @@
   "author": "Felix Wolf",
   "license": "MIT",
   "scripts": {
-    "test": "echo 'OK'",
+    "test": "jest --config ./jest.config.js",
     "lint": "eslint src/**.ts --config ../../.eslintrc.json --ignore-path=../../.eslintignore",
     "build": "tsc",
     "build:watch": "tsc -w"

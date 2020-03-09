@@ -1,20 +1,45 @@
-import { ClassType } from '@tiles/engine';
-import { Format, Handle, LoadType } from './types';
-import { AssetStorage } from './asset-storage';
+import { ltrim, rtrim } from '@tiles/engine';
 import { Injectable, Optional } from '@tiles/injector';
+import { AssetStorage } from './asset-storage';
+import { Format, Handle, LoadType } from './types';
 
 @Injectable()
 export class AssetLoader {
 
   /**
-   * @param baseUrl (optional) The baseURL that is prepended to every file
-   *  path that this loader attempts to load.
+   * The baseURL that is prepended to every file path that this loader
+   * attempts to load.
    */
-  constructor(@Optional('baseUrl') public baseUrl = '') {}
+  protected baseUrl = '';
 
-  /** Combines the given `path` with the loaders `baseUrl` and returns it. */
+  /**
+   * @param baseUrl (optional) [[baseUrl]]
+   */
+  constructor(@Optional('baseUrl') baseUrl?: string) {
+    if (baseUrl) {
+      this.setBaseUrl(baseUrl);
+    }
+  }
+
+  /** Combines the given `path` with the loaders [[baseUrl]]. */
   public getPath(path: string): string {
-    return this.baseUrl + path;
+    return `${this.baseUrl}/${ltrim(path, '/')}`;
+  }
+
+  /**
+   * Sets the base URL that is prepended to every path that this loader
+   * is attempting to load.
+   */
+  public setBaseUrl(baseUrl: string): this {
+    // Normalize base URL by removing trailing slashes.
+    this.baseUrl = rtrim(baseUrl, '/');
+
+    return this;
+  }
+
+  /** Returns the loaders [[baseUrl]]. */
+  public getBaseUrl(): string {
+    return this.baseUrl;
   }
 
   /** Fetches the file at `path` using the given `format`. */
@@ -51,9 +76,12 @@ export class AssetLoader {
     handle: Handle,
     data: T,
     format: Format<T, R>,
-    storage: ClassType<AssetStorage<T>>
+    storage: AssetStorage<T>
   ): void {
-    // Todo
+    storage.set(handle, {
+      name: format.name,
+      data
+    });
   }
 
   /**
@@ -70,7 +98,7 @@ export class AssetLoader {
   public load<T, R>(
     path: string,
     format: Format<T, R>,
-    storage: ClassType<AssetStorage<T>>
+    storage: AssetStorage<T>
   ): Handle {
     const handle = Symbol();
 
@@ -95,7 +123,7 @@ export class AssetLoader {
   public async<T, R>(
     path: string,
     format: Format<T, R>,
-    storage: ClassType<AssetStorage<T>>
+    storage: AssetStorage<T>
   ): Promise<Handle> {
     return this.fetch(path, format).then(data => {
       const handle = Symbol();
