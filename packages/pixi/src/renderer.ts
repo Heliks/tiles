@@ -1,7 +1,9 @@
+import * as PIXI from 'pixi.js';
+import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
+import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Stage } from './stage';
-import { Renderer as PixiRenderer } from 'pixi.js';
 
 @Injectable()
 export class Renderer {
@@ -17,6 +19,9 @@ export class Renderer {
 
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
+
+  /** Asset storage for loaded textures. */
+  public readonly textures = new AssetStorage<Texture>();
 
   /**
    * @param config The renderers config.
@@ -35,6 +40,11 @@ export class Renderer {
       antialias:    config.antiAlias,
       transparent:  config.transparent
     });
+
+    // Prevent sub-pixel smoothing when anti aliasing is disabled.
+    if (!config.antiAlias) {
+      PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    }
   }
 
   /** Sets the renderers background color to the hex value of `color`. */

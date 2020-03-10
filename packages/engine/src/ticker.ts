@@ -54,7 +54,7 @@ export class Ticker {
   /** Starts the ticker. */
   public start(): void {
     // Only start the ticker if it isn't already running.
-    if (this.canRequestFrame()) {
+    if (!this.started) {
       this.started = true;
       this.requestId = requestAnimationFrame(this.tick);
     }

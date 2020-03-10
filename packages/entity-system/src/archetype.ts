@@ -60,7 +60,7 @@ export class Archetype {
    * ```
    */
   public toBuilder(): EntityBuilder {
-    const builder = new EntityBuilder(this.storages);
+    const builder = new EntityBuilder(Symbol(), this.storages);
 
     for (const item of this.components) {
       builder.add(item.component, item.data);

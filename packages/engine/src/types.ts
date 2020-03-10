@@ -6,3 +6,4 @@ export interface Struct<T = unknown> {
   [key: string]: T;
 }
 
+export type Vec2 = [number, number];

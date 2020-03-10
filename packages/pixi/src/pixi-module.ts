@@ -1,9 +1,10 @@
 import { GameBuilder, Module } from '@tiles/engine';
+import * as PIXI from 'pixi.js';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Renderer } from './renderer';
-import { SpriteRenderer } from './sprite/sprite-renderer';
+import { RendererSystem } from './renderer-system';
+import { SpriteRenderer } from './sprite';
 import { Stage } from './stage';
-import * as PIXI from 'pixi.js';
 
 export class PixiModule implements Module {
 
@@ -36,6 +37,7 @@ export class PixiModule implements Module {
     builder
       .provide(Stage)
       .provide(Renderer)
+      .system(RendererSystem)
       .system(SpriteRenderer);
   }
 

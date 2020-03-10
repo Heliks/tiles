@@ -48,6 +48,7 @@ export class Game {
   protected update(): void {
     // Updates the world. E.g. entities, components.
     this.world.update();
+    this.dispatcher.update();
   }
 
   /** Starts the game. */
