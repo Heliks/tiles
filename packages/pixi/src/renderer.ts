@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@tiles/injector';
 import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Stage } from './stage';
+import {Vec2} from "@tiles/engine";
 
 @Injectable()
 export class Renderer {
@@ -15,7 +16,7 @@ export class Renderer {
   public autoResize = false;
 
   /** Screen resolution in px. */
-  protected readonly resolution = [640, 488];
+  protected readonly resolution: Vec2 = [640, 488];
 
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
@@ -117,6 +118,21 @@ export class Renderer {
   /** Updates the renderer. Should be called once on every frame. */
   public update(): void {
     this.renderer.render(this.stage);
+  }
+
+  /** Updates the resolution in which the game should be rendered. */
+  public setResolution(width: number, height: number): this {
+    this.resolution[0] = width;
+    this.resolution[1] = height;
+
+    this.resize(this.renderer.width, this.renderer.height);
+
+    return this;
+  }
+
+  /** Returns the current resolution in which the game is rendered. */
+  public getResolution(): readonly [number, number] {
+    return this.resolution;
   }
 
 }
