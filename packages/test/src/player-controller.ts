@@ -55,17 +55,14 @@ export class InputHandler implements System {
     return this.keysDown.has(key);
   }
 
-  public isKeyUp(key: KeyCode) {
-    return this.keysUp.has(key);
-  }
-
-  public update() {
-
-  }
+  public update() {}
 
 }
 
 export class PlayerController extends ProcessingSystem {
+
+  protected inputHandler = new InputHandler();
+  protected speed = 1;
 
   /** {@inheritDoc} */
   public getQuery(): Query {
@@ -78,7 +75,27 @@ export class PlayerController extends ProcessingSystem {
   }
 
   public update(world: World): void {
+    const $trans = world.storage(Transform);
 
+    for (const entity of this.group.entities) {
+      const trans = $trans.get(entity);
+
+      // Movement on x axis.
+      if (this.inputHandler.isKeyDown(KeyCode.A)) {
+        trans.x -= this.speed;
+      }
+      else if (this.inputHandler.isKeyDown(KeyCode.D)) {
+        trans.x += this.speed;
+      }
+
+      // Movement on y axis.
+      if (this.inputHandler.isKeyDown(KeyCode.W)) {
+        trans.y -= this.speed;
+      }
+      else if (this.inputHandler.isKeyDown(KeyCode.S)) {
+        trans.y += this.speed;
+      }
+    }
   }
 
 }

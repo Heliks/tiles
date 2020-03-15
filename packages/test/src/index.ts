@@ -1,8 +1,7 @@
 import 'reflect-metadata';
-import { AssetLoader, AssetsModule, AssetStorage, Format, ImageFormat, LoadType } from '@tiles/assets';
+import { AssetLoader, AssetsModule } from '@tiles/assets';
 import { GameBuilder, Transform } from '@tiles/engine';
-import { Camera, PixiModule, Renderer, SpriteDisplay, SpriteSheet } from '@tiles/pixi';
-import { TextureFormat } from '@tiles/pixi';
+import { Camera, PixiModule, Renderer, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
 import { InputHandler, Pawn, PlayerController } from './player-controller';
 
 window.onload = () => {
@@ -30,7 +29,8 @@ window.onload = () => {
     .setBackgroundColor(0x000000)
     .appendTo(domTarget)
     .resizeToParent()
-    .setAutoResize(true);
+    .setAutoResize(true)
+    .setResolution(320, 180);
 
   const player = game.world
     .builder()
@@ -39,18 +39,21 @@ window.onload = () => {
     .use(new Pawn())
     .build();
 
-  game.world.insert(player);
-
   const image = loader.load(
     'spritesheets/pawn.png',
     new TextureFormat(),
     renderer.textures
   );
 
-  const sheet = new SpriteSheet(image, 2, 1, 16, 28);
+  const sheet = new SpriteSheet(image, 19, 1, 16, 28);
 
   // Add sprite-sheet to player.
-  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1));
+  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1).setAnimationData({
+    frames: [1, 2, 3, 4, 5, 6]
+  }));
+
+  // Insert player into the world.
+  game.world.insert(player);
 
   // Start the ticker.
   game.start();
