@@ -79,10 +79,7 @@ export class Renderer {
     const parent = this.renderer.view.parentElement;
 
     if (parent) {
-      this.resize(
-        parent.offsetWidth,
-        parent.offsetHeight
-      );
+      this.resize(parent.clientWidth, parent.clientHeight);
     }
 
     return this;
