@@ -12,11 +12,19 @@ export class Ticker {
   /** Id of the animation frame request if there is one. */
   protected requestId?: number;
 
+  /** Contains the delta time in MS. */
+  public delta = -1;
+
   /**
    * The timestamp on which the last tick occurred. Contains `-1` if the
    * ticker hasn't been started yet.
    */
   protected lastTick = -1;
+
+  /** Returns the delta time converted to seconds. */
+  public getDeltaSeconds(): number {
+    return this.delta / 1000;
+  }
 
   /** Returns `true` if a new animation frame can be requested. */
   public canRequestFrame(): boolean {
@@ -25,9 +33,11 @@ export class Ticker {
 
   /** Updates delta times and calls each `ListenerFn`.  */
   public update(currentTime: number) {
+    this.delta = currentTime - this.lastTick;
+
     // Call all listeners.
     for (const fn of this.listeners) {
-      fn(currentTime);
+      fn(this.delta);
     }
 
     this.lastTick = currentTime;

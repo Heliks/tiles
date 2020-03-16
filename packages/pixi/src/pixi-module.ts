@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SpriteRenderer } from './sprite';
+import { SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
 import { Stage } from './stage';
 
 export class PixiModule implements Module {
@@ -38,7 +38,10 @@ export class PixiModule implements Module {
       .provide(Stage)
       .provide(Renderer)
       .system(RendererSystem)
-      .system(SpriteRenderer);
+      // Should run before the SpriteDisplaySystem so that sprites are
+      // updated on the same frame with the animation accordingly.
+      .system(SpriteAnimationSystem)
+      .system(SpriteDisplaySystem);
   }
 
 }

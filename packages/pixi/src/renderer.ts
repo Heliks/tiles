@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
+import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
-import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Stage } from './stage';
-import {Vec2} from "@tiles/engine";
+import { Vec2 } from "@tiles/engine";
 
 @Injectable()
 export class Renderer {

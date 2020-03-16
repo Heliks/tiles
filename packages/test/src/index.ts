@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule } from '@tiles/assets';
 import { GameBuilder, Transform } from '@tiles/engine';
-import { Camera, PixiModule, Renderer, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
+import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
 import { InputHandler, Pawn, PlayerController } from './player-controller';
 
 window.onload = () => {
@@ -48,9 +48,8 @@ window.onload = () => {
   const sheet = new SpriteSheet(image, 19, 1, 16, 28);
 
   // Add sprite-sheet to player.
-  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1).setAnimationData({
-    frames: [1, 2, 3, 4, 5, 6]
-  }));
+  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1));
+  game.world.storage(SpriteAnimation).set(player, new SpriteAnimation([ 1, 2, 3, 4, 5, 6 ]));
 
   // Insert player into the world.
   game.world.insert(player);

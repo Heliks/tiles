@@ -13,6 +13,7 @@
     "link": "lerna link",
     "test": "lerna run test --no-prefix --stream -- --coverage --coverage-reporters=text",
     "build": "lerna run build",
-    "build:watch": "lerna run build:watch --no-prefix --parallel"
+    "build:watch": "lerna run build:watch --no-prefix --parallel",
+    "clean": "rm -rf node_modules && lerna clean"
   }
 }
