@@ -1,8 +1,16 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule } from '@tiles/assets';
-import { GameBuilder, Transform } from '@tiles/engine';
+import { GameBuilder, Transform, World } from '@tiles/engine';
 import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
 import { InputHandler, Pawn, PlayerController } from './player-controller';
+import { PhysicsModule, RigidBody, BodyPartType } from "@tiles/physics";
+
+export function spawnDummy(world: World, x: number, y: number) {
+  world
+    .builder()
+    .use(new Transform(x, y))
+    .build()
+}
 
 window.onload = () => {
   const domTarget = document.getElementById('stage');
@@ -14,6 +22,7 @@ window.onload = () => {
   const game = new GameBuilder()
     .system(InputHandler)
     .system(PlayerController)
+    .module(new PhysicsModule(true))
     .module(new AssetsModule())
     .module(new PixiModule({
       antiAlias: false
@@ -51,10 +60,18 @@ window.onload = () => {
   game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1));
   game.world.storage(SpriteAnimation).set(player, new SpriteAnimation([ 1, 2, 3, 4, 5, 6 ]));
 
+  const body = new RigidBody().attach({
+    data: [1, 1],
+    type: BodyPartType.Rect
+  });
+
+  game.world.storage(RigidBody).set(player, body);
+
   // Insert player into the world.
   game.world.insert(player);
 
   // Start the ticker.
   game.start();
 };
+
 
