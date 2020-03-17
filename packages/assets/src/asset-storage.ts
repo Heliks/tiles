@@ -5,6 +5,7 @@ export class AssetStorage<T> {
   /** Maps assets to their file handles. */
   protected assets = new Map<Handle, Asset<T>>();
 
+  /** Stores `asset` under `handle`. */
   public set(handle: Handle, asset: Asset<T>): this {
     this.assets.set(handle, asset);
 

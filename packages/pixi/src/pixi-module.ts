@@ -38,8 +38,8 @@ export class PixiModule implements Module {
       .provide(Stage)
       .provide(Renderer)
       .system(RendererSystem)
-      // Should run before the SpriteDisplaySystem so that sprites are
-      // updated on the same frame with the animation accordingly.
+      // Should run before the SpriteDisplaySystem so that sprites are updated
+      // on the same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
       .system(SpriteDisplaySystem);
   }

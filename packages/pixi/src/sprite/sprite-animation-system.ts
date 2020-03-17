@@ -7,6 +7,9 @@ import { SpriteDisplay } from "./sprite-display";
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
+  /**
+   * @param ticker [[Ticker]]
+   */
   constructor(protected readonly ticker: Ticker) {
     super();
   }
@@ -21,6 +24,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     };
   }
 
+  /** {@inheritDoc} */
   public update(world: World): void {
     const $animation = world.storage(SpriteAnimation);
     const $display = world.storage(SpriteDisplay);
