@@ -6,14 +6,10 @@ import { PhysicsWorld } from "./physics-world";
 @Injectable()
 export class PhysicsDebugDrawSystem implements System {
 
-  constructor(
-    protected readonly world: PhysicsWorld
-  ) {
-
-  }
+  constructor(protected readonly world: PhysicsWorld) {}
 
   public update(world: World): void {
-
+    this.world.b2world.DrawDebugData();
   }
 
 

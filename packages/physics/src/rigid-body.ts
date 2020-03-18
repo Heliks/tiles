@@ -1,6 +1,8 @@
 import { Vec2 } from "@tiles/engine";
 
 export enum RigidBodyType {
+  Dynamic,
+  Kinetic,
   Static
 }
 
