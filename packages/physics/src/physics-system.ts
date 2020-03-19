@@ -3,7 +3,7 @@ import { Entity, Query, System } from "@tiles/entity-system";
 import { ProcessingSystem, Transform, Vec2, World } from "@tiles/engine";
 import { BodyPart, BodyPartData, BodyPartType, RigidBody, RigidBodyType } from "./rigid-body";
 import { Injectable } from "@tiles/injector";
-import { b2BodyType, b2BodyDef, b2FixtureDef, b2PolygonShape, b2World, b2Body } from "@flyover/box2d";
+import { b2BodyType, b2BodyDef, b2FixtureDef, b2PolygonShape, b2World, b2Body, b2Vec2 } from "@flyover/box2d";
 
 /** Parses the given body `part` anda adds the data to the box2d fixture `def`. */
 export function parseBodyPart(part: BodyPart, def: b2FixtureDef): void {
@@ -116,6 +116,11 @@ export class PhysicsSystem extends ProcessingSystem {
 
         body.velocity[0] = velocity.x;
         body.velocity[1] = velocity.y;
+
+        b2Body.SetPosition(new b2Vec2(
+          trans.x / 16,
+          trans.y / 16
+        ));
       }
     }
 
