@@ -122,7 +122,12 @@ export class Renderer {
     this.resolution[0] = width;
     this.resolution[1] = height;
 
-    this.resize(this.renderer.width, this.renderer.height);
+    if (this.autoResize) {
+      this.resize(this.renderer.width, this.renderer.height);
+    }
+    else {
+      this.resize(width, height);
+    }
 
     return this;
   }
