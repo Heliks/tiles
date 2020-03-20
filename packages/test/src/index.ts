@@ -3,7 +3,7 @@ import { AssetLoader, AssetsModule } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
 import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
 import { InputHandler, Pawn, PlayerController } from './player-controller';
-import { PhysicsModule, RigidBody, BodyPartType } from "@tiles/physics";
+import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody } from "@tiles/physics";
 
 export function spawnDummy(world: World, x: number, y: number) {
   world
@@ -22,10 +22,12 @@ window.onload = () => {
   const game = new GameBuilder()
     .system(InputHandler)
     .system(PlayerController)
-    .module(new PhysicsModule(true))
     .module(new AssetsModule())
     .module(new PixiModule({
       antiAlias: false
+    }))
+    .module(new PhysicsModule({
+      debugDraw: true
     }))
     .build();
 
@@ -37,9 +39,13 @@ window.onload = () => {
     .get(Renderer)
     .setBackgroundColor(0x000000)
     .appendTo(domTarget)
-    .resizeToParent()
     .setAutoResize(true)
     .setResolution(320, 180);
+
+  game.world.get(DebugDraw).setDrawFlags(
+    DebugDrawFlag.Shapes,
+    DebugDrawFlag.Joints
+  );
 
   const player = game.world
     .builder()
