@@ -10,16 +10,19 @@ export class SpriteDisplay {
 
   /**
    * @param sheet The sprite sheet used to render `sprite`.
-   * @param spriteId Id of the sprite that should be rendered.
+   * @param spriteIndex Index of the sprite that should be rendered.
    */
   constructor(
     public sheet: SpriteSheet,
-    public spriteId: number
+    public spriteIndex: number
   ) {}
 
-  /** Sets the sprite to a sprite matching the given `id` on the displays [[sheet]]. */
-  public setSpriteId(id: number): this {
-    this.spriteId = id;
+  /**
+   * Sets the sprite that should be rendered to the sprite matching the
+   * given `index` on the displays sprite shit.
+   */
+  public setSprite(index: number): this {
+    this.spriteIndex = index;
     this.dirty = true;
 
     return this;

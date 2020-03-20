@@ -34,12 +34,18 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
       animation.elapsedTime += this.ticker.delta;
 
-      const nextFrame = Math.round((animation.elapsedTime / animation.speed) % animation.frames.length);
+      // The effective duration in ms of a frame, based on the frame
+      // duration and the animation speed.
+      const frameMs = animation.frameDuration * animation.speed;
+
+      // Calculate next frame based on elapsed time and frame ms.
+      const nextFrame = ((animation.elapsedTime / frameMs) % animation.frames.length) | 0;
 
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
 
-        $display.get(entity).setSpriteId(nextFrame);
+        // Update display with next frame.
+        $display.get(entity).setSprite(animation.frames[ nextFrame ]);
       }
     }
   }

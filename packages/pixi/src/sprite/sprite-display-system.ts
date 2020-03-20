@@ -73,7 +73,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
 
           sprite.texture = cropTexture(
             texture.data,
-            display.sheet.pos(display.spriteId as number),
+            display.sheet.pos(display.spriteIndex as number),
             display.sheet.getSpriteSize()
           );
         }
