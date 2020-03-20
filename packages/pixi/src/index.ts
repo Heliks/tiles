@@ -4,6 +4,7 @@ export * from './renderer';
 export * from './sprite';
 export * from './stage';
 export * from './texture-format';
+export { rgb2hex } from './utils';
 
 export {
   AnimatedSprite,

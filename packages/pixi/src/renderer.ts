@@ -1,10 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { Renderer as PixiRenderer, Texture } from 'pixi.js';
+import { Renderer as PixiRenderer, Texture, Container } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RendererConfig, TK_RENDERER_CONFIG } from './const';
 import { Stage } from './stage';
 import { Vec2 } from "@tiles/engine";
+import Graphics = PIXI.Graphics;
 
 @Injectable()
 export class Renderer {
@@ -15,11 +16,23 @@ export class Renderer {
    */
   public autoResize = false;
 
+  /**
+   * A graphics layer that can be used to draw debugging information on. This layer is
+   * cleared automatically on each frame and will be drawn on top of everything else.
+   */
+  public readonly debugDraw = new Graphics();
+
   /** Screen resolution in px. */
   protected readonly resolution: Vec2 = [640, 488];
 
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
+
+  /**
+   * Contains all render layers (stage, debug draw, etc..). This is the container
+   * that will be rendered to the canvas element.
+   */
+  protected readonly root = new Container();
 
   /** Asset storage for loaded textures. */
   public readonly textures = new AssetStorage<Texture>();
@@ -38,20 +51,27 @@ export class Renderer {
 
     // Initialize PIXI renderer.
     this.renderer = new PixiRenderer({
-      antialias:    config.antiAlias,
-      transparent:  config.transparent
+      antialias: config.antiAlias,
+      transparent: config.transparent
     });
 
     // Prevent sub-pixel smoothing when anti aliasing is disabled.
     if (!config.antiAlias) {
       PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     }
+
+    // Stage is always rendered first.
+    stage.zIndex = 0;
+    // Debug draw layer should be always on top.
+    this.debugDraw.zIndex = 999;
+
+    this.root.addChild(stage, this.debugDraw);
+    this.root.sortChildren();
   }
 
   /** Sets the renderers background color to the hex value of `color`. */
   public setBackgroundColor(color: number): this {
     this.renderer.backgroundColor = color;
-    this.renderer.render(this.stage);
 
     return this;
   }
@@ -66,7 +86,7 @@ export class Renderer {
     const ratio = width / this.resolution[0];
 
     this.renderer.resize(width, height);
-    this.stage.scale.set(ratio);
+    this.root.scale.set(ratio);
 
     return this;
   }
@@ -92,6 +112,10 @@ export class Renderer {
   public setAutoResize(value: boolean): this {
     this.autoResize = value;
 
+    if (value) {
+      this.resizeToParent();
+    }
+
     return this;
   }
 
@@ -114,7 +138,8 @@ export class Renderer {
 
   /** Updates the renderer. Should be called once on every frame. */
   public update(): void {
-    this.renderer.render(this.stage);
+    this.renderer.render(this.root);
+    this.debugDraw.clear();
   }
 
   /** Updates the resolution in which the game should be rendered. */
