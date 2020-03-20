@@ -112,15 +112,23 @@ export class PhysicsSystem extends ProcessingSystem {
       }
 
       if (b2Body) {
+        if (body.velocityTransform) {
+          b2Body.SetLinearVelocity(new b2Vec2(
+            body.velocityTransform[0],
+            body.velocityTransform[1]
+          ));
+
+          body.velocityTransform = undefined;
+        }
+
         const velocity = b2Body.GetLinearVelocity();
+        const position = b2Body.GetPosition();
 
         body.velocity[0] = velocity.x;
         body.velocity[1] = velocity.y;
 
-        b2Body.SetPosition(new b2Vec2(
-          trans.x / 16,
-          trans.y / 16
-        ));
+        // Update values on trans component.
+        trans.setPosition(position.x, position.y);
       }
     }
 

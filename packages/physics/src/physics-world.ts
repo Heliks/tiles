@@ -40,7 +40,7 @@ export class PhysicsWorld {
   /** Updates the physics world. */
   public update(): void {
     this.b2world.Step(
-      this.ticker.delta,
+      this.ticker.getDeltaSeconds(),
       this.velocityIterations,
       this.positionIterations
     );

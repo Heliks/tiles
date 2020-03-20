@@ -36,6 +36,13 @@ export class RigidBody {
 
   public dirty = true;
 
+  public setType(type: RigidBodyType): this {
+    this.type = type;
+    this.dirty = true;
+
+    return this;
+  }
+
   public transformVelocity(x: number, y: number): this {
     this.velocityTransform = [x, y];
 
