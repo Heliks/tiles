@@ -32,27 +32,6 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     };
   }
 
-  /**
-   * Renders the sprite matching `id`.
-   *
-   * @param spriteId Id on `sheet` of the sprite that should be rendered.
-   * @param sheet The sprite-sheet used to create textures for the animation.
-   * @returns A static sprite.
-   */
-  public renderStaticSprite(spriteId: number, sheet: SpriteSheet): Sprite {
-    const texture = this.renderer.textures.get(sheet.image) as any;
-
-    const sprite = new Sprite();
-
-    sprite.texture = cropTexture(
-      texture.data,
-      sheet.pos(spriteId),
-      sheet.getSpriteSize()
-    );
-
-    return sprite;
-  }
-
   /** todo */
   protected getSprite(display: SpriteDisplay): Sprite {
     let sprite = this.sprites.get(display);
@@ -62,6 +41,10 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     }
 
     sprite = new Sprite();
+
+    // The engine uses center positions instead of top left for transforms,
+    // this will save us a calculation in `update()`.
+    sprite.anchor.set(0.5);
 
     this.sprites.set(display, sprite);
     this.stage.addChild(sprite);
