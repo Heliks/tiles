@@ -1,7 +1,9 @@
 import { b2DrawFlags } from "@flyover/box2d";
-import { DebugDrawAdapter } from "./debug-draw-adapter";
-import { Injectable } from "@tiles/injector";
+import { DebugDrawBox2dAdapter } from "./debug-draw-box2d-adapter";
+import { Inject, Injectable } from "@tiles/injector";
 import { PhysicsWorld } from "./physics-world";
+import { PhysicsConfig, TK_PHYSICS_CONFIG } from "./config";
+import { Renderer } from '@tiles/pixi';
 
 /**
  * Flags that can be used to enable the drawing of different
@@ -24,12 +26,21 @@ export enum DebugDrawFlag {
 export class DebugDraw {
 
   /** Box2D debug draw adapter. */
-  protected adapter = new DebugDrawAdapter();
+  protected adapter: DebugDrawBox2dAdapter;
 
   /**
-   * @param world [PhysicsWorld]
+   * @param world [[PhysicsWorld]]
+   * @param config [[PhysicsConfig]]
+   * @param renderer [[Renderer]]
    */
-  constructor(protected world: PhysicsWorld) {
+  constructor(
+    protected readonly world: PhysicsWorld,
+    @Inject(TK_PHYSICS_CONFIG)
+    config: PhysicsConfig,
+    renderer: Renderer
+  ) {
+    this.adapter = new DebugDrawBox2dAdapter(renderer.debugDraw, config.unitSize);
+
     // Register the box2d adapter for debug draw callbacks.
     world.b2world.SetDebugDraw(this.adapter);
   }
@@ -61,19 +72,6 @@ export class DebugDraw {
   /** Returns the draw flag bitmask. */
   public getDrawFlags(): number {
     return this.adapter.GetFlags();
-  }
-
-  /**
-   * Resizes the debug draw.
-   *
-   * @param width New width of the debug draw in px.
-   * @param height New height of the debug draw in px.
-   */
-  public resize(width: number, height: number): this {
-    this.adapter.view.width = width;
-    this.adapter.view.height = height;
-
-    return this;
   }
 
   /** Updates the debug draw. Should be called once on each frame. */

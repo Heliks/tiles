@@ -6,9 +6,10 @@ import { DebugDraw } from "./debug-draw";
 @Injectable()
 export class DebugDrawSystem implements System {
 
-  constructor(protected readonly debugDraw: DebugDraw) {}
+  constructor(
+    protected readonly debugDraw: DebugDraw,
+  ) {}
 
-  /** {@inheritDoc} */
   public update(world: World): void {
     this.debugDraw.update();
   }
