@@ -29,7 +29,6 @@
   "dependencies": {
     "@tiles/assets": "^0.0.1",
     "@tiles/physics": "^0.0.1",
-    "@tiles/common": "^0.0.1",
     "@tiles/engine": "^0.0.1",
     "@tiles/pixi": "^0.0.1"
   }

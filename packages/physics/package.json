@@ -23,7 +23,6 @@
     "lib"
   ],
   "dependencies": {
-    "@tiles/common": "^0.0.1",
     "@tiles/engine": "^0.0.1",
     "@tiles/pixi": "^0.0.1",
     "@flyover/box2d": "https://github.com/flyover/box2d.ts.git"

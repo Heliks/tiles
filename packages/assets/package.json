@@ -21,7 +21,6 @@
     "lib"
   ],
   "dependencies": {
-    "@tiles/common": "^0.0.1",
     "@tiles/engine": "^0.0.1"
   }
 }
