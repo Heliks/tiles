@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Renderer as PixiRenderer, Texture, Container } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
-import { RendererConfig, TK_RENDERER_CONFIG } from './const';
+import { RendererConfig, TK_RENDERER_CONFIG } from './config';
 import { Stage } from './stage';
 import { Vec2 } from "@tiles/engine";
 import Graphics = PIXI.Graphics;

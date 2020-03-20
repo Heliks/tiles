@@ -1,4 +1,4 @@
-import { Injectable } from "@tiles/injector";
+import { Inject, Injectable } from "@tiles/injector";
 import { ProcessingSystem, Transform, World } from "@tiles/engine";
 import { Sprite } from "pixi.js";
 import { Renderer } from "../renderer";
@@ -7,6 +7,7 @@ import { Query } from "@tiles/entity-system";
 import { SpriteSheet } from "./sprite-sheet";
 import { cropTexture } from "../utils";
 import { SpriteDisplay } from "./sprite-display";
+import { RendererConfig, TK_RENDERER_CONFIG } from "../config";
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -14,11 +15,12 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   /** Contains sprites mapped to the display to which they belong. */
   protected sprites = new WeakMap<SpriteDisplay, Sprite>();
 
-  /**
-   * @param renderer [[Renderer]]
-   * @param stage [[Stage]]
-   */
-  constructor(public readonly renderer: Renderer, public readonly stage: Stage) {
+  constructor(
+    @Inject(TK_RENDERER_CONFIG)
+    protected readonly config: RendererConfig,
+    protected readonly renderer: Renderer,
+    protected readonly stage: Stage
+  ) {
     super();
   }
 
@@ -80,8 +82,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
       // Update the sprites position.
       const trans = $trans.get(entity);
 
-      sprite.x = trans.x;
-      sprite.y = trans.y;
+      sprite.x = trans.x * this.config.unitSize;
+      sprite.y = trans.y * this.config.unitSize;
     }
   }
 

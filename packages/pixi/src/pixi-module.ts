@@ -1,6 +1,6 @@
 import { GameBuilder, Module } from '@tiles/engine';
 import * as PIXI from 'pixi.js';
-import { RendererConfig, TK_RENDERER_CONFIG } from './const';
+import { parseConfig, RendererConfig, TK_RENDERER_CONFIG } from './config';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
 import { SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
@@ -13,15 +13,6 @@ export class PixiModule implements Module {
    */
   constructor(public readonly config: Partial<RendererConfig> = {}) {}
 
-  /** Returns the full renderer config. */
-  private getConfig(): RendererConfig {
-    return {
-      antiAlias: true,
-      transparent: false,
-      ...this.config
-    };
-  }
-
   /** {@inheritDoc} */
   public build(builder: GameBuilder): void {
     // Prevent the "Thanks for using PIXI" message from showing
@@ -31,7 +22,7 @@ export class PixiModule implements Module {
     // Provide the configuration with which the module was created.
     builder.provide({
       token: TK_RENDERER_CONFIG,
-      value: this.getConfig()
+      value: parseConfig(this.config)
     });
 
     builder
