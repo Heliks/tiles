@@ -3,7 +3,7 @@ import { AssetLoader, AssetsModule } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
 import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
 import { InputHandler, Pawn, PlayerController } from './player-controller';
-import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody } from "@tiles/physics";
+import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
 
 export function spawnDummy(world: World, x: number, y: number) {
   world
@@ -11,6 +11,9 @@ export function spawnDummy(world: World, x: number, y: number) {
     .use(new Transform(x, y))
     .build()
 }
+
+// Meter to pixel ratio.
+export const UNIT_SIZE = 16;
 
 window.onload = () => {
   const domTarget = document.getElementById('stage');
@@ -24,10 +27,12 @@ window.onload = () => {
     .system(PlayerController)
     .module(new AssetsModule())
     .module(new PixiModule({
-      antiAlias: false
+      antiAlias: false,
+      unitSize: UNIT_SIZE
     }))
     .module(new PhysicsModule({
-      debugDraw: true
+      debugDraw: true,
+      unitSize: UNIT_SIZE
     }))
     .build();
 
@@ -37,7 +42,7 @@ window.onload = () => {
   // Configure renderer
   const renderer = game.world
     .get(Renderer)
-    .setBackgroundColor(0x000000)
+    .setBackgroundColor(0x45283c)
     .appendTo(domTarget)
     .setAutoResize(true)
     .setResolution(320, 180);
@@ -60,16 +65,27 @@ window.onload = () => {
     renderer.textures
   );
 
-  const sheet = new SpriteSheet(image, 19, 1, 16, 28);
+  const sheet = new SpriteSheet(image, 20, 1, 16, 28)
+    .setAnimation('walk-down', {
+      frames: [2, 3, 4, 5, 6, 7]
+    })
+    .setAnimation('walk-up', {
+      frames: [8, 9, 10, 11, 12, 13]
+    })
+    .setAnimation('walk-left', {
+      frames: [14, 15, 16, 17, 18, 19]
+    });
 
   // Add sprite-sheet to player.
-  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1));
-  game.world.storage(SpriteAnimation).set(player, new SpriteAnimation([ 1, 2, 3, 4, 5, 6 ]));
+  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 0));
+  game.world.storage(SpriteAnimation).set(player, new SpriteAnimation([]));
 
-  const body = new RigidBody().attach({
-    data: [1, 1],
-    type: BodyPartType.Rect
-  });
+  const body = new RigidBody()
+    .setType(RigidBodyType.Dynamic)
+    .attach({
+      data: [0.5, 0.75],
+      type: BodyPartType.Rect
+    });
 
   game.world.storage(RigidBody).set(player, body);
 

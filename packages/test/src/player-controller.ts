@@ -1,5 +1,8 @@
-import { ProcessingSystem, Transform, World } from '@tiles/engine';
+import { ProcessingSystem, Ticker, Transform, World } from '@tiles/engine';
 import { Query, System } from '@tiles/entity-system';
+import { RigidBody } from "@tiles/physics";
+import { Injectable } from "@tiles/injector";
+import { SpriteAnimation, SpriteDisplay } from "@tiles/pixi";
 
 export class Pawn {}
 
@@ -59,42 +62,66 @@ export class InputHandler implements System {
 
 }
 
+@Injectable()
 export class PlayerController extends ProcessingSystem {
 
   protected inputHandler = new InputHandler();
-  protected speed = 1;
+  protected speed = 16;
+
+  constructor(
+    protected readonly ticker: Ticker
+  ) {
+    super();
+  }
 
   /** {@inheritDoc} */
   public getQuery(): Query {
     return {
       contains: [
         Pawn,
+        RigidBody,
+        SpriteAnimation,
         Transform
       ]
     };
   }
 
   public update(world: World): void {
-    const $trans = world.storage(Transform);
+    const $body = world.storage(RigidBody);
+    const $animation = world.storage(SpriteAnimation);
 
     for (const entity of this.group.entities) {
-      const trans = $trans.get(entity);
+      const animation = $animation.get(entity);
+
+      // Characters movement velocity adjusted to frame rate.
+      const velocity = this.speed / this.ticker.delta;
+
+      // New velocity on x and y axis respectively.
+      let vx = 0;
+      let vy = 0;
 
       // Movement on x axis.
       if (this.inputHandler.isKeyDown(KeyCode.A)) {
-        trans.x -= this.speed;
+        animation.play('walk-left');
+        vx -= velocity;
       }
       else if (this.inputHandler.isKeyDown(KeyCode.D)) {
-        trans.x += this.speed;
+        animation.play('walk-left');
+        vx += velocity;
       }
 
       // Movement on y axis.
       if (this.inputHandler.isKeyDown(KeyCode.W)) {
-        trans.y -= this.speed;
+        animation.play('walk-up');
+        vy -= velocity;
+
       }
       else if (this.inputHandler.isKeyDown(KeyCode.S)) {
-        trans.y += this.speed;
+        animation.play('walk-down');
+        vy += velocity;
       }
+
+      $body.get(entity).transformVelocity(vx, vy);
     }
   }
 
