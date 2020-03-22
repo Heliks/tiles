@@ -31,6 +31,22 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
     for (const entity of this.group.entities) {
       const animation = $animation.get(entity);
+      const display = $display.get(entity);
+
+      // Transform animation.
+      if (animation.transform) {
+        const data = display.sheet.getAnimation(animation.transform);
+
+        if (data) {
+          // Assign animation data to component.
+          Object.assign(animation, data);
+
+          animation.playing = animation.transform;
+          animation.reset();
+        }
+
+        animation.transform = undefined;
+      }
 
       animation.elapsedTime += this.ticker.delta;
 
@@ -45,7 +61,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         animation.frame = nextFrame;
 
         // Update display with next frame.
-        $display.get(entity).setSprite(animation.frames[ nextFrame ]);
+        display.setSprite(animation.frames[ nextFrame ]);
       }
     }
   }

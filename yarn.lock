@@ -231,10 +231,6 @@
   dependencies:
     "@types/systemjs" "^0.20.6"
 
-"@heliks/result@https://github.com/Heliks/result":
-  version "0.0.1"
-  resolved "https://github.com/Heliks/result#73eff9a8487734f7ed573b795f848f7e9b412b84"
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.0.0.tgz#10602de5570baea82f8afbfa2630b24e7a8cfe5b"
