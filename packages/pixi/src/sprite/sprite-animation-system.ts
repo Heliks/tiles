@@ -61,7 +61,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         animation.frame = nextFrame;
 
         // Update display with next frame.
-        display.setSprite(animation.frames[ nextFrame ]);
+        display.setIndex(animation.frames[ nextFrame ]).flipTo(animation.flip);
       }
     }
   }

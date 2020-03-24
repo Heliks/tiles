@@ -1,4 +1,8 @@
+import { FlipDirection } from "../utils";
+
 export interface AnimationData {
+  /** The direction in which the sprites of all frames should be flipped. */
+  flip?: FlipDirection;
   /**
    * Contains the indexes of all sprites of which the animation consists.
    */
@@ -10,10 +14,13 @@ export interface AnimationData {
   frameDuration?: number;
 }
 
-export class SpriteAnimation implements Required<AnimationData> {
+export class SpriteAnimation implements AnimationData {
 
   /** Elapsed time since the animation has started. */
   public elapsedTime = -1;
+
+  /** The direction in which the sprites of all frames should be flipped. */
+  public flip = FlipDirection.None;
 
   /** Index of the current frame. */
   public frame = 0;
@@ -29,9 +36,9 @@ export class SpriteAnimation implements Required<AnimationData> {
   public speed = 1;
 
   /**
-   * Name of an animation on the spritesheet of the [[SpriteDisplay]] that accompanies
-   * this component on the same entity. Does not wait for the current animation to
-   * complete.
+   * Name of an animation on the sprite-sheet of the [[SpriteDisplay]] that accompanies
+   * this component on the same entity to which this animation should be changed to.
+   * Does not wait for the current animation to complete.
    */
   public transform?: string;
 
@@ -49,6 +56,8 @@ export class SpriteAnimation implements Required<AnimationData> {
     this.elapsedTime = 0;
     this.frame = 0;
     this.speed = 1;
+
+    this.flip = FlipDirection.None;
 
     return this;
   }
@@ -83,9 +92,16 @@ export class SpriteAnimation implements Required<AnimationData> {
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort
       // the transform, since this play() call would transform it a second time back to
-      // the animation that is playing now already.
+      // the animation that is playing now.
       this.transform = undefined;
     }
+
+    return this;
+  }
+
+  /** Flips the sprite of each frame in the animation in the given direction. */
+  public flipTo(direction = FlipDirection.Horizontal): this {
+    this.flip = direction;
 
     return this;
   }

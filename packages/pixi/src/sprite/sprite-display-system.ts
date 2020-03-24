@@ -4,8 +4,7 @@ import { Sprite } from "pixi.js";
 import { Renderer } from "../renderer";
 import { Stage } from "../stage";
 import { Query } from "@tiles/entity-system";
-import { SpriteSheet } from "./sprite-sheet";
-import { cropTexture } from "../utils";
+import { cropTexture, flip } from "../utils";
 import { SpriteDisplay } from "./sprite-display";
 import { RendererConfig, TK_RENDERER_CONFIG } from "../config";
 
@@ -76,6 +75,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
             display.sheet.pos(display.spriteIndex as number),
             display.sheet.getSpriteSize()
           );
+
+          flip(sprite, display.flip);
         }
       }
 

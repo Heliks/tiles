@@ -1,6 +1,7 @@
 import { Handle } from '@tiles/assets';
 import { Grid, Vec2 } from '@tiles/engine';
-import { AnimationData, SpriteAnimation } from "./sprite-animation";
+import { AnimationData } from "./sprite-animation";
+import { FlipDirection } from "../utils";
 
 export class SpriteSheet extends Grid {
 
@@ -26,6 +27,7 @@ export class SpriteSheet extends Grid {
     }
 
     this.animations.set(name, {
+      flip: FlipDirection.None,
       frameDuration: 100,
       ...data
     });
