@@ -3,40 +3,28 @@
  *  during lifecycle or update events.
  */
 export interface State<T> {
-
   /** Called when the state is added to a stack. */
   onStart?(data: T): unknown;
-
   /** Called when the state is removed from a stack. */
   onStop?(data: T): unknown;
-
   /**
    * If this state is currently on top and another state is pushed over it,
    * this method will be called.
    */
   onPause?(data: T): unknown;
-
   /**
    * When a state is popped and this state is resumed, this method
    * will be called.
    */
   onResume?(data: T): unknown;
-
   /**
    * Handles the logic of the state. Called when the state machine is
    * updated and this state is currently on top of the stack.
    */
   update(data: T): unknown;
-
 }
 
 export class StateMachine<T> {
-
-  /**
-   * The state machines data that will be passed down to state when
-   * they receive lifecycle or update events.
-   */
-  protected data?: T;
 
   /**
    * Contains the state that is currently on top of the stack or `undefined`
@@ -60,6 +48,13 @@ export class StateMachine<T> {
     return this.stack.length;
   }
 
+  /**
+   * @param data The state machines data that will be passed down to state when
+   * they receive lifecycle or update events.
+   */
+  constructor(public data: T) {}
+
+  /** Pushes a state at the top of the stack. */
   public push(state: State<StateMachine<T>>): this {
     if (this.running) {
       const active = this.active;
@@ -78,12 +73,16 @@ export class StateMachine<T> {
     return this;
   }
 
+  /**
+   * Removes the top most state from the stack. If the stack is not empty afterwards
+   * it will resume the next top most state, otherwise the state machine is shut down.
+   */
   public pop(): this {
     if (this.running) {
       let state = this.stack.pop();
 
-      // If we got a state from the top of the stack stop it before
-      // starting the next one.
+      // If we got a state from the top of the stack stop it before starting the
+      // next one.
       if (state && state.onStop) {
         state.onStop(this);
       }
@@ -146,6 +145,15 @@ export class StateMachine<T> {
     this.running = false;
 
     return this;
+  }
+
+  /** Updates the currently active (the top most) state. */
+  public update(): void {
+    const active = this.active;
+
+    if (active) {
+      active.update(this);
+    }
   }
 
 }

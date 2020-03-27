@@ -67,63 +67,62 @@ describe('StateMachine', () => {
 
     it('should stop the state that was popped', () => {
       const state = new NoopState();
-      const fn = jest.spyOn(state, 'onStop');
+      const onStop = jest.spyOn(state, 'onStop');
 
       stateMachine
         .start(new NoopState())
         .push(state)
         .pop();
 
-      expect(fn).toHaveBeenCalledWith(stateMachine);
+      expect(onStop).toHaveBeenCalledWith(stateMachine);
     });
 
     it('should resume the state that has become active afterwards', () => {
       const state = new NoopState();
-      const fn = jest.spyOn(state, 'onResume');
+      const onResume = jest.spyOn(state, 'onResume');
 
       stateMachine
         .start(state)
         .push(new NoopState())
         .pop();
 
-      expect(fn).toHaveBeenCalledWith(stateMachine);
+      expect(onResume).toHaveBeenCalledWith(stateMachine);
     });
   });
 
-  /*
   it('should start the initial state', () => {
-    const onStart = jest.spyOn(foo, 'onStart');
+    const state = new NoopState();
+    const onStart = jest.spyOn(state, 'onStart');
 
-    stateMachine
-      .default(foo)
-      .start();
+    stateMachine.start(state);
 
-    expect(onStart).toHaveBeenCalledWith('foobar');
+    expect(onStart).toHaveBeenCalledWith(stateMachine);
   });
 
-  it('should stop all states when the state machine is shut down', () => {
-    const onStop1 = jest.spyOn(foo, 'onStop');
-    const onStop2 = jest.spyOn(bar, 'onStop');
+  it('should stop all states in the stack', () => {
+    const state1 = new NoopState();
+    const state2 = new NoopState();
+
+    const onStop1 = jest.spyOn(state1, 'onStop');
+    const onStop2 = jest.spyOn(state2, 'onStop');
 
     stateMachine
-      .default(foo)
-      .start()
-      .push(bar)
+      .start(state1)
+      .push(state2)
       .stop();
 
-    expect(onStop1).toHaveBeenCalledWith('foobar');
-    expect(onStop2).toHaveBeenCalledWith('foobar');
+    expect(onStop1).toHaveBeenCalledWith(stateMachine);
+    expect(onStop2).toHaveBeenCalledWith(stateMachine);
   });
 
   it('should update the top most state', () => {
-    const update = jest.spyOn(foo, 'update');
+    const state = new NoopState();
+    const update = jest.spyOn(state, 'update');
 
     stateMachine
-      .default(foo)
-      .start()
+      .start(state)
       .update();
 
-    expect(update).toHaveBeenCalledWith('foobar');
+    expect(update).toHaveBeenCalledWith(stateMachine);
   });
-   */
 });

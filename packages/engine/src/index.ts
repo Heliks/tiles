@@ -1,6 +1,7 @@
 export * from './game';
 export * from './game-builder';
 export * from './math';
+export * from './state'
 export * from './system'
 export * from './ticker';
 export * from './transform';
