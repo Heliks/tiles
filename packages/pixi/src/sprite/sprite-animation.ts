@@ -54,7 +54,7 @@ export class SpriteAnimation implements AnimationData {
   /** Resets the animation back to the beginning. */
   public reset(): this {
     this.elapsedTime = 0;
-    this.frame = 0;
+    this.frame = -1;
     this.speed = 1;
 
     this.flip = FlipDirection.None;
@@ -75,6 +75,13 @@ export class SpriteAnimation implements AnimationData {
   /** Sets the [[frames]] that are used to create the animation. */
   public setFrames(frames: number[]): this {
     this.frames = frames;
+
+    // Make sure the animation gets updated by the animation system.
+    this.frame = -1;
+
+    // If we manually set the frames we know that there is no named
+    // animation playing right anymore.
+    this.playing = undefined;
 
     return this;
   }
