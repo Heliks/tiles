@@ -74,8 +74,7 @@ export class SpriteAnimation implements AnimationData {
 
   /** Sets the [[frames]] that are used to create the animation. */
   public setFrames(frames: number[]): this {
-    this.frames.length = 0;
-    this.frames.push(...frames);
+    this.frames = frames;
 
     return this;
   }
