@@ -18,7 +18,7 @@ describe('StateMachine', () => {
   let stateMachine: StateMachine<undefined>;
 
   beforeEach(() => {
-    stateMachine = new StateMachine();
+    stateMachine = new StateMachine(undefined);
   });
 
   describe('push()', () => {
