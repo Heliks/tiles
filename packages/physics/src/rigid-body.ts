@@ -29,12 +29,22 @@ export type BodyPart = RectangleBodyPart;
 export class RigidBody {
 
   public bodyParts: BodyPart[] = [];
-  public type = RigidBodyType.Static;
+
+  /**
+   * The linear damping that is applied to the whole body. This determines how
+   * much the velocity of the body degrades over time in relation to the worlds
+   * gravity. In top-down games where the world usually does not have a gravity,
+   * this needs to be set to an appropriate value for characters or it will
+   * continue to move forever.
+   */
+  public damping = 0;
 
   public velocity: Vec2 = [0, 0];
   public velocityTransform?: Vec2;
 
   public dirty = true;
+
+  constructor(public type = RigidBodyType.Static) {}
 
   public setType(type: RigidBodyType): this {
     this.type = type;
@@ -54,6 +64,10 @@ export class RigidBody {
     this.dirty = true;
 
     return this;
+  }
+
+  public static dynamic() {
+    return new RigidBody();
   }
 
 }

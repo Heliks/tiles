@@ -9,7 +9,7 @@ import { b2BodyType, b2BodyDef, b2FixtureDef, b2PolygonShape, b2World, b2Body, b
 export function parseBodyPart(part: BodyPart, def: b2FixtureDef): void {
   const data = {
     density: 1,
-    friction: 1,
+    friction: 0.5,
     position: [0, 0],
     ...part
   };
@@ -20,7 +20,7 @@ export function parseBodyPart(part: BodyPart, def: b2FixtureDef): void {
   // Todo: Other shapes.
   def.shape = new b2PolygonShape();
 
-  // convert polygon to a box. The type hint here is some-how inferred incorrectly
+  // convert polygon to a box. The type hint here is somehow inferred incorrectly
   (def.shape as any).SetAsBox(
     data.data[0] / 2,
     data.data[1] / 2
@@ -61,6 +61,8 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
     parseBodyPart(part, partDef);
     body.CreateFixture(partDef);
   }
+
+  body.SetLinearDamping(comp.damping);
 
   return body;
 }
