@@ -1,6 +1,6 @@
 {
   "name": "@tiles/injector",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.0",
   "description": "Simple dependency injector.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
-    "jest": "^25.1.0",
-    "ts-jest": "^25.2.0",
     "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
+    "jest": "^25.1.0",
     "reflect-metadata": "^0.1.13",
+    "ts-jest": "^25.2.0",
     "typescript": "^3.3.3333"
   },
   "keywords": [
