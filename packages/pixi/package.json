@@ -1,6 +1,6 @@
 {
   "name": "@tiles/pixi",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Tiles PIXI.JS module",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",

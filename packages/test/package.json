@@ -1,6 +1,7 @@
 {
   "name": "@tiles/test",
-  "version": "0.0.1",
+  "private": true,
+  "version": "0.0.0",
   "description": "Just trying out things.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
