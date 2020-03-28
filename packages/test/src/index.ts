@@ -2,15 +2,9 @@ import 'reflect-metadata';
 import { AssetLoader, AssetsModule } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
 import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
-import { InputHandler, Pawn, PlayerController } from './player-controller';
+import { Pawn, PlayerController } from './player-controller';
 import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
-
-export function spawnDummy(world: World, x: number, y: number) {
-  world
-    .builder()
-    .use(new Transform(x, y))
-    .build()
-}
+import { InputHandler } from "./input";
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -72,20 +66,21 @@ window.onload = () => {
     .setAnimation('walk-up', {
       frames: [8, 9, 10, 11, 12, 13]
     })
-    .setAnimation('walk-left', {
+    .setAnimation('walk-right', {
       frames: [14, 15, 16, 17, 18, 19]
     });
 
   // Add sprite-sheet to player.
-  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 0));
+  game.world.storage(SpriteDisplay).set(player, new SpriteDisplay(sheet, 1));
   game.world.storage(SpriteAnimation).set(player, new SpriteAnimation([]));
 
-  const body = new RigidBody()
-    .setType(RigidBodyType.Dynamic)
-    .attach({
-      data: [0.5, 0.75],
-      type: BodyPartType.Rect
-    });
+  const body = new RigidBody(RigidBodyType.Dynamic).attach({
+    data: [0.5, 0.75],
+    density: 120,
+    type: BodyPartType.Rect
+  });
+
+  body.damping = 5;
 
   game.world.storage(RigidBody).set(player, body);
 
