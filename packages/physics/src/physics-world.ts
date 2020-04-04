@@ -1,12 +1,17 @@
 import { b2World, b2Vec2 } from "@flyover/box2d";
 import { Injectable, Optional } from "@tiles/injector";
 import { Ticker, Vec2 } from "@tiles/engine";
+import { Entity } from "@tiles/entity-system";
+import { b2Body } from "@flyover/box2d/Box2D/Box2D";
 
 @Injectable()
 export class PhysicsWorld {
 
   /** Contains the Box2D world. */
   public readonly b2world: b2World;
+
+  /** Contains Box2D bodies mapped to the game entity to which they belong. */
+  protected readonly bodies = new Map<Entity, b2Body>();
 
   /**
    * How many iterations are allowed for the physics velocity calculation phase. Less

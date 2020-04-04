@@ -54,6 +54,12 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
   // Create the Box2D body.
   const body = world.CreateBody(bodyDef);
 
+  // Enables continuous collision detection on the body which prevents
+  // small fixtures (like bullets) from passing through thin fixtures.
+  if (comp.isBullet) {
+    body.SetBullet(true);
+  }
+
   // Create all body parts.
   const partDef = new b2FixtureDef();
 

@@ -39,10 +39,24 @@ export class RigidBody {
    */
   public damping = 0;
 
+  /**
+   * If this flag is set to true, the entire rigid body will be re-build on the
+   * next frame. Some changes to the rigid body require this to take effect.
+   */
+  public dirty = true;
+
+  /**
+   * Enables continuous collision detection on all body parts, which prevents small
+   * body parts (like bullets would usually have) from passing through thin bodies
+   * when travelling at high velocity.
+   */
+  public isBullet = false;
+
+
+
   public velocity: Vec2 = [0, 0];
   public velocityTransform?: Vec2;
 
-  public dirty = true;
 
   constructor(public type = RigidBodyType.Static) {}
 
