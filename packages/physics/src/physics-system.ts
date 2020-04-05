@@ -6,7 +6,7 @@ import { Injectable } from "@tiles/injector";
 import { b2BodyType, b2BodyDef, b2FixtureDef, b2PolygonShape, b2World, b2Body, b2Vec2 } from "@flyover/box2d";
 
 /** Parses the given body `part` anda adds the data to the box2d fixture `def`. */
-export function parseBodyPart(part: BodyPart, def: b2FixtureDef): void {
+export function parseBodyPart(part: BodyPart, def: b2FixtureDef, group: number, mask: number): void {
   const data = {
     density: 1,
     friction: 0.5,
@@ -16,6 +16,9 @@ export function parseBodyPart(part: BodyPart, def: b2FixtureDef): void {
 
   def.density = data.density;
   def.friction = data.friction;
+
+  def.filter.categoryBits = group;
+  def.filter.maskBits = mask;
 
   // Todo: Other shapes.
   def.shape = new b2PolygonShape();
@@ -36,6 +39,12 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
 
   // The bodies initial position.
   bodyDef.position.Set(position[0], position[1]);
+
+  // Set initial velocity.
+  bodyDef.linearVelocity.Set(
+    comp.velocity[0],
+    comp.velocity[1]
+  );
 
   // assign body type
   switch (comp.type) {
@@ -64,7 +73,13 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
   const partDef = new b2FixtureDef();
 
   for (const part of comp.bodyParts) {
-    parseBodyPart(part, partDef);
+    parseBodyPart(
+      part,
+      partDef,
+      comp.group,
+      comp.mask
+    );
+
     body.CreateFixture(partDef);
   }
 

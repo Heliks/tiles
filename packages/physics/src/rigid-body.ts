@@ -23,6 +23,8 @@ export interface RectangleBodyPart extends BodyPartData {
 
 export type BodyPart = RectangleBodyPart;
 
+export const COLLIDE_ALL_MASK = 0xFFFF;
+
 /**
  * A 2D rigid body component.
  */
@@ -46,13 +48,24 @@ export class RigidBody {
   public dirty = true;
 
   /**
+   * Bits that determine the rigid bodies collision groups. This can exclude
+   * other rigid bodies from colliding with this one, depending on their
+   * collision [[mask]].
+   */
+  public group = 0x0001;
+
+  /**
    * Enables continuous collision detection on all body parts, which prevents small
    * body parts (like bullets would usually have) from passing through thin bodies
    * when travelling at high velocity.
    */
   public isBullet = false;
 
-
+  /**
+   * Bits that determine with which collision groups this rigid body is allowed to
+   * collide. By default it will collide with all other groups.
+   */
+  public mask = COLLIDE_ALL_MASK;
 
   public velocity: Vec2 = [0, 0];
   public velocityTransform?: Vec2;
