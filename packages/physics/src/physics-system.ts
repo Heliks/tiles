@@ -35,7 +35,7 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
   bodyDef.fixedRotation = true;
 
   // The bodies initial position.
-  bodyDef.position.Set(position[0], position[0]);
+  bodyDef.position.Set(position[0], position[1]);
 
   // assign body type
   switch (comp.type) {
