@@ -43,8 +43,8 @@ export class Renderer {
    */
   constructor(
     @Inject(TK_RENDERER_CONFIG)
-    protected readonly config: RendererConfig,
-    protected readonly stage: Stage
+    public readonly config: RendererConfig,
+    public readonly stage: Stage
   ) {
     // Listen to browser resize events.
     window.addEventListener('resize', this.onScreenResize.bind(this));
