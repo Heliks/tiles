@@ -1,10 +1,9 @@
 export class BitSet {
 
   /**
-   * The bit-set's internal decimal representation. Modifying this directly is
-   * highly discouraged.
+   * @param value Decimal representation of the bitset.
    */
-  public value = 0;
+  constructor(public value = 0) {}
 
   /**
    * Adds the given id to the set. Returns true if the id was not

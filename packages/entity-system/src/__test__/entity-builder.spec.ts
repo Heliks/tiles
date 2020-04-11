@@ -4,13 +4,10 @@ import { World } from '../world';
 describe('EntityBuilder', () => {
   it('should build entities', () => {
     const world = new World();
-    const builder = world.archetype().toBuilder();
+    const builder = world.builder();
 
-    class A {
-    }
-
-    class B {
-    }
+    class A {}
+    class B {}
 
     builder.add(A);
     builder.add(B);

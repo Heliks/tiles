@@ -1,80 +1,160 @@
-import { EntityManager } from '../entity-manager';
-import { World } from '../world';
-import { ClassType, Query } from '../types';
-import { BitSet } from '../bit-set';
+// The amount of bits we reserve on an entity for its version, e.g. for the entity
+// `10110011` the bits `0011` would contain its version.
+import { BitSet } from "../bit-set";
+import { EntityGroup } from "../entity-group";
+import { Filter } from "../filter";
+import { Entity } from "../types";
+import { EntityManager, MAX_INDEX, VERSION_BITS } from "../entity-manager";
+
 
 describe('EntityManager', () => {
-  class A {
-  }
-
-  class B {
-  }
-
-  class C {
-  }
-
-  class D {
-  }
-
-  let entityMgr: EntityManager;
-  let world: World;
-
-  /**  Helper method to create a "dirty" entity with components. */
-  function createEntity(components?: ClassType[]) {
-    const entity = world.create(components);
-
-    world.insert(entity, true);
-
-    return entity;
-  }
+  let em: EntityManager;
 
   beforeEach(() => {
-    world = new World();
-    entityMgr = world.entities;
+    em = new EntityManager();
   });
 
-  it('should create a composition bit set', () => {
-    expect(entityMgr.getComposition(createEntity())).toBeInstanceOf(BitSet);
+  it('should create entities', () => {
+    const a = em.create();
+    const b = em.create();
+
+    // Check if the index segment of the entity is correct.
+    expect(a & MAX_INDEX).toBe(0);
+    expect(b & MAX_INDEX).toBe(1);
   });
 
-  it('should add eligible entities to groups', () => {
-    const group = world.query({
-      contains: [A, B],
-      excludes: [C]
+  it('should return existing entities at the given position', () => {
+    const a = em.create();
+    const b = em.create();
+
+    expect(em.get(0)).toBe(a);
+    expect(em.get(1)).toBe(b);
+  });
+
+  it('should destroy entities', () => {
+    em.create();
+    em.create();
+    em.create();
+
+    // Destroy the middle entity.
+    em.destroy(em.get(1));
+
+    // Get the version of both entities as they are now in the manager. Entity "a"
+    // should be at version 0 while "b" should have its version increased to 1.
+    expect(em.get(0) >> VERSION_BITS).toBe(0);
+    expect(em.get(1) >> VERSION_BITS).toBe(1);
+    expect(em.get(2) >> VERSION_BITS).toBe(0);
+  });
+
+  it('should not destroy already destroyed entities', () => {
+    const entity = em.create();
+
+    em.destroy(entity);
+    em.destroy(entity);
+
+    // Entity version should've increased only on the first destroy,
+    // while the second should be ignored.
+    expect(em.get(0) >> VERSION_BITS).toBe(1);
+  });
+
+  it('should recycle destroyed entities', () => {
+    for (let i = 0; i < 10; i++) {
+      em.create();
+    }
+
+    // Destroy entity at index 4
+    em.destroy(
+      em.get(4)
+    );
+
+    const entity = em.create();
+
+    // The newly created entity should be recycled, occupying the same index
+    // as the previously destroyed one with an increased version.
+    expect(entity & MAX_INDEX).toBe(4);
+    expect(entity >> VERSION_BITS).toBe(1);
+  });
+
+  it('should check if an entity is alive', () => {
+    const a = em.create();
+    const b = em.create();
+
+    em.destroy(b);
+
+    expect(em.alive(a)).toBeTruthy();
+    expect(em.alive(b)).toBeFalsy();
+  });
+
+  it('should return entity compositions', () => {
+    expect(em.getComposition(em.create())).toBeInstanceOf(BitSet);
+  });
+
+  // Test for synchronizing entity groups.
+  describe('sync()', () => {
+    // Bits representing different kinds of components
+    const compBitA = 1;
+    const compBitB = 2;
+    const compBitC = 4;
+    const compBitD = 8;
+
+    /** Helper to create an entity group. */
+    function createGroup(inc: number, exc: number): EntityGroup {
+      return new EntityGroup(new Filter(
+        new BitSet(inc),
+        new BitSet(exc)
+      ));
+    }
+
+    /** Helper to create a dirty entity that has a `composition` automatically applied. */
+    function createDirty(composition: number): Entity {
+      const entity = em.create();
+
+      em.getComposition(entity).add(composition);
+      em.setDirty(entity);
+
+      return entity;
+    }
+
+    it('should add eligible entities to groups', () => {
+      const group = createGroup(compBitA | compBitB, compBitC);
+
+      // Eligible entities that should be added to the group.
+      const entity1 = createDirty(compBitA | compBitB);
+      const entity2 = createDirty(compBitA | compBitB | compBitD);
+
+      // Non-eligible entities to make sure that no entities are added to
+      // the group that shouldn't.
+      const entity3 = createDirty(compBitA);
+      const entity4 = createDirty(compBitA | compBitB | compBitC);
+
+      // Start the synchronization.
+      em.sync([
+        group
+      ]);
+
+      expect(group.has(entity1)).toBeTruthy();
+      expect(group.has(entity2)).toBeTruthy();
+
+      expect(group.has(entity3)).toBeFalsy();
+      expect(group.has(entity4)).toBeFalsy();
     });
 
-    const entity1 = createEntity([A, B]);
-    const entity2 = createEntity([A, B, D]);
+    it('should remove non-eligible entities from groups', () => {
+      const group = createGroup(compBitA | compBitB, compBitC);
 
-    // Non-eligible entities to make sure that no entities are
-    // added to the group that shouldn't be there.
-    const entity3 = createEntity([A]);
-    const entity4 = createEntity([A, B, C]);
+      const entity1 = createDirty(compBitA);
+      const entity2 = createDirty(compBitA | compBitB | compBitC);
 
-    entityMgr.sync(world.getGroups());
+      group.add(entity1);
+      group.add(entity2);
 
-    expect(group.has(entity1)).toBeTruthy();
-    expect(group.has(entity2)).toBeTruthy();
+      em.sync([
+        group
+      ]);
 
-    expect(group.has(entity3)).toBeFalsy();
-    expect(group.has(entity4)).toBeFalsy();
-  });
-
-  it('should remove non-eligible entities from groups', () => {
-    const group = world.query({
-      contains: [A, B],
-      excludes: [C]
+      expect(group.has(entity1)).toBeFalsy();
+      expect(group.has(entity2)).toBeFalsy();
     });
-
-    const entity1 = createEntity([A]);
-    const entity2 = createEntity([A, B, C]);
-
-    group.add(entity1);
-    group.add(entity2);
-
-    entityMgr.sync(world.getGroups());
-
-    expect(group.has(entity1)).toBeFalsy();
-    expect(group.has(entity2)).toBeFalsy();
   });
 });
+

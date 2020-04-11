@@ -13,7 +13,7 @@ describe('Storage', () => {
 
   beforeEach(() => {
     world = new World();
-    entity = world.create();
+    entity = 0;
     storage = world.storage(A);
   });
 
