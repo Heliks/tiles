@@ -1,19 +1,22 @@
 import { FlipDirection, SpriteAnimation } from "@tiles/pixi";
-import { RigidBody } from "@tiles/physics";
+import { BodyPartType, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler, KeyCode } from "./input";
-import { State, StateMachine, Ticker } from "@tiles/engine";
+import { State, StateMachine, Ticker, Transform, World } from "@tiles/engine";
+import { CollisionGroups } from "./const";
 
 export interface PawnStateData {
   animation: SpriteAnimation;
   body: RigidBody;
   input: InputHandler;
   ticker: Ticker;
+  world: World;
+  transform: Transform;
 }
 
 export class WalkState implements State<StateMachine<PawnStateData>> {
 
   /** Movement speed. */
-  protected speed = 16;
+  protected speed = 32;
 
   /** {@inheritDoc} */
   update(state: StateMachine<PawnStateData>): void {
@@ -62,6 +65,8 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
 
 export class IdleState implements State<StateMachine<PawnStateData>> {
 
+  protected cooldown = 0;
+
   /** {@inheritDoc} */
   onStart(state: StateMachine<PawnStateData>): void {
     state.data.animation.setFrames([ 1 ]);
@@ -83,6 +88,36 @@ export class IdleState implements State<StateMachine<PawnStateData>> {
     ) {
       state.push(new WalkState());
     }
+
+    if (state.data.input.isKeyDown(KeyCode.Q) && this.cooldown <= 0) {
+      this.cooldown = 500;
+
+      const transform = new Transform(
+        state.data.transform.x + 1,
+        state.data.transform.y
+      );
+
+      const body = new RigidBody(RigidBodyType.Dynamic)
+        .attach({
+          data: [0.25, 0.25],
+          density: 1,
+          type: BodyPartType.Rect,
+        });
+
+      body.mask = CollisionGroups.Terrain;
+
+      body.damping  = 3;
+      body.velocity = [50, 0];
+      body.isBullet = true;
+
+      const bullet = state.data.world
+        .builder()
+        .use(transform)
+        .use(body)
+        .build();
+    }
+
+    this.cooldown -= state.data.ticker.delta;
   }
 
 }

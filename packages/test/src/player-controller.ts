@@ -12,7 +12,6 @@ export class Pawn {}
 export class PlayerController extends ProcessingSystem {
 
   protected inputHandler = new InputHandler();
-  protected speed = 16;
 
   constructor(
     protected readonly ticker: Ticker
@@ -45,7 +44,9 @@ export class PlayerController extends ProcessingSystem {
       animation: world.storage(SpriteAnimation).get(entity),
       body: world.storage(RigidBody).get(entity),
       input: this.inputHandler,
-      ticker: this.ticker
+      ticker: this.ticker,
+      transform: world.storage(Transform).get(entity),
+      world
     });
 
     state.start(new IdleState());
