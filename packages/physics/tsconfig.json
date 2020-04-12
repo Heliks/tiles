@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "allowJs": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": "src/",

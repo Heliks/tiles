@@ -1,12 +1,12 @@
 import { PhysicsWorld } from "./physics-world";
-import { Entity, Query, System } from "@tiles/entity-system";
+import { Entity, Query } from "@tiles/entity-system";
 import { ProcessingSystem, Transform, Vec2, World } from "@tiles/engine";
-import { BodyPart, BodyPartData, BodyPartType, RigidBody, RigidBodyType } from "./rigid-body";
+import { BodyPart, RigidBody, RigidBodyType } from "./rigid-body";
 import { Injectable } from "@tiles/injector";
-import { b2BodyType, b2BodyDef, b2FixtureDef, b2PolygonShape, b2World, b2Body, b2Vec2 } from "@flyover/box2d";
+import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2Vec2, b2World } from "@flyover/box2d";
 
 /** Parses the given body `part` anda adds the data to the box2d fixture `def`. */
-export function parseBodyPart(part: BodyPart, def: b2FixtureDef, group: number, mask: number): void {
+export function parseBodyPart(part: BodyPart, def: b2FixtureDef, restitution: number, group: number, mask: number): void {
   const data = {
     density: 1,
     friction: 0.5,
@@ -16,6 +16,7 @@ export function parseBodyPart(part: BodyPart, def: b2FixtureDef, group: number, 
 
   def.density = data.density;
   def.friction = data.friction;
+  def.restitution = restitution;
 
   def.filter.categoryBits = group;
   def.filter.maskBits = mask;
@@ -76,6 +77,7 @@ export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
     parseBodyPart(
       part,
       partDef,
+      comp.restitution,
       comp.group,
       comp.mask
     );
@@ -128,6 +130,10 @@ export class PhysicsSystem extends ProcessingSystem {
             trans.x,
             trans.y
           ]);
+
+          // Assign the entity to which the body belongs as user data
+          // to the box2d body so that we can backtrack it later on.
+          b2Body.SetUserData(entity);
 
           // Assign this body to the entity.
           this.bodies.set(entity, b2Body);

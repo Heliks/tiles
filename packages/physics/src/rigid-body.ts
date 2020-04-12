@@ -67,6 +67,12 @@ export class RigidBody {
    */
   public mask = COLLIDE_ALL_MASK;
 
+  /**
+   * Value between 0 and 1 that determines how "bouncy" each body parts should be,
+   * closer to 0 is less bouncy, closer to 1 more.
+   */
+  public restitution = 0;
+
   public velocity: Vec2 = [0, 0];
   public velocityTransform?: Vec2;
 
