@@ -78,6 +78,13 @@ export class World {
     return entity;
   }
 
+  /** Destroys an `entity`. */
+  public destroy(entity: Entity): this {
+    this.entities.destroy(entity);
+
+    return this;
+  }
+
   /** Updates the world. Should be called once on each frame. */
   public update(): void {
     this.entities.sync(this.groups);
