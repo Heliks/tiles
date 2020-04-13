@@ -1,3 +1,4 @@
+export * from './event-queue';
 export * from './game';
 export * from './game-builder';
 export * from './math';

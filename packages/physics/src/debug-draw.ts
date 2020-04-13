@@ -1,7 +1,7 @@
 import { b2DrawFlags } from "@flyover/box2d";
 import { DebugDrawBox2dAdapter } from "./debug-draw-box2d-adapter";
 import { Inject, Injectable } from "@tiles/injector";
-import { PhysicsWorld } from "./physics-world";
+import { PhysicsWorld } from "./world";
 import { PhysicsConfig, TK_PHYSICS_CONFIG } from "./config";
 import { Renderer } from '@tiles/pixi';
 

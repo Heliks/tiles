@@ -1,5 +1,5 @@
 import { GameBuilder, Module } from "@tiles/engine";
-import { PhysicsWorld } from "./physics-world";
+import { PhysicsWorld } from "./world";
 import { PhysicsSystem } from "./physics-system";
 import { DebugDrawSystem } from "./debug-draw-system";
 import { DebugDraw } from "./debug-draw";

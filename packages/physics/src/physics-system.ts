@@ -1,4 +1,4 @@
-import { PhysicsWorld } from "./physics-world";
+import { PhysicsWorld } from "./world";
 import { Entity, Query } from "@tiles/entity-system";
 import { ProcessingSystem, Transform, Vec2, World } from "@tiles/engine";
 import { BodyPart, RigidBody, RigidBodyType } from "./rigid-body";

@@ -55,7 +55,6 @@ window.onload = () => {
 
   const game = new GameBuilder()
     .system(InputHandler)
-    .system(PlayerController)
     .module(new AssetsModule())
     .module(new PixiModule({
       antiAlias: false,
@@ -66,6 +65,7 @@ window.onload = () => {
       unitSize: UNIT_SIZE
     }))
     .system(DrawGridSystem)
+    .system(PlayerController)
     .build();
 
   // Configure asset directory
@@ -94,7 +94,8 @@ window.onload = () => {
   body.damping = 5;
   body.group = CollisionGroups.Player;
 
-  const player = game.world
+  // Insert player character.
+  game.world
     .builder()
     .use(new Camera(200, 200))
     .use(new Transform(2, 2))

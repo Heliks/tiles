@@ -1,8 +1,9 @@
 import { FlipDirection, SpriteAnimation } from "@tiles/pixi";
 import { BodyPartType, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler, KeyCode } from "./input";
-import { State, StateMachine, Ticker, Transform, World } from "@tiles/engine";
+import { clamp, ProcessingSystem, State, StateMachine, Ticker, Transform, World } from "@tiles/engine";
 import { CollisionGroups } from "./const";
+import { Entity, Query } from "@tiles/entity-system";
 
 export interface PawnStateData {
   animation: SpriteAnimation;
@@ -110,7 +111,8 @@ export class IdleState implements State<StateMachine<PawnStateData>> {
       body.velocity = [50, 0];
       body.isBullet = true;
 
-      const bullet = state.data.world
+      // Spawn bullet
+      state.data.world
         .builder()
         .use(transform)
         .use(body)
