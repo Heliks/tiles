@@ -118,17 +118,6 @@ export class EntityManager {
     return composition;
   }
 
-  protected foo = new Map();
-
-  public composition(entity: Entity) {
-    return this.foo.get(entity) ?? 0;
-  }
-
-  public addCompositionId(entity: Entity, id: number) {
-    this.foo.set(entity, this.composition(entity) | id);
-    this.setDirty(entity);
-  }
-
   /**
    * Flags an alive `entity` as dirty, which means it will be checked if it can
    * be added or removed from entity groups during the next [[update]].
