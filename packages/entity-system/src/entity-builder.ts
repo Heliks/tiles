@@ -19,7 +19,7 @@ export class EntityBuilder {
 
   /** Directly adds the given `component` instance to the entity. */
   public use<T extends Object>(component: T): this {
-    const storage = this.world.storage(<ClassType>component.constructor);
+    this.world.storage(<ClassType>component.constructor).set(this.entity, component);
 
     return this;
   }
