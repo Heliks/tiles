@@ -4,7 +4,7 @@ import { BitSet } from "../bit-set";
 import { EntityGroup } from "../entity-group";
 import { Filter } from "../filter";
 import { Entity } from "../types";
-import { EntityManager, MAX_INDEX, VERSION_BITS } from "../entity-manager";
+import { EntityManager, ENTITY_MASK, ENTITY_BITS } from "../entity-manager";
 
 
 describe('EntityManager', () => {
@@ -19,8 +19,8 @@ describe('EntityManager', () => {
     const b = em.create();
 
     // Check if the index segment of the entity is correct.
-    expect(a & MAX_INDEX).toBe(0);
-    expect(b & MAX_INDEX).toBe(1);
+    expect(a & ENTITY_MASK).toBe(0);
+    expect(b & ENTITY_MASK).toBe(1);
   });
 
   it('should return existing entities at the given position', () => {
@@ -41,9 +41,9 @@ describe('EntityManager', () => {
 
     // Get the version of both entities as they are now in the manager. Entity "a"
     // should be at version 0 while "b" should have its version increased to 1.
-    expect(em.get(0) >> VERSION_BITS).toBe(0);
-    expect(em.get(1) >> VERSION_BITS).toBe(1);
-    expect(em.get(2) >> VERSION_BITS).toBe(0);
+    expect(em.get(0) >> ENTITY_BITS).toBe(0);
+    expect(em.get(1) >> ENTITY_BITS).toBe(1);
+    expect(em.get(2) >> ENTITY_BITS).toBe(0);
   });
 
   it('should not destroy already destroyed entities', () => {
@@ -54,7 +54,7 @@ describe('EntityManager', () => {
 
     // Entity version should've increased only on the first destroy,
     // while the second should be ignored.
-    expect(em.get(0) >> VERSION_BITS).toBe(1);
+    expect(em.get(0) >> ENTITY_BITS).toBe(1);
   });
 
   it('should recycle destroyed entities', () => {
@@ -71,8 +71,8 @@ describe('EntityManager', () => {
 
     // The newly created entity should be recycled, occupying the same index
     // as the previously destroyed one with an increased version.
-    expect(entity & MAX_INDEX).toBe(4);
-    expect(entity >> VERSION_BITS).toBe(1);
+    expect(entity & ENTITY_MASK).toBe(4);
+    expect(entity >> ENTITY_BITS).toBe(1);
   });
 
   it('should check if an entity is alive', () => {

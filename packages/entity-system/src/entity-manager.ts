@@ -2,12 +2,13 @@ import { BitSet } from "./bit-set";
 import { Entity, Query } from "./types";
 import { EntityGroup } from "./entity-group";
 
-// The amount of bits we steal from an entity to store its own version.
-export const VERSION_BITS = 4;
+// The amount of bits reserved on the 32 bit entity identifier to store the index
+// position. By reserving 20 bits the maximum amount of entities that can be alive
+// at the same time is limited to 1048575, which should be enough for most games.
+export const ENTITY_BITS = 20;
 
-// Integer value containing the highest possible index an entity can have. Naturally
-// this is also the limit of how many entities are possible to exist at once.
-export const MAX_INDEX = 0xFFFFFFF >> VERSION_BITS;
+// Mask used to extract the index part of an entity identifier.
+export const ENTITY_MASK = 0xFFFFF;
 
 /**
  * A bit set that contains the Ids of all components that are contained in this composition.
@@ -51,7 +52,7 @@ export class EntityManager {
     entity = this.entities.length;
 
     // If we are out of bits on the index part we can't create a new entity.
-    if (entity > MAX_INDEX) {
+    if (entity > ENTITY_MASK) {
       throw new Error('Maximum amount reached');
     }
 
@@ -81,18 +82,18 @@ export class EntityManager {
     // From the given entity we extract the index part and compare it with the entity
     // that is currently occupying that index. This will fail if their versions mis-
     // match, which means that the entity is no longer alive.
-    return this.entities[ entity & MAX_INDEX ] === entity;
+    return this.entities[ entity & ENTITY_MASK ] === entity;
   }
 
   /** Destroys an `entity`. */
   public destroy(entity: Entity): this {
     if (this.alive(entity)) {
-      const index = entity & MAX_INDEX;
+      const index = entity & ENTITY_MASK;
 
       // Increment the version of the entity and mark the index as free so that it
       // can be recycled by the next entity that is created.
       this.free.push(
-        this.entities[ index ] = (index | ((entity >> VERSION_BITS) + 1) << VERSION_BITS)
+        this.entities[ index ] = (index | ((entity >> ENTITY_BITS) + 1) << ENTITY_BITS)
       );
     }
 
