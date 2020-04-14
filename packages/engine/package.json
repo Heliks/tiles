@@ -23,6 +23,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "@heliks/event-queue": "^0.1.1",
     "@tiles/entity-system": "^0.0.1-alpha.0",
     "@tiles/injector": "^0.0.1-alpha.0",
     "reflect-metadata": "^0.1.13"
