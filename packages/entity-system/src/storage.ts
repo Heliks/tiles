@@ -1,10 +1,14 @@
 import { EntityManager } from './entity-manager';
-import { ClassType, Entity, Storage as Base } from './types';
+import { ClassType, ComponentEvent, ComponentEventType, Entity, Storage as Base } from './types';
+import { EventQueue } from "@heliks/event-queue";
 
 export class Storage<T = unknown> implements Base<T> {
 
+  /** The event queue to which this storage will push events. */
+  protected readonly _events = new EventQueue<ComponentEvent>();
+
   /** Contains all component instances mapped to the entity to which they belong. */
-  protected components = new Map<Entity, T>();
+  protected readonly components = new Map<Entity, T>();
 
   /**
    * @param id The id of the storage.
@@ -31,17 +35,23 @@ export class Storage<T = unknown> implements Base<T> {
     this.entityMgr.getComposition(entity).add(this.id);
     this.entityMgr.setDirty(entity);
 
+    this._events.push({
+      entity, type: ComponentEventType.Added
+    });
+
     return component;
   }
 
   /** {@inheritDoc} */
-  public set(entity: Entity, instance: T, c = true): void {
+  public set(entity: Entity, instance: T): void {
     this.components.set(entity, instance);
 
-    if (c) {
-      this.entityMgr.getComposition(entity).add(this.id);
-      this.entityMgr.setDirty(entity);
-    }
+    this.entityMgr.getComposition(entity).add(this.id);
+    this.entityMgr.setDirty(entity);
+
+    this._events.push({
+      entity, type: ComponentEventType.Added
+    });
   }
 
   /** {@inheritDoc} */
@@ -63,6 +73,10 @@ export class Storage<T = unknown> implements Base<T> {
       this.entityMgr.getComposition(entity).remove(this.id);
       this.entityMgr.setDirty(entity);
 
+      this._events.push({
+        entity, type: ComponentEventType.Removed
+      });
+
       return true;
     }
 
@@ -82,6 +96,11 @@ export class Storage<T = unknown> implements Base<T> {
     }
 
     this.components.clear();
+  }
+
+  /** {@inheritDoc} */
+  public events(): EventQueue<ComponentEvent> {
+    return this._events;
   }
 
 }

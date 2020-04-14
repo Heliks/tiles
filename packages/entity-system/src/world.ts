@@ -80,6 +80,10 @@ export class World {
 
   /** Destroys an `entity`. */
   public destroy(entity: Entity): this {
+    for (const storage of this.storages.values()) {
+      storage.remove(entity);
+    }
+
     this.entities.destroy(entity);
 
     return this;

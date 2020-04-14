@@ -1,3 +1,5 @@
+import { EventQueue } from "@heliks/event-queue";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ClassType<T = unknown> = new (...params: any[]) => T;
 export type ComponentType<T = unknown> = ClassType<T>;
@@ -26,11 +28,24 @@ export interface Query {
   excludes?: ClassType[];
 }
 
+/** Possible component event types. */
+export enum ComponentEventType {
+  /** Occurs when a component is added to an entity. */
+  Added,
+  /** Occurs when a component is removed from an entity. */
+  Removed
+}
+
+export interface ComponentEvent {
+  /** The entity that triggered the event. */
+  entity: Entity,
+  /** The event type. */
+  type: ComponentEventType;
+}
+
 export interface Storage<T> {
 
-  /**
-   * Unique Id that is assigned to the storage when it is registered in the world.
-   */
+  /** Unique Id that is assigned to the storage when it is registered in the world. */
   readonly id: number;
 
   /**
@@ -66,6 +81,12 @@ export interface Storage<T> {
    * Drops all stored components.
    */
   drop(): void;
+
+  /**
+   * Returns the event queue to which this storage will push events. You can subscribe
+   * to this to be notified about component changes.
+   */
+  events(): EventQueue<ComponentEvent>;
 
 }
 
