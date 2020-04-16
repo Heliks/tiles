@@ -1,7 +1,8 @@
 import { b2Contact, b2ContactListener, b2Vec2, b2World } from "@flyover/box2d";
 import { Injectable, Optional } from "@tiles/injector";
-import { EventQueue, Ticker, Vec2 } from "@tiles/engine";
-import { Entity } from "@tiles/entity-system";
+import { containsAll, EventQueue, Ticker, Vec2, World } from "@tiles/engine";
+import { Entity, Storage } from "@tiles/entity-system";
+import { RigidBody } from "./rigid-body";
 
 export enum ContactEventType {
   /** Two body parts started colliding. */
@@ -11,44 +12,98 @@ export enum ContactEventType {
 }
 
 export interface ContactEvent {
-  /** One of the two entities in the contact event. */
+  /** The entity that triggered the contact event. */
   entityA: Entity;
-  /** One of the two entities in the contact event. */
+  /** The entity with which [[entityA]] collided. */
   entityB: Entity;
+  /** The `RigidBody` that belongs to [[entityA]]. */
+  bodyA: RigidBody;
+  /** The `RigidBody` that belongs to [[entityB]]. */
+  bodyB: RigidBody;
   /** Event type. */
   type: ContactEventType;
+}
+
+export interface QueueItem {
+  queue: EventQueue<ContactEvent>;
+  tags: string[];
 }
 
 /** Listens to Box2D contact events and forwards them to an `EventQueue`. */
 class ContactListener extends b2ContactListener {
 
-  /**
-   * @param events The event queue to which the contact events should be pushed.
-   */
-  constructor(protected readonly events: EventQueue<ContactEvent>) {
+  protected readonly queues: QueueItem[] = [];
+
+  protected readonly bodies: Storage<RigidBody>;
+
+  constructor(protected readonly world: World) {
     super();
 
-    // Overwrite overloaded methods.
-    this.BeginContact = this.onBeginContact;
-    this.EndContact = this.onEndContact;
+    this.bodies = world.storage(RigidBody);
   }
 
-  /** Called every time a fixture contact with another fixture. */
-  public onBeginContact(contact: b2Contact): void {
-    this.events.send({
-      entityA: contact.GetFixtureA().GetBody().GetUserData(),
-      entityB: contact.GetFixtureB().GetBody().GetUserData(),
-      type: ContactEventType.Begin
+  public queue(tags: string[] = []): EventQueue<ContactEvent> {
+
+
+    const queue = new EventQueue<ContactEvent>();
+
+    this.queues.push({
+      queue,
+      tags
     });
+
+    return queue;
   }
 
-  /** Called every time a fixture looses contact with another fixture. */
-  public onEndContact(contact: b2Contact): void {
-    this.events.send({
-      entityA: contact.GetFixtureA().GetBody().GetUserData(),
-      entityB: contact.GetFixtureB().GetBody().GetUserData(),
-      type: ContactEventType.End
-    });
+  /** Sends the event `type` to all registered event queues. */
+  private send(entityA: Entity, entityB: Entity, type: ContactEventType): void {
+    const bodyA = this.bodies.get(entityA);
+    const bodyB = this.bodies.get(entityB);
+
+    for (const item of this.queues) {
+      // Handle events for bodyA
+      if (containsAll(bodyA.tags, item.tags)) {
+        item.queue.push({
+          bodyA, bodyB, entityA, entityB, type
+        });
+      }
+
+      // Handle events for bodyB
+      if (containsAll(bodyB.tags, item.tags)) {
+        item.queue.push({
+          bodyA: bodyB,
+          bodyB: bodyA,
+          entityA: entityB,
+          entityB: entityA,
+          type
+        });
+      }
+    }
+  }
+
+  /** Called by Box2D every time a fixture contact with another fixture. */
+  public BeginContact(contact: b2Contact): void {
+    const entityA = contact.GetFixtureA().GetBody().GetUserData();
+    const entityB = contact.GetFixtureB().GetBody().GetUserData();
+
+    // Send events.
+    this.send(entityA, entityB, ContactEventType.Begin);
+  }
+
+  /** Called by Box2D every time a fixture looses contact with another fixture. */
+  public EndContact(contact: b2Contact): void {
+    const entityA = contact.GetFixtureA().GetBody().GetUserData();
+    const entityB = contact.GetFixtureB().GetBody().GetUserData();
+
+    // Check if both entities are still alive since one of them might've been
+    // destroyed during their initial contact.
+    if (
+      this.world.alive(entityA) &&
+      this.world.alive(entityB)
+    ) {
+      // Send events.
+      this.send(entityA, entityB, ContactEventType.End);
+    }
   }
 
 }
@@ -57,10 +112,7 @@ class ContactListener extends b2ContactListener {
 export class PhysicsWorld {
 
   /** Contains the Box2D world. */
-  public readonly b2world: b2World;
-
-  /** Event queue for physics events, such as when two bodies are colliding or loose contact. */
-  public readonly events = new EventQueue<ContactEvent>();
+  public readonly bWorld: b2World;
 
   /**
    * How many iterations are allowed for the physics velocity calculation phase. Less
@@ -83,18 +135,33 @@ export class PhysicsWorld {
     @Optional('gravity') gravity: Vec2 = [0, 0],
   ) {
     // noinspection JSPotentiallyInvalidConstructorUsage
-    this.b2world = new b2World(new b2Vec2(
+    this.bWorld = new b2World(new b2Vec2(
       gravity[0],
       gravity[1]
     ));
+  }
 
-    // Listen to collision events.
-    this.b2world.SetContactListener(new ContactListener(this.events));
+  protected contactListener?: ContactListener;
+
+  /** {@inheritDoc} */
+  public setup(world: World): void {
+    this.contactListener = new ContactListener(world);
+
+    // Forwards Box2D contact events to the contact listener.
+    this.bWorld.SetContactListener(this.contactListener);
+  }
+
+  public events(tags: string[] = []): EventQueue<ContactEvent> {
+    if (!this.contactListener) {
+      throw new Error('Called before setup');
+    }
+
+    return this.contactListener.queue(tags);
   }
 
   /** Updates the physics world. */
   public update(): void {
-    this.b2world.Step(
+    this.bWorld.Step(
       this.ticker.getDeltaSeconds(),
       this.velocityIterations,
       this.positionIterations

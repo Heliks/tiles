@@ -74,7 +74,19 @@ export class RigidBody {
   public restitution = 0;
 
   public velocity: Vec2 = [0, 0];
-  public velocityTransform?: Vec2;
+  public transVelocity?: Vec2;
+
+
+
+  public tags: string[] = [];
+
+  public tag(tag: string): this {
+    if (!~this.tags.indexOf(tag)) {
+      this.tags.push(tag);
+    }
+
+    return this;
+  }
 
 
   constructor(public type = RigidBodyType.Static) {}
@@ -87,7 +99,7 @@ export class RigidBody {
   }
 
   public transformVelocity(x: number, y: number): this {
-    this.velocityTransform = [x, y];
+    this.transVelocity = [x, y];
 
     return this;
   }

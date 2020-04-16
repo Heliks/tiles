@@ -42,7 +42,7 @@ export class DebugDraw {
     this.adapter = new DebugDrawBox2dAdapter(renderer.debugDraw, config.unitSize);
 
     // Register the box2d adapter for debug draw callbacks.
-    world.b2world.SetDebugDraw(this.adapter);
+    world.bWorld.SetDebugDraw(this.adapter);
   }
 
   /**
@@ -76,7 +76,7 @@ export class DebugDraw {
 
   /** Updates the debug draw. Should be called once on each frame. */
   public update(): void {
-    this.world.b2world.DrawDebugData();
+    this.world.bWorld.DrawDebugData();
   }
 
 }

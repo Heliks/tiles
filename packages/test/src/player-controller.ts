@@ -12,15 +12,11 @@ export class Pawn {}
 export class PlayerController extends ProcessingSystem {
 
   protected inputHandler = new InputHandler();
-  protected subs: Subscriber;
 
   constructor(
     protected readonly ticker: Ticker,
-    protected readonly pWorld: PhysicsWorld
   ) {
     super();
-
-    this.subs = pWorld.events.subscribe();
   }
 
   /** {@inheritDoc} */
@@ -63,11 +59,6 @@ export class PlayerController extends ProcessingSystem {
   public update(world: World): void {
     for (const entity of this.group.entities) {
       this.getPawnState(world, entity).update();
-    }
-
-    // Test
-    for (const event of this.pWorld.events.read(this.subs)) {
-      console.log('Entity #' + event.entityA + ' collided with #' + event.entityB, event);
     }
   }
 

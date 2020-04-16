@@ -59,6 +59,11 @@ export class World {
     );
   }
 
+  /** Returns `true` if `entity` is not destroyed. */
+  public alive(entity: Entity): boolean {
+    return this.entities.alive(entity);
+  }
+
   /**
    * Creates an entity.
    *

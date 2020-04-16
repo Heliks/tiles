@@ -1,104 +1,43 @@
 import { PhysicsWorld } from "./world";
 import { Entity, Query } from "@tiles/entity-system";
-import { ProcessingSystem, Transform, Vec2, World } from "@tiles/engine";
+import { ProcessingSystem, Subscriber, Ticker, Transform, Vec2, World } from "@tiles/engine";
 import { BodyPart, RigidBody, RigidBodyType } from "./rigid-body";
 import { Injectable } from "@tiles/injector";
 import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2Vec2, b2World } from "@flyover/box2d";
-
-/** Parses the given body `part` anda adds the data to the box2d fixture `def`. */
-export function parseBodyPart(part: BodyPart, def: b2FixtureDef, restitution: number, group: number, mask: number): void {
-  const data = {
-    density: 1,
-    friction: 0.5,
-    position: [0, 0],
-    ...part
-  };
-
-  def.density = data.density;
-  def.friction = data.friction;
-  def.restitution = restitution;
-
-  def.filter.categoryBits = group;
-  def.filter.maskBits = mask;
-
-  // Todo: Other shapes.
-  def.shape = new b2PolygonShape();
-
-  // convert polygon to a box. The type hint here is somehow inferred incorrectly
-  (def.shape as any).SetAsBox(
-    data.data[0] / 2,
-    data.data[1] / 2
-  );
-}
-
-export function createBody(world: b2World, comp: RigidBody, position: Vec2) {
-  const bodyDef = new b2BodyDef();
-
-  // If true the body won't be allowed to rotate. This will be the
-  // case in most tiling games a.E.
-  bodyDef.fixedRotation = true;
-
-  // The bodies initial position.
-  bodyDef.position.Set(position[0], position[1]);
-
-  // Set initial velocity.
-  bodyDef.linearVelocity.Set(
-    comp.velocity[0],
-    comp.velocity[1]
-  );
-
-  // assign body type
-  switch (comp.type) {
-    case RigidBodyType.Dynamic:
-      bodyDef.type = b2BodyType.b2_dynamicBody;
-      break;
-    case RigidBodyType.Kinetic:
-      bodyDef.type = b2BodyType.b2_kinematicBody;
-      break;
-    default:
-    case RigidBodyType.Static:
-      bodyDef.type = b2BodyType.b2_staticBody;
-      break;
-  }
-
-  // Create the Box2D body.
-  const body = world.CreateBody(bodyDef);
-
-  // Enables continuous collision detection on the body which prevents
-  // small fixtures (like bullets) from passing through thin fixtures.
-  if (comp.isBullet) {
-    body.SetBullet(true);
-  }
-
-  // Create all body parts.
-  const partDef = new b2FixtureDef();
-
-  for (const part of comp.bodyParts) {
-    parseBodyPart(
-      part,
-      partDef,
-      comp.restitution,
-      comp.group,
-      comp.mask
-    );
-
-    body.CreateFixture(partDef);
-  }
-
-  body.SetLinearDamping(comp.damping);
-
-  return body;
-}
+import { ComponentEventType } from "@tiles/entity-system";
+import { bCreateBody, bCreateBodyPart } from "./utils";
 
 @Injectable()
 export class PhysicsSystem extends ProcessingSystem {
 
+  /** Contains Box2D bodies mapped to the entity to which they belong.*/
   protected bodies = new Map<Entity, b2Body>();
+
+  /** Event subscriber for `Storage<RigidBody>`. */
+  protected body$!: Subscriber;
+
+  /** Box2D world. */
+  protected get bWorld() {
+    return this.world.bWorld;
+  }
 
   constructor(protected readonly world: PhysicsWorld) {
     super();
   }
 
+  /** {@inheritDoc} */
+  public boot(world: World): void {
+    // Setup the physics world with event handlers etc.
+    this.world.setup(world);
+
+    // Subscribe to changes in the rigid body storage.
+    this.body$ = world.storage(RigidBody).events().subscribe();
+
+    // Boot processing system.
+    super.boot(world);
+  }
+
+  /** {@inheritDoc} */
   public getQuery(): Query {
     return {
       contains: [
@@ -108,59 +47,95 @@ export class PhysicsSystem extends ProcessingSystem {
     };
   }
 
+  /**
+   * Creates an actual physical body for `entity`, based on the given rigid `body`
+   * and adds it to the world at `position`.
+   */
+  protected createBody(entity: Entity, body: RigidBody, position: Vec2): void {
+    const bBody = bCreateBody(this.bWorld, body, position);
+    const bFixtureDef = new b2FixtureDef();
+
+    // Attach body parts.
+    for (const part of body.bodyParts) {
+      bCreateBodyPart(part, body, bFixtureDef, bBody);
+    }
+
+    // Assign the entity to which the body belongs as user data to the Box2D body
+    // so that we can backtrack it later on.
+    bBody.SetUserData(entity);
+    bBody.SetLinearDamping(body.damping);
+
+    // Enables continuous collision detection on the body which prevents small
+    // fixtures (like bullets) from passing through thin fixtures.
+    if (body.isBullet) {
+      bBody.SetBullet(true);
+    }
+
+    // Save Box2D body for the entity.
+    this.bodies.set(entity, bBody);
+  }
+
+  /** Destroys the rigid body of the given `entity`. */
+  protected destroyBody(entity: Entity): void {
+    const body = this.bodies.get(entity);
+
+    if (body) {
+      this.bWorld.DestroyBody(body);
+    }
+  }
+
+  /** {@inheritDoc} */
   public update(world: World): void {
-    const $body = world.storage(RigidBody);
-    const $trans = world.storage(Transform);
+    const _bodies  = world.storage(RigidBody);
+    const _trans = world.storage(Transform);
 
-    for (const entity of this.group.entities) {
-      const body  = $body.get(entity);
-      const trans = $trans.get(entity);
+    // Check if any rigid bodies were added or removed.
+    for (const event of _bodies.events().read(this.body$)) {
+      switch (event.type) {
+        case ComponentEventType.Added:
+          const transform = _trans.get(event.entity);
 
-      let b2Body = this.bodies.get(entity);
-
-      if (body.dirty) {
-        body.dirty = false;
-
-        if (b2Body) {
-          // Rebuild
-          throw new Error('Rebuild not implemented.');
-        }
-        else {
-          b2Body = createBody(this.world.b2world, body, [
-            trans.x,
-            trans.y
+          this.createBody(event.entity, _bodies.get(event.entity), [
+            transform.x,
+            transform.y
           ]);
-
-          // Assign the entity to which the body belongs as user data
-          // to the box2d body so that we can backtrack it later on.
-          b2Body.SetUserData(entity);
-
-          // Assign this body to the entity.
-          this.bodies.set(entity, b2Body);
-        }
+          break;
+        case ComponentEventType.Removed:
+          this.destroyBody(event.entity);
+          break;
       }
+    }
 
-      if (b2Body) {
-        if (body.velocityTransform) {
-          b2Body.SetLinearVelocity(new b2Vec2(
-            body.velocityTransform[0],
-            body.velocityTransform[1]
+    // Update entities with rigid bodies.
+    for (const entity of this.group.entities) {
+      const bBody = this.bodies.get(entity);
+
+      if (bBody) {
+        const body  = _bodies.get(entity);
+        const trans = _trans.get(entity);
+
+        // Transform velocity if necessary.
+        if (body.transVelocity) {
+          bBody.SetLinearVelocity(new b2Vec2(
+            body.transVelocity[0],
+            body.transVelocity[1]
           ));
 
-          body.velocityTransform = undefined;
+          body.transVelocity = undefined;
         }
 
-        const velocity = b2Body.GetLinearVelocity();
-        const position = b2Body.GetPosition();
+        const velocity = bBody.GetLinearVelocity();
+        const position = bBody.GetPosition();
 
         body.velocity[0] = velocity.x;
         body.velocity[1] = velocity.y;
 
-        // Update values on trans component.
+        // Update values on transform component.
         trans.setPosition(position.x, position.y);
       }
     }
 
+    // Move the physics world forward in time.
     this.world.update();
   }
 

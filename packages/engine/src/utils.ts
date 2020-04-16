@@ -13,5 +13,9 @@ export function rtrim(value: string, char: string) {
   return value.replace(new RegExp(`${char}*$`),'');
 }
 
+/** Returns `true` if `target` contains all items in `items`. */
+export function containsAll<T = unknown>(target: T[], items: T[]): boolean {
+  return items.every(i => target.indexOf(i) !== -1);
+}
 
 

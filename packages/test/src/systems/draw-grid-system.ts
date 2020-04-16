@@ -1,5 +1,5 @@
 import { System } from "@tiles/entity-system";
-import { Inject, Injectable } from "@tiles/injector";
+import { Injectable } from "@tiles/injector";
 import { Renderer } from "@tiles/pixi";
 
 /**

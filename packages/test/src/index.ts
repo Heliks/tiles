@@ -5,8 +5,11 @@ import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteShe
 import { Pawn, PlayerController } from './player-controller';
 import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler } from "./input";
-import { DrawGridSystem } from "./draw-grid-system";
+import { DrawGridSystem } from "./systems/draw-grid-system";
 import { CollisionGroups } from "./const";
+import { ArrowSystem } from "./systems/arrow";
+import { Health } from "./components/health";
+import { DeathSystem } from "./systems/death";
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -24,6 +27,7 @@ function spawnTerrain(world: World, x: number, y: number) {
   world.builder()
     .use(body)
     .use(new Transform(x, y))
+    .use(new Health(25, 25))
     .build();
 }
 
@@ -34,7 +38,7 @@ function getSpriteSheet(world: World) {
     world.get(Renderer).textures
   );
 
-  return new SpriteSheet(image, 20, 1, 16, 28)
+  return new SpriteSheet(image, 20, 1, 32, 32)
     .setAnimation('walk-down', {
       frames: [2, 3, 4, 5, 6, 7]
     })
@@ -66,6 +70,8 @@ window.onload = () => {
     }))
     .system(DrawGridSystem)
     .system(PlayerController)
+    .system(ArrowSystem)
+    .system(DeathSystem)
     .build();
 
   // Configure asset directory
