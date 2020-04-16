@@ -22,8 +22,14 @@ export class SpriteAnimation implements AnimationData {
   /** The direction in which the sprites of all frames should be flipped. */
   public flip = FlipDirection.None;
 
-  /** Index of the current frame. */
+  /** Index of the frame that is currently displayed by the animation. */
   public frame = 0;
+
+  /**
+   * If set to `true` the animation will start from the beginning after it
+   * has completed.
+   */
+  public loop = true;
 
   /** The name of the animation that is currently playing. */
   public playing?: string;
@@ -89,11 +95,18 @@ export class SpriteAnimation implements AnimationData {
   /**
    * Plays the animation with the given `name` on the [[SpriteDisplay]] that accompanies
    * this component. Does not wait for the current animation to complete.
+   *
+   * @param name The name of the animation that should be played.
+   * @param loop (optional) If set to `true` the animation will start playing from the
+   *  beginning again after it completes.
    */
-  public play(name: string): this {
+  public play(name: string, loop = true): this {
     if (this.playing !== name) {
       // Change animation if it isn't currently playing already.
       this.transform = name;
+
+      // Change repeat option
+      this.loop = loop;
     }
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort

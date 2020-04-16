@@ -55,7 +55,13 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       const frameMs = animation.frameDuration * animation.speed;
 
       // Calculate next frame based on elapsed time and frame ms.
-      const nextFrame = ((animation.elapsedTime / frameMs) % animation.frames.length) | 0;
+      const nextFrame = (animation.elapsedTime / frameMs) % animation.frames.length | 0;
+
+      // Don't update the animation if looping is disabled and the next frame would
+      // start a new animation cycle.
+      if (!animation.loop && animation.frame > 0 && nextFrame === 0) {
+        continue;
+      }
 
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
