@@ -5,7 +5,7 @@ import { FlipDirection } from "../utils";
 
 export class SpriteSheet extends Grid {
 
-  public readonly animations = new Map<string, Required<AnimationData>>();
+  public readonly animations = new Map<string, AnimationData>();
 
   constructor(
     public readonly image: Handle,
@@ -22,21 +22,18 @@ export class SpriteSheet extends Grid {
    * values. Throws an error if `data.frames` does not contain at least a single frame.
    */
   public setAnimation(name: string, data: AnimationData): this {
-    if (!(data.frames && data.frames.length > 1)) {
+    // Ensure that animation contains at least one name.
+    if (!data.frames.length) {
       throw new Error('Animation must at least contain one frame.');
     }
 
-    this.animations.set(name, {
-      flip: FlipDirection.None,
-      frameDuration: 100,
-      ...data
-    });
+    this.animations.set(name, data);
 
     return this;
   }
 
   /** Returns the animation registered with the given `name`. */
-  public getAnimation(name: string): Required<AnimationData> | undefined {
+  public getAnimation(name: string): AnimationData | undefined {
     return this.animations.get(name);
   }
 

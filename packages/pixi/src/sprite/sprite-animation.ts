@@ -60,10 +60,8 @@ export class SpriteAnimation implements AnimationData {
   /** Resets the animation back to the beginning. */
   public reset(): this {
     this.elapsedTime = 0;
-    this.frame = -1;
+    this.frame = 0;
     this.speed = 1;
-
-    this.flip = FlipDirection.None;
 
     return this;
   }

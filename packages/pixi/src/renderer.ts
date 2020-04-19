@@ -1,11 +1,10 @@
 import * as PIXI from 'pixi.js';
-import { Renderer as PixiRenderer, Texture, Container } from 'pixi.js';
+import { Renderer as PixiRenderer, Texture, Container, Graphics } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RendererConfig, TK_RENDERER_CONFIG } from './config';
 import { Stage } from './stage';
-import { Vec2 } from "@tiles/engine";
-import Graphics = PIXI.Graphics;
+import { ReadVec2, Vec2 } from "@tiles/engine";
 
 @Injectable()
 export class Renderer {
@@ -22,6 +21,22 @@ export class Renderer {
    */
   public readonly debugDraw = new Graphics();
 
+  /**
+   * Contains the scale factor of everything that is rendered. This is applied internally
+   * to stretch everything to the size that is supposed to be. For example if the game
+   * is rendered in a resolution of `[250, 150]`, but is rendered (or "up-scaled") to
+   * a resolution of `[500, 225]` the scale would be `[2, 1.5]`.
+   */
+  public get scale(): ReadVec2 {
+    return [
+      this.root.scale.x,
+      this.root.scale.y
+    ]
+  }
+
+  /** Asset storage for loaded textures. */
+  public readonly textures = new AssetStorage<Texture>();
+
   /** Screen resolution in px. */
   protected readonly resolution: Vec2 = [640, 488];
 
@@ -33,9 +48,6 @@ export class Renderer {
    * that will be rendered to the canvas element.
    */
   protected readonly root = new Container();
-
-  /** Asset storage for loaded textures. */
-  public readonly textures = new AssetStorage<Texture>();
 
   /**
    * @param config The renderers config.

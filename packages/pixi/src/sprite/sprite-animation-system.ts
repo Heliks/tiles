@@ -4,6 +4,39 @@ import { ProcessingSystem, Ticker, World } from "@tiles/engine";
 import { SpriteAnimation } from "./sprite-animation";
 import { SpriteDisplay } from "./sprite-display";
 
+/**
+ * Applies the transform on the given `animation`, using `display` to create the
+ * new animation. This function always assumes that `SpriteAnimation.transform`
+ * is set.
+ */
+export function transformAnimation(animation: SpriteAnimation, display: SpriteDisplay): void {
+  const data = display.sheet.getAnimation(animation.transform as string);
+
+  if (data) {
+    animation.playing = animation.transform;
+    animation.reset();
+
+    // Don't copy a reference here, otherwise editing the animation frames
+    // would also edit the original `AnimationData`.
+    animation.frames = [
+      ...data.frames
+    ];
+
+    // Flip animation.
+    if (data.flip !== undefined) {
+      animation.flipTo(data.flip);
+    }
+
+    // Inherit frame duration set by the animation, otherwise we continue
+    // to use the one that is currently set.
+    if (data.frameDuration) {
+      animation.frameDuration = data.frameDuration;
+    }
+  }
+
+  animation.transform = undefined;
+}
+
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
@@ -26,26 +59,16 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
   /** {@inheritDoc} */
   public update(world: World): void {
-    const $animation = world.storage(SpriteAnimation);
-    const $display = world.storage(SpriteDisplay);
+    const _anim = world.storage(SpriteAnimation);
+    const _disp = world.storage(SpriteDisplay);
 
     for (const entity of this.group.entities) {
-      const animation = $animation.get(entity);
-      const display = $display.get(entity);
+      const animation = _anim.get(entity);
+      const display = _disp.get(entity);
 
-      // Transform animation.
+      // Apply animation transform if necessary.
       if (animation.transform) {
-        const data = display.sheet.getAnimation(animation.transform);
-
-        if (data) {
-          // Assign animation data to component.
-          Object.assign(animation, data);
-
-          animation.playing = animation.transform;
-          animation.reset();
-        }
-
-        animation.transform = undefined;
+        transformAnimation(animation, display);
       }
 
       animation.elapsedTime += this.ticker.delta;
