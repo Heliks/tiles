@@ -38,7 +38,7 @@ function getSpriteSheet(world: World) {
     world.get(Renderer).textures
   );
 
-  return new SpriteSheet(image, 20, 1, 32, 32)
+  return new SpriteSheet(image, 26, 1, 32, 32)
     .setAnimation('walk-down', {
       frames: [2, 3, 4, 5, 6, 7]
     })
@@ -47,6 +47,9 @@ function getSpriteSheet(world: World) {
     })
     .setAnimation('walk-right', {
       frames: [14, 15, 16, 17, 18, 19]
+    })
+    .setAnimation('bow-right', {
+      frames: [20, 21, 22, 23, 24, 25]
     });
 }
 
@@ -92,7 +95,7 @@ window.onload = () => {
 
   // Initialize rigid body.
   const body = new RigidBody(RigidBodyType.Dynamic).attach({
-    data: [0.5, 0.75],
+    data: [0.4, 0.4],
     density: 120,
     type: BodyPartType.Rect
   });

@@ -1,4 +1,5 @@
 import { System } from "@tiles/entity-system";
+import { ReadVec2, Vec2 } from "@tiles/engine";
 
 export enum KeyCode {
   A = 'KeyA',
@@ -34,22 +35,41 @@ export class InputHandler implements System {
   protected keysDown = new Set();
   protected keysUp = new Set();
 
+  /** Contains the last known position of the hardware mouse. */
+  protected mousePos: Vec2 = [0, 0];
+
   constructor() {
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+
+    // Keyboard events.
     document.addEventListener('keydown', this.onKeyDown.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
-  protected onKeyDown(event: KeyboardEvent) {
+  /** Event listener for when a key was pressed. */
+  protected onKeyDown(event: KeyboardEvent): void {
     this.keysDown.add(event.code);
   }
 
-  protected onKeyUp(event: KeyboardEvent) {
+  /** Event listener for when a key was released. */
+  protected onKeyUp(event: KeyboardEvent): void {
     this.keysDown.delete(event.code);
     this.keysUp.add(event.code);
   }
 
-  public isKeyDown(key: KeyCode) {
+  /** Event listener for when the hardware mouse moves. */
+  protected onMouseMove(event: MouseEvent): void {
+    this.mousePos[0] = event.x;
+    this.mousePos[1] = event.y;
+  }
+
+  public isKeyDown(key: KeyCode): boolean {
     return this.keysDown.has(key);
+  }
+
+  /** Returns the last known position of the mouse. */
+  public getMousePos(): ReadVec2 {
+    return this.mousePos;
   }
 
   public update() {}

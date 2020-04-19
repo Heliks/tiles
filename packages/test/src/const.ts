@@ -3,3 +3,10 @@ export enum CollisionGroups {
   Player = 2,
   Enemy = 4
 }
+
+export enum Direction {
+  Left,
+  Right,
+  Up,
+  Down
+}
