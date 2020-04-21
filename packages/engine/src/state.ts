@@ -104,12 +104,11 @@ export class StateMachine<T> {
     if (this.running) {
       const top = this.stack.pop();
 
-      // Stop the state we got from the top of the stack.
+      // Stop the state we got from the top of the stack
       top?.onStop?.(this);
 
+      // Push the given state to the top of the stack and start it if possible.
       this.stack.push(state);
-
-      // Start the new state.
       state.onStart?.(this);
     }
 
