@@ -85,7 +85,7 @@ export class DebugDraw {
 
   /** Updates the debug draw. Should be called once on each frame. */
   public update(): void {
-    for (const event of this.renderer.events.read(this.onRendererResize$)) {
+    for (const event of this.renderer.onResize.read(this.onRendererResize$)) {
       // Resize the debug draw according to new renderer dimensions.
       this.adapter.resize(event.width, event.height, event.ratio);
     }

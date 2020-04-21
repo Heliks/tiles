@@ -65,7 +65,7 @@ export class DrawGridSystem implements System {
 
   /** {@inheritDoc} */
   update(): void {
-    for (const event of this.renderer.events.read(this.onRendererResize$)) {
+    for (const event of this.renderer.onResize.read(this.onRendererResize$)) {
       this.ctx.scale.set(event.ratio);
 
       // Redraw the grid.
