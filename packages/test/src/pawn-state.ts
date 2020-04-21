@@ -224,16 +224,12 @@ export class IdleState implements State<StateMachine<PawnStateData>> {
 
   /** {@inheritDoc} */
   public onStart(state: StateMachine<PawnStateData>): void {
-    // this.play(state.data.animation, state.data.pawn.direction);
-
-    state.data.animation.setFrames([ 1 ])
+    this.play(state.data.animation, state.data.pawn.direction);
   }
 
   /** {@inheritDoc} */
   public onResume(state: StateMachine<PawnStateData>): void {
-    // this.play(state.data.animation, state.data.pawn.direction);
-
-    state.data.animation.play('idle-down')
+    this.play(state.data.animation, state.data.pawn.direction);
   }
 
   /** {@inheritDoc} */
