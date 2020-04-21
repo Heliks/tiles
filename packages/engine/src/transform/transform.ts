@@ -1,10 +1,12 @@
 export class Transform {
 
-  constructor(
-    public x = 0,
-    public y = 0,
-    public rotation = 0
-  ) {}
+  /**
+   * @param x Position on the x axis. This can be any unit depending on the renderer
+   *  or physics engine, but in most cases it will be meters.
+   * @param y Position on the y axis. Like [[x]] this can be any unit.
+   * @param rotation The rotation of the entity in radians.
+   */
+  constructor(public x = 0, public y = 0, public rotation = 0) {}
 
   public setPosition(x: number, y: number): this {
     this.x = x;
