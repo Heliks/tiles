@@ -3,90 +3,104 @@ import { State, StateMachine } from "../state";
 /** A state that does nothing. */
 class NoopState<T = any> implements State<T> {
   /** {@inheritDoc} */
-  public onStart(): void {}
+  public onStart = jest.fn();
   /** {@inheritDoc} */
-  public onStop(): void {}
+  public onStop = jest.fn();
   /** {@inheritDoc} */
-  public onPause(): void {}
+  public onPause = jest.fn();
   /** {@inheritDoc} */
-  public onResume(): void {}
+  public onResume = jest.fn();
   /** {@inheritDoc} */
-  public update(): void {}
+  public update = jest.fn();
 }
 
 describe('StateMachine', () => {
-  let stateMachine: StateMachine<undefined>;
+  let states: StateMachine<undefined>;
+
+  // A test state.
+  let state: NoopState;
 
   beforeEach(() => {
-    stateMachine = new StateMachine(undefined);
+    states = new StateMachine(undefined);
+    state = new NoopState();
   });
 
   describe('push()', () => {
     it('should be ignored if state machine is not started', () => {
-      expect(stateMachine.push(new NoopState()).size).toBe(0);
+      expect(states.push(state).size).toBe(0);
     });
 
     it('should add new states to the top of the stack', () => {
-      const second = new NoopState();
+      states.start(new NoopState()).push(state);
 
-      stateMachine.start(new NoopState()).push(second);
       // Second added state should now be on top.
-      expect(stateMachine.active).toBe(second);
+      expect(states.active).toBe(state);
     });
 
     it('should start the pushed state', () => {
-      const state = new NoopState();
-      const fn = jest.spyOn(state, 'onStart');
+      states.start(new NoopState()).push(state);
 
-      stateMachine.start(new NoopState()).push(state);
-
-      expect(fn).toHaveBeenCalledWith(stateMachine);
+      expect(state.onStart).toHaveBeenCalledWith(states);
     });
 
     it('should pause the previous top-most state', () => {
-      const state = new NoopState();
-      const fn = jest.spyOn(state, 'onPause');
+      states.start(state).push(new NoopState());
 
-      stateMachine.start(state).push(new NoopState());
-
-      expect(fn).toHaveBeenCalledWith(stateMachine);
+      expect(state.onPause).toHaveBeenCalledWith(states);
     });
   });
 
   describe('pop()', function () {
     it('should be ignored if the state machine is not started', () => {
-      expect(stateMachine.pop().size).toBe(0);
+      expect(states.pop().size).toBe(0);
     });
 
     it('should remove the top most state from the stack', () => {
-      stateMachine.start(new NoopState()).push(new NoopState()).pop();
+      states.start(new NoopState()).push(new NoopState()).pop();
 
       // State should not be
-      expect(stateMachine.size).toBe(1);
+      expect(states.size).toBe(1);
     });
 
     it('should stop the state that was popped', () => {
-      const state = new NoopState();
-      const onStop = jest.spyOn(state, 'onStop');
+      states.start(new NoopState()).push(state).pop();
 
-      stateMachine
-        .start(new NoopState())
-        .push(state)
-        .pop();
-
-      expect(onStop).toHaveBeenCalledWith(stateMachine);
+      expect(state.onStop).toHaveBeenCalledWith(states);
     });
 
     it('should resume the state that has become active afterwards', () => {
+      states.start(state).push(new NoopState()).pop();
+
+      expect(state.onResume).toHaveBeenCalledWith(states);
+    });
+  });
+
+  describe('switch()', () => {
+    it('should be ignored if the state machine is not started', () => {
+      expect(states.switch(new NoopState()).size).toBe(0);
+    });
+
+    it('should switch a state with the top most state on the stack', () => {
       const state = new NoopState();
-      const onResume = jest.spyOn(state, 'onResume');
 
-      stateMachine
-        .start(state)
-        .push(new NoopState())
-        .pop();
+      // Start the state machine and then switch the initial NoopState
+      // with our fixture.
+      states.start(new NoopState()).switch(state);
 
-      expect(onResume).toHaveBeenCalledWith(stateMachine);
+      // Active state should now be state1.
+      expect(states.active).toBe(state);
+    });
+
+    it('should stop the previous active state', () => {
+      states.start(state).switch(new NoopState());
+
+      expect(state.onStop).toHaveBeenCalledWith(states);
+    });
+
+    it('should start the new active state', () => {
+      states.start(new NoopState()).switch(state);
+
+      expect(state.onStart).toHaveBeenCalledWith(states);
     });
   });
 
@@ -94,35 +108,24 @@ describe('StateMachine', () => {
     const state = new NoopState();
     const onStart = jest.spyOn(state, 'onStart');
 
-    stateMachine.start(state);
+    states.start(state);
 
-    expect(onStart).toHaveBeenCalledWith(stateMachine);
+    expect(onStart).toHaveBeenCalledWith(states);
   });
 
   it('should stop all states in the stack', () => {
     const state1 = new NoopState();
     const state2 = new NoopState();
 
-    const onStop1 = jest.spyOn(state1, 'onStop');
-    const onStop2 = jest.spyOn(state2, 'onStop');
+    states.start(state1).push(state2).stop();
 
-    stateMachine
-      .start(state1)
-      .push(state2)
-      .stop();
-
-    expect(onStop1).toHaveBeenCalledWith(stateMachine);
-    expect(onStop2).toHaveBeenCalledWith(stateMachine);
+    expect(state1.onStop).toHaveBeenCalledWith(states);
+    expect(state2.onStop).toHaveBeenCalledWith(states);
   });
 
   it('should update the top most state', () => {
-    const state = new NoopState();
-    const update = jest.spyOn(state, 'update');
+    states.start(state).update();
 
-    stateMachine
-      .start(state)
-      .update();
-
-    expect(update).toHaveBeenCalledWith(stateMachine);
+    expect(state.update).toHaveBeenCalledWith(states);
   });
 });

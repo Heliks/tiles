@@ -34,6 +34,11 @@ export class StateMachine<T> {
     return this.stack[ this.stack.length - 1 ];
   }
 
+  /** Contains the current stack size. */
+  public get size(): number {
+    return this.stack.length;
+  }
+
   /** Indicates if the state machine is currently running. */
   protected running = false;
 
@@ -43,31 +48,24 @@ export class StateMachine<T> {
    */
   protected readonly stack: State<StateMachine<T>>[] = [];
 
-  /** Contains the current stack size. */
-  public get size(): number {
-    return this.stack.length;
-  }
-
   /**
    * @param data The state machines data that will be passed down to state when
    * they receive lifecycle or update events.
    */
   constructor(public data: T) {}
 
-  /** Pushes a state at the top of the stack. */
+  /** Pushes a `state` at the top of the stack. */
   public push(state: State<StateMachine<T>>): this {
     if (this.running) {
       const active = this.active;
 
-      if (active && active.onPause) {
-        active.onPause(this);
-      }
+      // Pause the state that is currently active as we'll be pushing
+      // a new state over it.
+      active?.onPause?.(this);
 
       this.stack.push(state);
 
-      if (state.onStart) {
-        state.onStart(this);
-      }
+      state.onStart?.(this);
     }
 
     return this;
@@ -81,24 +79,38 @@ export class StateMachine<T> {
     if (this.running) {
       let state = this.stack.pop();
 
-      // If we got a state from the top of the stack stop it before starting the
-      // next one.
-      if (state && state.onStop) {
-        state.onStop(this);
-      }
+      // If we got a state from the top of the stack stop it before starting
+      // the next one.
+      state?.onStop?.(this);
 
+      // Get the next active state. If there is we'll resume it, otherwise
+      // the state machine will be exited.
       state = this.active;
 
-      // If there is a new state on top of the stack resume it.
       if (state) {
-        if (state.onResume) {
-          state.onResume(this);
-        }
+        state.onResume?.(this);
       }
       else {
         // Shutdown state machine.
         this.running = false;
       }
+    }
+
+    return this;
+  }
+
+  /** Replaces the top-most state of the stack with `state`. */
+  public switch(state: State<StateMachine<T>>): this {
+    if (this.running) {
+      const top = this.stack.pop();
+
+      // Stop the state we got from the top of the stack.
+      top?.onStop?.(this);
+
+      this.stack.push(state);
+
+      // Start the new state.
+      state.onStart?.(this);
     }
 
     return this;
@@ -122,9 +134,7 @@ export class StateMachine<T> {
     }
 
     // Start the initial state.
-    if (state.onStart) {
-      state.onStart(this);
-    }
+    state.onStart?.(this);
 
     this.running = true;
 
@@ -137,9 +147,7 @@ export class StateMachine<T> {
 
     // noinspection JSAssignmentUsedAsCondition
     while (state = this.stack.pop()) {
-      if (state.onStop) {
-        state.onStop(this);
-      }
+      state.onStop?.(this);
     }
 
     this.running = false;
