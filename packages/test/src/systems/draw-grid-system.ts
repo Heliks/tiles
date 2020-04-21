@@ -1,6 +1,7 @@
 import { System } from "@tiles/entity-system";
 import { Injectable } from "@tiles/injector";
-import { Renderer } from "@tiles/pixi";
+import { Renderer, Graphics } from "@tiles/pixi";
+import { Subscriber } from "@tiles/engine";
 
 /**
  * System that draws a grid on top of the stage for debugging purposes.
@@ -14,33 +15,61 @@ export class DrawGridSystem implements System {
   /** Hex value of the color that should be used to draw the grid lines. */
   public color = 0x0;
 
-  constructor(protected readonly renderer: Renderer) {}
+  /** The context on which we draw the grid. */
+  protected readonly ctx = new Graphics();
 
-  /** {@inheritDoc} */
-  update(): void {
-    const ctx = this.renderer.debugDraw;
+  /** Subscriber that listens to renderer resize events. */
+  protected readonly onRendererResize$: Subscriber;
+
+  /**
+   * @param renderer [[Renderer]]
+   */
+  constructor(protected readonly renderer: Renderer) {
+    renderer.debugDraw.addChild(this.ctx);
+
+    // Subscribe to resize events.
+    this.onRendererResize$ = renderer.onResize.subscribe();
+  }
+
+  /** Redraws the grid. */
+  protected redraw(width: number, height: number): void {
     const us = this.renderer.config.unitSize;
 
-    const width  = 500;
-    const height = 500;
-
+    // Calculate the amount of columns and rows to draw.
     const cols = Math.floor(width / us);
     const rows = Math.floor(height / us);
 
-    ctx.lineStyle(0.5, this.color, this.opacity);
+    // Prepare for redrawing.
+    this.ctx.clear().lineStyle(0.5, this.color, this.opacity);
 
     // Draw columns.
     for (let i = 0; i < cols; i++) {
       const x = i * us;
 
-      ctx.moveTo(x, 0).lineTo(x, height);
+      this.ctx.moveTo(x, 0).lineTo(x, height);
     }
 
     // Draw rows
     for (let i = 0; i < rows; i++) {
       const y = i * us;
 
-      ctx.moveTo(0, y).lineTo(width, y);
+      this.ctx.moveTo(0, y).lineTo(width, y);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public boot(): void {
+    // Draw the grid once initially.
+    this.redraw(this.renderer.width, this.renderer.height);
+  }
+
+  /** {@inheritDoc} */
+  update(): void {
+    for (const event of this.renderer.events.read(this.onRendererResize$)) {
+      this.ctx.scale.set(event.ratio);
+
+      // Redraw the grid.
+      this.redraw(event.width, event.height);
     }
   }
 

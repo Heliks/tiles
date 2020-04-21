@@ -20,6 +20,7 @@ export class ArrowSystem implements System {
     this.event$ = this.events.subscribe();
   }
 
+  /** {@inheritDoc} */
   public update(world: World): void {
     const _health = world.storage(Health);
 
@@ -34,7 +35,7 @@ export class ArrowSystem implements System {
 
         health.current -= 10;
 
-        console.log(`Damge on #${event.entityB}. HP: ${health.current}`);
+        console.log(`Damge on #${event.entityB}. HP: ${health.current}/${health.total}`);
       }
     }
   }

@@ -1,19 +1,24 @@
 import * as PIXI from 'pixi.js';
-import { Renderer as PixiRenderer, Texture, Container, Graphics } from 'pixi.js';
+import { Container, Graphics, IPoint, Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RendererConfig, TK_RENDERER_CONFIG } from './config';
 import { Stage } from './stage';
-import { ReadVec2, Vec2 } from "@tiles/engine";
+import { EventQueue, Vec2 } from "@tiles/engine";
+
+export interface OnResizeEvent {
+  /** New width of the renderer. */
+  height: number;
+  /** New height of the renderer. */
+  width: number;
+  /** Event type */
+  type: 'resize';
+  /** The ratio by which the game stage was upscaled. */
+  ratio: number;
+}
 
 @Injectable()
 export class Renderer {
-
-  /**
-   * If this contains `true` as value the render will always be resized
-   * via [[resizeToParent()]] when the screen resolution changes.
-   */
-  public autoResize = false;
 
   /**
    * A graphics layer that can be used to draw debugging information on. This layer is
@@ -21,21 +26,35 @@ export class Renderer {
    */
   public readonly debugDraw = new Graphics();
 
+  /** Queues events for when the renderer is resized. */
+  public readonly onResize = new EventQueue<OnResizeEvent>();
+
   /**
-   * Contains the scale factor of everything that is rendered. This is applied internally
-   * to stretch everything to the size that is supposed to be. For example if the game
-   * is rendered in a resolution of `[250, 150]`, but is rendered (or "up-scaled") to
-   * a resolution of `[500, 225]` the scale would be `[2, 1.5]`.
+   * Returns the "up-scale" of the game stage to fit the [[resolution]] and size
+   * of the renderer.
    */
-  public get scale(): ReadVec2 {
-    return [
-      this.root.scale.x,
-      this.root.scale.y
-    ]
+  public get scale(): IPoint {
+    return this.stage.scale;
+  }
+
+  /** Contains the renderers height in px. */
+  public get height(): number {
+    return this.renderer.view.height;
+  }
+
+  /** Contains the renderers width in px. */
+  public get width(): number {
+    return this.renderer.view.width;
   }
 
   /** Asset storage for loaded textures. */
   public readonly textures = new AssetStorage<Texture>();
+
+  /**
+   * If this contains `true` as value the render will always be resized
+   * via [[resizeToParent()]] when the screen resolution changes.
+   */
+  protected autoResize = false;
 
   /** Screen resolution in px. */
   protected readonly resolution: Vec2 = [640, 488];
@@ -44,8 +63,9 @@ export class Renderer {
   protected readonly renderer: PixiRenderer;
 
   /**
-   * Contains all render layers (stage, debug draw, etc..). This is the container
-   * that will be rendered to the canvas element.
+   * Contains all render layers (stage, debug draw, etc..). This is the container that
+   * contains the game, and will be rendered to the canvas element that can be added
+   * to the DOM via [[appendTo()]].
    */
   protected readonly root = new Container();
 
@@ -95,10 +115,22 @@ export class Renderer {
 
   /** Applies `width` and `height` to the renderer. */
   public resize(width: number, height: number): this {
+    // Resize the renderers canvas element.
+    this.renderer.resize(width, height);
+
+    // Update the ratio by which the game stage has to be scaled to fit into the
+    // new size of the canvas element.
     const ratio = width / this.resolution[0];
 
-    this.renderer.resize(width, height);
-    this.root.scale.set(ratio);
+    this.stage.scale.set(ratio);
+
+    // Push event to queue
+    this.onResize.push({
+      height,
+      width,
+      ratio,
+      type: 'resize'
+    });
 
     return this;
   }

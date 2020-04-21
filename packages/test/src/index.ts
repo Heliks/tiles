@@ -14,10 +14,10 @@ import { DeathSystem } from "./systems/death";
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
 
-function spawnTerrain(world: World, x: number, y: number) {
-  const body = new RigidBody().attach({
+function spawnTerrain(world: World, x: number, y: number, health = 25, type = RigidBodyType.Static) {
+  const body = new RigidBody(type).attach({
     data: [1, 1],
-    density: 120,
+    density: 20,
     type: BodyPartType.Rect
   });
 
@@ -27,7 +27,7 @@ function spawnTerrain(world: World, x: number, y: number) {
   world.builder()
     .use(body)
     .use(new Transform(x, y))
-    .use(new Health(25, 25))
+    .use(new Health(health, health))
     .build();
 }
 
@@ -100,7 +100,7 @@ window.onload = () => {
     type: BodyPartType.Rect
   });
 
-  body.damping = 5;
+  body.damping = 10;
   body.group = CollisionGroups.Player;
 
   // Insert player character.
@@ -121,6 +121,10 @@ window.onload = () => {
   spawnTerrain(game.world, 14, 2);
   spawnTerrain(game.world, 14, 3);
   spawnTerrain(game.world, 14, 4);
+
+  spawnTerrain(game.world, 10, 3, 200, RigidBodyType.Dynamic);
+
+  spawnTerrain(game.world, 0, 0);
 
   console.log(game);
 };

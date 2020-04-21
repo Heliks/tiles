@@ -138,6 +138,8 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
     if (this.duration <= 300 && this.casting) {
       let { x, y } = state.data.transform;
 
+      let rotation = 0;
+
       // Todo: Bottom and up.
       switch (this.direction) {
         case Direction.Left:
@@ -148,16 +150,23 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
           x += 0.5;
           y -= 0.2;
           break;
+        case Direction.Up:
+        case Direction.Down:
+          rotation = 90;
+          break;
       }
 
       const body = new RigidBody(RigidBodyType.Dynamic)
         .tag('arrow')
         .tag('bullet')
         .attach({
-          data: [0.25, 0.25],
+          data: [0.5, 0.1],
           density: 1,
-          type: BodyPartType.Rect,
+          type: BodyPartType.Rect
         });
+
+      // The body is rotated by 90 degrees if it is shot up or down.
+      body.rotation = rotation;
 
       body.mask = CollisionGroups.Terrain;
 

@@ -10,5 +10,6 @@ export {
   AnimatedSprite,
   Container,
   Graphics,
-  Sprite
+  Sprite,
+  Texture
 } from 'pixi.js';
