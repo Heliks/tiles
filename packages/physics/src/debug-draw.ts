@@ -4,6 +4,7 @@ import { Inject, Injectable } from "@tiles/injector";
 import { PhysicsWorld } from "./world";
 import { PhysicsConfig, TK_PHYSICS_CONFIG } from "./config";
 import { Renderer } from '@tiles/pixi';
+import { Subscriber } from "@tiles/engine";
 
 /**
  * Flags that can be used to enable the drawing of different
@@ -28,21 +29,29 @@ export class DebugDraw {
   /** Box2D debug draw adapter. */
   protected adapter: DebugDrawBox2dAdapter;
 
+  /** Subscriber that listens to renderer resize events. */
+  protected onRendererResize$: Subscriber;
+
   /**
-   * @param world [[PhysicsWorld]]
    * @param config [[PhysicsConfig]]
+   * @param world [[PhysicsWorld]]
    * @param renderer [[Renderer]]
    */
   constructor(
+    @Inject(TK_PHYSICS_CONFIG) config: PhysicsConfig,
     protected readonly world: PhysicsWorld,
-    @Inject(TK_PHYSICS_CONFIG)
-    config: PhysicsConfig,
-    renderer: Renderer
+    protected readonly renderer: Renderer,
   ) {
-    this.adapter = new DebugDrawBox2dAdapter(renderer.debugDraw, config.unitSize);
+    this.adapter = new DebugDrawBox2dAdapter(config.unitSize);
+
+    // Add the DebugDraw to the renderers debug draw.
+    renderer.debugDraw.addChild(this.adapter.view);
 
     // Register the box2d adapter for debug draw callbacks.
     world.bWorld.SetDebugDraw(this.adapter);
+
+    // Subscribe to resize events.
+    this.onRendererResize$ = renderer.events.subscribe();
   }
 
   /**
@@ -76,7 +85,13 @@ export class DebugDraw {
 
   /** Updates the debug draw. Should be called once on each frame. */
   public update(): void {
-    this.world.bWorld.DrawDebugData();
+    for (const event of this.renderer.events.read(this.onRendererResize$)) {
+      // Resize the debug draw according to new renderer dimensions.
+      this.adapter.resize(event.width, event.height, event.ratio);
+    }
+
+    // Update the debug draw.
+    this.adapter.update(this.world.bWorld);
   }
 
 }

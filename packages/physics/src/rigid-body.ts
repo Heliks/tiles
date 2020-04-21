@@ -73,6 +73,12 @@ export class RigidBody {
    */
   public restitution = 0;
 
+  /** Set to `true` to allow the rigid body to rotate. */
+  public rotate = false;
+
+  /** Current rotation angle of the body in degrees (0-360). */
+  public rotation = 0;
+
   public velocity: Vec2 = [0, 0];
   public transVelocity?: Vec2;
 

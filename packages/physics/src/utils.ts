@@ -48,7 +48,7 @@ export function bCreateBody(bWorld: b2World, body: RigidBody, position: Vec2) {
 
   // If true the body won't be allowed to rotate. This will be the
   // case in most tiling games a.E.
-  bodyDef.fixedRotation = true;
+  bodyDef.fixedRotation = !body.rotate;
 
   // The bodies initial position.
   bodyDef.position.Set(position[0], position[1]);

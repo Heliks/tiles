@@ -1,160 +1,146 @@
-import { b2Color, b2Draw, b2Transform, b2Vec2 } from "@flyover/box2d";
-import { Graphics } from "@tiles/pixi";
-import { rgb2hex } from "@tiles/pixi";
+import { b2Color, b2Draw, b2Transform, b2Vec2, b2World } from "@flyover/box2d";
+import { Sprite, Texture } from "@tiles/pixi";
+
+/**
+ * Returns the 2d drawing context of `canvas`. Throws an error if retrieving
+ * the context fails.
+ */
+export function createDrawingContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    throw new Error('Unable to get 2D drawing context.');
+  }
+
+  return ctx;
+}
 
 export class DebugDrawBox2dAdapter extends b2Draw {
 
-  /** Offset on X axis (in px) that is applied to all draw calls. */
-  protected ox = 0;
+  /** The renderable that can be added to the renderer to display the debug draw. */
+  public readonly view: Sprite;
 
-  /** Offset on Y axis (in px) that is applied to all draw calls. */
-  protected oy = 0;
+  /** The canvas where the debug information is drawn.*/
+  protected readonly canvas = document.createElement('canvas');
 
-  /**
-   * Some debug draw positions somehow attempt to transform the canvas via `PushTransform`
-   * or `PopTransform` to move the "pointer". This would normally be done with
-   * `CanvasRenderingContext2D.translate()` and `CanvasRenderingContext2D.restore()`, but
-   * since we are not working with a normal canvas context both methods are not available,
-   * so this is simulated by  manually saving those transforms here and updating [[ox]], [[oy]]
-   * and the canvas rotation accordingly.
-   *
-   * @see ox
-   * @see oy
-   * @see PushTransform
-   * @see PopTransform
-   */
-  protected transforms: [number, number, number][] = [];
+  /** Drawing context. */
+  protected readonly ctx: CanvasRenderingContext2D;
+
+  /** WebGL texture created from [[canvas]]. */
+  protected readonly texture: Texture;
 
   /**
-   * @param target The render target where the debug information should be drawn to.
    * @param us Unit size (= pixel to meter ratio).
    */
-  constructor(
-    protected readonly target: Graphics,
-    protected readonly us = 16
-  ) {
+  constructor(protected readonly us = 16) {
     super();
+
+    this.ctx = createDrawingContext(this.canvas);
+
+    // Create a WebGL texture for the canvas element.
+    this.texture = Texture.from(this.canvas);
+
+    // Create the sprite that can be drawn to the stage to display the debug draw.
+    this.view = Sprite.from(this.texture);
+  }
+
+  /** Resize the [[canvas]] and scale it according to `ratio`. */
+  public resize(width: number, height: number, ratio: number): void {
+    // Resize the canvas element.
+    this.canvas.width  = width;
+    this.canvas.height = height;
+
+    // Scale drawing context according to scale ratio.
+    this.ctx.scale(ratio, ratio);
+  }
+
+  /** Update the debug draw. */
+  public update(bWorld: b2World): void {
+    // Clear the canvas so that we can re-draw.
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw the Box2D debug information.
+    bWorld.DrawDebugData();
+
+    // The DrawDebugData call draws onto a canvas element, so we need
+    // to update the WebGL texture with the new picture.
+    this.texture.update();
   }
 
   /** Box2D callback to translate the drawing canvas. */
   public PushTransform(transform: b2Transform): void {
-    const trans = [
-      transform.p.x * this.us,
-      transform.p.y * this.us,
-      transform.q.GetAngle()
-    ];
+    this.ctx.save();
 
-    this.ox = trans[0];
-    this.oy = trans[1];
-    this.target.rotation = trans[2];
+    // Apply translate with unit size.
+    this.ctx.translate(
+      transform.p.x * this.us,
+      transform.p.y * this.us
+    );
+
+    // Set rotation
+    this.ctx.rotate(transform.q.GetAngle());
   }
 
   /** Box2D callback to restore the last state of the drawing canvas. */
   public PopTransform(xf: b2Transform): void {
-    this.transforms.pop();
-
-    let trans: number[];
-
-    // If there is a different transform in the list we'll use it, otherwise
-    // we reset it entirely.
-    if (this.transforms.length) {
-      trans = this.transforms[ this.transforms.length - 1 ];
-    }
-    else {
-      trans = [0, 0, 0];
-    }
-
-    this.ox = trans[0];
-    this.oy = trans[1];
-    this.target.rotation = trans[2];
+    this.ctx.restore();
   }
 
   /** Helper method to draw the lines of a polygon. */
-  protected _drawPolygon(vertices: b2Vec2[]): void {
-    this.target.moveTo(
-      this.ox + vertices[0].x * this.us,
-      this.oy + vertices[0].y * this.us
+  protected _drawPolygonVertices(vertices: b2Vec2[]): void {
+    this.ctx.moveTo(
+      vertices[0].x * this.us,
+      vertices[0].y * this.us
     );
 
     for (const vertex of vertices) {
-      this.target.lineTo(
-        this.ox + vertex.x * this.us,
-        this.oy + vertex.y * this.us,
+      this.ctx.lineTo(
+        vertex.x * this.us,
+        vertex.y * this.us,
       );
     }
+
+    this.ctx.closePath();
   }
 
   /** Draws the outline of a polygon. */
   public DrawPolygon(vertices: b2Vec2[], vertexes: number, color: b2Color): void {
-    this.target.lineStyle(1, rgb2hex(
-      color.r,
-      color.b,
-      color.g
-    ));
+    const ctx = this.ctx;
 
-    this._drawPolygon(vertices);
-    this.target.closePath();
+    ctx.beginPath();
+    ctx.strokeStyle = color.MakeStyleString(1);
+
+    this._drawPolygonVertices(vertices);
+
+    // Draw the shape.
+    ctx.fill();
+    ctx.stroke();
   }
 
   /** Draws a solid polygon. */
   public DrawSolidPolygon(vertices: b2Vec2[], vertexes: number, color: b2Color): void {
-    const hex = rgb2hex(color.r, color.b, color.g);
+    const ctx = this.ctx;
 
-    this.target
-      .beginFill(hex, 0.5)
-      .lineStyle(1, hex);
+    ctx.beginPath();
 
-    this._drawPolygon(vertices);
-    this.target.closePath();
+    ctx.fillStyle = color.MakeStyleString(0.5);
+    ctx.strokeStyle = color.MakeStyleString(1);
+
+    this._drawPolygonVertices(vertices);
+
+    // Draw the shape.
+    ctx.fill();
+    ctx.stroke();
   }
 
   /** Box2D callback to draw the outline of a circle. */
   public DrawCircle(center: b2Vec2, radius: number, color: b2Color): void {
     console.warn('DrawCircle is not yet implemented.');
-
-    /*
-    const ctx = this.ctx;
-
-    ctx.beginPath();
-    ctx.arc(
-      center.x * this.us,
-      center.y * this.us,
-      radius,
-      0,
-      Math.PI * 2,
-      true
-    );
-
-    ctx.strokeStyle = color.MakeStyleString(1);
-    ctx.stroke();*/
   }
 
   /** Box2D callback to draw the inside of a circle. */
   public DrawSolidCircle(center: b2Vec2, radius: number, axis: b2Vec2, color: b2Color): void {
     console.warn('DrawSolidCircle is not yet implemented.');
-
-    /*
-    const ctx = this.ctx;
-
-    const centerX: number = center.x;
-    const centerY: number = center.y;
-
-    ctx.beginPath();
-
-    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
-    ctx.moveTo(centerX, centerY);
-
-    ctx.lineTo(
-      (centerX + (axis.x * this.us) * radius),
-      (centerY + (axis.y * this.us) * radius)
-    );
-
-    ctx.fillStyle = color.MakeStyleString(0.5);
-    ctx.strokeStyle = color.MakeStyleString(1);
-
-    ctx.fill();
-    ctx.stroke();
-     */
   }
 
   /** Box2D callback to draw particles. */

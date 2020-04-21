@@ -1,10 +1,9 @@
 import { PhysicsWorld } from "./world";
-import { Entity, Query } from "@tiles/entity-system";
-import { ProcessingSystem, Subscriber, Ticker, Transform, Vec2, World } from "@tiles/engine";
-import { BodyPart, RigidBody, RigidBodyType } from "./rigid-body";
+import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
+import { ProcessingSystem, Subscriber, Transform, Vec2, World } from "@tiles/engine";
+import { RigidBody } from "./rigid-body";
 import { Injectable } from "@tiles/injector";
-import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2Vec2, b2World } from "@flyover/box2d";
-import { ComponentEventType } from "@tiles/entity-system";
+import { b2Body, b2FixtureDef, b2Vec2 } from "@flyover/box2d";
 import { bCreateBody, bCreateBodyPart } from "./utils";
 
 @Injectable()
@@ -64,6 +63,9 @@ export class PhysicsSystem extends ProcessingSystem {
     // so that we can backtrack it later on.
     bBody.SetUserData(entity);
     bBody.SetLinearDamping(body.damping);
+
+    // Set angle (radians) from body rotation (degrees).
+    bBody.SetAngle(body.rotation * Math.PI / 180);
 
     // Enables continuous collision detection on the body which prevents small
     // fixtures (like bullets) from passing through thin fixtures.
