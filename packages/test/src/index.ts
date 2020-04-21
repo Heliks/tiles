@@ -38,19 +38,15 @@ function getSpriteSheet(world: World) {
     world.get(Renderer).textures
   );
 
-  return new SpriteSheet(image, 26, 1, 32, 32)
-    .setAnimation('walk-down', {
-      frames: [2, 3, 4, 5, 6, 7]
-    })
-    .setAnimation('walk-up', {
-      frames: [8, 9, 10, 11, 12, 13]
-    })
-    .setAnimation('walk-right', {
-      frames: [14, 15, 16, 17, 18, 19]
-    })
-    .setAnimation('bow-right', {
-      frames: [20, 21, 22, 23, 24, 25]
-    });
+  // Manually construct sprite-sheet.
+  return new SpriteSheet(image, 27, 1, 32, 32)
+    .setAnimation('idle-down', { frames: [0] })
+    .setAnimation('idle-up', { frames: [1] })
+    .setAnimation('idle-right', { frames: [2] })
+    .setAnimation('walk-down', { frames: [3, 4, 5, 6, 7, 8] })
+    .setAnimation('walk-up', { frames: [9, 10, 11, 12, 13, 14] })
+    .setAnimation('walk-right', { frames: [15, 16, 17, 18, 19, 20] })
+    .setAnimation('bow-right', { frames: [21, 22, 23, 24, 25, 26] });
 }
 
 window.onload = () => {

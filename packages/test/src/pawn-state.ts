@@ -34,7 +34,7 @@ export function shoot(state: StateMachine<PawnStateData>) {
 export class WalkState implements State<StateMachine<PawnStateData>> {
 
   /** Movement speed. */
-  protected speed = 32;
+  protected speed = 2;
 
   /** {@inheritDoc} */
   update(state: StateMachine<PawnStateData>): void {
@@ -50,7 +50,7 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
     let vy = 0;
 
     // Characters movement velocity adjusted to frame rate.
-    const velocity = this.speed / ticker.delta;
+    const velocity = this.speed * 32 / ticker.delta;
 
     // Move left
     if (input.isKeyDown(KeyCode.A)) {
@@ -124,11 +124,15 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
   /** {@inheritDoc} */
   onStart(state: StateMachine<PawnStateData>): void {
     if (this.direction === Direction.Left) {
-      state.data.animation.play('bow-right', false).flipTo(FlipDirection.Horizontal);
+      state.data.animation.reset().play('bow-right', false).flipTo(FlipDirection.Horizontal);
     }
     else {
-      state.data.animation.play('bow-right', false);
+      state.data.animation.reset().play('bow-right', false);
     }
+  }
+
+  onResume(state: StateMachine<PawnStateData>): void {
+    state.pop();
   }
 
   /** {@inheritDoc} */
@@ -185,8 +189,13 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
       this.casting = false;
     }
 
-    // If cast is done, exit the animation.
     if (this.duration <= 0) {
+      // Check if another task was queued.
+      if (shoot(state)) {
+        return;
+      }
+
+      // Otherwise exit the state.
       state.pop();
     }
   }
@@ -195,18 +204,40 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
 
 export class IdleState implements State<StateMachine<PawnStateData>> {
 
-  /** {@inheritDoc} */
-  onStart(state: StateMachine<PawnStateData>): void {
-    state.data.animation.setFrames([ 1 ]);
+  /** Plays the Idle animation for the appropriate `direction`. */
+  public play(animation: SpriteAnimation, direction: Direction): void {
+    switch (direction) {
+      case Direction.Left:
+        animation.play('idle-right').flipTo();
+        break;
+      case Direction.Right:
+        animation.play('idle-right');
+        break;
+      case Direction.Up:
+        animation.play('idle-up');
+        break;
+      case Direction.Down:
+        animation.play('idle-down');
+        break;
+    }
   }
 
   /** {@inheritDoc} */
-  onResume(state: StateMachine<PawnStateData>): void {
-    state.data.animation.setFrames([ 1 ]);
+  public onStart(state: StateMachine<PawnStateData>): void {
+    // this.play(state.data.animation, state.data.pawn.direction);
+
+    state.data.animation.setFrames([ 1 ])
   }
 
   /** {@inheritDoc} */
-  update(state: StateMachine<PawnStateData>): void {
+  public onResume(state: StateMachine<PawnStateData>): void {
+    // this.play(state.data.animation, state.data.pawn.direction);
+
+    state.data.animation.play('idle-down')
+  }
+
+  /** {@inheritDoc} */
+  public update(state: StateMachine<PawnStateData>): void {
     const { input } = state.data;
 
     // Check if character should move, if so enter the walking state.

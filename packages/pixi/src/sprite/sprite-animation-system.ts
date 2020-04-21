@@ -73,12 +73,10 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
       animation.elapsedTime += this.ticker.delta;
 
-      // The effective duration in ms of a frame, based on the frame
-      // duration and the animation speed.
-      const frameMs = animation.frameDuration * animation.speed;
-
-      // Calculate next frame based on elapsed time and frame ms.
-      const nextFrame = (animation.elapsedTime / frameMs) % animation.frames.length | 0;
+      // Calculate the next frame index based on the effective frame duration.
+      const nextFrame = (
+        animation.elapsedTime / animation.frameDuration * animation.speed
+      ) % animation.frames.length | 0;
 
       // Don't update the animation if looping is disabled and the next frame would
       // start a new animation cycle.
@@ -86,6 +84,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         continue;
       }
 
+      // Update the sprite display with the next frame if necessary.
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
 

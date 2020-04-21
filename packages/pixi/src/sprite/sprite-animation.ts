@@ -22,8 +22,11 @@ export class SpriteAnimation implements AnimationData {
   /** The direction in which the sprites of all frames should be flipped. */
   public flip = FlipDirection.None;
 
-  /** Index of the frame that is currently displayed by the animation. */
-  public frame = 0;
+  /**
+   * Index of the frame that is currently displayed by the animation. A value of `-1`
+   * means that the animation hasn't yet rendered a frame to the sprite display.
+   */
+  public frame = -1;
 
   /**
    * If set to `true` the animation will start from the beginning after it
@@ -60,7 +63,7 @@ export class SpriteAnimation implements AnimationData {
   /** Resets the animation back to the beginning. */
   public reset(): this {
     this.elapsedTime = 0;
-    this.frame = 0;
+    this.frame = -1;
     this.speed = 1;
 
     return this;
