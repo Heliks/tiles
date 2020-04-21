@@ -51,7 +51,7 @@ export class DebugDraw {
     world.bWorld.SetDebugDraw(this.adapter);
 
     // Subscribe to resize events.
-    this.onRendererResize$ = renderer.events.subscribe();
+    this.onRendererResize$ = renderer.onResize.subscribe();
   }
 
   /**
