@@ -1,5 +1,5 @@
 /** A unique pointer to an asset. */
-export type Handle = symbol;
+export type Handle<T = unknown> = symbol;
 
 /** Possible ways to load an asset. */
 export enum LoadType {

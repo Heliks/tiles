@@ -72,6 +72,7 @@ export class AssetLoader {
     });
   }
 
+  /** Called internally to complete a download. */
   protected complete<T, R>(
     handle: Handle,
     data: T,
@@ -99,7 +100,7 @@ export class AssetLoader {
     path: string,
     format: Format<T, R>,
     storage: AssetStorage<T>
-  ): Handle {
+  ): Handle<T> {
     const handle = Symbol();
 
     // Load the file async and save it to storage.
@@ -124,7 +125,7 @@ export class AssetLoader {
     path: string,
     format: Format<T, R>,
     storage: AssetStorage<T>
-  ): Promise<Handle> {
+  ): Promise<Handle<T>> {
     return this.fetch(path, format).then(data => {
       const handle = Symbol();
 
