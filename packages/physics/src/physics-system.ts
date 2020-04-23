@@ -64,8 +64,8 @@ export class PhysicsSystem extends ProcessingSystem {
     bBody.SetUserData(entity);
     bBody.SetLinearDamping(body.damping);
 
-    // Set angle (radians) from body rotation (degrees).
-    bBody.SetAngle(body.rotation * Math.PI / 180);
+    // Set angle.
+    bBody.SetAngle(body.rotation);
 
     // Enables continuous collision detection on the body which prevents small
     // fixtures (like bullets) from passing through thin fixtures.
@@ -134,6 +134,7 @@ export class PhysicsSystem extends ProcessingSystem {
 
         // Update values on transform component.
         trans.setPosition(position.x, position.y);
+        trans.rotation = bBody.GetAngle();
       }
     }
 

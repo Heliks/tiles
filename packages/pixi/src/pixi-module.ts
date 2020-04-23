@@ -5,6 +5,7 @@ import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
 import { SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
 import { Stage } from './stage';
+import { ShapeDisplaySystem } from "./shape-display";
 
 export class PixiModule implements Module {
 
@@ -28,11 +29,13 @@ export class PixiModule implements Module {
     builder
       .provide(Stage)
       .provide(Renderer)
-      .system(RendererSystem)
       // Should run before the SpriteDisplaySystem so that sprites are updated
       // on the same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
-      .system(SpriteDisplaySystem);
+      .system(SpriteDisplaySystem)
+      // For rendering simple shapes.
+      .system(ShapeDisplaySystem)
+      .system(RendererSystem);
   }
 
 }

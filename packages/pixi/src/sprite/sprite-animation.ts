@@ -102,12 +102,10 @@ export class SpriteAnimation implements AnimationData {
    *  beginning again after it completes.
    */
   public play(name: string, loop = true): this {
+    // Only start playing the animation if we aren't playing it already.
     if (this.playing !== name) {
-      // Change animation if it isn't currently playing already.
-      this.transform = name;
-
-      // Change repeat option
       this.loop = loop;
+      this.transform = name;
     }
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort
