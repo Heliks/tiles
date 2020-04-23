@@ -7,7 +7,7 @@ import { Format, Handle, LoadType } from './types';
 export class AssetLoader {
 
   /**
-   * The baseURL that is prepended to every file path that this loader
+   * The baseURL that is added in front of to every file path that this loader
    * attempts to load.
    */
   protected baseUrl = '';
@@ -26,10 +26,7 @@ export class AssetLoader {
     return `${this.baseUrl}/${ltrim(path, '/')}`;
   }
 
-  /**
-   * Sets the base URL that is prepended to every path that this loader
-   * is attempting to load.
-   */
+  /** Sets the [[baseUrl]]. */
   public setBaseUrl(baseUrl: string): this {
     // Normalize base URL by removing trailing slashes.
     this.baseUrl = rtrim(baseUrl, '/');
@@ -74,7 +71,7 @@ export class AssetLoader {
 
   /** Called internally to complete a download. */
   protected complete<T, R>(
-    handle: Handle,
+    handle: Handle<T>,
     data: T,
     format: Format<T, R>,
     storage: AssetStorage<T>
@@ -86,21 +83,16 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Instantly returns a file handle that can be used to
-   * access the asset in storage as soon as it completed loading.
+   * Loads a file. Instantly returns a file handle that can be used to access the asset
+   * in storage as soon as it completed loading.
    *
    * Note: The asset is only available after it finished loading.
    *
    * @param path Path to the file that should be loaded.
    * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the asset should be cached.
-   * @returns A file handle pointing to the loaded asset.
+   * @param storage The storage where the loaded asset should be stored.
    */
-  public load<T, R>(
-    path: string,
-    format: Format<T, R>,
-    storage: AssetStorage<T>
-  ): Handle<T> {
+  public load<T, R>(path: string, format: Format<T, R>, storage: AssetStorage<T>): Handle<T> {
     const handle = Symbol();
 
     // Load the file async and save it to storage.
@@ -112,20 +104,14 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Similarly to [[load()]] this function will return
-   * a file handle, but only after the asset has finished loading.
+   * Loads a file. Similarly to [[load()]] this function will return a file handle, but
+   * only after the asset has finished loading.
    *
    * @param path Path to the file that should be loaded.
    * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the asset should be cached.
-   * @returns A promise that will resolve a file handle pointing to the
-   *  loaded asset.
+   * @param storage The storage where the loaded asset should be stored.
    */
-  public async<T, R>(
-    path: string,
-    format: Format<T, R>,
-    storage: AssetStorage<T>
-  ): Promise<Handle<T>> {
+  public async<T, R>(path: string, format: Format<T, R>, storage: AssetStorage<T>): Promise<Handle<T>> {
     return this.fetch(path, format).then(data => {
       const handle = Symbol();
 
