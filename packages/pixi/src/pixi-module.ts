@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { parseConfig, RendererConfig, TK_RENDERER_CONFIG } from './config';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
+import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheetStorage } from './sprite';
 import { Stage } from './stage';
 import { ShapeDisplaySystem } from "./shape-display";
 
@@ -27,6 +27,7 @@ export class PixiModule implements Module {
     });
 
     builder
+      .provide(SpriteSheetStorage)
       .provide(Stage)
       .provide(Renderer)
       // Should run before the SpriteDisplaySystem so that sprites are updated

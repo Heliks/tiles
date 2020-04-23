@@ -1,7 +1,7 @@
-import { FlipDirection, SpriteAnimation } from "@tiles/pixi";
+import { FlipDirection, ShapeDisplay, ShapeKind, SpriteAnimation } from "@tiles/pixi";
 import { BodyPartType, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler, KeyCode } from "./input";
-import { State, StateMachine, Ticker, Transform, Vec2, World } from "@tiles/engine";
+import { deg2rad, State, StateMachine, Ticker, Transform, Vec2, World } from "@tiles/engine";
 import { CollisionGroups, Direction } from "./const";
 import { Pawn } from "./player-controller";
 
@@ -142,6 +142,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
     if (this.duration <= 300 && this.casting) {
       let { x, y } = state.data.transform;
 
+      // Degrees by which we want to rotate the bullet.
       let rotation = 0;
 
       // Todo: Bottom and up.
@@ -156,7 +157,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
           break;
         case Direction.Up:
         case Direction.Down:
-          rotation = 90;
+          rotation = deg2rad(90);
           break;
       }
 
@@ -182,6 +183,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
       const arrow = state.data.world
         .builder()
         .use(new Transform(x, y))
+        .use(new ShapeDisplay(ShapeKind.Rect, [0.5, 0.1]).fill(0xFF00FF))
         .use(body)
         .build();
 
@@ -190,13 +192,11 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
     }
 
     if (this.duration <= 0) {
-      // Check if another task was queued.
-      if (shoot(state)) {
-        return;
-      }
-
-      // Otherwise exit the state.
+      // Exit the current state.
       state.pop();
+
+      // Check if another task was queued.
+      shoot(state);
     }
   }
 

@@ -1,5 +1,6 @@
 import { SpriteSheet } from "./sprite-sheet";
 import { FlipDirection } from "../utils";
+import { Handle } from "@tiles/assets";
 
 
 /**
@@ -21,7 +22,7 @@ export class SpriteDisplay {
    * @param spriteIndex Index of the sprite that should be rendered.
    */
   constructor(
-    public sheet: SpriteSheet,
+    public sheet: Handle<SpriteSheet>,
     public spriteIndex: number
   ) {}
 

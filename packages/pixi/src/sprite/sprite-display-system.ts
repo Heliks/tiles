@@ -1,26 +1,39 @@
 import { Inject, Injectable } from "@tiles/injector";
-import { ProcessingSystem, Transform, World } from "@tiles/engine";
+import { ProcessingSystem, Subscriber, Transform, World } from "@tiles/engine";
 import { Sprite } from "pixi.js";
 import { Renderer } from "../renderer";
 import { Stage } from "../stage";
-import { Query } from "@tiles/entity-system";
+import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
 import { cropTexture, flip } from "../utils";
 import { SpriteDisplay } from "./sprite-display";
 import { RendererConfig, TK_RENDERER_CONFIG } from "../config";
+import { SpriteSheetStorage } from "./sprite-sheet";
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
 
-  /** Contains sprites mapped to the display to which they belong. */
-  protected sprites = new WeakMap<SpriteDisplay, Sprite>();
+  /** Subscription for modifications in the [[SpriteDisplay]] storage. */
+  protected onDisplayModify$!: Subscriber;
+
+  /** Contains sprites mapped to the [[Entity]] to which they belong. */
+  protected sprites = new Map<Entity, Sprite>();
 
   constructor(
     @Inject(TK_RENDERER_CONFIG)
     protected readonly config: RendererConfig,
     protected readonly renderer: Renderer,
-    protected readonly stage: Stage
+    protected readonly stage: Stage,
+    protected readonly storage: SpriteSheetStorage
   ) {
     super();
+  }
+
+  /** {@inheritDoc} */
+  public boot(world: World): void {
+    super.boot(world);
+
+    // Subscribe to modifications on the SpriteDisplay storage.
+    this.onDisplayModify$ = world.storage(SpriteDisplay).events().subscribe();
   }
 
   /** {@inheritDoc} */
@@ -33,55 +46,71 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     };
   }
 
-  /** todo */
-  protected getSprite(display: SpriteDisplay): Sprite {
-    let sprite = this.sprites.get(display);
-
-    if (sprite) {
-      return sprite;
-    }
-
-    sprite = new Sprite();
+  /** Adds the sprite for `entity` to the game stage. */
+  protected create(entity: Entity): void {
+    const sprite = new Sprite();
 
     // The engine uses center positions instead of top left for transforms,
     // this will save us a calculation in `update()`.
     sprite.anchor.set(0.5);
 
-    this.sprites.set(display, sprite);
+    this.sprites.set(entity, sprite);
     this.stage.addChild(sprite);
+  }
 
-    return sprite;
+  /** Removes the sprite of `entity` from the game stage. */
+  protected delete(entity: Entity): void {
+    const sprite = this.sprites.get(entity);
+
+    if (sprite) {
+      this.stage.removeChild(sprite);
+      this.sprites.delete(entity);
+    }
   }
 
   /** {@inheritDoc} */
   public update(world: World): void {
-    const $display = world.storage(SpriteDisplay);
-    const $trans   = world.storage(Transform);
+    const _display = world.storage(SpriteDisplay);
+    const _transform = world.storage(Transform);
 
+    // Handle added / removed entities.
+    for (const event of _display.events().read(this.onDisplayModify$)) {
+      switch (event.type) {
+        case ComponentEventType.Added:
+          this.create(event.entity);
+          break;
+        case ComponentEventType.Removed:
+          this.delete(event.entity);
+          break;
+      }
+    }
+
+    // Update sprites.
     for (const entity of this.group.entities) {
-      const display = $display.get(entity);
-      const sprite = this.getSprite(display);
+      const display = _display.get(entity);
+      const sheet = this.storage.get(display.sheet);
 
-      if (display.dirty) {
-        const texture = this.renderer.textures.get(display.sheet.image);
+      // This should never fail as long as the user doesn't meddle with the queried
+      // entity group manually.
+      const sprite = this.sprites.get(entity) as Sprite;
 
-        if (texture) {
-          // Remove flag before the update is complete so we don't accidentally
-          // attempt to re-render the sprite more than once.
-          display.dirty = false;
+      // No sheet means that the asset hasn't finished loading yet.
+      if (display.dirty && sheet) {
+        // Remove flag before the update is complete so we don't accidentally
+        // attempt to re-render the sprite more than once.
+        display.dirty = false;
 
-          sprite.texture = cropTexture(
-            texture.data,
-            display.sheet.pos(display.spriteIndex as number),
-            display.sheet.getSpriteSize()
-          );
+        sprite.texture = cropTexture(
+          sheet.data.image,
+          sheet.data.pos(display.spriteIndex as number),
+          sheet.data.getSpriteSize()
+        );
 
-          flip(sprite, display.flip);
-        }
+        flip(sprite, display.flip);
       }
 
       // Update the sprites position.
-      const trans = $trans.get(entity);
+      const trans = _transform.get(entity);
 
       sprite.x = trans.x * this.config.unitSize;
       sprite.y = trans.y * this.config.unitSize;

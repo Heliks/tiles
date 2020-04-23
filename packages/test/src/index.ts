@@ -1,9 +1,18 @@
 import 'reflect-metadata';
-import { AssetLoader, AssetsModule } from '@tiles/assets';
+import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
-import { Camera, PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, TextureFormat } from '@tiles/pixi';
+import {
+  Camera,
+  PixiModule,
+  Renderer,
+  SpriteAnimation,
+  SpriteDisplay,
+  SpriteSheet,
+  SpriteSheetFromTexture,
+  SpriteSheetStorage
+} from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
+import { BodyPartType, PhysicsModule, RigidBody, RigidBodyType, DebugDrawFlag, DebugDraw } from "@tiles/physics";
 import { InputHandler } from "./input";
 import { DrawGridSystem } from "./systems/draw-grid-system";
 import { CollisionGroups } from "./const";
@@ -14,9 +23,16 @@ import { DeathSystem } from "./systems/death";
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
 
-function spawnTerrain(world: World, x: number, y: number, health = 25, type = RigidBodyType.Static) {
+function spawnCrate(
+  world: World,
+  sheet: Handle<SpriteSheet>,
+  x: number,
+  y: number,
+  health = 25,
+  type = RigidBodyType.Static
+): void {
   const body = new RigidBody(type).attach({
-    data: [1, 1],
+    data: [0.75, 0.875],
     density: 20,
     type: BodyPartType.Rect
   });
@@ -28,18 +44,34 @@ function spawnTerrain(world: World, x: number, y: number, health = 25, type = Ri
     .use(body)
     .use(new Transform(x, y))
     .use(new Health(health, health))
+    .use(new SpriteDisplay(sheet, 0))
     .build();
 }
 
-function getSpriteSheet(world: World) {
-  const image = world.get(AssetLoader).load(
-    'spritesheets/pawn.png',
-    new TextureFormat(),
-    world.get(Renderer).textures
+function loadSpriteSheet(world: World, path: string, cols: number, rows: number): Handle<SpriteSheet> {
+  return world.get(AssetLoader).load(
+    path,
+    new SpriteSheetFromTexture(cols, rows, 16, 16),
+    world.get(SpriteSheetStorage)
+  );
+}
+
+async function getPawnSpriteSheet(world: World) {
+  const storage = world.get(SpriteSheetStorage);
+
+  // Load the sprite sheet.
+  const handle = await world.get(AssetLoader).async(
+    'spritesheets/pawn.png', new SpriteSheetFromTexture(27, 1, 32, 32), storage
   );
 
-  // Manually construct sprite-sheet.
-  return new SpriteSheet(image, 27, 1, 32, 32)
+  const sheet = storage.get(handle);
+
+  if (!sheet) {
+    throw new Error('Unexpected Error');
+  }
+
+  // Manually set animation data.
+  sheet.data
     .setAnimation('idle-down', { frames: [0] })
     .setAnimation('idle-up', { frames: [1] })
     .setAnimation('idle-right', { frames: [2] })
@@ -47,7 +79,10 @@ function getSpriteSheet(world: World) {
     .setAnimation('walk-up', { frames: [9, 10, 11, 12, 13, 14] })
     .setAnimation('walk-right', { frames: [15, 16, 17, 18, 19, 20] })
     .setAnimation('bow-right', { frames: [21, 22, 23, 24, 25, 26] });
+
+  return handle;
 }
+
 
 window.onload = () => {
   const domTarget = document.getElementById('stage');
@@ -89,6 +124,7 @@ window.onload = () => {
     DebugDrawFlag.Joints
   );
 
+
   // Initialize rigid body.
   const body = new RigidBody(RigidBodyType.Dynamic).attach({
     data: [0.4, 0.4],
@@ -99,30 +135,33 @@ window.onload = () => {
   body.damping = 10;
   body.group = CollisionGroups.Player;
 
-  // Insert player character.
-  game.world
-    .builder()
-    .use(new Camera(200, 200))
-    .use(new Transform(2, 2))
-    .use(new SpriteDisplay(getSpriteSheet(game.world), 1))
-    .use(new SpriteAnimation([]))
-    .use(new Pawn())
-    .use(body)
-    .build();
+  getPawnSpriteSheet(game.world).then(pawnSheet => {
+    // Insert player character.
+    game.world
+      .builder()
+      .use(new Camera(200, 200))
+      .use(new Transform(2, 2))
+      .use(new SpriteDisplay(pawnSheet, 1))
+      .use(new SpriteAnimation([]))
+      .use(new Pawn())
+      .use(body)
+      .build();
 
-  // Start the ticker.
-  game.start();
+    // Start the ticker.
+    game.start();
 
-  // Spawn some terrain for debugging purposes.
-  spawnTerrain(game.world, 14, 2);
-  spawnTerrain(game.world, 14, 3);
-  spawnTerrain(game.world, 14, 4);
+    // Spawn some terrain for debugging purposes.
+    const woodCrateSheet = loadSpriteSheet(game.world, 'spritesheets/wood-crate.png', 1, 1);
 
-  spawnTerrain(game.world, 10, 3, 200, RigidBodyType.Dynamic);
+    spawnCrate(game.world, woodCrateSheet, 14, 2);
+    spawnCrate(game.world, woodCrateSheet, 14, 3);
+    spawnCrate(game.world, woodCrateSheet, 14, 4);
+    spawnCrate(game.world, woodCrateSheet, 0, 0);
 
-  spawnTerrain(game.world, 0, 0);
+    spawnCrate(game.world, woodCrateSheet, 10, 3, 200, RigidBodyType.Dynamic);
+  });
 
-  console.log(game);
+
 };
 
 
