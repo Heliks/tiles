@@ -15,13 +15,17 @@ class NoopState<T = any> implements State<T> {
 }
 
 describe('StateMachine', () => {
-  let states: StateMachine<undefined>;
+  // The test data that is passed to every state machine.
+  let data: symbol;
 
-  // A test state.
+  // Test state and state machine.
   let state: NoopState;
+  let states: StateMachine<symbol>;
 
   beforeEach(() => {
-    states = new StateMachine(undefined);
+    data = Symbol();
+
+    states = new StateMachine(data);
     state = new NoopState();
   });
 
@@ -40,13 +44,13 @@ describe('StateMachine', () => {
     it('should start the pushed state', () => {
       states.start(new NoopState()).push(state);
 
-      expect(state.onStart).toHaveBeenCalledWith(states);
+      expect(state.onStart).toHaveBeenCalledWith(states, data);
     });
 
     it('should pause the previous top-most state', () => {
       states.start(state).push(new NoopState());
 
-      expect(state.onPause).toHaveBeenCalledWith(states);
+      expect(state.onPause).toHaveBeenCalledWith(states, data);
     });
   });
 
@@ -65,13 +69,13 @@ describe('StateMachine', () => {
     it('should stop the state that was popped', () => {
       states.start(new NoopState()).push(state).pop();
 
-      expect(state.onStop).toHaveBeenCalledWith(states);
+      expect(state.onStop).toHaveBeenCalledWith(states, data);
     });
 
     it('should resume the state that has become active afterwards', () => {
       states.start(state).push(new NoopState()).pop();
 
-      expect(state.onResume).toHaveBeenCalledWith(states);
+      expect(state.onResume).toHaveBeenCalledWith(states, data);
     });
   });
 
@@ -94,13 +98,13 @@ describe('StateMachine', () => {
     it('should stop the previous active state', () => {
       states.start(state).switch(new NoopState());
 
-      expect(state.onStop).toHaveBeenCalledWith(states);
+      expect(state.onStop).toHaveBeenCalledWith(states, data);
     });
 
     it('should start the new active state', () => {
       states.start(new NoopState()).switch(state);
 
-      expect(state.onStart).toHaveBeenCalledWith(states);
+      expect(state.onStart).toHaveBeenCalledWith(states, data);
     });
   });
 
@@ -110,7 +114,7 @@ describe('StateMachine', () => {
 
     states.start(state);
 
-    expect(onStart).toHaveBeenCalledWith(states);
+    expect(onStart).toHaveBeenCalledWith(states, data);
   });
 
   it('should stop all states in the stack', () => {
@@ -119,13 +123,13 @@ describe('StateMachine', () => {
 
     states.start(state1).push(state2).stop();
 
-    expect(state1.onStop).toHaveBeenCalledWith(states);
-    expect(state2.onStop).toHaveBeenCalledWith(states);
+    expect(state1.onStop).toHaveBeenCalledWith(states, data);
+    expect(state2.onStop).toHaveBeenCalledWith(states, data);
   });
 
   it('should update the top most state', () => {
     states.start(state).update();
 
-    expect(state.update).toHaveBeenCalledWith(states);
+    expect(state.update).toHaveBeenCalledWith(states, data);
   });
 });
