@@ -10,4 +10,6 @@ node_modules/
 **/dist
 **/build
 
+# Logfiles
 lerna-debug.log
+yarn-error.log

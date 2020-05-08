@@ -4,8 +4,7 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.ts',
-  mode: 'none',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
@@ -16,12 +15,13 @@ module.exports = {
       maxModules: 0
     }
   },
+  mode: 'none',
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        test: /\.ts(x?)$/,
+        use: 'ts-loader'
       }
     ]
   },
@@ -30,24 +30,25 @@ module.exports = {
     usedExports: true,
     sideEffects: true
   },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      // Copies the ./www directory to the build folder.
+      {
+        context: 'www',
+        from: '**/*',
+        to: '.'
+      }
+    ])
+  ],
   resolve: {
     extensions: [
       '.tsx',
       '.ts',
       '.js'
     ]
-  },
-  output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
-  },
-  plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: '**/*',
-        to: '.',
-        context: 'www'
-      }
-    ])
-  ]
+  }
 };

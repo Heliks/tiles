@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "lerna run lint --no-prefix --stream",
     "link": "lerna link",
-    "test": "lerna run test --no-prefix --stream -- --coverage --coverage-reporters=text",
+    "test": "lerna run test --no-prefix --stream",
     "build": "lerna run build",
     "build:watch": "lerna run build:watch --no-prefix --parallel",
     "clean": "lerna clean && rm -rf node_modules"

@@ -12,7 +12,7 @@ import {
   SpriteSheetStorage
 } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, PhysicsModule, RigidBody, RigidBodyType, DebugDrawFlag, DebugDraw } from "@tiles/physics";
+import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler } from "./input";
 import { DrawGridSystem } from "./systems/draw-grid-system";
 import { CollisionGroups } from "./const";
@@ -160,7 +160,6 @@ window.onload = () => {
 
     spawnCrate(game.world, woodCrateSheet, 10, 3, 200, RigidBodyType.Dynamic);
   });
-
 
 };
 

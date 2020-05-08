@@ -8,13 +8,16 @@
   "author": "Felix Wolf",
   "license": "MIT",
   "scripts": {
+    "build": "webpack",
     "build:watch": "webpack-dev-server --mode development --hot"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
+    "@types/react-dom": "^16.9.7",
     "copy-webpack-plugin": "^5.1.1",
     "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
     "jest": "^25.1.0",
+    "source-map-loader": "^0.2.4",
     "ts-jest": "^25.2.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.3.3333",
