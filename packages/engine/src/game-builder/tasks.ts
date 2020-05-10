@@ -1,7 +1,7 @@
 import { ClassType } from '../types';
-import { Provider } from './types';
 import { System } from '@tiles/entity-system';
 import { Game } from '../game';
+import { isFactoryProvider, Provider } from "./provider";
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -11,37 +11,8 @@ export interface Task {
   exec(game: Game): unknown;
 }
 
-/** Task that registers a new provider on the games service container. */
-export class AddProvider implements Task {
 
-  /**
-   * @param provider The provider that should be added to the game. Will be treated
-   *  differently depending on what kind of provider it is.
-   */
-  constructor(protected readonly provider: Provider) {}
-
-  /** {@inheritDoc} */
-  public exec(game: Game): void {
-    const container = game.container;
-
-    if (typeof this.provider === 'function') {
-      // Class provider.
-      container.make(this.provider, [], true);
-    }
-    else {
-      // Value provider.
-      container.bind(
-        this.provider.token,
-        this.provider.value
-      );
-    }
-  }
-}
-
-/**
- * Task that instantiates and registers a game system on the
- * system dispatcher.
- */
+/** Task that instantiates and registers a game system on the system dispatcher. */
 export class AddSystem implements Task {
 
   /**
@@ -58,3 +29,37 @@ export class AddSystem implements Task {
   }
 
 }
+
+/** Task that registers a new [[Provider]] on the games service container. */
+export class AddProvider implements Task {
+
+  /**
+   * @param provider The provider that should be added to the game. Will be treated
+   *  differently depending on what kind of provider it is.
+   */
+  constructor(protected readonly provider: Provider) {}
+
+  /** {@inheritDoc} */
+  public exec(game: Game): void {
+    const container = game.container;
+    const provider = this.provider;
+
+    // Class provider.
+    if (typeof provider === 'function') {
+      container.make(provider, [], true);
+    }
+    // Factory provider.
+    else if (isFactoryProvider(provider)) {
+      // If the singleton flag is set it will also be bound to the service
+      // container as such.
+      provider.singleton
+        ? container.singleton(provider.token, provider.factory)
+        : container.factory(provider.token, provider.factory);
+    }
+    // Value provider.
+    else {
+      container.bind(provider.token, provider.value);
+    }
+  }
+}
+

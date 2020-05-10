@@ -1,2 +1,3 @@
 export * from './game-builder';
-export { Module, Provider } from './types';
+export { Provider } from './provider';
+export { Module } from './types';

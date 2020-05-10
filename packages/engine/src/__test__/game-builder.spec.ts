@@ -31,6 +31,46 @@ describe('GameBuilder', () => {
     expect(container.get('2')).toBe('bar');
   });
 
+  // Factory providers.
+  describe('factory providers', () => {
+    let counter = 0;
+
+    beforeEach(() => {
+      // Reset the counter on each test run.
+      counter = 0;
+    });
+
+    /** Returns an incremented version of `counter`. */
+    function factory(): number {
+      return ++counter;
+    }
+
+    it('should be added as factories', () => {
+      const game = new GameBuilder()
+        .provide({
+          factory,
+          token: 'counter'
+        })
+        .build();
+
+      expect(game.container.get('counter')).toBe(1);
+      expect(game.container.get('counter')).toBe(2);
+    });
+
+    it('should be added as singletons', () => {
+      const game = new GameBuilder()
+        .provide({
+          factory,
+          singleton: true,
+          token: 'counter'
+        })
+        .build();
+
+      expect(game.container.get('counter')).toBe(1);
+      expect(game.container.get('counter')).toBe(1);
+    });
+  });
+
   it('should add systems', () => {
     const update = jest.fn();
 

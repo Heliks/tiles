@@ -2,8 +2,11 @@ import { System } from '@tiles/entity-system';
 import { Game } from '../game';
 import { ClassType } from '../types';
 import { AddProvider, AddSystem, Task } from './tasks';
-import { GameBuilder as Builder, Module, Provider } from './types';
+import { GameBuilder as Builder, Module } from './types';
+import { Provider } from "./provider";
 
+
+/** Game builder. */
 export class GameBuilder implements Builder {
 
   /**
