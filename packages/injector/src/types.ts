@@ -27,7 +27,7 @@ export interface ImmutableContainer {
    *      will also automatically be bound by calling {@link Container.instance}.
    * @returns Instance of the target with injected dependencies.
    */
-  make<T = object>(target: ClassType<T>, params: unknown[], bindToInstance: boolean): T;
+  make<T = object>(target: ClassType<T>, params?: unknown[], bindToInstance?: boolean): T;
 
 }
 
@@ -123,7 +123,7 @@ export interface Container extends ImmutableContainer {
    *
    * @param token A binding token.
    * @param factory The factory that produces the value that is injected
-   *      for the given token.
+   *  for the given token.
    * @returns this
    */
   factory<T = unknown>(token: InjectorToken, factory: BindingFactory<T>): this;

@@ -1,4 +1,4 @@
 export * from './container';
 export * from './decorators';
-export { ImmutableContainer, InjectorToken } from './types';
+export { BindingFactory, ImmutableContainer, InjectorToken } from './types';
 
