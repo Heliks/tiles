@@ -136,7 +136,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
   /** {@inheritDoc} */
   public update(world: World): void {
     // Get unit size.
-    const us = this.renderer.config.unitSize;
+    const us = this.renderer.unitSize;
 
     // Component storages.
     const _display = world.storage(ShapeDisplay);

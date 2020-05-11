@@ -6,7 +6,7 @@ import { Stage } from "../stage";
 import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
 import { cropTexture, flip } from "../utils";
 import { SpriteDisplay } from "./sprite-display";
-import { RendererConfig, TK_RENDERER_CONFIG } from "../config";
+import { RendererConfig, RENDERER_CONFIG_TOKEN } from "../config";
 import { SpriteSheetStorage } from "./sprite-sheet";
 
 @Injectable()
@@ -19,7 +19,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   protected sprites = new Map<Entity, Sprite>();
 
   constructor(
-    @Inject(TK_RENDERER_CONFIG)
+    @Inject(RENDERER_CONFIG_TOKEN)
     protected readonly config: RendererConfig,
     protected readonly renderer: Renderer,
     protected readonly stage: Stage,

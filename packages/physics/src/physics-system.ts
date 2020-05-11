@@ -108,6 +108,9 @@ export class PhysicsSystem extends ProcessingSystem {
       }
     }
 
+    // Move the physics world forward in time.
+    this.world.update();
+
     // Update entities with rigid bodies.
     for (const entity of this.group.entities) {
       const bBody = this.bodies.get(entity);
@@ -137,9 +140,6 @@ export class PhysicsSystem extends ProcessingSystem {
         trans.rotation = bBody.GetAngle();
       }
     }
-
-    // Move the physics world forward in time.
-    this.world.update();
   }
 
 }

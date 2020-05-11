@@ -33,7 +33,7 @@ export class Ticker {
 
   /** Updates delta times and calls each `ListenerFn`.  */
   public update(currentTime: number) {
-    this.delta = currentTime - this.lastTick;
+    this.delta = (currentTime - this.lastTick);
 
     // Call all listeners.
     for (const fn of this.listeners) {

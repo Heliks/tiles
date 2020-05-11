@@ -1,18 +1,20 @@
 import { Sprite, Texture } from 'pixi.js';
+import { Vec2 } from "@tiles/engine";
+import { hex2rgb } from "./utils";
 
 export class DebugDraw {
+
+  /** Drawing context for [[canvas]]. */
+  public readonly ctx: CanvasRenderingContext2D;
+
+  /** Sprite that contains all drawn debug information. */
+  public readonly view: Sprite;
 
   /** The canvas element where the all information will be drawn.*/
   protected readonly canvas = document.createElement('canvas');
 
-  /** Drawing context for [[canvas]]. */
-  protected readonly ctx: CanvasRenderingContext2D;
-
   /** WebGL texture that we'll create from the [[canvas]] element. */
   protected readonly texture: Texture;
-
-  /** Sprite that contains all drawn debug information. */
-  public readonly view: Sprite;
 
   constructor() {
     const ctx = this.canvas.getContext('2d');
@@ -32,6 +34,7 @@ export class DebugDraw {
     this.view.zIndex = 9999;
   }
 
+  /** Clears the drawing context completely. */
   public clear(): void {
     // Update the texture so that changes made to the canvas context are accurately
     // reflected on the debug draws view.
@@ -41,9 +44,41 @@ export class DebugDraw {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  public resize(width: number, height: number): void {
+  /** Resize the debug canvas draw element. */
+  public resize(width: number, height: number, ratio: number): void {
     this.canvas.width = width;
     this.canvas.height = height;
+
+    this.ctx.scale(ratio, ratio);
+  }
+
+  /**
+   * Sets the style in which future lines should be drawn.
+   *
+   * @param width The width in px.
+   * @param color Line color in hex.
+   * @param opacity (optional) Opacity from 0 to 1. By default lines will be drawn
+   *  fully visible (opacity 1)
+   */
+  public setLineStyle(width: number, color: number, opacity = 1): this {
+    const rgb = hex2rgb(color);
+
+    this.ctx.lineWidth = width;
+    this.ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
+
+    return this;
+  }
+
+  /** Draws a line from `start` to `dest`. */
+  public drawLine(start: Vec2, dest: Vec2): this {
+    this.ctx.beginPath();
+
+    this.ctx.moveTo(start[0], start[1]);
+    this.ctx.lineTo(dest[0], dest[1]);
+
+    this.ctx.stroke();
+
+    return this;
   }
 
 }

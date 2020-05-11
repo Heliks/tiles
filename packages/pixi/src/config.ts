@@ -1,13 +1,33 @@
-export const TK_RENDERER_CONFIG = Symbol('Configuration for renderer module.');
+export const RENDERER_CONFIG_TOKEN = Symbol('Configuration for renderer module.');
+export const RENDERER_PLUGINS_TOKEN = Symbol('Plugins for renderer module.');
 
+/** Configuration that can be passed to the renderer when the module is created. */
 export interface RendererConfig {
-  /**
-   * Enable or disable anti alias.
-   */
+
+  /** Enables anti-aliasing if set to `true`. Enabled by default. */
   antiAlias: boolean;
+
   /**
-   * If this is set to true the empty background of the renderers
-   * stage will not be filled in with a solid color.
+   * If set to `true` the renderer will be automatically resized to fit its
+   * parent element.
+   */
+  autoResize: boolean;
+
+  /**
+   * Unless [[transparent]] is set to `true` this color will fill the background
+   * of the game stage. This will default to `0x0` (black).
+   */
+  background: number;
+
+  /**
+   * The resolution in which the game should be rendered. First index is width,
+   * second is height in px.
+   */
+  resolution: [number, number];
+
+  /**
+   * If this is set to true the empty background of the renderers stage will not
+   * be filled in with a solid color.
    */
   transparent: boolean;
 
@@ -21,12 +41,19 @@ export interface RendererConfig {
 
 }
 
-/** Parses a partial `config` and adds fallback values. */
-export function parseConfig(config: Partial<RendererConfig>): RendererConfig {
+/**
+ * Parses a `Partial<RendererConfig>` and fills missing config items with
+ * fallback values.
+ */
+export function parseRendererConfig(config: Partial<RendererConfig>): RendererConfig {
   return {
     antiAlias: true,
+    autoResize: false,
+    background: 0x0,
+    resolution: [640, 480],
     transparent: false,
-    unitSize: 0,
+    unitSize: 1,
     ...config
   };
 }
+

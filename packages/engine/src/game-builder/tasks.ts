@@ -61,5 +61,6 @@ export class AddProvider implements Task {
       container.bind(provider.token, provider.value);
     }
   }
+
 }
 

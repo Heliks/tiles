@@ -1,5 +1,5 @@
 import { Format, LoadType } from '@tiles/assets';
-import { TextureFormat } from "../texture-format";
+import { TextureFormat } from "../utils";
 import { SpriteSheet } from "./sprite-sheet";
 
 /** (WIP) */

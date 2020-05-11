@@ -4,8 +4,8 @@ export * from './renderer';
 export * from './shape-display';
 export * from './sprite';
 export * from './stage';
-export * from './texture-format';
-export { FlipDirection, rgb2hex } from './utils';
+export { RendererPlugin } from './types';
+export { FlipDirection, rgb2hex, TextureFormat } from './utils';
 
 export {
   AnimatedSprite,

@@ -1,13 +1,11 @@
 import { BindingFactory, InjectorToken } from "@tiles/injector";
 import { ClassType } from "../types";
 
-/** Provides a value to the service container. */
-export interface ValueProvider {
-  /** The token that can be used to inject [[value]]. */
-  token: InjectorToken;
-  /** The value that should be bound via [[token]]. */
-  value: unknown;
-}
+/**
+ * Provides a class that will be instantiated with the service container when the
+ * app is started.
+ */
+export type ClassProvider= ClassType<unknown>;
 
 /** Provides a factory to the service container. */
 export interface FactoryProvider {
@@ -33,11 +31,16 @@ export interface FactoryProvider {
 
 }
 
-/**
- * Provides a class that will be instantiated with the service container when the
- * app is started.
- */
-export type ClassProvider= ClassType<unknown>;
+/** Provides a value to the service container. */
+export interface ValueProvider {
+
+  /** The token that can be used to inject [[value]]. */
+  token: InjectorToken;
+
+  /** The value that should be bound via [[token]]. */
+  value: unknown;
+
+}
 
 /** */
 export type Provider = ClassProvider | FactoryProvider | ValueProvider;

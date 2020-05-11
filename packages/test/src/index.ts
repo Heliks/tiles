@@ -12,7 +12,7 @@ import {
   SpriteSheetStorage
 } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, DebugDraw, DebugDrawFlag, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
+import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler } from "./input";
 import { DrawGridSystem } from "./systems/draw-grid-system";
 import { CollisionGroups } from "./const";
@@ -94,36 +94,28 @@ window.onload = () => {
   const game = new GameBuilder()
     .system(InputHandler)
     .module(new AssetsModule())
-    .module(new PixiModule({
-      antiAlias: false,
-      unitSize: UNIT_SIZE
-    }))
-    .module(new PhysicsModule({
-      debugDraw: true,
-      unitSize: UNIT_SIZE
-    }))
-    .system(DrawGridSystem)
+    .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
     .system(PlayerController)
     .system(ArrowSystem)
+    .module(
+      new PixiModule({
+        antiAlias: false,
+        autoResize: true,
+        background: 0x45283c,
+        resolution: [320, 180],
+        unitSize: UNIT_SIZE
+      })
+      .plugin(DrawRigidBodies)
+      .plugin(DrawGridSystem)
+    )
     .system(DeathSystem)
     .build();
 
   // Configure asset directory
-  const loader = game.world.get(AssetLoader).setBaseUrl('assets');
+  game.world.get(AssetLoader).setBaseUrl('assets');
 
-  // Configure renderer
-  const renderer = game.world
-    .get(Renderer)
-    .setBackgroundColor(0x45283c)
-    .appendTo(domTarget)
-    .setAutoResize(true)
-    .setResolution(320, 180);
-
-  game.world.get(DebugDraw).setDrawFlags(
-    DebugDrawFlag.Shapes,
-    DebugDrawFlag.Joints
-  );
-
+  // Add renderer to DOM.
+  game.world.get(Renderer).appendTo(domTarget);
 
   // Initialize rigid body.
   const body = new RigidBody(RigidBodyType.Dynamic).attach({

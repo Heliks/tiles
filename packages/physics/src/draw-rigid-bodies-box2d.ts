@@ -1,70 +1,20 @@
 import { b2Color, b2Draw, b2Transform, b2Vec2, b2World } from "@flyover/box2d";
-import { Sprite, Texture } from "@tiles/pixi";
+import { Injectable } from "@tiles/injector";
 
-/**
- * Returns the 2d drawing context of `canvas`. Throws an error if retrieving
- * the context fails.
- */
-export function createDrawingContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
-  const ctx = canvas.getContext('2d');
+@Injectable()
+export class DrawRigidBodiesBox2d extends b2Draw  {
 
-  if (!ctx) {
-    throw new Error('Unable to get 2D drawing context.');
-  }
-
-  return ctx;
-}
-
-export class DebugDrawBox2dAdapter extends b2Draw {
-
-  /** The renderable that can be added to the renderer to display the debug draw. */
-  public readonly view: Sprite;
-
-  /** The canvas where the debug information is drawn.*/
-  protected readonly canvas = document.createElement('canvas');
-
-  /** Drawing context. */
-  protected readonly ctx: CanvasRenderingContext2D;
-
-  /** WebGL texture created from [[canvas]]. */
-  protected readonly texture: Texture;
-
-  /**
-   * @param us Unit size (= pixel to meter ratio).
-   */
-  constructor(protected readonly us = 16) {
+  constructor(
+    protected readonly ctx: CanvasRenderingContext2D,
+    protected readonly us: number
+  ) {
     super();
-
-    this.ctx = createDrawingContext(this.canvas);
-
-    // Create a WebGL texture for the canvas element.
-    this.texture = Texture.from(this.canvas);
-
-    // Create the sprite that can be drawn to the stage to display the debug draw.
-    this.view = Sprite.from(this.texture);
   }
 
-  /** Resize the [[canvas]] and scale it according to `ratio`. */
-  public resize(width: number, height: number, ratio: number): void {
-    // Resize the canvas element.
-    this.canvas.width  = width;
-    this.canvas.height = height;
-
-    // Scale drawing context according to scale ratio.
-    this.ctx.scale(ratio, ratio);
-  }
-
-  /** Update the debug draw. */
+  /** {@inheritDoc} */
   public update(bWorld: b2World): void {
-    // Clear the canvas so that we can re-draw.
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     // Draw the Box2D debug information.
     bWorld.DrawDebugData();
-
-    // The DrawDebugData call draws onto a canvas element, so we need
-    // to update the WebGL texture with the new picture.
-    this.texture.update();
   }
 
   /** Box2D callback to translate the drawing canvas. */

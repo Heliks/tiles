@@ -1,10 +1,11 @@
-import * as PIXI from 'pixi.js';
-import { Container, Graphics, IPoint, Renderer as PixiRenderer, Texture } from 'pixi.js';
+import { Container, Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
-import { RendererConfig, TK_RENDERER_CONFIG } from './config';
+import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
-import { EventQueue, Vec2 } from "@tiles/engine";
+import { EventQueue, Vec2, World } from "@tiles/engine";
+import { DebugDraw } from "./debug-draw";
+import { initPixi } from "./utils";
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -20,22 +21,21 @@ export interface OnResizeEvent {
 @Injectable()
 export class Renderer {
 
-  /**
-   * A graphics layer that can be used to draw debugging information on. This layer is
-   * cleared automatically on each frame and will be drawn on top of everything else.
-   */
-  public readonly debugDraw = new Graphics();
+  /** Can be used to draw debug information on the screen. */
+  public readonly debugDraw = new DebugDraw();
 
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
+  /** Asset storage for loaded textures. */
+  public readonly textures = new AssetStorage<Texture>();
+
   /**
-   * Returns the "up-scale" of the game stage to fit the [[resolution]] and size
-   * of the renderer.
+   * The value by which positions coming from a `Transform` component should be
+   * multiplied, as those value will be in a unit like meter while the renderer
+   * works with pixels.
    */
-  public get scale(): IPoint {
-    return this.stage.scale;
-  }
+  public unitSize = 1;
 
   /** Contains the renderers height in px. */
   public get height(): number {
@@ -46,9 +46,6 @@ export class Renderer {
   public get width(): number {
     return this.renderer.view.width;
   }
-
-  /** Asset storage for loaded textures. */
-  public readonly textures = new AssetStorage<Texture>();
 
   /**
    * If this contains `true` as value the render will always be resized
@@ -74,31 +71,22 @@ export class Renderer {
    * @param stage The stage where everything is drawn.
    */
   constructor(
-    @Inject(TK_RENDERER_CONFIG)
-    public readonly config: RendererConfig,
-    public readonly stage: Stage
+    @Inject(RENDERER_CONFIG_TOKEN) config: RendererConfig,
+    public readonly stage: Stage,
   ) {
     // Listen to browser resize events.
     window.addEventListener('resize', this.onScreenResize.bind(this));
 
-    // Initialize PIXI renderer.
-    this.renderer = new PixiRenderer({
-      antialias: config.antiAlias,
-      transparent: config.transparent
-    });
+    // Initialize PIXI.JS
+    this.renderer = initPixi(config);
+    this.unitSize = config.unitSize;
 
-    // Prevent sub-pixel smoothing when anti aliasing is disabled.
-    if (!config.antiAlias) {
-      PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-    }
-
-    // Stage is always rendered first.
-    stage.zIndex = 0;
-    // Debug draw layer should be always on top.
-    this.debugDraw.zIndex = 999;
-
-    this.root.addChild(stage, this.debugDraw);
+    this.root.addChild(stage, this.debugDraw.view);
     this.root.sortChildren();
+
+    this
+      .setResolution(config.resolution[0], config.resolution[1])
+      .setAutoResize(config.autoResize)
   }
 
   /** Sets the renderers background color to the hex value of `color`. */
@@ -123,6 +111,7 @@ export class Renderer {
     const ratio = width / this.resolution[0];
 
     this.stage.scale.set(ratio);
+    this.debugDraw.resize(width, height, ratio);
 
     // Push event to queue
     this.onResize.push({
@@ -156,6 +145,8 @@ export class Renderer {
   public setAutoResize(value: boolean): this {
     this.autoResize = value;
 
+    // If it was enabled we have to resize as it is not guaranteed that the renderer
+    // had the correct size before.
     if (value) {
       this.resizeToParent();
     }
@@ -177,13 +168,19 @@ export class Renderer {
   public appendTo(target: HTMLElement): this {
     target.appendChild(this.renderer.view);
 
+    if (this.autoResize) {
+      this.resizeToParent();
+    }
+
     return this;
   }
 
-  /** Updates the renderer. Should be called once on every frame. */
-  public update(): void {
+  /**
+   * Updates the renderer. Will be automatically called once on each frame
+   * by the [[RendererSystem]].
+   */
+  public update(world: World): void {
     this.renderer.render(this.root);
-    this.debugDraw.clear();
   }
 
   /** Updates the resolution in which the game should be rendered. */
@@ -193,8 +190,7 @@ export class Renderer {
 
     if (this.autoResize) {
       this.resize(this.renderer.width, this.renderer.height);
-    }
-    else {
+    } else {
       this.resize(width, height);
     }
 

@@ -30,8 +30,7 @@ export class PlayerController extends ProcessingSystem {
   protected inputHandler = new InputHandler();
 
   constructor(
-    protected readonly ticker: Ticker,
-    protected readonly renderer: Renderer
+    protected readonly ticker: Ticker
   ) {
     super();
   }
