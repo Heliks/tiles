@@ -75,7 +75,7 @@ export class PlayerController extends ProcessingSystem {
 
   public update(world: World): void {
     const _pawn = world.storage(Pawn);
-    const _trans = world.storage(Transform);
+    // const _trans = world.storage(Transform);
 
     for (const entity of this.group.entities) {
       const pawn = _pawn.get(entity);
@@ -118,8 +118,6 @@ export class PlayerController extends ProcessingSystem {
         );
       */
     }
-
-
   }
 
 }

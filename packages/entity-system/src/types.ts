@@ -38,7 +38,7 @@ export enum ComponentEventType {
 
 export interface ComponentEvent {
   /** The entity that triggered the event. */
-  entity: Entity,
+  entity: Entity;
   /** The event type. */
   type: ComponentEventType;
 }

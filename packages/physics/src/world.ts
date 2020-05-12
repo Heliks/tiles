@@ -4,6 +4,9 @@ import { containsAll, EventQueue, Ticker, Vec2, World } from "@tiles/engine";
 import { Entity, Storage } from "@tiles/entity-system";
 import { RigidBody } from "./rigid-body";
 
+// Needs to be disabled for Box2D.
+/* eslint-disable new-cap */
+
 export enum ContactEventType {
   /** Two body parts started colliding. */
   Begin,
@@ -33,7 +36,6 @@ export interface QueueItem {
 class ContactListener extends b2ContactListener {
 
   protected readonly queues: QueueItem[] = [];
-
   protected readonly bodies: Storage<RigidBody>;
 
   constructor(protected readonly world: World) {
@@ -43,8 +45,6 @@ class ContactListener extends b2ContactListener {
   }
 
   public queue(tags: string[] = []): EventQueue<ContactEvent> {
-
-
     const queue = new EventQueue<ContactEvent>();
 
     this.queues.push({
@@ -132,7 +132,8 @@ export class PhysicsWorld {
    */
   constructor(
     protected readonly ticker: Ticker,
-    @Optional('gravity') gravity: Vec2 = [0, 0],
+    @Optional('gravity')
+    protected readonly gravity: Vec2 = [0, 0],
   ) {
     // noinspection JSPotentiallyInvalidConstructorUsage
     this.bWorld = new b2World(new b2Vec2(

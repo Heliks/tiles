@@ -4,12 +4,12 @@ export function clamp(value: number, min: number, max: number): number {
 }
 
 /** Trims `char` characters on the left side of the string `value`. */
-export function ltrim(value: string, char: string) {
+export function ltrim(value: string, char: string): string {
   return value.replace(new RegExp(`^${char}+`, ''), '');
 }
 
 /** Trims `char` characters on the right side of the string `value`. */
-export function rtrim(value: string, char: string) {
+export function rtrim(value: string, char: string): string {
   return value.replace(new RegExp(`${char}*$`),'');
 }
 

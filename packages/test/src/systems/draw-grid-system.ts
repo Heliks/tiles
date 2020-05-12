@@ -1,7 +1,6 @@
-import { System } from "@tiles/entity-system";
 import { Injectable } from "@tiles/injector";
-import { Renderer, Graphics } from "@tiles/pixi";
-import { Subscriber, Vec2, World } from "@tiles/engine";
+import { Renderer } from "@tiles/pixi";
+import { Vec2, World } from "@tiles/engine";
 import { RendererPlugin } from "@tiles/pixi/lib/types";
 
 /**
@@ -27,13 +26,7 @@ export class DrawGridSystem implements RendererPlugin {
   }
 
   /** {@inheritDoc} */
-  public boot(world: World): void {
-    // Draw the grid once initially.
-    // this.redraw(renderer.width, renderer.height);
-  }
-
-  /** {@inheritDoc} */
-  public update(world: World): void {
+  public update(): void {
     const us = this.renderer.unitSize;
 
     const width = this.renderer.width;
@@ -46,8 +39,8 @@ export class DrawGridSystem implements RendererPlugin {
     this.renderer.debugDraw.setLineStyle(0.5, this.color, this.opacity);
 
     // Convenience to not allocate unnecessary new arrays.
-    let from: Vec2 = [0, 0];
-    let dest: Vec2 = [0, 0];
+    const from: Vec2 = [0, 0];
+    const dest: Vec2 = [0, 0];
 
     // Draw columns.
     for (let i = 0; i < cols; i++) {

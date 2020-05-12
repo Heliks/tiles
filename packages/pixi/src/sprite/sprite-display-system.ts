@@ -76,12 +76,12 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     // Handle added / removed entities.
     for (const event of _display.events().read(this.onDisplayModify$)) {
       switch (event.type) {
-        case ComponentEventType.Added:
-          this.create(event.entity);
-          break;
-        case ComponentEventType.Removed:
-          this.delete(event.entity);
-          break;
+      case ComponentEventType.Added:
+        this.create(event.entity);
+        break;
+      case ComponentEventType.Removed:
+        this.delete(event.entity);
+        break;
       }
     }
 
@@ -101,7 +101,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
         display.dirty = false;
 
         sprite.texture = cropTexture(
-          sheet.data.image,
+          sheet.data.texture,
           sheet.data.pos(display.spriteIndex as number),
           sheet.data.getSpriteSize()
         );

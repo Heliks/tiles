@@ -10,14 +10,12 @@
     "url": "https://github.com/Heliks/tiles-entity-system"
   },
   "scripts": {
-    "lint": "eslint 'src/**' --config ../../.eslintrc.json --ignore-pattern **/__test__/**/*",
     "test": "jest --config ./jest.config.js",
     "build": "tsc",
     "build:watch": "tsc -w"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
-    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.5"

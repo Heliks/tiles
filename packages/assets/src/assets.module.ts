@@ -1,6 +1,6 @@
 import { AssetLoader } from './asset-loader';
-import { Module } from '@tiles/engine';
-import { GameBuilder } from '@tiles/engine';
+import { Module , GameBuilder } from '@tiles/engine';
+
 
 /** Module that provides tools for asset loading and management. */
 export class AssetsModule implements Module {

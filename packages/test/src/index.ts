@@ -105,8 +105,8 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-      .plugin(DrawRigidBodies)
-      .plugin(DrawGridSystem)
+        .plugin(DrawRigidBodies)
+        .plugin(DrawGridSystem)
     )
     .system(DeathSystem)
     .build();

@@ -3,7 +3,7 @@ import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
-import { EventQueue, Vec2, World } from "@tiles/engine";
+import { EventQueue, Vec2 } from "@tiles/engine";
 import { DebugDraw } from "./debug-draw";
 import { initPixi } from "./utils";
 
@@ -179,7 +179,7 @@ export class Renderer {
    * Updates the renderer. Will be automatically called once on each frame
    * by the [[RendererSystem]].
    */
-  public update(world: World): void {
+  public update(): void {
     this.renderer.render(this.root);
   }
 

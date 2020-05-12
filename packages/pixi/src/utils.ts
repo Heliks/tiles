@@ -61,22 +61,22 @@ export enum FlipDirection {
 /** Flips a `renderable` in the given `direction`. */
 export function flip(renderable: DisplayObject, direction: FlipDirection): void {
   switch (direction) {
-    case FlipDirection.None:
-      renderable.scale.x = 1;
-      renderable.scale.y = 1;
-      break;
-    case FlipDirection.Both:
-      renderable.scale.x = -1;
-      renderable.scale.y = -1;
-      break;
-    case FlipDirection.Horizontal:
-      renderable.scale.x = -1;
-      renderable.scale.y = 1;
-      break;
-    case FlipDirection.Vertical:
-      renderable.scale.y = -1;
-      renderable.scale.y = 1;
-      break;
+  case FlipDirection.None:
+    renderable.scale.x = 1;
+    renderable.scale.y = 1;
+    break;
+  case FlipDirection.Both:
+    renderable.scale.x = -1;
+    renderable.scale.y = -1;
+    break;
+  case FlipDirection.Horizontal:
+    renderable.scale.x = -1;
+    renderable.scale.y = 1;
+    break;
+  case FlipDirection.Vertical:
+    renderable.scale.y = -1;
+    renderable.scale.y = 1;
+    break;
   }
 }
 

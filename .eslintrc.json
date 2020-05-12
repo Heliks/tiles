@@ -1,14 +1,35 @@
 {
-  "extends": ["heliks"],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
   "rules": {
+    "@typescript-eslint/explicit-function-return-type": ["warn", {
+      "allowExpressions": true,
+      "allowTypedFunctionExpressions": false
+    }],
+    "@typescript-eslint/explicit-member-accessibility": ["error", {
+      "overrides": {
+        "constructors": "no-public"
+      }
+    }],
+    "@typescript-eslint/no-parameter-properties": "off",
     "indent": ["error", 2],
     "space-unary-ops": ["off"],
     "init-declarations": "off",
     "new-cap": ["error", {
-      "newIsCapExceptions": [
+      "capIsNewExceptions": [
         "Injectable",
         "Inject",
-        "Optional"
+        "Optional",
+        "b2*"
       ]
     }]
   }

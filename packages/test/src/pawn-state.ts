@@ -110,14 +110,14 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
 
   protected getVelocity(): Vec2 {
     switch (this.direction) {
-      case Direction.Left:
-        return [-50, 0];
-      case Direction.Right:
-        return [50, 0];
-      case Direction.Up:
-        return [0, -50];
-      case Direction.Down:
-        return [0, 50];
+    case Direction.Left:
+      return [-50, 0];
+    case Direction.Right:
+      return [50, 0];
+    case Direction.Up:
+      return [0, -50];
+    case Direction.Down:
+      return [0, 50];
     }
   }
 
@@ -147,18 +147,18 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
 
       // Todo: Bottom and up.
       switch (this.direction) {
-        case Direction.Left:
-          x -= 0.5;
-          y -= 0.2;
-          break;
-        case Direction.Right:
-          x += 0.5;
-          y -= 0.2;
-          break;
-        case Direction.Up:
-        case Direction.Down:
-          rotation = deg2rad(90);
-          break;
+      case Direction.Left:
+        x -= 0.5;
+        y -= 0.2;
+        break;
+      case Direction.Right:
+        x += 0.5;
+        y -= 0.2;
+        break;
+      case Direction.Up:
+      case Direction.Down:
+        rotation = deg2rad(90);
+        break;
       }
 
       const body = new RigidBody(RigidBodyType.Dynamic)
@@ -207,18 +207,18 @@ export class IdleState implements State<StateMachine<PawnStateData>> {
   /** Plays the Idle animation for the appropriate `direction`. */
   public play(animation: SpriteAnimation, direction: Direction): void {
     switch (direction) {
-      case Direction.Left:
-        animation.play('idle-right').flipTo();
-        break;
-      case Direction.Right:
-        animation.play('idle-right');
-        break;
-      case Direction.Up:
-        animation.play('idle-up');
-        break;
-      case Direction.Down:
-        animation.play('idle-down');
-        break;
+    case Direction.Left:
+      animation.play('idle-right').flipTo();
+      break;
+    case Direction.Right:
+      animation.play('idle-right');
+      break;
+    case Direction.Up:
+      animation.play('idle-up');
+      break;
+    case Direction.Down:
+      animation.play('idle-down');
+      break;
     }
   }
 

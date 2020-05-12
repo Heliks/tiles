@@ -2,6 +2,9 @@ import { BodyPart, RigidBody, RigidBodyType } from "./rigid-body";
 import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2World } from "@flyover/box2d";
 import { Vec2 } from "@tiles/engine";
 
+// Needs to be disabled for Box2D.
+/* eslint-disable new-cap */
+
 /**
  * Helper that creates a Box2D fixture based on `part` and `body` and adds it to
  * the Box2D body `bBody`.
@@ -31,6 +34,7 @@ export function bCreateBodyPart(
   bFixtureDef.shape = new b2PolygonShape();
 
   // convert polygon to a box. The type hint here is somehow inferred incorrectly
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (bFixtureDef.shape as any).SetAsBox(
     data.data[0] / 2,
     data.data[1] / 2
@@ -43,7 +47,7 @@ export function bCreateBodyPart(
  * Helper that creates a Box2D body based on `body`. The body will then be
  * added to the world at the given `position`.
  */
-export function bCreateBody(bWorld: b2World, body: RigidBody, position: Vec2) {
+export function bCreateBody(bWorld: b2World, body: RigidBody, position: Vec2): b2Body {
   const bodyDef = new b2BodyDef();
 
   // If true the body won't be allowed to rotate. This will be the
@@ -60,16 +64,16 @@ export function bCreateBody(bWorld: b2World, body: RigidBody, position: Vec2) {
 
   // assign body type
   switch (body.type) {
-    case RigidBodyType.Dynamic:
-      bodyDef.type = b2BodyType.b2_dynamicBody;
-      break;
-    case RigidBodyType.Kinetic:
-      bodyDef.type = b2BodyType.b2_kinematicBody;
-      break;
-    default:
-    case RigidBodyType.Static:
-      bodyDef.type = b2BodyType.b2_staticBody;
-      break;
+  case RigidBodyType.Dynamic:
+    bodyDef.type = b2BodyType.b2_dynamicBody;
+    break;
+  case RigidBodyType.Kinetic:
+    bodyDef.type = b2BodyType.b2_kinematicBody;
+    break;
+  default:
+  case RigidBodyType.Static:
+    bodyDef.type = b2BodyType.b2_staticBody;
+    break;
   }
 
   // Create the Box2D body.

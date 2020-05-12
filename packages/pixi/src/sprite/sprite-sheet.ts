@@ -1,21 +1,29 @@
-import { AssetStorage, Handle } from '@tiles/assets';
+import { AssetStorage } from '@tiles/assets';
 import { Grid, Vec2 } from '@tiles/engine';
 import { AnimationData } from "./sprite-animation";
-import { FlipDirection } from "../utils";
 import Texture = PIXI.Texture;
 
 export class SpriteSheet extends Grid {
 
+  /** Contains animation data mapped to the name with which they were registered. */
   public readonly animations = new Map<string, AnimationData>();
 
+  /**
+   * @param texture The texture from which the sprite sheet will create
+   *  individual sprites.
+   * @param cols The amount of columns on the sprite sheet texture.
+   * @param rows The amount of rows on the sprite sheet texture.
+   * @param spriteWidth The height in px of each individual sprite.
+   * @param spriteHeight The width in px of each individual sprite.
+   */
   constructor(
-    public readonly image: Texture,
-    columns: number,
+    public readonly texture: Texture,
+    cols: number,
     rows: number,
-    cellWidth: number,
-    cellHeight: number
+    spriteWidth: number,
+    spriteHeight: number
   ) {
-    super(columns, rows, cellWidth, cellHeight);
+    super(cols, rows, spriteWidth, spriteHeight);
   }
 
   /**

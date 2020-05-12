@@ -18,8 +18,9 @@ export class EntityBuilder {
   }
 
   /** Directly adds the given `component` instance to the entity. */
-  public use<T extends Object>(component: T): this {
-    this.world.storage(<ClassType>component.constructor).set(this.entity, component);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public use<T extends Record<string, any>>(component: T): this {
+    this.world.storage(component.constructor as ClassType).set(this.entity, component);
 
     return this;
   }

@@ -1,9 +1,16 @@
 import { b2Color, b2Draw, b2Transform, b2Vec2, b2World } from "@flyover/box2d";
 import { Injectable } from "@tiles/injector";
 
+// Needs to be disabled for Box2D.
+/* eslint-disable new-cap */
+
 @Injectable()
 export class DrawRigidBodiesBox2d extends b2Draw  {
 
+  /**
+   * @param ctx Context on which debug information is drawn.
+   * @param us Unit size.
+   */
   constructor(
     protected readonly ctx: CanvasRenderingContext2D,
     protected readonly us: number
@@ -32,7 +39,7 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
   }
 
   /** Box2D callback to restore the last state of the drawing canvas. */
-  public PopTransform(xf: b2Transform): void {
+  public PopTransform(): void {
     this.ctx.restore();
   }
 
@@ -84,32 +91,32 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
   }
 
   /** Box2D callback to draw the outline of a circle. */
-  public DrawCircle(center: b2Vec2, radius: number, color: b2Color): void {
+  public DrawCircle(): void {
     console.warn('DrawCircle is not yet implemented.');
   }
 
   /** Box2D callback to draw the inside of a circle. */
-  public DrawSolidCircle(center: b2Vec2, radius: number, axis: b2Vec2, color: b2Color): void {
+  public DrawSolidCircle(): void {
     console.warn('DrawSolidCircle is not yet implemented.');
   }
 
   /** Box2D callback to draw particles. */
-  public DrawParticles(centers: b2Vec2[], radius: number, colors: b2Color[] | null, count: number) {
+  public DrawParticles(): void {
     console.warn('DrawParticles is not yet implemented.')
   }
 
   /** Box2D callback to draw a segment. */
-  public DrawSegment(p1: b2Vec2, p2: b2Vec2, color: b2Color): void {
+  public DrawSegment(): void {
     console.warn('DrawSegment is not yet implemented.')
   }
 
   /** Box2D callback to draw a transform. */
-  public DrawTransform(xf: b2Transform): void {
+  public DrawTransform(): void {
     console.warn('DrawTransform is not yet implemented.')
   }
 
   /** Box2D callback to draw a point. */
-  public DrawPoint(p: b2Vec2, size: number, color: b2Color): void {
+  public DrawPoint(): void {
     console.warn('DrawPoint is not yet implemented.');
   }
 

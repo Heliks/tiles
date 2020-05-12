@@ -29,7 +29,7 @@ export class RendererSystem implements System {
     }
 
     // Renders everything to the view.
-    this.renderer.update(world);
+    this.renderer.update();
 
     // Clear the debug draw stage so that it can be redrawn on the next frame.
     this.renderer.debugDraw.clear();

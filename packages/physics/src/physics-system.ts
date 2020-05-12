@@ -3,8 +3,11 @@ import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
 import { ProcessingSystem, Subscriber, Transform, Vec2, World } from "@tiles/engine";
 import { RigidBody } from "./rigid-body";
 import { Injectable } from "@tiles/injector";
-import { b2Body, b2FixtureDef, b2Vec2 } from "@flyover/box2d";
+import { b2Body, b2FixtureDef, b2Vec2, b2World } from "@flyover/box2d";
 import { bCreateBody, bCreateBodyPart } from "./utils";
+
+// Needs to be disabled for Box2D.
+/* eslint-disable new-cap */
 
 @Injectable()
 export class PhysicsSystem extends ProcessingSystem {
@@ -16,7 +19,7 @@ export class PhysicsSystem extends ProcessingSystem {
   protected body$!: Subscriber;
 
   /** Box2D world. */
-  protected get bWorld() {
+  protected get bWorld(): b2World {
     return this.world.bWorld;
   }
 
@@ -94,17 +97,17 @@ export class PhysicsSystem extends ProcessingSystem {
     // Check if any rigid bodies were added or removed.
     for (const event of _bodies.events().read(this.body$)) {
       switch (event.type) {
-        case ComponentEventType.Added:
-          const transform = _trans.get(event.entity);
+      case ComponentEventType.Added:
+        const transform = _trans.get(event.entity);
 
-          this.createBody(event.entity, _bodies.get(event.entity), [
-            transform.x,
-            transform.y
-          ]);
-          break;
-        case ComponentEventType.Removed:
-          this.destroyBody(event.entity);
-          break;
+        this.createBody(event.entity, _bodies.get(event.entity), [
+          transform.x,
+          transform.y
+        ]);
+        break;
+      case ComponentEventType.Removed:
+        this.destroyBody(event.entity);
+        break;
       }
     }
 

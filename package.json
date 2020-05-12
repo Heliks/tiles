@@ -6,10 +6,14 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "eslint": "^7.0.0",
+    "eslint-plugin-import": "^2.20.2",
     "lerna": "^3.20.2"
   },
   "scripts": {
-    "lint": "lerna run lint --no-prefix --stream",
+    "lint": "eslint 'packages/**/*.ts' --config .eslintrc.json",
     "link": "lerna link",
     "test": "lerna run test --no-prefix --stream",
     "build": "lerna run build",

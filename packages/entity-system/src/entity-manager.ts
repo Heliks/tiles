@@ -1,5 +1,5 @@
 import { BitSet } from "./bit-set";
-import { Entity, Query } from "./types";
+import { Entity } from "./types";
 import { EntityGroup } from "./entity-group";
 
 // The amount of bits reserved on the 32 bit entity identifier to store the index

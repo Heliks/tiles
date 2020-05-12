@@ -25,11 +25,13 @@ export class DrawRigidBodies implements RendererPlugin {
     this.adapter = new DrawRigidBodiesBox2d(renderer.debugDraw.ctx, config.unitSize);
 
     // Enable all relevant draw flags.
+    // eslint-disable-next-line new-cap
     this.adapter.SetFlags(
       b2DrawFlags.e_jointBit | b2DrawFlags.e_shapeBit
     );
 
     // Register the box2d adapter for debug draw callbacks.
+    // eslint-disable-next-line new-cap
     world.bWorld.SetDebugDraw(this.adapter);
   }
 

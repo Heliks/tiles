@@ -1,5 +1,3 @@
-import { b2DrawFlags } from "@flyover/box2d";
-
 /** The token used to provide the physics config to the service container.*/
 export const TK_PHYSICS_CONFIG = Symbol('physics:config');
 
