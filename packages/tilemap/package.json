@@ -1,0 +1,26 @@
+{
+  "author": "Felix Wolf",
+  "description": "Tilemap Module",
+  "dependencies": {
+    "@tiles/engine": "^0.0.1-alpha.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "typescript": "^3.3.3333"
+  },
+  "files": [
+    "lib/*"
+  ],
+  "keywords": [],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "name": "@tiles/tilemap",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "typings": "./lib/index.d.ts",
+  "version": "0.0.1-alpha.0"
+}
