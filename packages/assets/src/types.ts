@@ -16,12 +16,23 @@ export enum LoadType {
  * @typeparam R The kind of data that this format reads.
  */
 export interface Format<T, R> {
-  /** Will be passed down to all assets that are loaded with this format. */
+
+  /**
+   * Will be passed down to all assets that are loaded with this format.
+   */
   readonly name: string;
-  /** Returns the `LoadType` of an asset. */
-  readonly type: LoadType;
-  /** Reads the given `data` and produces asset data `R`. */
+
+  /**
+   * Returns the `LoadType` of an asset. If this is not specified the asset will
+   * be loaded with `Text` by default.
+   */
+  readonly type?: LoadType;
+
+  /**
+   * Reads the given `data` and produces asset data `R`.
+   */
   process(data: R): Promise<T> | T;
+
 }
 
 /**

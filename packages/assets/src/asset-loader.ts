@@ -84,7 +84,7 @@ export class AssetLoader {
 
   /**
    * Loads a file. Instantly returns a file handle that can be used to access the asset
-   * in storage as soon as it completed loading.
+   * in storage as soon as it completes loading.
    *
    * Note: The asset is only available after it finished loading.
    *
