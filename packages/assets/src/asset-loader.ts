@@ -1,5 +1,5 @@
 import { ltrim, rtrim } from '@tiles/engine';
-import { Injectable, Optional } from '@tiles/injector';
+import { Injectable } from '@tiles/injector';
 import { AssetStorage } from './asset-storage';
 import { Format, Handle, LoadType } from './types';
 
@@ -11,15 +11,6 @@ export class AssetLoader {
    * attempts to load.
    */
   protected baseUrl = '';
-
-  /**
-   * @param baseUrl (optional) [[baseUrl]]
-   */
-  constructor(@Optional('baseUrl') baseUrl?: string) {
-    if (baseUrl) {
-      this.setBaseUrl(baseUrl);
-    }
-  }
 
   /** Combines the given `path` with the loaders [[baseUrl]]. */
   public getPath(path: string): string {
