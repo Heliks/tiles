@@ -85,7 +85,7 @@ export class AssetLoader implements Loader<Format<unknown, unknown>> {
 
       // Process raw data using the asset format.
       return stream.then(
-        data => format.process(data, this)
+        data => format.process(data, file, this)
       );
     });
   }

@@ -31,7 +31,7 @@ export interface Loader<F> {
   ): Promise<Handle<unknown>>;
 
   /** Fetches the contents of `file` using `format.` */
-  fetch<D, R>(file: string, format: Format<D, R>): Promise<R>;
+  fetch(file: string, format: F): Promise<unknown>;
 
   /**
    * Loads a file. Instantly returns a file handle that can be used to access
@@ -72,8 +72,18 @@ export interface Format<D, R> {
 
   /**
    * Reads the given `data` and produces asset data `R`.
+   *
+   * @param data Raw data that should be processed by this format.
+   * @param file Path of the file from which `data` was loaded.
+   * @param loader Instance of the loader that was used to load the asset. Can be
+   *  used to load additional stuff.
+   * @returns The formatted data. Either as a promise or directly.
    */
-  process(data: D, loader: Loader<Format<unknown, unknown>>): Promise<R> | R;
+  process(
+    data: D,
+    file: string,
+    loader: Loader<Format<unknown, unknown>>
+  ): Promise<R> | R;
 
 }
 
