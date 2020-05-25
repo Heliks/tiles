@@ -1,10 +1,10 @@
 import { ltrim, rtrim } from '@tiles/engine';
 import { Injectable } from '@tiles/injector';
 import { AssetStorage } from './asset-storage';
-import { Format, Handle, LoadType } from './types';
+import { Format, Handle, Loader, LoadType } from './types';
 
 @Injectable()
-export class AssetLoader {
+export class AssetLoader implements Loader<Format<unknown, unknown>> {
 
   /**
    * The baseURL that is added in front of to every file path that this loader
@@ -30,42 +30,13 @@ export class AssetLoader {
     return this.baseUrl;
   }
 
-  /** Fetches the file at `path` using the given `format`. */
-  protected fetch<T>(path: string, format: Format<T, unknown>): Promise<T> {
-    return fetch(this.getPath(path)).then(response => {
-      let stream: Promise<unknown>;
-
-      // Parse the fetched data according to the type specified
-      // in the format.
-      switch (format.type) {
-      case LoadType.ArrayBuffer:
-        stream = response.arrayBuffer();
-        break;
-      case LoadType.Blob:
-        stream = response.blob();
-        break;
-      case LoadType.Json:
-        stream = response.json();
-        break;
-      case LoadType.Text:
-      default:
-        stream = response.text();
-        break;
-      }
-
-      // Process raw data using the asset format.
-      return stream.then(
-        data => format.process(data)
-      );
-    });
-  }
 
   /** Called internally to complete a download. */
-  protected complete<T, R>(
-    handle: Handle<T>,
-    data: T,
-    format: Format<T, R>,
-    storage: AssetStorage<T>
+  protected complete<D, R>(
+    handle: Handle<R>,
+    data: R,
+    format: Format<D, R>,
+    storage: AssetStorage<R>
   ): void {
     storage.set(handle, {
       name: format.name,
@@ -73,17 +44,58 @@ export class AssetLoader {
     });
   }
 
-  /**
-   * Loads a file. Instantly returns a file handle that can be used to access the asset
-   * in storage as soon as it completes loading.
-   *
-   * Note: The asset is only available after it finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
-   */
-  public load<T, R>(path: string, format: Format<T, R>, storage: AssetStorage<T>): Handle<T> {
+  /** {@inheritDoc} */
+  public async<D, R>(
+    path: string,
+    format: Format<D, R>,
+    storage: AssetStorage<R>
+  ): Promise<Handle<R>> {
+    return this.fetch(path, format).then(data => {
+      const handle = Symbol();
+
+      this.complete(handle, data, format, storage);
+
+      return handle;
+    });
+  }
+
+  /** Fetches the contents of `file` using the given `format.` */
+  public fetch<D, R>(file: string, format: Format<D, R>): Promise<R> {
+    return fetch(this.getPath(file)).then(response => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let stream: Promise<any>;
+
+      // Parse the fetched data according to the type specified
+      // in the format.
+      switch (format.type) {
+        case LoadType.ArrayBuffer:
+          stream = response.arrayBuffer();
+          break;
+        case LoadType.Blob:
+          stream = response.blob();
+          break;
+        case LoadType.Json:
+          stream = response.json();
+          break;
+        case LoadType.Text:
+        default:
+          stream = response.text();
+          break;
+      }
+
+      // Process raw data using the asset format.
+      return stream.then(
+        data => format.process(data, this)
+      );
+    });
+  }
+
+  /** {@inheritDoc} */
+  public load<D, R>(
+    path: string,
+    format: Format<D, R>,
+    storage: AssetStorage<R>
+  ): Handle<R> {
     const handle = Symbol();
 
     // Load the file async and save it to storage.
@@ -92,24 +104,6 @@ export class AssetLoader {
     );
 
     return handle;
-  }
-
-  /**
-   * Loads a file. Similarly to [[load()]] this function will return a file handle, but
-   * only after the asset has finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
-   */
-  public async<T, R>(path: string, format: Format<T, R>, storage: AssetStorage<T>): Promise<Handle<T>> {
-    return this.fetch(path, format).then(data => {
-      const handle = Symbol();
-
-      this.complete(handle, data, format, storage);
-
-      return handle;
-    });
   }
 
 }

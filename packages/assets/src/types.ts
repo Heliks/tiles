@@ -1,3 +1,5 @@
+import { AssetStorage } from "./asset-storage";
+
 /** A unique pointer to an asset. */
 export type Handle<T = unknown> = symbol;
 
@@ -10,12 +12,52 @@ export enum LoadType {
 }
 
 /**
+ * @typeparam F The format that this loader is using to process raw asset data.
+ */
+export interface Loader<F> {
+
+  /**
+   * Loads a file. Similarly to [[load()]] this function will return a file
+   * handle, but only after the asset has finished loading.
+   *
+   * @param path Path to the file that should be loaded.
+   * @param format The format that should be used to parse the files raw data.
+   * @param storage The storage where the loaded asset should be stored.
+   */
+  async(
+    path: string,
+    format: F,
+    storage: AssetStorage<unknown>
+  ): Promise<Handle<unknown>>;
+
+  /** Fetches the contents of `file` using `format.` */
+  fetch<D, R>(file: string, format: Format<D, R>): Promise<R>;
+
+  /**
+   * Loads a file. Instantly returns a file handle that can be used to access
+   * the asset in storage as soon as it completes loading.
+   *
+   * Note: The asset is only available after it finished loading.
+   *
+   * @param path Path to the file that should be loaded.
+   * @param format The format that should be used to parse the files raw data.
+   * @param storage The storage where the loaded asset should be stored.
+   */
+  load(
+    path: string,
+    format: F,
+    storage: AssetStorage<unknown>
+  ): Handle<unknown>;
+
+}
+
+/**
  * An asset format.
  *
- * @typeparam T The asset data that this format produces
- * @typeparam R The kind of data that this format reads.
+ * @typeparam D The raw data that is processed to produce `T`.
+ * @typeparam R The result that this format will produce from processing data `R`.
  */
-export interface Format<T, R> {
+export interface Format<D, R> {
 
   /**
    * Will be passed down to all assets that are loaded with this format.
@@ -31,7 +73,7 @@ export interface Format<T, R> {
   /**
    * Reads the given `data` and produces asset data `R`.
    */
-  process(data: R): Promise<T> | T;
+  process(data: D, loader: Loader<Format<unknown, unknown>>): Promise<R> | R;
 
 }
 

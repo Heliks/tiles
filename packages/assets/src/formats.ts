@@ -1,7 +1,7 @@
 import { Format, LoadType } from './types';
 
 /** Reads a `Blob` and produces image nodes. */
-export class ImageFormat implements Format<HTMLImageElement, Blob> {
+export class ImageFormat implements Format<Blob, HTMLImageElement> {
 
   /** {@inheritDoc} */
   public readonly name = 'format:image';

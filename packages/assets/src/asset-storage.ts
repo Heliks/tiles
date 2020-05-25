@@ -1,5 +1,8 @@
 import { Asset, Handle } from './types';
 
+/**
+ * @typeparam T The kind of asset that is contained in this storage.
+ */
 export class AssetStorage<T> {
 
   /** Maps assets to their file handles. */
