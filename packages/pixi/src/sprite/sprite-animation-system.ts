@@ -1,19 +1,21 @@
-import { Injectable } from "@tiles/injector";
+import { Inject, Injectable } from "@tiles/injector";
 import { Query } from "@tiles/entity-system";
 import { ProcessingSystem, Ticker, World } from "@tiles/engine";
 import { SpriteAnimation } from "./sprite-animation";
 import { SpriteDisplay } from "./sprite-display";
-import { SpriteSheetStorage } from "./sprite-sheet";
+import { SpriteSheet } from "./sprite-sheet";
+import { AssetStorage } from "@tiles/assets";
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
   /**
-   * @param storage [[SpriteSheetStorage]]
+   * @param storage The storage containing sprite sheets.
    * @param ticker [[Ticker]]
    */
   constructor(
-    protected readonly storage: SpriteSheetStorage,
+    @Inject(SpriteSheet.STORAGE)
+    protected readonly storage: AssetStorage<SpriteSheet>,
     protected readonly ticker: Ticker
   ) {
     super();
@@ -30,11 +32,14 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies the transform on the given `animation`, using `display` to create the
-   * new animation. This function always assumes that `transform` is set on the
-   * `animation` component.
+   * Applies the transform on the given `animation`, using `display` to create
+   * the new animation. This function always assumes that `transform` is set on
+   * the `animation` component.
    */
-  protected transformAnimation(animation: SpriteAnimation, display: SpriteDisplay): void {
+  protected transformAnimation(
+    animation: SpriteAnimation,
+    display: SpriteDisplay
+  ): void {
     const sheet = this.storage.get(display.sheet);
 
     // The SpriteSheet asset is not loaded yet.

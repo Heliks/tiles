@@ -4,6 +4,7 @@ import { Renderer } from './renderer';
 import { World } from "@tiles/engine";
 import { RENDERER_PLUGINS_TOKEN } from "./config";
 import { RendererPlugin } from "./types";
+import { Stage } from "./stage";
 
 /** Automatically updates the [[Renderer]] once on each frame. */
 @Injectable()
@@ -11,15 +12,16 @@ export class RendererSystem implements System {
 
   /**
    * @param plugins Renderer plugins that were registered with the renderer module.
-   * @param renderer
+   * @param renderer [[Renderer]]
+   * @param stage [[Stage]]
+   * @param camera [[Camera]]
    */
   constructor(
     @Inject(RENDERER_PLUGINS_TOKEN)
     protected readonly plugins: RendererPlugin[],
     protected readonly renderer: Renderer,
-  ) {
-    console.log(plugins)
-  }
+    protected readonly stage: Stage
+  ) {}
 
   /** {@inheritDoc} */
   public update(world: World): void {
@@ -27,6 +29,9 @@ export class RendererSystem implements System {
     for (const plugin of this.plugins) {
       plugin.update(world);
     }
+
+    // this.stage.x = this.camera.x;
+    // this.stage.y = this.camera.y;
 
     // Renders everything to the view.
     this.renderer.update();

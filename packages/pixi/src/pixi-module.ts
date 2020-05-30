@@ -1,9 +1,9 @@
 import { ClassType, GameBuilder, Module, Provider } from '@tiles/engine';
 import * as PIXI from 'pixi.js';
-import { parseRendererConfig, RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
+import { parseConfig, RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheetStorage } from './sprite';
+import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheet } from './sprite';
 import { Stage } from './stage';
 import { ShapeDisplaySystem } from "./shape-display";
 import { RendererPlugin } from "./types";
@@ -45,13 +45,17 @@ export class PixiModule implements Module {
     // Provide the configuration before anything else.
     builder.provide({
       token: RENDERER_CONFIG_TOKEN,
-      value: parseRendererConfig(this.config)
+      value: parseConfig(this.config)
     });
 
     builder
-      .provide(SpriteSheetStorage)
+      .provide({
+        token: SpriteSheet.STORAGE,
+        value: new Map()
+      })
       .provide(Stage)
       .provide(Renderer)
+      // .provide(Camera)
       .provide(this.getPluginProvider())
       // Should run before the SpriteDisplaySystem so that sprites are updated
       // on the same frame where the animation possibly transformed them.

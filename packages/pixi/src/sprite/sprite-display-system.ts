@@ -6,8 +6,9 @@ import { Stage } from "../stage";
 import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
 import { cropTexture, flip } from "../utils";
 import { SpriteDisplay } from "./sprite-display";
-import { RendererConfig, RENDERER_CONFIG_TOKEN } from "../config";
-import { SpriteSheetStorage } from "./sprite-sheet";
+import { RENDERER_CONFIG_TOKEN, RendererConfig } from "../config";
+import { SpriteSheet } from "./sprite-sheet";
+import { AssetStorage } from "@tiles/assets";
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -23,7 +24,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     protected readonly config: RendererConfig,
     protected readonly renderer: Renderer,
     protected readonly stage: Stage,
-    protected readonly storage: SpriteSheetStorage
+    @Inject(SpriteSheet.STORAGE)
+    protected readonly storage: AssetStorage<SpriteSheet>
   ) {
     super();
   }

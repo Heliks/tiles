@@ -3,7 +3,7 @@ import { TextureFormat } from "../utils";
 import { SpriteSheet } from "./sprite-sheet";
 
 /** (WIP) */
-export class SpriteSheetFromTexture implements Format<SpriteSheet, Blob> {
+export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
 
   /** {@inheritDoc} */
   public readonly name = 'PIXI:sprite-sheet';

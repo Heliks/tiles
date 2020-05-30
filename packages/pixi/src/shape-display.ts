@@ -16,8 +16,8 @@ export enum ShapeKind {
 export class ShapeDisplay {
 
   /**
-   * Opacity with which the [[fillColor]] will be drawn. `0` is completely transparent
-   * while `1` is completely visible.
+   * Opacity with which the [[fillColor]] will be drawn. `0` is completely
+   * transparent while `1` is completely visible.
    */
   public fillAlpha = 1;
 
@@ -48,8 +48,8 @@ export class ShapeDisplay {
   ) {}
 
   /**
-   * Sets the fill `color` and `alpha`. If `alpha` is not set it will automatically
-   * be set to 1.
+   * Sets the fill `color` and `alpha`. If `alpha` is not set it will
+   * automatically be set to 1.
    */
   public fill(color: number, alpha = 1): this {
     this.fillAlpha = alpha;
@@ -177,9 +177,10 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
       if (canvas) {
         const trans = _trans.get(entity);
 
-        // Move the canvas according to the entities position. This needs to be displaced
-        // accordingly because the transform position is based on the center, while the
-        // renderer calculates position from the top left corner.
+        // Move the canvas according to the entities position. This needs to be
+        // displaced accordingly because the transform position is based on the
+        // center, while the renderer calculates position from the top left
+        // corner.
         canvas.x = trans.x * us;
         canvas.y = trans.y * us;
 

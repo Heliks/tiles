@@ -3,13 +3,11 @@ import { FlipDirection } from "../utils";
 export interface AnimationData {
   /** The direction in which the sprites of all frames should be flipped. */
   flip?: FlipDirection;
-  /**
-   * Contains the indexes of all sprites of which the animation consists.
-   */
+  /** Contains the indexes of all sprites of which the animation consists. */
   frames: number[];
   /**
-   * Duration in milliseconds how long each frame is visible before the animation
-   * switches to the next one.
+   * Duration in milliseconds how long each frame is visible before the
+   * animation switches to the next one.
    */
   frameDuration?: number;
 }
@@ -23,8 +21,9 @@ export class SpriteAnimation implements AnimationData {
   public flip = FlipDirection.None;
 
   /**
-   * Index of the frame that is currently displayed by the animation. A value of `-1`
-   * means that the animation hasn't yet rendered a frame to the sprite display.
+   * Index of the frame that is currently displayed by the animation. A value
+   * of `-1` means that the animation hasn't yet rendered a frame to the sprite
+   * display.
    */
   public frame = -1;
 
@@ -38,16 +37,16 @@ export class SpriteAnimation implements AnimationData {
   public playing?: string;
 
   /**
-   * The animation speed. Will be calculated together with the frame duration. If
-   * the value is `0.5` and the [[frameDuration]] is `100`, the effective duration
-   * a frame is displayed will be 50ms.
+   * The animation speed. Will be calculated together with the frame duration.
+   * If the value is `0.5` and the [[frameDuration]] is `100`, the effective
+   * duration a frame is displayed will be 50ms.
    */
   public speed = 1;
 
   /**
-   * Name of an animation on the sprite-sheet of the [[SpriteDisplay]] that accompanies
-   * this component on the same entity to which this animation should be changed to.
-   * Does not wait for the current animation to complete.
+   * Name of an animation on the sprite-sheet of the [[SpriteDisplay]] that
+   * accompanies this component on the same entity to which this animation
+   * should be changed to. Does not wait for the current animation to complete.
    */
   public transform?: string;
 
@@ -70,8 +69,9 @@ export class SpriteAnimation implements AnimationData {
   }
 
   /**
-   * Updates the speed in which the animation is played. Closer to `0` is slower (while
-   * `0` itself pauses the animation completely) and `1` is the default speed.
+   * Updates the speed in which the animation is played. Closer to `0` is slower
+   * (while `0` itself pauses the animation completely) and `1` is the default
+   * speed.
    */
   public setSpeed(speed: number): this {
     this.speed = speed;
@@ -94,12 +94,13 @@ export class SpriteAnimation implements AnimationData {
   }
 
   /**
-   * Plays the animation with the given `name` on the [[SpriteDisplay]] that accompanies
-   * this component. Does not wait for the current animation to complete.
+   * Plays the animation with the given `name` on the [[SpriteDisplay]] that
+   * accompanies this component. Does not wait for the current animation to
+   * complete.
    *
    * @param name The name of the animation that should be played.
-   * @param loop (optional) If set to `true` the animation will start playing from the
-   *  beginning again after it completes.
+   * @param loop (optional) If set to `true` the animation will start playing
+   *  from the beginning again after it completes.
    */
   public play(name: string, loop = true): this {
     // Only start playing the animation if we aren't playing it already.
@@ -108,16 +109,18 @@ export class SpriteAnimation implements AnimationData {
       this.transform = name;
     }
     else if (this.transform && this.transform !== name) {
-      // If requested animation is already playing but flagged for transform we can abort
-      // the transform, since this play() call would transform it a second time back to
-      // the animation that is playing now.
+      // If requested animation is already playing but flagged for transform we
+      // can abort the transform, since this play() call would transform it a
+      // second time back to the animation that is playing now.
       this.transform = undefined;
     }
 
     return this;
   }
 
-  /** Flips the sprite of each frame in the animation in the given direction. */
+  /**
+   * Flips the sprite of each frame in the animation in the given direction.
+   */
   public flipTo(direction = FlipDirection.Horizontal): this {
     this.flip = direction;
 

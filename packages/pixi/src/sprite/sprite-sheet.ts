@@ -1,11 +1,21 @@
-import { AssetStorage } from '@tiles/assets';
 import { Grid, Vec2 } from '@tiles/engine';
 import { AnimationData } from "./sprite-animation";
-import Texture = PIXI.Texture;
+import { Texture } from 'pixi.js';
+import { token } from "@tiles/injector";
+import { AssetStorage } from "@tiles/assets";
 
 export class SpriteSheet extends Grid {
 
-  /** Contains animation data mapped to the name with which they were registered. */
+  /**
+   * The token that is used to provide the `AssetStorage` for sprite sheets
+   * to the service container.
+   */
+  public static readonly STORAGE = token<AssetStorage<SpriteSheet>>();
+
+  /**
+   * Contains animation data mapped to the name with which they were
+   * registered.
+   */
   public readonly animations = new Map<string, AnimationData>();
 
   /**
@@ -27,8 +37,9 @@ export class SpriteSheet extends Grid {
   }
 
   /**
-   * Registers an animation with `name`. Non-required data is filled with fallback
-   * values. Throws an error if `data.frames` does not contain at least a single frame.
+   * Registers an animation with `name`. Non-required data is filled with
+   * fallback values. Throws an error if `data.frames` does not contain at
+   * least a single frame.
    */
   public setAnimation(name: string, data: AnimationData): this {
     // Ensure that animation contains at least one name.
@@ -59,7 +70,3 @@ export class SpriteSheet extends Grid {
 
 }
 
-/**
- * Stores sprite-sheets.
- */
-export class SpriteSheetStorage extends AssetStorage<SpriteSheet> {}

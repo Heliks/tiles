@@ -28,7 +28,7 @@ export class Renderer {
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
   /** Asset storage for loaded textures. */
-  public readonly textures = new AssetStorage<Texture>();
+  public readonly textures: AssetStorage<Texture> = new Map();
 
   /**
    * The value by which positions coming from a `Transform` component should be

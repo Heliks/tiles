@@ -28,16 +28,16 @@ export class DebugDraw {
     // Create a WebGL texture for the canvas element.
     this.texture = Texture.from(this.canvas);
 
-    // Create the sprite that can be drawn to the stage and make sure that it is
-    // always rendered on top of everything else.
+    // Create the sprite that can be drawn to the stage and make sure that it
+    // is always rendered on top of everything else.
     this.view = Sprite.from(this.texture);
     this.view.zIndex = 9999;
   }
 
   /** Clears the drawing context completely. */
   public clear(): void {
-    // Update the texture so that changes made to the canvas context are accurately
-    // reflected on the debug draws view.
+    // Update the texture so that changes made to the canvas context are
+    // accurately reflected on the debug draws view.
     this.texture.update();
 
     // Clear the canvas so that we can re-draw on the next frame.
@@ -57,8 +57,8 @@ export class DebugDraw {
    *
    * @param width The width in px.
    * @param color Line color in hex.
-   * @param opacity (optional) Opacity from 0 to 1. By default lines will be drawn
-   *  fully visible (opacity 1)
+   * @param opacity (optional) Opacity from 0 to 1. By default lines will be
+   *  drawn fully visible (opacity 1)
    */
   public setLineStyle(width: number, color: number, opacity = 1): this {
     const rgb = hex2rgb(color);

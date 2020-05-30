@@ -27,8 +27,9 @@ export class SpriteDisplay {
   ) {}
 
   /**
-   * Sets the sprite that should be rendered to the sprite matching the given `index`
-   * on the displays sprite sheet. Queues the component for re-rendering.
+   * Sets the sprite that should be rendered to the sprite matching the given
+   * `index` on the displays sprite sheet. Queues the component for re-
+   * rendering.
    */
   public setIndex(index: number): this {
     this.spriteIndex = index;
@@ -38,8 +39,8 @@ export class SpriteDisplay {
   }
 
   /**
-   * Flips the sprite in the given direction and queues the sprite for re-rendering
-   * if necessary.
+   * Flips the sprite in the given direction and queues the sprite for re-
+   * rendering if necessary.
    */
   public flipTo(direction = FlipDirection.Horizontal): this {
     if (this.flip !== direction) {

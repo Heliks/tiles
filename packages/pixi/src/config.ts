@@ -1,7 +1,10 @@
 export const RENDERER_CONFIG_TOKEN = Symbol('Configuration for renderer module.');
 export const RENDERER_PLUGINS_TOKEN = Symbol('Plugins for renderer module.');
 
-/** Configuration that can be passed to the renderer when the module is created. */
+/**
+ * Configuration that can be passed to the renderer when the module
+ * is created.
+ */
 export interface RendererConfig {
 
   /** Enables anti-aliasing if set to `true`. Enabled by default. */
@@ -45,7 +48,7 @@ export interface RendererConfig {
  * Parses a `Partial<RendererConfig>` and fills missing config items with
  * fallback values.
  */
-export function parseRendererConfig(config: Partial<RendererConfig>): RendererConfig {
+export function parseConfig(config: Partial<RendererConfig>): RendererConfig {
   return {
     antiAlias: true,
     autoResize: false,
