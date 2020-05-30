@@ -1,6 +1,6 @@
 import { SingletonBinding } from './singleton-binding';
-import { Binding, BindingFactory, InjectorToken, ClassType, Container as Base, ParamInjection } from './types';
-import { getMetadata } from './utils';
+import { Binding, BindingFactory, ClassType, Container as Base, InjectorToken, ParamInjection } from './types';
+import { getMetadata, stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
 
 export class Container implements Base {
@@ -58,7 +58,7 @@ export class Container implements Base {
     const binding = this.bindings.get(token) as Binding<T> | undefined;
 
     if (!binding) {
-      throw new Error(`Unknown binding "${token.toString()}".`);
+      throw new Error(`Unknown binding "${stringifyToken(token)}".`);
     }
 
     return binding.resolve(this);
