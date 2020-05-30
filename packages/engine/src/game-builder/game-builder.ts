@@ -5,6 +5,17 @@ import { AddProvider, AddSystem, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from "./provider";
 
+export class Foo extends Error {
+
+  constructor(
+    public readonly task: Task,
+    public readonly error: Error,
+    message: string
+  ) {
+    super(message);
+  }
+
+}
 
 /** Game builder. */
 export class GameBuilder implements Builder {
@@ -46,7 +57,16 @@ export class GameBuilder implements Builder {
     const game = new Game();
 
     for (const task of this.tasks) {
-      task.exec(game);
+      try {
+        task.exec(game);
+      }
+      catch (error) {
+        // Error details.
+        console.error(error);
+        console.error('Task:', task);
+
+        throw new Error('Task failed.');
+      }
     }
 
     return game;
