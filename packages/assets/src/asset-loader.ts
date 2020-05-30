@@ -1,10 +1,9 @@
 import { ltrim, rtrim } from '@tiles/engine';
 import { Injectable } from '@tiles/injector';
-import { AssetStorage } from './asset-storage';
-import { Format, Handle, Loader, LoadType } from './types';
+import { AssetStorage, Format, Handle, LoadType } from './types';
 
 @Injectable()
-export class AssetLoader implements Loader<Format<unknown, unknown>> {
+export class AssetLoader {
 
   /**
    * The baseURL that is added in front of to every file path that this loader
@@ -32,35 +31,61 @@ export class AssetLoader implements Loader<Format<unknown, unknown>> {
 
 
   /** Called internally to complete a download. */
-  protected complete<D, R>(
-    handle: Handle<R>,
-    data: R,
-    format: Format<D, R>,
-    storage: AssetStorage<R>
+  protected complete<D>(
+    handle: Handle<D>,
+    data: D,
+    name: string,
+    storage: AssetStorage<D>
   ): void {
     storage.set(handle, {
-      name: format.name,
+      name,
       data
     });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Loads a file. Similarly to [[load()]] this function will return a file
+   * handle, but only after the asset has finished loading.
+   *
+   * @param path Path to the file that should be loaded.
+   * @param format The format that should be used to parse the files raw data.
+   * @param storage The storage where the loaded asset should be stored.
+   */
   public async<D, R>(
     path: string,
-    format: Format<D, R>,
+    format: Format<D, R, AssetLoader>,
     storage: AssetStorage<R>
   ): Promise<Handle<R>> {
     return this.fetch(path, format).then(data => {
       const handle = Symbol();
 
-      this.complete(handle, data, format, storage);
+      this.complete(handle, data, format.name, storage);
 
       return handle;
     });
   }
 
-  /** Fetches the contents of `file` using the given `format.` */
-  public fetch<D, R>(file: string, format: Format<D, R>): Promise<R> {
+  /**
+   * Loads `data` into the given `storage` and returns a file handle that can
+   * be used to access it.
+   *
+   * @param data The data that should be loaded into `storage`.
+   * @param storage The storage where the loaded asset should be stored.
+   * @typeparam D the data that should be stored as an asset.
+   */
+  public data<D>(data: D, storage: AssetStorage<D>): Handle<D> {
+    const handle = Symbol();
+
+    this.complete(handle, data, '', storage);
+
+    return handle;
+  }
+
+  /** Fetches the contents of `file` using `format.` */
+  public fetch<D, R>(
+    file: string,
+    format: Format<D, R, AssetLoader>
+  ): Promise<R> {
     return fetch(this.getPath(file)).then(response => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let stream: Promise<any>;
@@ -90,17 +115,26 @@ export class AssetLoader implements Loader<Format<unknown, unknown>> {
     });
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Loads a file. Instantly returns a file handle that can be used to access
+   * the asset in storage as soon as it completes loading.
+   *
+   * Note: The asset is only available after it finished loading.
+   *
+   * @param path Path to the file that should be loaded.
+   * @param format The format that should be used to parse the files raw data.
+   * @param storage The storage where the loaded asset should be stored.
+   */
   public load<D, R>(
     path: string,
-    format: Format<D, R>,
+    format: Format<D, R, AssetLoader>,
     storage: AssetStorage<R>
   ): Handle<R> {
     const handle = Symbol();
 
     // Load the file async and save it to storage.
     this.fetch(path, format).then(
-      data => this.complete(handle, data, format, storage)
+      data => this.complete(handle, data, format.name, storage)
     );
 
     return handle;

@@ -1,5 +1,3 @@
-import { AssetStorage } from "./asset-storage";
-
 /** A unique pointer to an asset. */
 export type Handle<T = unknown> = symbol;
 
@@ -12,52 +10,13 @@ export enum LoadType {
 }
 
 /**
- * @typeparam F The format that this loader is using to process raw asset data.
- */
-export interface Loader<F> {
-
-  /**
-   * Loads a file. Similarly to [[load()]] this function will return a file
-   * handle, but only after the asset has finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
-   */
-  async(
-    path: string,
-    format: F,
-    storage: AssetStorage<unknown>
-  ): Promise<Handle<unknown>>;
-
-  /** Fetches the contents of `file` using `format.` */
-  fetch(file: string, format: F): Promise<unknown>;
-
-  /**
-   * Loads a file. Instantly returns a file handle that can be used to access
-   * the asset in storage as soon as it completes loading.
-   *
-   * Note: The asset is only available after it finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
-   */
-  load(
-    path: string,
-    format: F,
-    storage: AssetStorage<unknown>
-  ): Handle<unknown>;
-
-}
-
-/**
  * An asset format.
  *
- * @typeparam D The raw data that is processed to produce `T`.
- * @typeparam R The result that this format will produce from processing data `R`.
+ * @typeparam D Raw data that is processed to produce `T`.
+ * @typeparam R Result that this format will produce from processing data `R`.
+ * @typeparam L Loader that is executing this format during [[process()]].
  */
-export interface Format<D, R> {
+export interface Format<D, R, L = unknown> {
 
   /**
    * Will be passed down to all assets that are loaded with this format.
@@ -75,22 +34,18 @@ export interface Format<D, R> {
    *
    * @param data Raw data that should be processed by this format.
    * @param file Path of the file from which `data` was loaded.
-   * @param loader Instance of the loader that was used to load the asset. Can be
-   *  used to load additional stuff.
+   * @param loader Instance of the loader that was used to load the asset. Can
+   *  be used to load additional stuff.
    * @returns The formatted data. Either as a promise or directly.
    */
-  process(
-    data: D,
-    file: string,
-    loader: Loader<Format<unknown, unknown>>
-  ): Promise<R> | R;
+  process(data: D, file: string, loader: L): Promise<R> | R;
 
 }
 
 /**
  * A loaded asset
  *
- * @typeparam T The processed data produced by the format that loaded this asset.
+ * @typeparam T Asset data.
  */
 export interface Asset<T> {
   /**
@@ -102,5 +57,19 @@ export interface Asset<T> {
    * processed this asset.
    */
   readonly name: string;
+}
+
+/**
+ * A storage for assets.
+ *
+ * @typeparam T The kind of data of each asset in this storage.
+ */
+export interface AssetStorage<T> {
+  /** Returns the `Asset` stored under the given handle. */
+  get(handle: Handle<T>): Asset<T> | undefined;
+  /** Returns `true` if an asset is stored under the given handle. */
+  has(handle: Handle<T>): boolean;
+  /** Stores `asset` under `handle`. */
+  set(handle: Handle<T>, asset: Asset<T>): this;
 }
 
