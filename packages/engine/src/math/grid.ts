@@ -18,8 +18,8 @@ export class Grid {
   /** Returns the position of the sprite at the given `index`. */
   public pos(index: number): Vec2 {
     return [
-      index % this.columns * this.cellWidth,              // x
-      Math.floor(index / this.columns) * this.cellHeight  // y
+      index % this.columns * this.cellWidth,              // X
+      Math.floor(index / this.columns) * this.cellHeight  // Y
     ];
   }
 

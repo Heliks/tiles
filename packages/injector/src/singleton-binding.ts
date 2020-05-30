@@ -11,8 +11,8 @@ export class SingletonBinding<T> implements Binding<T> {
   constructor(protected factory: BindingFactory<T>) {}
 
   /**
-   * Generates a value from the ``factory`` once. Each subsequent call will return the
-   * value that was generated on the first call.
+   * Generates a value from the ``factory`` once. Each subsequent call will
+   * return the value that was generated on the first call.
    *
    * @param container
    */

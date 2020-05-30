@@ -21,3 +21,23 @@ export function stringifyToken(token: InjectorToken): string {
 
   return str;
 }
+
+/**
+ * Utility function to create a typed `InjectorToken`.
+ *
+ * ```ts
+ * class Foo {}
+ *
+ * // Create the typed token for "Foo".
+ * const tk = token<Foo>();
+ *
+ * // Both the "bind()" and "get()" function would correctly infer the "Foo"
+ * // type from "tk".
+ * new Container().bind(tk, new Foo()).get(tk);
+ * ```
+ *
+ * @typeparam T The kind of value that that the token resolves.
+ */
+export function token<T>(): InjectorToken<T> {
+  return Symbol();
+}

@@ -4,8 +4,7 @@ import { getMetadata, setMetadata } from './utils';
 /**
  * Decorator to make a class "injectible".
  *
- * ```typescript
- *
+ * ```ts
  * class ServiceA {}
  * class ServiceB {}
  *
@@ -78,7 +77,10 @@ export function Injectable(): ClassDecorator {
  * console.log(foo.text);
  * ```
  */
-export function Inject(token: InjectorToken, optional = false): ParameterDecorator {
+export function Inject(
+  token: InjectorToken,
+  optional = false
+): ParameterDecorator {
   return (target: object, key: string | symbol, index: number) => {
     const metaData = getMetadata(target);
 

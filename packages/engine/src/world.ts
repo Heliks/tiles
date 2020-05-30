@@ -17,11 +17,8 @@ export class World extends WorldBase implements ImmutableContainer {
     return this.container.make<T>(target, params, bind);
   }
 
-  /** {@inheritDoc} */
-  public get<T>(token: ClassType<T>): T;
-
-  /** {@inheritDoc} */
-  public get<T>(token: InjectorToken): T {
+  /** @inheritDoc */
+  public get<T>(token: InjectorToken<T>): T {
     return this.container.get<T>(token);
   }
 

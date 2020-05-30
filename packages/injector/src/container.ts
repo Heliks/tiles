@@ -8,24 +8,26 @@ export class Container implements Base {
   /** Maps stuff that is bound to other stuff */
   protected bindings = new Map<InjectorToken, Binding>();
 
-  /** {@inheritDoc Base.bind()} */
+  /** @inheritDoc */
   public bind<T = unknown>(token: InjectorToken, value: T): this {
     this.bindings.set(token, new ValueBinding<T>(value));
 
     return this;
   }
 
-  /** {@hidden} */
+  /** @hidden */
   public getBindings(): Map<InjectorToken, Binding> {
     return this.bindings;
   }
 
-  /** {@inheritDoc Base.instance()} */
+  /** @inheritDoc */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public instance(...values: any[]): this {
     for (const instance of values) {
       if (!instance.constructor) {
-        throw new Error(`Cannot bind ${instance} as it doesn't have a constructor`);
+        throw new Error(
+          `Cannot bind ${instance} as it doesn't have a constructor`
+        );
       }
 
       this.bindings.set(
@@ -37,15 +39,21 @@ export class Container implements Base {
     return this;
   }
 
-  /** {@inheritDoc Base.singleton()} */
-  public singleton<T = unknown>(token: InjectorToken, resolver: BindingFactory<T>): this {
+  /** @inheritDoc */
+  public singleton<T = unknown>(
+    token: InjectorToken,
+    resolver: BindingFactory<T>
+  ): this {
     this.bindings.set(token, new SingletonBinding(resolver));
 
     return this;
   }
 
-  /** {@inheritDoc Base.factory()} */
-  public factory<T = unknown>(token: InjectorToken, factory: BindingFactory<T>): this {
+  /** @inheritDoc */
+  public factory<T = unknown>(
+    token: InjectorToken,
+    factory: BindingFactory<T>
+  ): this {
     this.bindings.set(token, {
       resolve: factory
     });
@@ -53,7 +61,7 @@ export class Container implements Base {
     return this;
   }
 
-  /** {@inheritDoc Base.get()} */
+  /** @inheritDoc */
   public get<T>(token: InjectorToken): T {
     const binding = this.bindings.get(token) as Binding<T> | undefined;
 
@@ -68,7 +76,11 @@ export class Container implements Base {
    * Resolves the given `token`. If an array of `overrides` is passed containing
    * an injection at the given `index` it will be resolved instead.
    */
-  protected resolveParam(token: InjectorToken, index: number, overrides?: ParamInjection[]): unknown {
+  protected resolveParam(
+    token: InjectorToken,
+    index: number,
+    overrides?: ParamInjection[]
+  ): unknown {
     // Check if the index was manually overridden.
     if (overrides) {
       const override = overrides.find(item => item.index === index);
@@ -86,14 +98,19 @@ export class Container implements Base {
     return this.get(token);
   }
 
-  /** {@inheritDoc Base.make()} */
-  public make<T>(target: ClassType<T>, params: unknown[] = [], bindToInstance = false): T {
+  /** @inheritDoc */
+  public make<T>(
+    target: ClassType<T>,
+    params: unknown[] = [],
+    bind = false
+  ): T {
     const meta = getMetadata(target);
 
     let values = params;
 
-    // Only try to inject something if the target was tagged with @Injectable() and
-    // therefore has metadata. Otherwise we just continue to inject the given `params`.
+    // Only try to inject something if the target was tagged with @Injectable()
+    // and therefore has metadata. Otherwise we just continue to inject the
+    // given `params`.
     if (meta.params) {
       const tokens = [ ...meta.params ];
 
@@ -111,14 +128,14 @@ export class Container implements Base {
     // eslint-disable-next-line new-cap
     const instance = new target(...values);
 
-    if (bindToInstance) {
+    if (bind) {
       this.instance(instance);
     }
 
     return instance;
   }
 
-  /** {@inheritDoc Base.merge()} */
+  /** @inheritDoc */
   public merge(container: Container): this {
     container.getBindings().forEach((binding, sym) => {
       this.bindings.set(sym, binding);
