@@ -16,7 +16,7 @@
     "lint": "eslint 'packages/**/*.ts' --config .eslintrc.json",
     "link": "lerna link",
     "test": "lerna run test --no-prefix --stream",
-    "build": "lerna run build",
+    "build": "lerna run --stream --sort build",
     "build:watch": "lerna run build:watch --no-prefix --parallel",
     "clean": "lerna clean && rm -rf node_modules"
   }
