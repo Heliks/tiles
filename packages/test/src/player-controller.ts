@@ -1,8 +1,8 @@
-import { ProcessingSystem, ReadVec2, StateMachine, Subscriber, Ticker, Transform, Vec2, World } from '@tiles/engine';
+import { ProcessingSystem, ReadVec2, StateMachine, Ticker, Transform, World } from '@tiles/engine';
 import { Entity, Query } from '@tiles/entity-system';
-import { PhysicsWorld, RigidBody } from "@tiles/physics";
+import { RigidBody } from "@tiles/physics";
 import { Injectable } from "@tiles/injector";
-import { Renderer, SpriteAnimation } from "@tiles/pixi";
+import { SpriteAnimation } from "@tiles/pixi";
 import { InputHandler } from "./input";
 import { IdleState, PawnStateData } from "./pawn-state";
 import { Direction } from "./const";
@@ -75,7 +75,6 @@ export class PlayerController extends ProcessingSystem {
 
   public update(world: World): void {
     const _pawn = world.storage(Pawn);
-    // const _trans = world.storage(Transform);
 
     for (const entity of this.group.entities) {
       const pawn = _pawn.get(entity);
@@ -86,37 +85,14 @@ export class PlayerController extends ProcessingSystem {
       }
 
       // Update pawn state.
-      this.getPawnState(world, entity).update();
+      const state = this.getPawnState(world, entity);
 
-      /*
-      const trans = _trans.get(entity);
+      state.update();
 
-      // float x = r*cos(t) + h;
-      // float y = r*sin(t) + k;
-
-      const mousePos = this.inputHandler.getMousePos();
-
-      const x = trans.x * 16;
-      const y = trans.y * 16;
-
-      console.log(this.renderer.scale);
-
-      const r = Math.atan2(
-        (mousePos[1] / this.renderer.scale[0]) - y,
-        (mousePos[0] / this.renderer.scale[1]) - x
-      );
-
-
-      console.log(r);
-
-      this.renderer.debugDraw
-        .lineStyle(0, 0xFFFF00)
-        .drawCircle(
-          15 * Math.cos(r) + x,
-          15 * Math.sin(r) + y,
-          1
-        );
-      */
+      // this.camera.transform(
+      //   state.data.transform.x,
+      // state.data.transform.y
+      // );
     }
   }
 

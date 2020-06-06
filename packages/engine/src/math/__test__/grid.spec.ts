@@ -1,7 +1,6 @@
 import { Grid } from "../grid";
 
 describe('Grid', () => {
-
   it('should calculate the position of a cell index', () => {
     const grid = new Grid(5, 5, 16, 16);
 
@@ -14,4 +13,7 @@ describe('Grid', () => {
     expect(grid.pos(6)).toEqual([ 16, 16 ]);
   });
 
+  it('should have a size equal to its amount of total cells', () => {
+    expect(new Grid(10, 10, 16, 16).size).toBe(100);
+  });
 });

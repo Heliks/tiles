@@ -1,6 +1,6 @@
 import { Injectable } from "@tiles/injector";
 import { Renderer } from "@tiles/pixi";
-import { Vec2, World } from "@tiles/engine";
+import { Vec2 } from "@tiles/engine";
 import { RendererPlugin } from "@tiles/pixi/lib/types";
 
 /**
@@ -10,7 +10,7 @@ import { RendererPlugin } from "@tiles/pixi/lib/types";
 export class DrawGridSystem implements RendererPlugin {
 
   /** Opacity value between 0 and 1 for the grid lines. */
-  public opacity = 0.1;
+  public opacity = 0.5;
 
   /** Hex value of the color that should be used to draw the grid lines. */
   public color = 0x0;

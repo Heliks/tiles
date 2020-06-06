@@ -1,16 +1,7 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
-import {
-  Camera,
-  PixiModule,
-  Renderer,
-  SpriteAnimation,
-  SpriteDisplay,
-  SpriteSheet,
-  SpriteSheetFromTexture,
-  SpriteSheetStorage
-} from '@tiles/pixi';
+import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
 import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
 import { InputHandler } from "./input";
@@ -19,6 +10,7 @@ import { CollisionGroups } from "./const";
 import { ArrowSystem } from "./systems/arrow";
 import { Health } from "./components/health";
 import { DeathSystem } from "./systems/death";
+import { TilemapManager, TilemapModule } from "@tiles/tilemap/src";
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -52,12 +44,12 @@ function loadSpriteSheet(world: World, path: string, cols: number, rows: number)
   return world.get(AssetLoader).load(
     path,
     new SpriteSheetFromTexture(cols, rows, 16, 16),
-    world.get(SpriteSheetStorage)
+    world.get(SpriteSheet.STORAGE)
   );
 }
 
 async function getPawnSpriteSheet(world: World) {
-  const storage = world.get(SpriteSheetStorage);
+  const storage = world.get(SpriteSheet.STORAGE);
 
   // Load the sprite sheet.
   const handle = await world.get(AssetLoader).async(
@@ -109,6 +101,7 @@ window.onload = () => {
         .plugin(DrawGridSystem)
     )
     .system(DeathSystem)
+    .module(new TilemapModule())
     .build();
 
   // Configure asset directory
@@ -131,7 +124,7 @@ window.onload = () => {
     // Insert player character.
     game.world
       .builder()
-      .use(new Camera(200, 200))
+      // .use(new Camera(200, 200))
       .use(new Transform(2, 2))
       .use(new SpriteDisplay(pawnSheet, 1))
       .use(new SpriteAnimation([]))
@@ -151,6 +144,12 @@ window.onload = () => {
     spawnCrate(game.world, woodCrateSheet, 0, 0);
 
     spawnCrate(game.world, woodCrateSheet, 10, 3, 200, RigidBodyType.Dynamic);
+
+    const tilemapMgr = game.world.get(TilemapManager);
+
+    tilemapMgr.async('tilemaps/test01.json').then(handle => {
+      tilemapMgr.spawn(handle);
+    });
   });
 
 };

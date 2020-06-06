@@ -34,8 +34,8 @@ export interface Format<D, R, L = unknown> {
    *
    * @param data Raw data that should be processed by this format.
    * @param file Path of the file from which `data` was loaded.
-   * @param loader Instance of the loader that was used to load the asset. Can
-   *  be used to load additional stuff.
+   * @param loader Instance of the loader that was used to load the asset. Can be used
+   *  to load additional stuff.
    * @returns The formatted data. Either as a promise or directly.
    */
   process(data: D, file: string, loader: L): Promise<R> | R;
@@ -48,13 +48,11 @@ export interface Format<D, R, L = unknown> {
  * @typeparam T Asset data.
  */
 export interface Asset<T> {
-  /**
-   * The assets processed data.
-   */
+  /** The assets processed data. */
   readonly data: T;
   /**
-   * The name of the asset type. Will be inherited from the `Format` that
-   * processed this asset.
+   * The name of the asset type. Will be inherited from the `Format` that processed
+   * this asset.
    */
   readonly name: string;
 }

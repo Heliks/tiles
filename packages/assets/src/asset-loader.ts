@@ -44,8 +44,8 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Similarly to [[load()]] this function will return a file
-   * handle, but only after the asset has finished loading.
+   * Loads a file. Similarly to [[load()]] this function will return a file handle,
+   * but only after the asset has finished loading.
    *
    * @param path Path to the file that should be loaded.
    * @param format The format that should be used to parse the files raw data.
@@ -66,8 +66,8 @@ export class AssetLoader {
   }
 
   /**
-   * Loads `data` into the given `storage` and returns a file handle that can
-   * be used to access it.
+   * Loads `data` into the given `storage` and returns a file handle that can be used
+   * to access it.
    *
    * @param data The data that should be loaded into `storage`.
    * @param storage The storage where the loaded asset should be stored.
@@ -116,8 +116,8 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Instantly returns a file handle that can be used to access
-   * the asset in storage as soon as it completes loading.
+   * Loads a file. Instantly returns a file handle that can be used to access the asset
+   * in storage as soon as it completes loading.
    *
    * Note: The asset is only available after it finished loading.
    *

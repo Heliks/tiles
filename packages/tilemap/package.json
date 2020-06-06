@@ -1,8 +1,9 @@
 {
   "author": "Felix Wolf",
   "description": "Tilemap Module",
-  "dependencies": {
-    "@tiles/engine": "^0.0.1-alpha.0"
+  "peerDependencies": {
+    "@tiles/engine": "^0.0.1-alpha.0",
+    "@tiles/pixi": "^0.0.1-alpha.0"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
