@@ -6,6 +6,10 @@ import { SpriteDisplay } from "./sprite-display";
 import { SpriteSheet } from "./sprite-sheet";
 import { AssetStorage } from "@tiles/assets";
 
+function foo(sheet: SpriteSheet, storage: AssetStorage<SpriteSheet>) {
+
+}
+
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
@@ -32,29 +36,28 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies the transform on the given `animation`, using `display` to create
-   * the new animation. This function always assumes that `transform` is set on
-   * the `animation` component.
+   * Applies the transform on the given `animation`, using `display` to create the new
+   * animation. This function always assumes that `transform` is set on the `animation`
+   * component.
    */
-  protected transformAnimation(
-    animation: SpriteAnimation,
-    display: SpriteDisplay
-  ): void {
-    const sheet = this.storage.get(display.sheet);
+  protected transformAnimation(animation: SpriteAnimation, display: SpriteDisplay): void {
+    const sheet = typeof display.sheet === 'symbol'
+      ? this.storage.get(display.sheet)?.data
+      : display.sheet;
 
     // The SpriteSheet asset is not loaded yet.
     if (!sheet) {
       return;
     }
 
-    const data = sheet.data.getAnimation(animation.transform as string);
+    const data = sheet.getAnimation(animation.transform as string);
 
     if (data) {
       animation.playing = animation.transform;
       animation.reset();
 
-      // Don't copy a reference here, otherwise editing the animation frames
-      // would also edit the original `AnimationData`.
+      // Don't copy a reference here, otherwise editing the animation frames would also
+      // edit the original `AnimationData`.
       animation.frames = [
         ...data.frames
       ];
@@ -64,8 +67,8 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         animation.flipTo(data.flip);
       }
 
-      // Inherit frame duration set by the animation, otherwise we continue
-      // to use the one that is currently set.
+      // Inherit frame duration set by the animation, otherwise we continue to use the
+      // one that is currently set.
       if (data.frameDuration) {
         animation.frameDuration = data.frameDuration;
       }
@@ -95,8 +98,8 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         animation.elapsedTime / animation.frameDuration * animation.speed
       ) % animation.frames.length | 0;
 
-      // Check if looping is disabled and if the next frame would start a new
-      // animation cycle.
+      // Check if looping is disabled and if the next frame would start a new animation
+      // cycle.
       if (!animation.loop && animation.frame > 0 && nextFrame === 0) {
         continue;
       }

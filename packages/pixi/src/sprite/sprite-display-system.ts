@@ -49,15 +49,15 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   }
 
   /** Adds the sprite for `entity` to the game stage. */
-  protected create(entity: Entity): void {
+  protected create(entity: Entity, comp: SpriteDisplay): void {
     const sprite = new Sprite();
 
-    // The engine uses center positions instead of top left for transforms,
-    // this will save us a calculation in `update()`.
+    // The engine uses center positions instead of top left for transforms, this will
+    // save us a calculation in `update()`.
     sprite.anchor.set(0.5);
 
     this.sprites.set(entity, sprite);
-    this.stage.addChild(sprite);
+    this.stage.add(sprite, comp.layer);
   }
 
   /** Removes the sprite of `entity` from the game stage. */
@@ -78,19 +78,21 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     // Handle added / removed entities.
     for (const event of _display.events().read(this.onDisplayModify$)) {
       switch (event.type) {
-      case ComponentEventType.Added:
-        this.create(event.entity);
-        break;
-      case ComponentEventType.Removed:
-        this.delete(event.entity);
-        break;
+        case ComponentEventType.Added:
+          this.create(event.entity, _display.get(event.entity));
+          break;
+        case ComponentEventType.Removed:
+          this.delete(event.entity);
+          break;
       }
     }
 
     // Update sprites.
     for (const entity of this.group.entities) {
       const display = _display.get(entity);
-      const sheet = this.storage.get(display.sheet);
+      const sheet = typeof display.sheet === 'symbol'
+        ? this.storage.get(display.sheet)?.data
+        : display.sheet;
 
       // This should never fail as long as the user doesn't meddle with the queried
       // entity group manually.
@@ -98,14 +100,14 @@ export class SpriteDisplaySystem extends ProcessingSystem {
 
       // No sheet means that the asset hasn't finished loading yet.
       if (display.dirty && sheet) {
-        // Remove flag before the update is complete so we don't accidentally
-        // attempt to re-render the sprite more than once.
+        // Remove flag before the update is complete so we don't accidentally attempt
+        // to re-render the sprite more than once.
         display.dirty = false;
 
         sprite.texture = cropTexture(
-          sheet.data.texture,
-          sheet.data.pos(display.spriteIndex as number),
-          sheet.data.getSpriteSize()
+          sheet.texture,
+          sheet.pos(display.spriteIndex as number),
+          sheet.getSpriteSize()
         );
 
         flip(sprite, display.flip);

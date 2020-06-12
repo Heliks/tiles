@@ -71,7 +71,8 @@ export class Renderer {
    * @param stage The stage where everything is drawn.
    */
   constructor(
-    @Inject(RENDERER_CONFIG_TOKEN) config: RendererConfig,
+    @Inject(RENDERER_CONFIG_TOKEN)
+    public readonly config: RendererConfig,
     public readonly stage: Stage,
   ) {
     // Listen to browser resize events.
