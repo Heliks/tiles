@@ -1,7 +1,8 @@
 import { Tileset, TmxTilesetFormat } from "./tileset";
 import { Grid } from "@tiles/engine";
-import { TmxTilemap } from "./tmx-json";
+import { TmxLayer, TmxTilemap } from "./tmx-json";
 import { AssetLoader, Format, getDirectory, LoadType } from "@tiles/assets";
+import { Layer, TileLayer } from "./layer";
 
 export class TilesetItem {
 
@@ -10,7 +11,7 @@ export class TilesetItem {
    * is occupying.
    */
   public get lastId(): number {
-    return this.firstId + this.tileset.size + 1;
+    return this.firstId + this.tileset.size - 1;
   }
 
   /**
@@ -40,7 +41,8 @@ export class Tilemap extends Grid {
     rows: number,
     tileWidth: number,
     tileHeight: number,
-    protected readonly tilesets: TilesetItem[] = [],
+    public readonly layers: Layer[] = [],
+    public readonly tilesets: TilesetItem[] = []
   ) {
     super(cols, rows, tileWidth, tileHeight)
   }
@@ -49,7 +51,7 @@ export class Tilemap extends Grid {
    * Returns the `TilesetItem` that has a `firstId` greater or equal, and a lastId
    * smaller or equal to the given tile `id`. Throws an error if none could be found.
    */
-  public findTilesetItem(id: number): TilesetItem {
+  public tileset(id: number): TilesetItem {
     const item = this.tilesets.find(item => item.firstId <= id && item.lastId >= id);
 
     if (!item) {
@@ -59,7 +61,14 @@ export class Tilemap extends Grid {
     return item;
   }
 
+  /** Converts a global `id` to a local one. */
+  public toLocalId(id: number): number {
+    return this.tileset(id).toLocal(id);
+  }
+
 }
+
+
 
 /** Asset loader format for loading TMX tilemaps. */
 export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
@@ -79,6 +88,16 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
       await loader.fetch(path, new TmxTilesetFormat()),
       firstId
     );
+  }
+
+  public parseLayer(data: TmxLayer): Layer {
+    switch (data.type) {
+      case "tilelayer":
+        return new TileLayer(data.data);
+        break;
+      default:
+        throw new Error(`Unknown error type "${data.type}"`);
+    }
   }
 
   /** @inheritDoc */
@@ -111,19 +130,15 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
       )
     ));
 
-    for (const layer of data.layers) {
-
-    }
-
-    const cols = Math.floor(data.width / data.tilewidth);
-    const rows = Math.floor(data.height / data.tileheight);
+    const layers = data.layers.map(this.parseLayer.bind(this));
 
     return new Tilemap(
-      cols,
-      rows,
+      data.width,
+      data.height,
       data.tilewidth,
       data.tileheight,
-      tilesets
+      layers,
+      tilesets,
     );
   }
 

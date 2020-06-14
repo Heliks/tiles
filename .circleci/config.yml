@@ -14,7 +14,7 @@ jobs:
           command: npm install -g yarn
       - run:
           name: install-deps
-          command: yarn install
+          command: yarn install --frozen
       - run:
           name: run-linter
           command: yarn run lint

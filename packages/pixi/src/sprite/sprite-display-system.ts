@@ -65,8 +65,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     const sprite = this.sprites.get(entity);
 
     if (sprite) {
-      this.stage.removeChild(sprite);
       this.sprites.delete(entity);
+      this.stage.remove(sprite);
     }
   }
 

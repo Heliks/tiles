@@ -36,7 +36,7 @@ function spawnCrate(
     .use(body)
     .use(new Transform(x, y))
     .use(new Health(health, health))
-    .use(new SpriteDisplay(sheet, 0))
+    .use(new SpriteDisplay(sheet, 0, 1))
     .build();
 }
 
@@ -126,7 +126,7 @@ window.onload = () => {
       .builder()
       // .use(new Camera(200, 200))
       .use(new Transform(2, 2))
-      .use(new SpriteDisplay(pawnSheet, 1))
+      .use(new SpriteDisplay(pawnSheet, 1, 1))
       .use(new SpriteAnimation([]))
       .use(new Pawn())
       .use(body)
@@ -148,7 +148,7 @@ window.onload = () => {
     const tilemapMgr = game.world.get(TilemapManager);
 
     tilemapMgr.async('tilemaps/test01.json').then(handle => {
-      tilemapMgr.spawn(handle);
+      tilemapMgr.spawn(game.world, handle);
     });
   });
 

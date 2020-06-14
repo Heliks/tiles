@@ -1,11 +1,28 @@
-import { Grid } from "@tiles/engine";
+export enum LayerType {
+  Objects,
+  Tiles
+}
 
-/** A layer that contains tiles structured in a grid. */
-export class TileLayer {
-
-  constructor(public readonly grid: Grid) {}
-
+export interface BaseLayer {
+  type: LayerType;
 }
 
 /** A layer that contains tiles. */
-export class ObjectLayer {}
+export class ObjectLayer implements BaseLayer {
+  /** @inheritDoc */
+  public readonly type = LayerType.Objects;
+}
+
+/** A layer that contains tiles structured in a grid. */
+export class TileLayer implements BaseLayer {
+
+  /** @inheritDoc */
+  public readonly type = LayerType.Tiles;
+
+  constructor(public readonly data: number[]) {}
+
+}
+
+export type Layer = ObjectLayer | TileLayer;
+
+
