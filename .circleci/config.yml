@@ -6,7 +6,6 @@ jobs:
     executor:
       name: node/default
     steps:
-      - run: npm install -g yarn
       - run: yarn install --immutable
   # Validates the integrity of the build e.g. if it is running correctly, linting etc.
   validate:
