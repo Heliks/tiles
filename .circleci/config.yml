@@ -2,19 +2,14 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  # Installs all package dependencies.
-  install:
+  # Continuous integration
+  ci:
     executor:
       name: node/default
     steps:
       - checkout
       # Installs dependencies without touching the lockfile.
       - run: yarn install --immutable
-  # Validates the integrity of the build e.g. if it is running correctly, linting etc.
-  validate:
-    executor:
-      name: node/default
-    steps:
       # Build all packages to verify that there are not errors.
       - run: yarn run build
       # Run unit tests. This has to happen after the build because some import related
@@ -23,5 +18,4 @@ jobs:
 workflows:
     integration:
       jobs:
-        - install
-        - validate
+        - ci
