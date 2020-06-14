@@ -16,6 +16,6 @@ jobs:
       # linting rules require build fragments to verify if they are valid.
       - run: yarn test
 workflows:
-    integration:
-      jobs:
-        - ci
+  integration:
+    jobs:
+      - ci
