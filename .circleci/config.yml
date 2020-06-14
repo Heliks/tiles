@@ -1,24 +1,20 @@
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
 jobs:
-  build:
-    working_directory: ~/tiles
-    docker:
-      - image: circleci/node:12.10.0
+  verify-build:
+    executor:
+      name: node/default
     steps:
       - checkout
-      - run:
-          name: npm-update
-          command: 'sudo npm install -g npm@latest'
-      - run:
-          name: install-yarn
-          command: npm install -g yarn
-      - run:
-          name: install-deps
-          command: yarn install --frozen
-      - run:
-          name: run-linter
-          command: yarn run lint
-      - run:
-          name: run-unit-tests
-          command: yarn test
-
+      # Installs dependencies without touching the lockfile.
+      - run: yarn install --immutable
+      # Build all packages to verify that there are not errors.
+      - run: yarn run build
+      # Run unit tests. This has to happen after the build because some import related
+      # linting rules require build fragments to verify if they are valid.
+      - run: yarn test
+workflows:
+  integration:
+    jobs:
+      - verify-build
