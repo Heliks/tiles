@@ -6,6 +6,8 @@ jobs:
     executor:
       name: node/default
     steps:
+      - checkout
+      # Installs dependencies without touching the lockfile.
       - run: yarn install --immutable
       # Build all packages to verify that there are not errors.
       - run: yarn run build
