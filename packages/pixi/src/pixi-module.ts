@@ -7,13 +7,14 @@ import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheet } from './sprit
 import { Stage } from './stage';
 import { ShapeDisplaySystem } from "./shape-display";
 import { RendererPlugin } from "./types";
+import { Camera } from "./camera";
 
 /**
  * Module that provides a WebGL drawing context.
  *
  * It is recommended that this plugin is running as late in the execution order as
- * possible so that the visual representation of the game world is not one frame
- * behind of what is actually happening.
+ * possible so that the visual representation of the game world is not one frame behind
+ * of what is actually happening.
  */
 export class PixiModule implements Module {
 
@@ -53,12 +54,13 @@ export class PixiModule implements Module {
         token: SpriteSheet.STORAGE,
         value: new Map()
       })
+      .provide(Camera)
       .provide(Stage)
       .provide(Renderer)
       // .provide(Camera)
       .provide(this.getPluginProvider())
-      // Should run before the SpriteDisplaySystem so that sprites are updated
-      // on the same frame where the animation possibly transformed them.
+      // Should run before the SpriteDisplaySystem so that sprites are updated on the same
+      // frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
       .system(SpriteDisplaySystem)
       .system(ShapeDisplaySystem)

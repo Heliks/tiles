@@ -1,4 +1,4 @@
-import { Container, Renderer as PixiRenderer, Texture } from 'pixi.js';
+import { Container as BaseContainer, Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
@@ -6,6 +6,15 @@ import { Stage } from './stage';
 import { EventQueue, Vec2 } from "@tiles/engine";
 import { DebugDraw } from "./debug-draw";
 import { initPixi } from "./utils";
+import { Renderable } from "./types";
+
+/** A container that can contain many other [[Renderable]] objects. */
+export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
+
+  /** @inheritDoc */
+  public readonly children: T[] = [];
+
+}
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -21,9 +30,6 @@ export interface OnResizeEvent {
 @Injectable()
 export class Renderer {
 
-  /** Can be used to draw debug information on the screen. */
-  public readonly debugDraw = new DebugDraw();
-
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
@@ -37,19 +43,9 @@ export class Renderer {
    */
   public unitSize = 1;
 
-  /** Contains the renderers height in px. */
-  public get height(): number {
-    return this.renderer.view.height;
-  }
-
-  /** Contains the renderers width in px. */
-  public get width(): number {
-    return this.renderer.view.width;
-  }
-
   /**
-   * If this contains `true` as value the render will always be resized
-   * via [[resizeToParent()]] when the screen resolution changes.
+   * If this contains `true` as value the render will always be resized via
+   * [[resizeToParent()]] when the screen resolution changes.
    */
   protected autoResize = false;
 
@@ -59,12 +55,20 @@ export class Renderer {
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
 
-  /**
-   * Contains all render layers (stage, debug draw, etc..). This is the container that
-   * contains the game, and will be rendered to the canvas element that can be added
-   * to the DOM via [[appendTo()]].
-   */
-  protected readonly root = new Container();
+  /** @deprecated Use the stage directly */
+  public get debugDraw(): DebugDraw {
+    return this.stage.debug;
+  }
+
+  /** Contains the renderers height in px. */
+  public get height(): number {
+    return this.renderer.view.height;
+  }
+
+  /** Contains the renderers width in px. */
+  public get width(): number {
+    return this.renderer.view.width;
+  }
 
   /**
    * @param config The renderers config.
@@ -81,9 +85,6 @@ export class Renderer {
     // Initialize PIXI.JS
     this.renderer = initPixi(config);
     this.unitSize = config.unitSize;
-
-    this.root.addChild(stage, this.debugDraw.view);
-    this.root.sortChildren();
 
     this
       .setResolution(config.resolution[0], config.resolution[1])
@@ -111,7 +112,7 @@ export class Renderer {
     // new size of the canvas element.
     const ratio = width / this.resolution[0];
 
-    this.stage.scale.set(ratio);
+    this.stage.scale(ratio);
     this.debugDraw.resize(width, height, ratio);
 
     // Push event to queue
@@ -181,7 +182,7 @@ export class Renderer {
    * by the [[RendererSystem]].
    */
   public update(): void {
-    this.renderer.render(this.root);
+    this.renderer.render(this.stage.view);
   }
 
   /** Updates the resolution in which the game should be rendered. */

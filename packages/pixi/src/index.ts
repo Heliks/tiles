@@ -8,7 +8,6 @@ export { FlipDirection, rgb2hex, TextureFormat } from './utils';
 
 export {
   AnimatedSprite,
-  Container,
   Graphics,
   Sprite,
   Texture

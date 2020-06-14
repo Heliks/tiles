@@ -5,18 +5,20 @@ import { World } from "@tiles/engine";
 import { RENDERER_PLUGINS_TOKEN } from "./config";
 import { RendererPlugin } from "./types";
 import { Stage } from "./stage";
+import { Camera } from "./camera";
 
 /** Automatically updates the [[Renderer]] once on each frame. */
 @Injectable()
 export class RendererSystem implements System {
 
   /**
+   * @param camera [[Camera]]
    * @param plugins Renderer plugins that were registered with the renderer module.
    * @param renderer [[Renderer]]
    * @param stage [[Stage]]
-   * @param camera [[Camera]]
    */
   constructor(
+    protected readonly camera: Camera,
     @Inject(RENDERER_PLUGINS_TOKEN)
     protected readonly plugins: RendererPlugin[],
     protected readonly renderer: Renderer,
@@ -30,14 +32,15 @@ export class RendererSystem implements System {
       plugin.update(world);
     }
 
-    // this.stage.x = this.camera.x;
-    // this.stage.y = this.camera.y;
+    // Update the stage position according to the camera.
+    this.stage.setPosition(this.camera.x, this.camera.y);
 
     // Renders everything to the view.
     this.renderer.update();
 
-    // Clear the debug draw stage so that it can be redrawn on the next frame.
-    this.renderer.debugDraw.clear();
+    // Clear all debug information immediately after drawing so that the next frame can
+    // draw new ones.
+    this.stage.debug.clear();
   }
 
 }

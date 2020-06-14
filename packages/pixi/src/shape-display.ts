@@ -77,8 +77,8 @@ export function draw(shape: ShapeDisplay, us: number): Graphics {
   case ShapeKind.Circle:
     const radius = shape.data * us;
 
-    // Circle needs to be offset by the circle radius so that the circle center
-    // is the same as the canvas center.
+    // Circle needs to be offset by the circle radius so that the circle center is the
+    // same as the canvas center.
     graphics.drawCircle(radius, radius, radius);
     break;
     // Draw rectangles.
@@ -89,8 +89,8 @@ export function draw(shape: ShapeDisplay, us: number): Graphics {
 
   graphics.endFill();
 
-  // Set the point from which positions are calculated to the center, as
-  // the engines transform handles positions that way.
+  // Set the point from which positions are calculated to the center, as the engines
+  // transform handles positions that way.
   graphics.pivot.set(graphics.width / 2, graphics.height / 2);
 
   return graphics;
@@ -104,8 +104,8 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
   protected onDisplayModify$!: Subscriber;
 
   /**
-   * Canvases where entity shapes are drawn to, mapped to the entity to
-   * which they belong.
+   * Canvases where entity shapes are drawn to, mapped to the entity to which they
+   * belong.
    */
   protected canvases = new Map<Entity, Graphics>();
 
@@ -137,7 +137,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
   /** {@inheritDoc} */
   public update(world: World): void {
     // Get unit size.
-    const us = this.renderer.unitSize;
+    const us = this.renderer.config.unitSize;
 
     // Component storages.
     const _display = world.storage(ShapeDisplay);
@@ -155,16 +155,16 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
         this.canvases.set(event.entity, canvas);
 
         // Add the canvas to the game stage to render it.
-        this.renderer.stage.addChild(canvas);
+        this.renderer.stage.add(canvas);
         break;
       case ComponentEventType.Removed:
         canvas = this.canvases.get(event.entity);
 
-        // Delete cached canvas and remove it from the stage so that it no
-        // longer will be rendered.
+        // Delete cached canvas and remove it from the stage so that it no longer will
+        // be rendered.
         if (canvas) {
           this.canvases.delete(event.entity);
-          this.renderer.stage.removeChild(canvas);
+          this.renderer.stage.remove(canvas);
         }
         break;
       }
@@ -177,10 +177,9 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
       if (canvas) {
         const trans = _trans.get(entity);
 
-        // Move the canvas according to the entities position. This needs to be
-        // displaced accordingly because the transform position is based on the
-        // center, while the renderer calculates position from the top left
-        // corner.
+        // Move the canvas according to the entities position. This needs to be displaced
+        // because the transform position is based on the center, while the renderer uses
+        // positions relative to the top left corner.
         canvas.x = trans.x * us;
         canvas.y = trans.y * us;
 

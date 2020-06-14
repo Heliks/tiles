@@ -12,6 +12,5 @@ export interface RendererPlugin {
 
 }
 
-export interface Renderable extends DisplayObject {
-  layer?: number;
-}
+/** Something that can be displayed by the renderer. */
+export interface Renderable extends DisplayObject {}
