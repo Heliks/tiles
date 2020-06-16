@@ -1,11 +1,9 @@
 import { Renderable } from "./types";
 import { DebugDraw } from "./debug-draw";
 import { Container } from "./renderer";
+import { Vec2 } from "@tiles/engine";
 
 export class Stage {
-
-  /** Can be used to draw debug information on the screen. */
-  public readonly debug = new DebugDraw();
 
   /** Contains everything that the stage displays. */
   public readonly view = new Container();
@@ -18,16 +16,23 @@ export class Stage {
   protected readonly layers = new Container<Container>();
 
   constructor() {
-    // Build the stage from layers and debug draw.
-    this.view.addChild(this.layers, this.debug.view);
+    this.view.addChild(this.layers);
   }
 
-  /** Updates the current camera position. */
-  public setPosition(x: number, y: number): this {
-    this.view.x = x;
-    this.view.y = y;
+  /** Sets the offset of the stage. */
+  public setOffset(x: number, y: number): this {
+    this.layers.x = x;
+    this.layers.y = y;
 
     return this;
+  }
+
+  /** Returns the current offset. */
+  public getOffset(): Vec2 {
+    return [
+      this.layers.x,
+      this.layers.y
+    ];
   }
 
   /** Returns the `Container` that belongs to a `layer` index. */
@@ -59,11 +64,11 @@ export class Stage {
   }
 
   /**
-   * Scales the stage along its `x` and `y` axis. If no `y` axis is given the stage will
-   * be scaled by ratio (y = x).
+   * Scales the stage along its `x` and `y` axis. If no `y` axis is given the stage
+   * will be scaled by ratio (y = x).
    */
   public scale(x: number, y?: number): this {
-    this.layers.scale.set(x, y ?? x);
+    this.view.scale.set(x, y ?? x);
 
     return this;
   }

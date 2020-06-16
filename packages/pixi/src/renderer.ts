@@ -7,6 +7,7 @@ import { EventQueue, Vec2 } from "@tiles/engine";
 import { DebugDraw } from "./debug-draw";
 import { initPixi } from "./utils";
 import { Renderable } from "./types";
+import { Camera } from "./camera";
 
 /** A container that can contain many other [[Renderable]] objects. */
 export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
@@ -29,6 +30,9 @@ export interface OnResizeEvent {
 
 @Injectable()
 export class Renderer {
+
+  /** Can be used to draw debug information on the screen. */
+  public readonly debugDraw = new DebugDraw();
 
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
@@ -55,11 +59,6 @@ export class Renderer {
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
 
-  /** @deprecated Use the stage directly */
-  public get debugDraw(): DebugDraw {
-    return this.stage.debug;
-  }
-
   /** Contains the renderers height in px. */
   public get height(): number {
     return this.renderer.view.height;
@@ -71,10 +70,12 @@ export class Renderer {
   }
 
   /**
+   * @param camera [[Camera]].
    * @param config The renderers config.
    * @param stage The stage where everything is drawn.
    */
   constructor(
+    public readonly camera: Camera,
     @Inject(RENDERER_CONFIG_TOKEN)
     public readonly config: RendererConfig,
     public readonly stage: Stage,
@@ -113,7 +114,7 @@ export class Renderer {
     const ratio = width / this.resolution[0];
 
     this.stage.scale(ratio);
-    this.debugDraw.resize(width, height, ratio);
+    // this.debugDraw.resize(width, height, ratio);
 
     // Push event to queue
     this.onResize.push({
@@ -182,6 +183,13 @@ export class Renderer {
    * by the [[RendererSystem]].
    */
   public update(): void {
+    // Update the position of the stage according to the current camera position.
+    this.stage.setOffset(
+      (this.camera.x * this.unitSize) + (this.resolution[0] / 2),
+      (this.camera.y * this.unitSize) + (this.resolution[1] / 2)
+    );
+
+
     this.renderer.render(this.stage.view);
   }
 
