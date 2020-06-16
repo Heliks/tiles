@@ -6,6 +6,7 @@ import { SpriteAnimation } from "@tiles/pixi";
 import { InputHandler } from "./input";
 import { IdleState, PawnStateData } from "./pawn-state";
 import { Direction } from "./const";
+import { Camera } from "@tiles/pixi";
 
 export class Pawn {
 
@@ -29,9 +30,7 @@ export class PlayerController extends ProcessingSystem {
 
   protected inputHandler = new InputHandler();
 
-  constructor(
-    protected readonly ticker: Ticker
-  ) {
+  constructor(protected readonly ticker: Ticker) {
     super();
   }
 
@@ -73,6 +72,7 @@ export class PlayerController extends ProcessingSystem {
     return state;
   }
 
+  /** @inheritDoc */
   public update(world: World): void {
     const _pawn = world.storage(Pawn);
 
@@ -89,10 +89,10 @@ export class PlayerController extends ProcessingSystem {
 
       state.update();
 
-      // this.camera.transform(
-      //   state.data.transform.x,
-      // state.data.transform.y
-      // );
+      world.get(Camera).transform(
+        -state.data.transform.x,
+        -state.data.transform.y
+      );
     }
   }
 

@@ -32,15 +32,12 @@ export class RendererSystem implements System {
       plugin.update(world);
     }
 
-    // Update the stage position according to the camera.
-    this.stage.setPosition(this.camera.x, this.camera.y);
-
     // Renders everything to the view.
     this.renderer.update();
 
     // Clear all debug information immediately after drawing so that the next frame can
     // draw new ones.
-    this.stage.debug.clear();
+    this.renderer.debugDraw.clear();
   }
 
 }
