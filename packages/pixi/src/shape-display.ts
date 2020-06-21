@@ -74,17 +74,17 @@ export function draw(shape: ShapeDisplay, us: number): Graphics {
 
   switch (shape.kind) {
   // Draw circles.
-  case ShapeKind.Circle:
-    const radius = shape.data * us;
+    case ShapeKind.Circle:
+      const radius = shape.data * us;
 
-    // Circle needs to be offset by the circle radius so that the circle center is the
-    // same as the canvas center.
-    graphics.drawCircle(radius, radius, radius);
-    break;
+      // Circle needs to be offset by the circle radius so that the circle center is the
+      // same as the canvas center.
+      graphics.drawCircle(radius, radius, radius);
+      break;
     // Draw rectangles.
-  case ShapeKind.Rect:
-    graphics.drawRect(0, 0, shape.data[0] * us, shape.data[1] * us);
-    break;
+    case ShapeKind.Rect:
+      graphics.drawRect(0, 0, shape.data[ 0 ] * us, shape.data[ 1 ] * us);
+      break;
   }
 
   graphics.endFill();
@@ -148,25 +148,25 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
       let canvas;
 
       switch (event.type) {
-      case ComponentEventType.Added:
+        case ComponentEventType.Added:
         // Draw the entity shape on a canvas.
-        canvas = draw(_display.get(event.entity), us);
+          canvas = draw(_display.get(event.entity), us);
 
-        this.canvases.set(event.entity, canvas);
+          this.canvases.set(event.entity, canvas);
 
-        // Add the canvas to the game stage to render it.
-        this.renderer.stage.add(canvas);
-        break;
-      case ComponentEventType.Removed:
-        canvas = this.canvases.get(event.entity);
+          // Add the canvas to the game stage to render it.
+          this.renderer.stage.add(canvas);
+          break;
+        case ComponentEventType.Removed:
+          canvas = this.canvases.get(event.entity);
 
-        // Delete cached canvas and remove it from the stage so that it no longer will
-        // be rendered.
-        if (canvas) {
-          this.canvases.delete(event.entity);
-          this.renderer.stage.remove(canvas);
-        }
-        break;
+          // Delete cached canvas and remove it from the stage so that it no longer will
+          // be rendered.
+          if (canvas) {
+            this.canvases.delete(event.entity);
+            this.renderer.stage.remove(canvas);
+          }
+          break;
       }
     }
 

@@ -1,6 +1,7 @@
 import { Tileset } from "../tileset";
 import { Tilemap, TilesetItem } from "../tilemap";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const NOOP_TILESET = new Tileset(null as any, 5, 5, 16, 16);
 
 describe('TilesetItem', () => {

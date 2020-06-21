@@ -8,6 +8,7 @@ export interface TmxTileset {
   imageheight: number;
   imagewidth: number;
   margin: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any[];
   source: string;
   spacing: number;
@@ -54,6 +55,7 @@ export interface TmxTilemap {
   nextlayerid: number;
   nextobjectid: number;
   orientation: TmxOrientation;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any[];
   tiledversion: string;
   tileheight: number;

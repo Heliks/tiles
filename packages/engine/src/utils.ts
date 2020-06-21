@@ -10,7 +10,7 @@ export function ltrim(value: string, char: string): string {
 
 /** Trims `char` characters on the right side of the string `value`. */
 export function rtrim(value: string, char: string): string {
-  return value.replace(new RegExp(`${char}*$`),'');
+  return value.replace(new RegExp(`${char}*$`), '');
 }
 
 /** Returns `true` if `target` contains all items in `items`. */

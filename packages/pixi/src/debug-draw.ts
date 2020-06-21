@@ -1,7 +1,10 @@
 import { Sprite, Texture } from 'pixi.js';
 import { Vec2 } from "@tiles/engine";
 import { hex2rgb } from "./utils";
+import { Injectable } from "@tiles/injector";
+import { Camera } from "./camera";
 
+@Injectable()
 export class DebugDraw {
 
   /** Drawing context for [[canvas]]. */
@@ -16,7 +19,7 @@ export class DebugDraw {
   /** WebGL texture that we'll create from the [[canvas]] element. */
   protected readonly texture: Texture;
 
-  constructor() {
+  constructor(protected readonly camera: Camera) {
     const ctx = this.canvas.getContext('2d');
 
     if (!ctx) {
@@ -55,19 +58,39 @@ export class DebugDraw {
     this.ctx.scale(ratio, ratio);
   }
 
+  /** Stores the current state of the debug draw context. */
+  public save(): this {
+    this.ctx.save();
+
+    return this;
+  }
+
+  /** Restores the previous saved state of the debug draw context. */
+  public restore(): this {
+    this.ctx.restore();
+
+    return this;
+  }
+
+  /** Adds a translation transformation on the `x` and `y` axis. */
+  public translate(x: number, y: number): this {
+    this.ctx.translate(this.camera.sx + x, this.camera.sy + y);
+
+    return this;
+  }
+
   /**
    * Sets the style in which future lines should be drawn.
    *
    * @param width The width in px.
    * @param color Line color in hex.
-   * @param opacity (optional) Opacity from 0 to 1. By default lines will be
-   *  drawn fully visible (opacity 1)
+   * @param opacity (optional) Opacity from 0 to 1.
    */
   public setLineStyle(width: number, color: number, opacity = 1): this {
     const rgb = hex2rgb(color);
 
     this.ctx.lineWidth = width;
-    this.ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
+    this.ctx.strokeStyle = `rgba(${rgb[ 0 ]},${rgb[ 1 ]},${rgb[ 2 ]},${opacity})`;
 
     return this;
   }
@@ -76,8 +99,8 @@ export class DebugDraw {
   public drawLine(start: Vec2, dest: Vec2): this {
     this.ctx.beginPath();
 
-    this.ctx.moveTo(start[0], start[1]);
-    this.ctx.lineTo(dest[0], dest[1]);
+    this.ctx.moveTo(start[ 0 ], start[ 1 ]);
+    this.ctx.lineTo(dest[ 0 ], dest[ 1 ]);
 
     this.ctx.stroke();
 

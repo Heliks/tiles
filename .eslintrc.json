@@ -1,20 +1,40 @@
 {
-  "env": {"browser": true, "es6": true},
+  "env": {
+    "browser": true,
+    "es6": true
+  },
   "extends": ["plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": [
-      "warn", {"allowExpressions": true, "allowTypedFunctionExpressions": false}
+      "warn",
+      {
+        "allowExpressions": true,
+        "allowTypedFunctionExpressions": false
+      }
     ],
-    "@typescript-eslint/explicit-member-accessibility": ["error", {"overrides": {"constructors": "no-public"}}],
+    "@typescript-eslint/explicit-member-accessibility": [
+      "error",
+      {
+        "overrides": {
+          "constructors": "no-public"
+        }
+      }
+    ],
     "@typescript-eslint/no-parameter-properties": "off",
     "block-spacing": "error",
     "brace-style": ["error", "stroustrup"],
     "camelcase": "error",
     "capitalized-comments": "off",
     "comma-dangle": "error",
-    "comma-spacing": ["error", {"after": true, "before": false}],
+    "comma-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": false
+      }
+    ],
     "comma-style": ["error", "last"],
     "computed-property-spacing": ["error", "always"],
     "consistent-this": ["error", "self"],
@@ -26,15 +46,34 @@
     "function-call-argument-newline": ["error", "consistent"],
     "function-paren-newline": "off",
     "id-blacklist": "error",
-    "id-length": ["error", {"max": 25, "min": 1}],
+    "id-length": [
+      "error",
+      {
+        "max": 25,
+        "min": 1
+      }
+    ],
     "id-match": "off",
     "implicit-arrow-linebreak": ["error", "beside"],
-    "indent": ["error", 2],
+    "indent": ["error", 2, {
+      "SwitchCase": 1
+    }],
     "init-declarations": "off",
     "jsx-quotes": ["error", "prefer-double"],
-    "key-spacing": ["error", {"afterColon": true, "beforeColon": false}],
+    "key-spacing": [
+      "error",
+      {
+        "afterColon": true,
+        "beforeColon": false
+      }
+    ],
     "keyword-spacing": "error",
-    "new-cap": ["error", {"capIsNewExceptions": ["Injectable", "Inject", "Optional", "b2*"]}],
+    "new-cap": [
+      "error",
+      {
+        "capIsNewExceptions": ["Injectable", "Inject", "Optional", "b2*"]
+      }
+    ],
     "space-unary-ops": ["off"]
   }
 }

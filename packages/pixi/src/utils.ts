@@ -28,10 +28,10 @@ export function cropTexture(
   size: Vec2
 ): PIXI.Texture {
   return new Texture(source.baseTexture, new Rectangle(
-    pos[0],
-    pos[1],
-    size[0],
-    size[1]
+    pos[ 0 ],
+    pos[ 1 ],
+    size[ 0 ],
+    size[ 1 ]
   ));
 }
 
@@ -73,29 +73,29 @@ export function flip(
   direction: FlipDirection
 ): void {
   switch (direction) {
-  case FlipDirection.None:
-    renderable.scale.x = 1;
-    renderable.scale.y = 1;
-    break;
-  case FlipDirection.Both:
-    renderable.scale.x = -1;
-    renderable.scale.y = -1;
-    break;
-  case FlipDirection.Horizontal:
-    renderable.scale.x = -1;
-    renderable.scale.y = 1;
-    break;
-  case FlipDirection.Vertical:
-    renderable.scale.y = -1;
-    renderable.scale.y = 1;
-    break;
+    case FlipDirection.None:
+      renderable.scale.x = 1;
+      renderable.scale.y = 1;
+      break;
+    case FlipDirection.Both:
+      renderable.scale.x = -1;
+      renderable.scale.y = -1;
+      break;
+    case FlipDirection.Horizontal:
+      renderable.scale.x = -1;
+      renderable.scale.y = 1;
+      break;
+    case FlipDirection.Vertical:
+      renderable.scale.y = -1;
+      renderable.scale.y = 1;
+      break;
   }
 }
 
 /** Initializes a PIXI renderer from the `config`. */
 export function initPixi(config: RendererConfig): Renderer {
   const _config: Struct = {
-    transparent: config.transparent ?? true,
+    transparent: config.transparent ?? true
   };
 
   if (config.transparent) {

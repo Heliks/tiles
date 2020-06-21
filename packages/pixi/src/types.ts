@@ -13,4 +13,4 @@ export interface RendererPlugin {
 }
 
 /** Something that can be displayed by the renderer. */
-export interface Renderable extends DisplayObject {}
+export type Renderable = DisplayObject

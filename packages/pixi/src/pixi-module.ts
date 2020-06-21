@@ -9,6 +9,7 @@ import { ShapeDisplaySystem } from "./shape-display";
 import { RendererPlugin } from "./types";
 import { Camera } from "./camera";
 import { ScreenDimensions } from "./screen-dimensions";
+import { DebugDraw } from "./debug-draw";
 
 /**
  * Module that provides a WebGL drawing context.
@@ -55,13 +56,20 @@ export class PixiModule implements Module {
     builder
       .provide({
         token: ScreenDimensions,
-        value: new ScreenDimensions(0, 0, config.resolution[0], config.resolution[1])
+        value: new ScreenDimensions(
+          0,
+          0,
+          config.resolution[ 0 ],
+          config.resolution[ 1 ],
+          config.unitSize
+        )
       })
       .provide({
         token: SpriteSheet.STORAGE,
         value: new Map()
       })
       .provide(Camera)
+      .provide(DebugDraw)
       .provide(Stage)
       .provide(Renderer)
       // .provide(Camera)

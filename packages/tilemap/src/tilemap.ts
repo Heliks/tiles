@@ -21,7 +21,7 @@ export class TilesetItem {
    */
   constructor(
     public readonly tileset: Tileset,
-    public readonly firstId: number,
+    public readonly firstId: number
   ) {}
 
   /**
@@ -138,7 +138,7 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
       data.tilewidth,
       data.tileheight,
       layers,
-      tilesets,
+      tilesets
     );
   }
 
