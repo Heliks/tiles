@@ -3,11 +3,12 @@ import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
-import { EventQueue, Vec2 } from "@tiles/engine";
+import { EventQueue } from "@tiles/engine";
 import { DebugDraw } from "./debug-draw";
 import { initPixi } from "./utils";
 import { Renderable } from "./types";
 import { Camera } from "./camera";
+import { ScreenDimensions } from "./screen-dimensions";
 
 /** A container that can contain many other [[Renderable]] objects. */
 export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
@@ -53,11 +54,10 @@ export class Renderer {
    */
   protected autoResize = false;
 
-  /** Screen resolution in px. */
-  protected readonly resolution: Vec2 = [640, 488];
-
   /** PIXI.JS renderer. */
   protected readonly renderer: PixiRenderer;
+
+  protected readonly root = new Container();
 
   /** Contains the renderers height in px. */
   public get height(): number {
@@ -73,23 +73,25 @@ export class Renderer {
    * @param camera [[Camera]].
    * @param config The renderers config.
    * @param stage The stage where everything is drawn.
+   * @param dimensions
    */
   constructor(
     public readonly camera: Camera,
     @Inject(RENDERER_CONFIG_TOKEN)
     public readonly config: RendererConfig,
+    public readonly dimensions: ScreenDimensions,
     public readonly stage: Stage,
   ) {
     // Listen to browser resize events.
-    window.addEventListener('resize', this.onScreenResize.bind(this));
+    window.addEventListener('resize', this.onWindowResize.bind(this));
 
     // Initialize PIXI.JS
     this.renderer = initPixi(config);
     this.unitSize = config.unitSize;
 
-    this
-      .setResolution(config.resolution[0], config.resolution[1])
-      .setAutoResize(config.autoResize)
+    this.setAutoResize(config.autoResize)
+
+    this.root.addChild(stage.view, this.debugDraw.view);
   }
 
   /** Sets the renderers background color to the hex value of `color`. */
@@ -104,29 +106,6 @@ export class Renderer {
     return this.renderer.backgroundColor;
   }
 
-  /** Applies `width` and `height` to the renderer. */
-  public resize(width: number, height: number): this {
-    // Resize the renderers canvas element.
-    this.renderer.resize(width, height);
-
-    // Update the ratio by which the game stage has to be scaled to fit into the
-    // new size of the canvas element.
-    const ratio = width / this.resolution[0];
-
-    this.stage.scale(ratio);
-    // this.debugDraw.resize(width, height, ratio);
-
-    // Push event to queue
-    this.onResize.push({
-      height,
-      width,
-      ratio,
-      type: 'resize'
-    });
-
-    return this;
-  }
-
   /**
    * Resizes the renderer to fit the width and height of the
    * the DOM element in which it is contained.
@@ -135,16 +114,13 @@ export class Renderer {
     const parent = this.renderer.view.parentElement;
 
     if (parent) {
-      this.resize(parent.clientWidth, parent.clientHeight);
+      this.dimensions.resize(parent.clientWidth, parent.clientHeight);
     }
 
     return this;
   }
 
-  /**
-   * Disables or enables auto-resizing of the renderer when the screen/viewport
-   * resolution has changed.
-   */
+  /** Disable or enable auto-resizing when viewport size has changed. */
   public setAutoResize(value: boolean): this {
     this.autoResize = value;
 
@@ -157,11 +133,8 @@ export class Renderer {
     return this;
   }
 
-  /**
-   * Event listener that is called every time the screen or viewport resolution
-   * has changed.
-   */
-  protected onScreenResize(): void {
+  /** Event that is called when the viewport size has changed. */
+  protected onWindowResize(): void {
     if (this.autoResize) {
       this.resizeToParent();
     }
@@ -179,37 +152,40 @@ export class Renderer {
   }
 
   /**
-   * Updates the renderer. Will be automatically called once on each frame
-   * by the [[RendererSystem]].
+   * Updates the renderer. Will be automatically called once on each frame by the
+   * [[RendererSystem]].
    */
   public update(): void {
-    // Update the position of the stage according to the current camera position.
-    this.stage.setOffset(
-      (this.camera.x * this.unitSize) + (this.resolution[0] / 2),
-      (this.camera.y * this.unitSize) + (this.resolution[1] / 2)
-    );
+    const dim = this.dimensions;
 
+    // Update the dimensions of the screen.
+    if (dim.dirty) {
+      this.renderer.resize(...dim.size);
+      this.stage.scale(...dim.scale);
 
-    this.renderer.render(this.stage.view);
-  }
+      this.debugDraw.resize(
+        dim.size[0],
+        dim.size[1],
+        dim.scale[0]
+      );
 
-  /** Updates the resolution in which the game should be rendered. */
-  public setResolution(width: number, height: number): this {
-    this.resolution[0] = width;
-    this.resolution[1] = height;
+      this.onResize.push({
+        height: dim.size[1],
+        width: dim.size[0],
+        ratio: dim.scale[0],
+        type: 'resize'
+      });
 
-    if (this.autoResize) {
-      this.resize(this.renderer.width, this.renderer.height);
-    } else {
-      this.resize(width, height);
+      dim.dirty = false;
     }
 
-    return this;
-  }
+    // Update the position of the stage according to the current camera position.
+    this.stage.setOffset(
+      (this.camera.x * this.unitSize) + (dim.resolution[0] / 2),
+      (this.camera.y * this.unitSize) + (dim.resolution[1] / 2)
+    );
 
-  /** Returns the current resolution in which the game is rendered. */
-  public getResolution(): readonly [number, number] {
-    return this.resolution;
+    this.renderer.render(this.root);
   }
 
 }

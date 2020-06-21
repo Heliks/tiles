@@ -8,6 +8,7 @@ import { Stage } from './stage';
 import { ShapeDisplaySystem } from "./shape-display";
 import { RendererPlugin } from "./types";
 import { Camera } from "./camera";
+import { ScreenDimensions } from "./screen-dimensions";
 
 /**
  * Module that provides a WebGL drawing context.
@@ -43,13 +44,19 @@ export class PixiModule implements Module {
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();
 
+    const config = parseConfig(this.config);
+
     // Provide the configuration before anything else.
     builder.provide({
       token: RENDERER_CONFIG_TOKEN,
-      value: parseConfig(this.config)
+      value: config
     });
 
     builder
+      .provide({
+        token: ScreenDimensions,
+        value: new ScreenDimensions(0, 0, config.resolution[0], config.resolution[1])
+      })
       .provide({
         token: SpriteSheet.STORAGE,
         value: new Map()

@@ -3,7 +3,7 @@
   "dependencies": {
     "@tiles/assets": "^0.0.1-alpha.0",
     "@tiles/engine": "^0.0.1-alpha.0",
-    "pixi.js": "^5.2.1"
+    "pixi.js": "^5.2.4"
   },
   "description": "Tiles PIXI.JS module",
   "devDependencies": {
