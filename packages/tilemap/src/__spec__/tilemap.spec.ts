@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { Tileset } from "../tileset";
 import { Tilemap, TilesetItem } from "../tilemap";
 

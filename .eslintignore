@@ -3,6 +3,10 @@
 # Test game package is not here to stay
 packages/test/**
 
+# Dependencies
+**/node_modules/**
+
 # Build directories
-packages/*/dist/**
-packages/*/lib/**
+**/dist/**
+**/lib/**
+
