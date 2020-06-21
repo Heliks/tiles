@@ -15,7 +15,6 @@
     "@types/jest": "^25.1.2",
     "@types/react-dom": "^16.9.7",
     "copy-webpack-plugin": "^5.1.1",
-    "eslint-config-heliks": "git+ssh://git@github.com/Heliks/eslint-config.git",
     "jest": "^25.1.0",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^25.2.0",
