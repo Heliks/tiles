@@ -12,12 +12,12 @@ export class Camera {
 
   /** Contains the cameras screen position on the x axis. */
   public get sx(): number {
-    return this.x + (this.dimensions.resolution[ 0 ] / 2);
+    return this.x + (this.dimensions.resolution[0] / 2);
   }
 
   /** Contains the cameras screen position on the y axis. */
   public get sy(): number {
-    return this.y + (this.dimensions.resolution[ 0 ] / 2);
+    return this.y + (this.dimensions.resolution[0] / 2);
   }
 
   constructor(public readonly dimensions: ScreenDimensions) {}

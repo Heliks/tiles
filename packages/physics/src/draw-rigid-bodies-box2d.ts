@@ -46,8 +46,8 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
   /** Helper method to draw the lines of a polygon. */
   protected _drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[ 0 ].x * this.us,
-      vertices[ 0 ].y * this.us
+      vertices[0].x * this.us,
+      vertices[0].y * this.us
     );
 
     for (const vertex of vertices) {

@@ -46,11 +46,11 @@ export class ScreenDimensions {
 
   /** Resizes the screen dimensions. This also re-calculates the [[scale]]. */
   public resize(width: number, height: number): this {
-    this._size[ 0 ] = width;
-    this._size[ 1 ] = height;
+    this._size[0] = width;
+    this._size[1] = height;
 
-    this._scale[ 0 ] = width / this._resolution[ 0 ];
-    this._scale[ 1 ] = height / this._resolution[ 1 ];
+    this._scale[0] = width / this._resolution[0];
+    this._scale[1] = height / this._resolution[1];
 
     // Indicate that there are changes that need to be carried over to the renderer.
     this.dirty = true;

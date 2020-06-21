@@ -90,7 +90,7 @@ export class Storage<T = unknown> implements Base<T> {
 
   /** {@inheritDoc} */
   public drop(): void {
-    for (const entity of Array.from(this.components.keys())) {
+    for (const entity of [...this.components.keys()]) {
       this.entityMgr.getComposition(entity).remove(this.id);
       this.entityMgr.setDirty(entity);
     }

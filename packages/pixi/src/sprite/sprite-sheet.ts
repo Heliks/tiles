@@ -43,7 +43,7 @@ export class SpriteSheet extends Grid {
    */
   public setAnimation(name: string, data: AnimationData): this {
     // Ensure that animation contains at least one name.
-    if (!data.frames.length) {
+    if (data.frames.length === 0) {
       throw new Error('Animation must at least contain one frame.');
     }
 

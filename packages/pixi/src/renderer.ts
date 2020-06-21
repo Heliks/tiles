@@ -133,7 +133,7 @@ export class Renderer {
 
   /** Appends the renderer as <canvas> element to the given target. */
   public appendTo(target: HTMLElement): this {
-    target.appendChild(this.renderer.view);
+    target.append(this.renderer.view);
 
     if (this.autoResize) {
       this.resizeToParent();
@@ -157,18 +157,18 @@ export class Renderer {
       //  using the correct y scaling would have the side effect that the game will look
       //  distorted if its not in a perfect aspect ratio (e.g. 1920x1280px for a 16:9
       //  aspect ratio).
-      this.stage.scale(dim.scale[ 0 ], dim.scale[ 0 ]);
+      this.stage.scale(dim.scale[0], dim.scale[0]);
 
       this.debugDraw.resize(
-        dim.size[ 0 ],
-        dim.size[ 1 ],
-        dim.scale[ 0 ]
+        dim.size[0],
+        dim.size[1],
+        dim.scale[0]
       );
 
       this.onResize.push({
-        height: dim.size[ 1 ],
-        width: dim.size[ 0 ],
-        ratio: dim.scale[ 0 ],
+        height: dim.size[1],
+        width: dim.size[0],
+        ratio: dim.scale[0],
         type: 'resize'
       });
 

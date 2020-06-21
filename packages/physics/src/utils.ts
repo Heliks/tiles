@@ -36,8 +36,8 @@ export function bCreateBodyPart(
   // convert polygon to a box. The type hint here is somehow inferred incorrectly
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (bFixtureDef.shape as any).SetAsBox(
-    data.data[ 0 ] / 2,
-    data.data[ 1 ] / 2
+    data.data[0] / 2,
+    data.data[1] / 2
   );
 
   bBody.CreateFixture(bFixtureDef);
@@ -55,11 +55,11 @@ export function bCreateBody(bWorld: b2World, body: RigidBody, position: Vec2): b
   bodyDef.fixedRotation = !body.rotate;
 
   // The bodies initial position.
-  bodyDef.position.Set(position[ 0 ], position[ 1 ]);
+  bodyDef.position.Set(position[0], position[1]);
 
   bodyDef.linearVelocity.Set(
-    body.velocity[ 0 ],
-    body.velocity[ 1 ]
+    body.velocity[0],
+    body.velocity[1]
   );
 
   // assign body type

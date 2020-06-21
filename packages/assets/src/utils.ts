@@ -5,8 +5,8 @@
  */
 export function getDirectory(path: string): string {
   // Respect both windows (\) and unix (/) path separators.
-  return path.substr(0, Math.max(
+  return path.slice(0, Math.max(0, Math.max(
     path.lastIndexOf('\\'),
     path.lastIndexOf('/')
-  ));
+  )));
 }

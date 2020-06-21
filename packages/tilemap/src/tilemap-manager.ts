@@ -58,7 +58,7 @@ export class TilemapManager {
       switch (layer.type) {
         case LayerType.Tiles:
           for (let i = 0, l = layer.data.length; i < l; i++) {
-            const gId = layer.data[ i ];
+            const gId = layer.data[i];
 
             // A global tile ID "0" means that no tile exists at this index.
             if (gId === 0) {
@@ -73,8 +73,8 @@ export class TilemapManager {
             // Tiled anchors tiles from the top left corner so we need to calculate the
             // center position manually.
               .use(new Transform(
-                (position[ 0 ] + tw2) / us,
-                (position[ 1 ] + th2) / us
+                (position[0] + tw2) / us,
+                (position[1] + th2) / us
               ))
               .use(new SpriteDisplay(tileset.tileset, idx))
               .build();

@@ -16,7 +16,7 @@ export function stringifyToken(token: InjectorToken): string {
   // token.constructor.name does not work in all environments, hence why
   // we have to hack this together here.
   if (token.constructor && str.startsWith('class')) {
-    return str.split(' ')[ 1 ];
+    return str.split(' ')[1];
   }
 
   return str;

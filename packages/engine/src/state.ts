@@ -54,7 +54,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
    * if the stack is empty.
    */
   public get active(): State<T> | undefined {
-    return this.stack[ this.stack.length - 1 ];
+    return this.stack[this.stack.length - 1];
   }
 
   /** Contains the current stack size. */

@@ -90,7 +90,7 @@ export class DebugDraw {
     const rgb = hex2rgb(color);
 
     this.ctx.lineWidth = width;
-    this.ctx.strokeStyle = `rgba(${rgb[ 0 ]},${rgb[ 1 ]},${rgb[ 2 ]},${opacity})`;
+    this.ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
 
     return this;
   }
@@ -99,8 +99,8 @@ export class DebugDraw {
   public drawLine(start: Vec2, dest: Vec2): this {
     this.ctx.beginPath();
 
-    this.ctx.moveTo(start[ 0 ], start[ 1 ]);
-    this.ctx.lineTo(dest[ 0 ], dest[ 1 ]);
+    this.ctx.moveTo(start[0], start[1]);
+    this.ctx.lineTo(dest[0], dest[1]);
 
     this.ctx.stroke();
 

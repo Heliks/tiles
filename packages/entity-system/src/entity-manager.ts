@@ -66,7 +66,7 @@ export class EntityManager {
    * Throws an error if no entity exists at that index.
    */
   public get(index: number): Entity {
-    const entity = this.entities[ index ];
+    const entity = this.entities[index];
 
     // This hard check is required because the first entity will be "0", which would
     // cause the ! operator to produce a false positive here.
@@ -82,7 +82,7 @@ export class EntityManager {
     // From the given entity we extract the index part and compare it with the entity
     // that is currently occupying that index. This will fail if their versions mis-
     // match, which means that the entity is no longer alive.
-    return this.entities[ entity & ENTITY_MASK ] === entity;
+    return this.entities[entity & ENTITY_MASK] === entity;
   }
 
   /** Destroys an `entity`. */
@@ -93,7 +93,7 @@ export class EntityManager {
       // Increment the version of the entity and mark the index as free so that it
       // can be recycled by the next entity that is created.
       this.free.push(
-        this.entities[ index ] = (index | ((entity >> ENTITY_BITS) + 1) << ENTITY_BITS)
+        this.entities[index] = (index | ((entity >> ENTITY_BITS) + 1) << ENTITY_BITS)
       );
     }
 
@@ -123,7 +123,7 @@ export class EntityManager {
    * be added or removed from entity groups during the next [[update]].
    */
   public setDirty(entity: Entity): void {
-    if (this.alive(entity) && this.dirty.indexOf(entity) === -1) {
+    if (this.alive(entity) && !this.dirty.includes(entity)) {
       this.dirty.push(entity);
     }
   }
@@ -136,7 +136,7 @@ export class EntityManager {
     const dirty = this.dirty;
 
     // Nothing to synchronize...
-    if (!dirty.length) {
+    if (dirty.length === 0) {
       return;
     }
 

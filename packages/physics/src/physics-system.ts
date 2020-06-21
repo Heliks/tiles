@@ -125,8 +125,8 @@ export class PhysicsSystem extends ProcessingSystem {
         // Transform velocity if necessary.
         if (body.transVelocity) {
           bBody.SetLinearVelocity(new b2Vec2(
-            body.transVelocity[ 0 ],
-            body.transVelocity[ 1 ]
+            body.transVelocity[0],
+            body.transVelocity[1]
           ));
 
           body.transVelocity = undefined;
@@ -135,8 +135,8 @@ export class PhysicsSystem extends ProcessingSystem {
         const velocity = bBody.GetLinearVelocity();
         const position = bBody.GetPosition();
 
-        body.velocity[ 0 ] = velocity.x;
-        body.velocity[ 1 ] = velocity.y;
+        body.velocity[0] = velocity.x;
+        body.velocity[1] = velocity.y;
 
         // Update values on transform component.
         trans.setPosition(position.x, position.y);

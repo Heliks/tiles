@@ -43,7 +43,7 @@ export class Stage {
       this.layers.addChild(new Container());
     }
 
-    return containers[ layer ];
+    return containers[layer];
   }
 
   /** Adds a `Renderable` to the stage. */
@@ -56,6 +56,7 @@ export class Stage {
   /** Removes a `Renderable` from all layers of the stage. */
   public remove(item: Renderable): this {
     for (const layer of this.layers.children) {
+      // eslint-disable-next-line unicorn/prefer-node-remove
       layer.removeChild(item);
     }
 

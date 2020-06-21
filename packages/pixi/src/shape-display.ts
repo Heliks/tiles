@@ -83,7 +83,7 @@ export function draw(shape: ShapeDisplay, us: number): Graphics {
       break;
     // Draw rectangles.
     case ShapeKind.Rect:
-      graphics.drawRect(0, 0, shape.data[ 0 ] * us, shape.data[ 1 ] * us);
+      graphics.drawRect(0, 0, shape.data[0] * us, shape.data[1] * us);
       break;
   }
 

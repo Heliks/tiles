@@ -137,8 +137,8 @@ export class PhysicsWorld {
   ) {
     // noinspection JSPotentiallyInvalidConstructorUsage
     this.bWorld = new b2World(new b2Vec2(
-      gravity[ 0 ],
-      gravity[ 1 ]
+      gravity[0],
+      gravity[1]
     ));
   }
 
