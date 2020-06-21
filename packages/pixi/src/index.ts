@@ -1,6 +1,7 @@
 export * from './camera';
 export * from './pixi-module';
 export * from './renderer';
+export * from './screen-dimensions';
 export * from './shape-display';
 export * from './sprite';
 export * from './stage';

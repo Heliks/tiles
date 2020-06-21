@@ -49,6 +49,9 @@ export class DebugDraw {
     this.canvas.width = width;
     this.canvas.height = height;
 
+    // Needs re-upload because of dimension change.
+    this.texture.update();
+
     this.ctx.scale(ratio, ratio);
   }
 
