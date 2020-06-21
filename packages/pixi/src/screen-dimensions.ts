@@ -36,24 +36,21 @@ export class ScreenDimensions {
    * @param h Initial height of the screen in px.
    * @param rw Resolution width in px.
    * @param rh Resolution height in px.
+   * @param unitSize Value by which positions that are fed into the rendering module must
+   *  be multiplied to translate those values into pixel positions.
    */
-  constructor(w: number, h: number, rw: number, rh: number) {
+  constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
     this._size = [w, h];
     this._resolution = [rw, rh];
   }
 
   /** Resizes the screen dimensions. This also re-calculates the [[scale]]. */
   public resize(width: number, height: number): this {
-    this._size[0] = width;
-    this._size[1] = height;
+    this._size[ 0 ] = width;
+    this._size[ 1 ] = height;
 
-    this._scale[0] = width / this._resolution[0];
-
-    // Todo: As of now the screen can be extended infinitely on the y axis, but
-    //  calculating this correctly would have the side effect that the game will look
-    //  distorted if its not in a perfect aspect ratio (e.g. 1920x1280px for a 16:9
-    //  aspect ratio).
-    this._scale[1] = this._scale[0];
+    this._scale[ 0 ] = width / this._resolution[ 0 ];
+    this._scale[ 1 ] = height / this._resolution[ 1 ];
 
     // Indicate that there are changes that need to be carried over to the renderer.
     this.dirty = true;

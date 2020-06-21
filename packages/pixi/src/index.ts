@@ -1,4 +1,5 @@
 export * from './camera';
+export * from './debug-draw';
 export * from './pixi-module';
 export * from './renderer';
 export * from './screen-dimensions';

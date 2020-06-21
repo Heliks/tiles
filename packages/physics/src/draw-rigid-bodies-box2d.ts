@@ -1,18 +1,18 @@
 import { b2Color, b2Draw, b2Transform, b2Vec2, b2World } from "@flyover/box2d";
-import { Injectable } from "@tiles/injector";
+import { DebugDraw } from "@tiles/pixi";
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
 
-@Injectable()
 export class DrawRigidBodiesBox2d extends b2Draw  {
 
-  /**
-   * @param ctx Context on which debug information is drawn.
-   * @param us Unit size.
-   */
+  /** @hidden */
+  private get ctx(): CanvasRenderingContext2D {
+    return this.debugDraw.ctx;
+  }
+
   constructor(
-    protected readonly ctx: CanvasRenderingContext2D,
+    protected readonly debugDraw: DebugDraw,
     protected readonly us: number
   ) {
     super();
@@ -29,7 +29,7 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
     this.ctx.save();
 
     // Apply translate with unit size.
-    this.ctx.translate(
+    this.debugDraw.translate(
       transform.p.x * this.us,
       transform.p.y * this.us
     );
@@ -46,14 +46,14 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
   /** Helper method to draw the lines of a polygon. */
   protected _drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[0].x * this.us,
-      vertices[0].y * this.us
+      vertices[ 0 ].x * this.us,
+      vertices[ 0 ].y * this.us
     );
 
     for (const vertex of vertices) {
       this.ctx.lineTo(
         vertex.x * this.us,
-        vertex.y * this.us,
+        vertex.y * this.us
       );
     }
 

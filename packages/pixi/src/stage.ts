@@ -1,5 +1,4 @@
 import { Renderable } from "./types";
-import { DebugDraw } from "./debug-draw";
 import { Container } from "./renderer";
 import { Vec2 } from "@tiles/engine";
 

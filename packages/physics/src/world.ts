@@ -133,12 +133,12 @@ export class PhysicsWorld {
   constructor(
     protected readonly ticker: Ticker,
     @Optional('gravity')
-    protected readonly gravity: Vec2 = [0, 0],
+    protected readonly gravity: Vec2 = [0, 0]
   ) {
     // noinspection JSPotentiallyInvalidConstructorUsage
     this.bWorld = new b2World(new b2Vec2(
-      gravity[0],
-      gravity[1]
+      gravity[ 0 ],
+      gravity[ 1 ]
     ));
   }
 

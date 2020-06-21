@@ -1,10 +1,9 @@
 import { Injectable } from "@tiles/injector";
 import { AssetLoader, AssetStorage, Handle } from "@tiles/assets";
 import { Tilemap, TmxTilemapFormat } from "./tilemap";
-import { LayerType, TileLayer } from "./layer";
+import { LayerType } from "./layer";
 import { Transform, World } from "@tiles/engine";
-import { SpriteDisplay } from "@tiles/pixi";
-import { Renderer } from "@tiles/pixi";
+import { Renderer, SpriteDisplay } from "@tiles/pixi";
 
 @Injectable()
 export class TilemapManager {
@@ -46,7 +45,7 @@ export class TilemapManager {
     return tilemap.data;
   }
 
-  public spawn(world: World, handle: Handle<Tilemap>) {
+  public spawn(world: World, handle: Handle<Tilemap>): void {
     const tilemap = this.get(handle);
 
     const tw2 = tilemap.cellWidth / 2;
@@ -59,7 +58,7 @@ export class TilemapManager {
       switch (layer.type) {
         case LayerType.Tiles:
           for (let i = 0, l = layer.data.length; i < l; i++) {
-            const gId = layer.data[i];
+            const gId = layer.data[ i ];
 
             // A global tile ID "0" means that no tile exists at this index.
             if (gId === 0) {
@@ -71,11 +70,11 @@ export class TilemapManager {
             const idx = tileset.toLocal(gId) - 1;
 
             world.builder()
-              // Tiled anchors tiles from the top left corner so we need to calculate the
-              // center position manually.
+            // Tiled anchors tiles from the top left corner so we need to calculate the
+            // center position manually.
               .use(new Transform(
-                (position[0] + tw2) / us,
-                (position[1] + th2) / us
+                (position[ 0 ] + tw2) / us,
+                (position[ 1 ] + th2) / us
               ))
               .use(new SpriteDisplay(tileset.tileset, idx))
               .build();

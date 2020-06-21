@@ -22,7 +22,7 @@ export class DrawRigidBodies implements RendererPlugin {
     protected readonly renderer: Renderer,
     protected readonly world: PhysicsWorld
   ) {
-    this.adapter = new DrawRigidBodiesBox2d(renderer.debugDraw.ctx, config.unitSize);
+    this.adapter = new DrawRigidBodiesBox2d(renderer.debugDraw, config.unitSize);
 
     // Enable all relevant draw flags.
     // eslint-disable-next-line new-cap

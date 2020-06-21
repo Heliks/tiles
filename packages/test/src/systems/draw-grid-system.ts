@@ -1,5 +1,5 @@
 import { Injectable } from "@tiles/injector";
-import { Renderer } from "@tiles/pixi";
+import { DebugDraw, Renderer } from "@tiles/pixi";
 import { Vec2 } from "@tiles/engine";
 import { RendererPlugin } from "@tiles/pixi/lib/types";
 
@@ -19,24 +19,32 @@ export class DrawGridSystem implements RendererPlugin {
   protected readonly ctx: CanvasRenderingContext2D;
 
   /**
+   * @param debugDraw [[DebugDraw]]
    * @param renderer [[Renderer]]
    */
-  constructor(protected readonly renderer: Renderer) {
+  constructor(
+    protected readonly debugDraw: DebugDraw,
+    protected readonly renderer: Renderer
+
+  ) {
     this.ctx = renderer.debugDraw.ctx;
   }
 
   /** {@inheritDoc} */
   public update(): void {
-    const us = this.renderer.unitSize;
+    const draw = this.debugDraw
+      .save()
+      .setLineStyle(0.5, this.color, this.opacity)
+      .translate(0, 0);
 
-    const width = this.renderer.width;
-    const height = this.renderer.height;
+    const us = this.renderer.dimensions.unitSize;
+
+    const width = this.renderer.dimensions.size[0];
+    const height = this.renderer.dimensions.size[1];
 
     // Calculate the amount of columns and rows to draw.
     const cols = Math.floor(width / us);
     const rows = Math.floor(height / us);
-
-    this.renderer.debugDraw.setLineStyle(0.5, this.color, this.opacity);
 
     // Convenience to not allocate unnecessary new arrays.
     const from: Vec2 = [0, 0];
@@ -52,7 +60,7 @@ export class DrawGridSystem implements RendererPlugin {
       dest[0] = x;
       dest[1] = height;
 
-      this.renderer.debugDraw.drawLine(from, dest);
+      draw.drawLine(from, dest);
     }
 
     // Draw rows
@@ -65,8 +73,11 @@ export class DrawGridSystem implements RendererPlugin {
       dest[0] = width;
       dest[1] = y;
 
-      this.renderer.debugDraw.drawLine(from, dest);
+      draw.drawLine(from, dest);
     }
+
+    // Restore the previous transformation matrix.
+    draw.restore();
   }
 
 }

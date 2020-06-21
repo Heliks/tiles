@@ -32,21 +32,11 @@ export interface OnResizeEvent {
 @Injectable()
 export class Renderer {
 
-  /** Can be used to draw debug information on the screen. */
-  public readonly debugDraw = new DebugDraw();
-
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
   /** Asset storage for loaded textures. */
   public readonly textures: AssetStorage<Texture> = new Map();
-
-  /**
-   * The value by which positions coming from a `Transform` component should be
-   * multiplied, as those value will be in a unit like meter while the renderer
-   * works with pixels.
-   */
-  public unitSize = 1;
 
   /**
    * If this contains `true` as value the render will always be resized via
@@ -72,6 +62,7 @@ export class Renderer {
   /**
    * @param camera [[Camera]].
    * @param config The renderers config.
+   * @param debugDraw Can be used to draw debug information on the screen.
    * @param stage The stage where everything is drawn.
    * @param dimensions
    */
@@ -79,15 +70,15 @@ export class Renderer {
     public readonly camera: Camera,
     @Inject(RENDERER_CONFIG_TOKEN)
     public readonly config: RendererConfig,
+    public readonly debugDraw: DebugDraw,
     public readonly dimensions: ScreenDimensions,
-    public readonly stage: Stage,
+    public readonly stage: Stage
   ) {
     // Listen to browser resize events.
     window.addEventListener('resize', this.onWindowResize.bind(this));
 
     // Initialize PIXI.JS
     this.renderer = initPixi(config);
-    this.unitSize = config.unitSize;
 
     this.setAutoResize(config.autoResize)
 
@@ -161,18 +152,23 @@ export class Renderer {
     // Update the dimensions of the screen.
     if (dim.dirty) {
       this.renderer.resize(...dim.size);
-      this.stage.scale(...dim.scale);
+
+      // Todo: As of now the screen can be extended indefinitely on the y axis, but
+      //  using the correct y scaling would have the side effect that the game will look
+      //  distorted if its not in a perfect aspect ratio (e.g. 1920x1280px for a 16:9
+      //  aspect ratio).
+      this.stage.scale(dim.scale[ 0 ], dim.scale[ 0 ]);
 
       this.debugDraw.resize(
-        dim.size[0],
-        dim.size[1],
-        dim.scale[0]
+        dim.size[ 0 ],
+        dim.size[ 1 ],
+        dim.scale[ 0 ]
       );
 
       this.onResize.push({
-        height: dim.size[1],
-        width: dim.size[0],
-        ratio: dim.scale[0],
+        height: dim.size[ 1 ],
+        width: dim.size[ 0 ],
+        ratio: dim.scale[ 0 ],
         type: 'resize'
       });
 
@@ -181,8 +177,8 @@ export class Renderer {
 
     // Update the position of the stage according to the current camera position.
     this.stage.setOffset(
-      (this.camera.x * this.unitSize) + (dim.resolution[0] / 2),
-      (this.camera.y * this.unitSize) + (dim.resolution[1] / 2)
+      this.camera.sx,
+      this.camera.sy
     );
 
     this.renderer.render(this.root);

@@ -6,10 +6,6 @@ import { SpriteDisplay } from "./sprite-display";
 import { SpriteSheet } from "./sprite-sheet";
 import { AssetStorage } from "@tiles/assets";
 
-function foo(sheet: SpriteSheet, storage: AssetStorage<SpriteSheet>) {
-
-}
-
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
