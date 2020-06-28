@@ -1,9 +1,9 @@
-import { Injectable } from "@tiles/injector";
-import { AssetLoader, AssetStorage, Handle } from "@tiles/assets";
-import { Tilemap, TmxTilemapFormat } from "./tilemap";
-import { LayerType } from "./layer";
-import { Transform, World } from "@tiles/engine";
-import { Renderer, SpriteDisplay } from "@tiles/pixi";
+import { Injectable } from '@tiles/injector';
+import { AssetLoader, AssetStorage, Handle } from '@tiles/assets';
+import { Tilemap, TmxTilemapFormat } from './tilemap';
+import { LayerType } from './layer';
+import { Transform, World } from '@tiles/engine';
+import { Renderer, SpriteDisplay } from '@tiles/pixi';
 
 @Injectable()
 export class TilemapManager {
@@ -69,15 +69,32 @@ export class TilemapManager {
             const tileset = tilemap.tileset(gId);
             const idx = tileset.toLocal(gId) - 1;
 
-            world.builder()
-            // Tiled anchors tiles from the top left corner so we need to calculate the
-            // center position manually.
+            world
+              .builder()
               .use(new Transform(
+                // Tiled anchors tiles from the top left corner so we need to calculate the
+                // center position manually.
                 (position[0] + tw2) / us,
                 (position[1] + th2) / us
               ))
               .use(new SpriteDisplay(tileset.tileset, idx))
               .build();
+          }
+          break;
+        case LayerType.Objects:
+          for (const item of layer.data) {
+            if (!item.tileId) {
+              continue;
+            }
+
+            const tileset = tilemap.tileset(item.tileId);
+            const idx = tileset.toLocal(item.tileId) - 1;
+
+            world
+              .builder()
+              .use(new Transform(item.x / us, item.y / us))
+              .use(new SpriteDisplay(tileset.tileset, idx))
+              .build()
           }
           break;
         default:

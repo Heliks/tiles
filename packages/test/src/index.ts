@@ -3,14 +3,14 @@ import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
 import { GameBuilder, Transform, World } from '@tiles/engine';
 import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from "@tiles/physics";
-import { InputHandler } from "./input";
-import { DrawGridSystem } from "./systems/draw-grid-system";
-import { CollisionGroups } from "./const";
-import { ArrowSystem } from "./systems/arrow";
-import { Health } from "./components/health";
-import { DeathSystem } from "./systems/death";
-import { TilemapManager, TilemapModule } from "@tiles/tilemap/src";
+import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
+import { InputHandler } from './input';
+import { DrawGridSystem } from './systems/draw-grid-system';
+import { CollisionGroups } from './const';
+import { ArrowSystem } from './systems/arrow';
+import { Health } from './components/health';
+import { DeathSystem } from './systems/death';
+import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -125,7 +125,7 @@ window.onload = () => {
     game.world
       .builder()
       // .use(new Camera(200, 200))
-      .use(new Transform(2, 2))
+      .use(new Transform(30, 30))
       .use(new SpriteDisplay(pawnSheet, 1, 1))
       .use(new SpriteAnimation([]))
       .use(new Pawn())

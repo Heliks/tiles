@@ -15,8 +15,8 @@
  "spacing":0,
  "terrains":[
         {
-         "name":"New Terrain",
-         "tile":42
+         "name":"Road",
+         "tile":29
         }],
  "tilecount":76,
  "tiledversion":"1.3.3",
@@ -53,10 +53,12 @@
         }, 
         {
          "id":29,
+         "probability":1.5,
          "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":30,
+         "probability":0.25,
          "terrain":[0, 0, 0, 0]
         }, 
         {
@@ -69,6 +71,7 @@
         }, 
         {
          "id":33,
+         "probability":0.25,
          "terrain":[0, 0, 0, 0]
         }, 
         {
@@ -101,46 +104,14 @@
         }, 
         {
          "id":41,
-         "terrain":[0, 0, -1, -1]
-        }, 
-        {
-         "id":42,
-         "terrain":[0, 0, -1, -1]
-        }, 
-        {
-         "id":43,
          "terrain":[0, 0, -1, 0]
         }, 
         {
          "id":44,
-         "terrain":[0, -1, 0, -1]
-        }, 
-        {
-         "id":47,
-         "terrain":[-1, 0, -1, 0]
-        }, 
-        {
-         "id":48,
-         "terrain":[0, -1, 0, -1]
-        }, 
-        {
-         "id":51,
-         "terrain":[-1, 0, -1, 0]
-        }, 
-        {
-         "id":52,
          "terrain":[0, -1, 0, 0]
         }, 
         {
-         "id":53,
-         "terrain":[-1, -1, 0, 0]
-        }, 
-        {
-         "id":54,
-         "terrain":[-1, -1, 0, 0]
-        }, 
-        {
-         "id":55,
+         "id":45,
          "terrain":[-1, 0, 0, 0]
         }],
  "tilewidth":16,

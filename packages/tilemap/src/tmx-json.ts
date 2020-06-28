@@ -1,5 +1,11 @@
 export type TmxOrientation = 'orthogonal' | 'isometric' | 'staggered' | 'hexagonal';
 
+export interface TmxProperty {
+  name: string;
+  value: string;
+  type: 'bool' | 'float' | 'int' | 'string';
+}
+
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
 export interface TmxTileset {
   backgroundcolor: string;
@@ -8,8 +14,7 @@ export interface TmxTileset {
   imageheight: number;
   imagewidth: number;
   margin: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  properties: any[];
+  properties?: TmxProperty[];
   source: string;
   spacing: number;
   tilecount: number;
@@ -26,16 +31,40 @@ interface BaseLayer {
   offsetx: number;
   offsety: number;
   opacity: number;
+  properties?: TmxProperty[];
   x: number;
   y: number;
 }
 
-export interface TmxTileLayer extends BaseLayer {
-  data: number[];
-  type: 'tilelayer';
+export interface TmxObject {
+  gid: number;
+  height: number;
+  id: number;
+  name: string;
+  rotation: number;
+  type: string;
+  visible: boolean;
+  width: number;
+  x: number;
+  y: number;
 }
 
-export type TmxLayer = TmxTileLayer;
+export enum TmxLayerType {
+  Objects = 'objectgroup',
+  Tiles = 'tilelayer'
+}
+
+export interface TmxObjectLayer extends BaseLayer {
+  objects: TmxObject[];
+  type: TmxLayerType.Objects;
+}
+
+export interface TmxTileLayer extends BaseLayer {
+  data: number[];
+  type: TmxLayerType.Tiles;
+}
+
+export type TmxLayer = TmxObjectLayer | TmxTileLayer;
 
 /** An external tileset that must be loaded before it can be used. */
 export interface TmxExternalTileset {

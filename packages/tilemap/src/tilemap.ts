@@ -1,8 +1,9 @@
-import { Tileset, TmxTilesetFormat } from "./tileset";
-import { Grid } from "@tiles/engine";
-import { TmxLayer, TmxTilemap } from "./tmx-json";
-import { AssetLoader, Format, getDirectory, LoadType } from "@tiles/assets";
-import { Layer, TileLayer } from "./layer";
+import { Tileset, TmxTilesetFormat } from './tileset';
+import { Grid } from '@tiles/engine';
+import { TmxLayer, TmxLayerType, TmxTilemap } from './tmx-json';
+import { AssetLoader, Format, getDirectory, LoadType } from '@tiles/assets';
+import { Layer, ObjectLayer, TileLayer } from './layer';
+import { parseProperties } from './tmx-utils';
 
 export class TilesetItem {
 
@@ -68,7 +69,26 @@ export class Tilemap extends Grid {
 
 }
 
+export function parseLayer(data: TmxLayer): Layer {
+  const properties = parseProperties(data.properties ?? []);
 
+  switch (data.type) {
+    case TmxLayerType.Tiles:
+      return new TileLayer(data.data, properties);
+    case TmxLayerType.Objects:
+      // Convert the TmxObjects to WorldObjects
+      const objects = data.objects.map(item => {
+        return {
+          tileId: item.gid,
+          ...item
+        };
+      });
+
+      return new ObjectLayer(objects, properties);
+    default:
+      throw new Error('');
+  }
+}
 
 /** Asset loader format for loading TMX tilemaps. */
 export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
@@ -88,16 +108,6 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
       await loader.fetch(path, new TmxTilesetFormat()),
       firstId
     );
-  }
-
-  public parseLayer(data: TmxLayer): Layer {
-    switch (data.type) {
-      case "tilelayer":
-        return new TileLayer(data.data);
-        break;
-      default:
-        throw new Error(`Unknown error type "${data.type}"`);
-    }
   }
 
   /** @inheritDoc */
@@ -130,7 +140,7 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
       )
     ));
 
-    const layers = data.layers.map(this.parseLayer.bind(this));
+    const layers = data.layers.map(parseLayer);
 
     return new Tilemap(
       data.width,
