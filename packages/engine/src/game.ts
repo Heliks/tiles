@@ -46,9 +46,10 @@ export class Game {
    * called once on every frame.
    */
   protected update(): void {
+    this.dispatcher.update();
+
     // Updates the world. E.g. entities, components.
     this.world.update();
-    this.dispatcher.update();
   }
 
   /** Starts the game. */
