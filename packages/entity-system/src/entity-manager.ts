@@ -1,6 +1,5 @@
-import { BitSet } from "./bit-set";
-import { Entity } from "./types";
-import { EntityGroup } from "./entity-group";
+import { Entity } from './types';
+import { Changes } from './changes';
 
 // The amount of bits reserved on the 32 bit entity identifier to store the index
 // position. By reserving 20 bits the maximum amount of entities that can be alive
@@ -11,12 +10,6 @@ export const ENTITY_BITS = 20;
 export const ENTITY_MASK = 0xFFFFF;
 
 /**
- * A bit set that contains the Ids of all components that are contained in this composition.
- * The entity manager will store a composition for each entity.
- */
-export type Composition = BitSet;
-
-/**
  * Manages entities.
  */
 export class EntityManager {
@@ -24,18 +17,13 @@ export class EntityManager {
   /** Contains all existing entities, both living ones and destroyed ones. */
   public readonly entities: Entity[] = [];
 
-  /** Bit sets that hold the composition of an entity. */
-  protected readonly compositions = new Map<Entity, Composition>();
+  /** Contains entities that can be recycled. */
+  private readonly free: Entity[] = [];
 
   /**
-   * Contains entities that had their composition recently updated. This will be consumed
-   * by [[sync]] to update entity pools accordingly, at which point all dirty entities
-   * will be un-flagged.
+   * @param changes Change-set used to track entity modifications.
    */
-  protected readonly dirty: Entity[] = [];
-
-  /** Contains entities that can be recycled. */
-  protected readonly free: Entity[] = [];
+  constructor(protected readonly changes = new Changes()) {}
 
   /** Creates a new entity and returns it. */
   public create(): Entity {
@@ -98,65 +86,6 @@ export class EntityManager {
     }
 
     return this;
-  }
-
-  /**
-   * Returns the composition of an entity. If it didn't exist previously
-   * it will be created instead.
-   */
-  public getComposition(entity: Entity): BitSet {
-    let composition = this.compositions.get(entity);
-
-    if (composition) {
-      return composition;
-    }
-
-    composition = new BitSet();
-
-    this.compositions.set(entity, composition);
-
-    return composition;
-  }
-
-  /**
-   * Flags an alive `entity` as dirty, which means it will be checked if it can
-   * be added or removed from entity groups during the next [[update]].
-   */
-  public setDirty(entity: Entity): void {
-    if (this.alive(entity) && !this.dirty.includes(entity)) {
-      this.dirty.push(entity);
-    }
-  }
-
-  /**
-   * Synchronizes dirty ({@link dirty}) entities with the given `groups`. Dirty
-   * entities will be un-flagged in the process.
-   */
-  public sync(groups: readonly EntityGroup[]): void {
-    const dirty = this.dirty;
-
-    // Nothing to synchronize...
-    if (dirty.length === 0) {
-      return;
-    }
-
-    for (const group of groups) {
-      for (const entity of dirty) {
-        // If the entity is contained in the group and no longer eligible it will be
-        // removed. If the entity is not contained but eligible it will be added to
-        // the group.
-        if (group.has(entity)) {
-          if (! group.test(this.getComposition(entity))) {
-            group.remove(entity);
-          }
-        }
-        else if (group.test(this.getComposition(entity))) {
-          group.add(entity);
-        }
-      }
-    }
-
-    this.dirty.length = 0;
   }
 
 }

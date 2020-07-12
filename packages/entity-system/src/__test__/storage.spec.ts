@@ -30,7 +30,7 @@ describe('Storage', () => {
       storage.add(entity);
 
       expect(
-        world.entities.getComposition(entity).has(storage.id)
+        world.changes.composition(entity).has(storage.id)
       ).toBeTruthy();
     });
 
@@ -52,7 +52,7 @@ describe('Storage', () => {
       storage.set(entity, new A());
 
       expect(
-        world.entities.getComposition(entity).has(storage.id)
+        world.changes.composition(entity).has(storage.id)
       ).toBeTruthy();
     });
 
@@ -71,7 +71,7 @@ describe('Storage', () => {
   // Remove component
   describe('remove()', () => {
     it('should update entity compositions', () => {
-      const composition = world.entities.getComposition(entity);
+      const composition = world.changes.composition(entity);
 
       storage.add(entity);
       storage.remove(entity);

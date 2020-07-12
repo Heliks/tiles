@@ -1,6 +1,6 @@
-import { EntityManager } from './entity-manager';
 import { ClassType, ComponentEvent, ComponentEventType, Entity, Storage as Base } from './types';
-import { EventQueue } from "@heliks/event-queue";
+import { EventQueue } from '@heliks/event-queue';
+import { Changes } from './changes';
 
 export class Storage<T = unknown> implements Base<T> {
 
@@ -13,15 +13,15 @@ export class Storage<T = unknown> implements Base<T> {
   /**
    * @param id The id of the storage.
    * @param type The component type that this storage is storing.
-   * @param entityMgr Entity manager.
+   * @param changes Change-set that keeps track of entity changes.
    */
   constructor(
     public readonly id: number,
     public readonly type: ClassType<T>,
-    protected readonly entityMgr: EntityManager
+    public readonly changes: Changes
   ) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public add(entity: Entity, data?: Partial<T>): T {
     // eslint-disable-next-line new-cap
     const component = new this.type();
@@ -31,9 +31,7 @@ export class Storage<T = unknown> implements Base<T> {
     }
 
     this.components.set(entity, component);
-
-    this.entityMgr.getComposition(entity).add(this.id);
-    this.entityMgr.setDirty(entity);
+    this.changes.add(entity, this.id);
 
     this._events.push({
       entity, type: ComponentEventType.Added
@@ -42,19 +40,17 @@ export class Storage<T = unknown> implements Base<T> {
     return component;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public set(entity: Entity, instance: T): void {
     this.components.set(entity, instance);
-
-    this.entityMgr.getComposition(entity).add(this.id);
-    this.entityMgr.setDirty(entity);
+    this.changes.add(entity, this.id);
 
     this._events.push({
       entity, type: ComponentEventType.Added
     });
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get(entity: Entity): T {
     const component = this.components.get(entity) as T;
 
@@ -69,9 +65,7 @@ export class Storage<T = unknown> implements Base<T> {
   public remove(entity: Entity): boolean {
     if (this.components.has(entity)) {
       this.components.delete(entity);
-
-      this.entityMgr.getComposition(entity).remove(this.id);
-      this.entityMgr.setDirty(entity);
+      this.changes.remove(entity, this.id);
 
       this._events.push({
         entity, type: ComponentEventType.Removed
@@ -83,22 +77,21 @@ export class Storage<T = unknown> implements Base<T> {
     return false;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public has(entity: Entity): boolean {
     return this.components.has(entity);
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public drop(): void {
     for (const entity of [...this.components.keys()]) {
-      this.entityMgr.getComposition(entity).remove(this.id);
-      this.entityMgr.setDirty(entity);
+      this.changes.remove(entity, this.id);
     }
 
     this.components.clear();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public events(): EventQueue<ComponentEvent> {
     return this._events;
   }

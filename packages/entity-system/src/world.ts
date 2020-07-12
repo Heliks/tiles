@@ -4,12 +4,16 @@ import { EntityManager } from './entity-manager';
 import { Filter } from './filter';
 import { Storage } from './storage';
 import { ClassType, Entity, Query } from './types';
-import { EntityBuilder } from "./entity-builder";
+import { EntityBuilder } from './entity-builder';
+import { Changes } from './changes';
 
 export class World {
 
-  /** {@link EntityManager} */
-  public readonly entities = new EntityManager();
+  /** @inheritDoc Changes */
+  public readonly changes = new Changes();
+
+  /** @inheritDoc EntityManager */
+  public readonly entities = new EntityManager(this.changes);
 
   /** Contains all registered entity groups. */
   protected readonly groups: EntityGroup[] = [];
@@ -26,22 +30,23 @@ export class World {
    */
   private nextStorageIndex = 0;
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public register<T>(component: ClassType<T>): Storage<T> {
-    const storage = new Storage<T>(1 << this.nextStorageIndex++, component, this.entities);
+    const storage = new Storage<T>(1 << this.nextStorageIndex++, component, this.changes);
 
     this.storages.set(component, storage);
 
     return storage;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public storage<T>(component: ClassType<T>): Storage<T> {
     const storage = this.storages.get(component) as Storage<T>;
 
     return storage ? storage : this.register(component);
   }
 
+  /** @hidden */
   public createComposition(components: ClassType[]): BitSet {
     const bits = new BitSet();
 
@@ -52,6 +57,7 @@ export class World {
     return bits;
   }
 
+  /** @hidden */
   public createFilter(query: Query): Filter {
     return new Filter(
       this.createComposition(query.contains || []),
@@ -65,11 +71,8 @@ export class World {
   }
 
   /**
-   * Creates an entity.
-   *
-   * @param components (optional) An array of components that are added to
-   *  the entity automatically.
-   * @returns The created entity.
+   * Creates an entity. If any `components` are given they will be automatically added
+   * to it.
    */
   public create(components?: ClassType[]): Entity {
     const entity = this.entities.create();
@@ -83,20 +86,60 @@ export class World {
     return entity;
   }
 
-  /** Destroys an `entity`. */
+  /**
+   * Destroys an `entity`. Components that belong to this entity will be removed lazily
+   * during the worlds [[update()]].
+   */
   public destroy(entity: Entity): this {
-    for (const storage of this.storages.values()) {
-      storage.remove(entity);
+    if (this.entities.destroy(entity)) {
+      this.changes.destroy(entity);
     }
-
-    this.entities.destroy(entity);
 
     return this;
   }
 
+  /**
+   * Synchronizes changed entities with existing groups. This is called automatically
+   * during the world [[update()]].
+   */
+  public sync(): void {
+    const dirty = this.changes.changed;
+
+    // Nothing to synchronize...
+    if (dirty.length === 0) {
+      return;
+    }
+
+    for (const group of this.groups) {
+      for (const entity of dirty) {
+        const composition = this.changes.composition(entity);
+
+        // If the entity is contained in the group and no longer eligible it will be
+        // removed. If the entity is not contained but eligible it will be added to
+        // the group.
+        if (group.has(entity)) {
+          if (! group.test(composition)) {
+            group.remove(entity);
+          }
+        }
+        else if (group.test(composition)) {
+          group.add(entity);
+        }
+      }
+    }
+  }
+
   /** Updates the world. Should be called once on each frame. */
   public update(): void {
-    this.entities.sync(this.groups);
+    this.sync();
+
+    for (const entity of this.changes.destroyed) {
+      for (const storage of this.storages.values()) {
+        storage.remove(entity);
+      }
+    }
+
+    this.changes.clear();
   }
 
   /**
@@ -118,7 +161,7 @@ export class World {
 
     // Populate with entities that are eligible.
     for (const entity of items) {
-      if (group.test(this.entities.getComposition(entity))) {
+      if (group.test(this.changes.composition(entity))) {
         group.add(entity);
       }
     }
