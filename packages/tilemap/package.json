@@ -1,6 +1,6 @@
 {
   "author": "Felix Wolf",
-  "dependencies": {
+  "peerDependencies": {
     "@tiles/assets": "^0.0.1-alpha.0",
     "@tiles/engine": "^0.0.1-alpha.0",
     "@tiles/injector": "^0.0.1-alpha.0",
@@ -8,6 +8,10 @@
   },
   "description": "Tilemap Module",
   "devDependencies": {
+    "@tiles/assets": "^0.0.1-alpha.0",
+    "@tiles/engine": "^0.0.1-alpha.0",
+    "@tiles/injector": "^0.0.1-alpha.0",
+    "@tiles/pixi": "^0.0.1-alpha.0",
     "@types/jest": "^25.1.2",
     "jest": "^25.1.0",
     "jest-canvas-mock": "^2.2.0",

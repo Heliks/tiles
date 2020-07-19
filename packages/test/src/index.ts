@@ -3,7 +3,7 @@ import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
 import { Game, GameBuilder, Transform, World } from '@tiles/engine';
 import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
+import { BodyPartType, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
 import { InputHandler } from './input';
 import { DrawGridSystem } from './systems/draw-grid-system';
 import { CollisionGroups } from './const';
@@ -13,6 +13,7 @@ import { DeathSystem } from './systems/death';
 import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
 import { Entity } from '@tiles/entity-system';
 import { lookupEntity } from './utils';
+import { PhysicsDebugDraw } from '@tiles/physics';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -108,7 +109,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(DrawRigidBodies)
+        .plugin(PhysicsDebugDraw)
         .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
