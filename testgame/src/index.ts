@@ -163,7 +163,7 @@ window.onload = () => {
     const tilemapMgr = game.world.get(TilemapManager);
 
     tilemapMgr.async('tilemaps/test01.json').then(handle => {
-      // tilemapMgr.spawn(game.world, handle);
+      tilemapMgr.spawn(game.world, handle);
     });
   });
 

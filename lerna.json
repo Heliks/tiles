@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "testgame"
   ],
   "version": "independent",
   "npmClient": "yarn",

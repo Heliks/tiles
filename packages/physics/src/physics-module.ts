@@ -29,9 +29,9 @@ export class PhysicsModule implements Module {
         value: config
       })
       .provide(ContactEvents)
+      .system(PhysicsSystem)
       .system(SyncWorlds)
       .system(SyncBodies)
-      .system(PhysicsSystem)
   }
 
 }
