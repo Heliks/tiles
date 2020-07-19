@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
-import { GameBuilder, Transform, World } from '@tiles/engine';
+import { Game, GameBuilder, Transform, World } from '@tiles/engine';
 import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
 import { BodyPartType, DrawRigidBodies, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
@@ -11,6 +11,8 @@ import { ArrowSystem } from './systems/arrow';
 import { Health } from './components/health';
 import { DeathSystem } from './systems/death';
 import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
+import { Entity } from '@tiles/entity-system';
+import { lookupEntity } from './utils';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -75,6 +77,16 @@ async function getPawnSpriteSheet(world: World) {
   return handle;
 }
 
+/** Sets up some global functions for debugging. */
+function setupDebugGlobals(game: Game): void {
+  const _w = window as any;
+
+  // The game instance itself.
+  _w.GAME = game;
+
+  // Utility to look up entities.
+  _w.LOOKUP_ENTITY = (entity: Entity) => lookupEntity(game.world, entity);
+}
 
 window.onload = () => {
   const domTarget = document.getElementById('stage');
@@ -88,7 +100,6 @@ window.onload = () => {
     .module(new AssetsModule())
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
     .system(PlayerController)
-    .system(ArrowSystem)
     .module(
       new PixiModule({
         antiAlias: false,
@@ -100,9 +111,12 @@ window.onload = () => {
         .plugin(DrawRigidBodies)
         .plugin(DrawGridSystem)
     )
+    .system(ArrowSystem)
     .system(DeathSystem)
     .module(new TilemapModule())
     .build();
+
+  setupDebugGlobals(game);
 
   // Configure asset directory
   game.world.get(AssetLoader).setBaseUrl('assets');
@@ -125,7 +139,7 @@ window.onload = () => {
     game.world
       .builder()
       // .use(new Camera(200, 200))
-      .use(new Transform(30, 30))
+      .use(new Transform(2, 2))
       .use(new SpriteDisplay(pawnSheet, 1, 1))
       .use(new SpriteAnimation([]))
       .use(new Pawn())
@@ -148,7 +162,7 @@ window.onload = () => {
     const tilemapMgr = game.world.get(TilemapManager);
 
     tilemapMgr.async('tilemaps/test01.json').then(handle => {
-      tilemapMgr.spawn(game.world, handle);
+      // tilemapMgr.spawn(game.world, handle);
     });
   });
 

@@ -1,4 +1,6 @@
-import { Vec2 } from "@tiles/engine";
+import { Vec2 } from '@tiles/engine';
+
+// File is WIP
 
 export enum RigidBodyType {
   Dynamic,
@@ -115,6 +117,10 @@ export class RigidBody {
     this.dirty = true;
 
     return this;
+  }
+
+  public hasTag(tag: string): boolean {
+    return this.tags.includes(tag);
   }
 
 }

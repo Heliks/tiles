@@ -1,5 +1,4 @@
-/** The token used to provide the physics config to the service container.*/
-export const TK_PHYSICS_CONFIG = Symbol('physics:config');
+import { token } from '@tiles/injector';
 
 /** Configuration for physics module. */
 export interface PhysicsConfig {
@@ -10,6 +9,9 @@ export interface PhysicsConfig {
    */
   unitSize: number;
 }
+
+/** The token used to provide the physics config to the service container.*/
+export const TK_PHYSICS_CONFIG = token<PhysicsConfig>();
 
 /**
  * Parses a partial physics `config` and fills it with fallback values where

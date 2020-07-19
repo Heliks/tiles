@@ -3,12 +3,12 @@ import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
-import { EventQueue } from "@tiles/engine";
-import { DebugDraw } from "./debug-draw";
-import { initPixi } from "./utils";
-import { Renderable } from "./types";
-import { Camera } from "./camera";
-import { ScreenDimensions } from "./screen-dimensions";
+import { EventQueue } from '@tiles/engine';
+import { DebugDraw } from './debug-draw';
+import { initPixi } from './utils';
+import { Renderable } from './types';
+import { Camera } from './camera';
+import { ScreenDimensions } from './screen-dimensions';
 
 /** A container that can contain many other [[Renderable]] objects. */
 export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
@@ -151,19 +151,14 @@ export class Renderer {
 
     // Update the dimensions of the screen.
     if (dim.dirty) {
+      const [ sx, sy ] = dim.scale;
+
+      // Resize the renderer and adjust the stage scale to fit into that new dimension.
       this.renderer.resize(...dim.size);
+      this.stage.scale(sx, sy);
 
-      // Todo: As of now the screen can be extended indefinitely on the y axis, but
-      //  using the correct y scaling would have the side effect that the game will look
-      //  distorted if its not in a perfect aspect ratio (e.g. 1920x1280px for a 16:9
-      //  aspect ratio).
-      this.stage.scale(dim.scale[0], dim.scale[0]);
-
-      this.debugDraw.resize(
-        dim.size[0],
-        dim.size[1],
-        dim.scale[0]
-      );
+      // Also update the debug draw accordingly.
+      this.debugDraw.resize(dim.size[0], dim.size[1]).scale(sx, sy);
 
       this.onResize.push({
         height: dim.size[1],
@@ -174,6 +169,7 @@ export class Renderer {
 
       dim.dirty = false;
     }
+
 
     // Update the position of the stage according to the current camera position.
     this.stage.setOffset(

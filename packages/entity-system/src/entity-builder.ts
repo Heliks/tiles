@@ -1,4 +1,5 @@
-import { ClassType, Entity, World } from './types';
+import { ClassType, World } from './types';
+import { Entity } from './entity';
 
 export class EntityBuilder {
 

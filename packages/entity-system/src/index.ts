@@ -1,3 +1,4 @@
+export * from './entity';
 export * from './entity-group';
 export * from './filter';
 export * from './system';
@@ -7,7 +8,6 @@ export {
   ComponentType,
   ComponentEvent,
   ComponentEventType,
-  Entity,
   Storage,
   Query
 } from './types';

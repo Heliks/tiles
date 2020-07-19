@@ -1,26 +1,9 @@
-import { EventQueue } from "@heliks/event-queue";
+import { EventQueue } from '@heliks/event-queue';
+import { Entity } from './entity';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ClassType<T = unknown> = new (...params: any[]) => T;
 export type ComponentType<T = unknown> = ClassType<T>;
-
-/**
- * An entity identifier to which components can be attached.
- *
- * The 32 bit identifier is split into two parts, one being the index that
- * the entity occupies in memory, and the second is the version, or the
- * "generation" in which the entity exists.
- *
- * For simplicities sake lets pretend the entity is an 8 bit identifier
- * instead, where the last two bits are reserved for the version:
- *
- * Entity = 00100100
- *          001001[00] <-- steal two bits for version
- *
- * Which leaves us with an index part 001001 (9) for the entity index,
- * and 00 (0) for the entity version.
- */
-export type Entity = number;
 
 /** */
 export interface Query {

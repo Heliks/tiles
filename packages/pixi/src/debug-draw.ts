@@ -1,8 +1,8 @@
 import { Sprite, Texture } from 'pixi.js';
-import { Vec2 } from "@tiles/engine";
-import { hex2rgb } from "./utils";
-import { Injectable } from "@tiles/injector";
-import { Camera } from "./camera";
+import { Vec2 } from '@tiles/engine';
+import { hex2rgb } from './utils';
+import { Injectable } from '@tiles/injector';
+import { Camera } from './camera';
 
 @Injectable()
 export class DebugDraw {
@@ -48,14 +48,21 @@ export class DebugDraw {
   }
 
   /** Resize the debug canvas draw element. */
-  public resize(width: number, height: number, ratio: number): void {
+  public resize(width: number, height: number): this {
     this.canvas.width = width;
     this.canvas.height = height;
 
     // Needs re-upload because of dimension change.
     this.texture.update();
 
-    this.ctx.scale(ratio, ratio);
+    return this;
+  }
+
+  /** Sets the scale in which the debug draw should be rendered. */
+  public scale(x: number, y: number): this {
+    this.ctx.scale(x, y);
+
+    return this;
   }
 
   /** Stores the current state of the debug draw context. */

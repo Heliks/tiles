@@ -1,5 +1,5 @@
-import { Entity } from './types';
 import { BitSet } from './bit-set';
+import { Entity } from './entity';
 
 /**
  * A bit set that contains the Ids of all components that are contained in this
@@ -53,7 +53,7 @@ export class Changes {
   }
 
   /** Adds a composition `bit` to `entity`. */
-  public add(entity: Entity, bit: CompositionBit) {
+  public add(entity: Entity, bit: CompositionBit): void {
     this.composition(entity).add(bit);
     this.setDirty(entity);
   }

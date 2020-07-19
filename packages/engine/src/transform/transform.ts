@@ -1,3 +1,5 @@
+import { Vec2 } from '../types';
+
 export class Transform {
 
   /**
@@ -13,6 +15,10 @@ export class Transform {
     this.y = y;
 
     return this;
+  }
+
+  public toVec2(): Vec2 {
+    return [ this.x, this.y ];
   }
 
 }

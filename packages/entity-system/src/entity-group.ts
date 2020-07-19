@@ -1,6 +1,6 @@
 import { BitSet } from './bit-set';
 import { Filter } from './filter';
-import { Entity } from './types';
+import { Entity } from './entity';
 
 export class EntityGroup {
 

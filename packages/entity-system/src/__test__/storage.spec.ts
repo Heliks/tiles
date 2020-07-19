@@ -1,6 +1,7 @@
 import { World } from '../world';
-import { ComponentEventType, Entity } from '../types';
+import { ComponentEventType } from '../types';
 import { Storage } from '../storage';
+import { Entity } from '../entity';
 
 describe('Storage', () => {
   class A {

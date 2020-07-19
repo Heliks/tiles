@@ -1,5 +1,5 @@
-import { Injectable } from "@tiles/injector";
-import { ScreenDimensions } from "./screen-dimensions";
+import { Injectable } from '@tiles/injector';
+import { ScreenDimensions } from './screen-dimensions';
 
 @Injectable()
 export class Camera {
@@ -17,7 +17,7 @@ export class Camera {
 
   /** Contains the cameras screen position on the y axis. */
   public get sy(): number {
-    return this.y + (this.dimensions.resolution[0] / 2);
+    return this.y + (this.dimensions.resolution[1] / 2);
   }
 
   constructor(public readonly dimensions: ScreenDimensions) {}

@@ -3,9 +3,10 @@ import { EntityGroup } from './entity-group';
 import { EntityManager } from './entity-manager';
 import { Filter } from './filter';
 import { Storage } from './storage';
-import { ClassType, Entity, Query } from './types';
+import { ClassType, Query } from './types';
 import { EntityBuilder } from './entity-builder';
 import { Changes } from './changes';
+import { Entity } from './entity';
 
 export class World {
 
@@ -131,14 +132,13 @@ export class World {
 
   /** Updates the world. Should be called once on each frame. */
   public update(): void {
-    this.sync();
-
     for (const entity of this.changes.destroyed) {
       for (const storage of this.storages.values()) {
         storage.remove(entity);
       }
     }
 
+    this.sync();
     this.changes.clear();
   }
 

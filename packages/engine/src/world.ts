@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container, ImmutableContainer, InjectorToken } from '@tiles/injector';
-import { World as WorldBase } from '@tiles/entity-system';
+import { Storage, World as WorldBase } from '@tiles/entity-system';
 import { ClassType } from './types';
 
 export class World extends WorldBase implements ImmutableContainer {
@@ -20,6 +20,13 @@ export class World extends WorldBase implements ImmutableContainer {
   /** @inheritDoc */
   public get<T>(token: InjectorToken<T>): T {
     return this.container.get<T>(token);
+  }
+
+  /** Returns all initialized component storages. */
+  public getStorages(): Storage<unknown>[] {
+    return [
+      ...this.storages.values()
+    ];
   }
 
 }

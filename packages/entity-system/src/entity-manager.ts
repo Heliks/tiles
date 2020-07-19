@@ -1,13 +1,5 @@
-import { Entity } from './types';
 import { Changes } from './changes';
-
-// The amount of bits reserved on the 32 bit entity identifier to store the index
-// position. By reserving 20 bits the maximum amount of entities that can be alive
-// at the same time is limited to 1048575, which should be enough for most games.
-export const ENTITY_BITS = 20;
-
-// Mask used to extract the index part of an entity identifier.
-export const ENTITY_MASK = 0xFFFFF;
+import { Entity, ENTITY_BITS, ENTITY_MASK } from './entity';
 
 /**
  * Manages entities.

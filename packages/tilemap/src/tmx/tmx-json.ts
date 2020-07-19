@@ -13,6 +13,7 @@ export interface TmxTileset {
   image: string;
   imageheight: number;
   imagewidth: number;
+  name: string;
   margin: number;
   properties?: TmxProperty[];
   source: string;
@@ -51,7 +52,8 @@ export interface TmxObject {
 
 export enum TmxLayerType {
   Objects = 'objectgroup',
-  Tiles = 'tilelayer'
+  Tiles = 'tilelayer',
+  Group = 'group'
 }
 
 export interface TmxObjectLayer extends BaseLayer {
@@ -64,7 +66,14 @@ export interface TmxTileLayer extends BaseLayer {
   type: TmxLayerType.Tiles;
 }
 
-export type TmxLayer = TmxObjectLayer | TmxTileLayer;
+export interface TmxGroupLayer extends BaseLayer {
+  layers: (
+    TmxGroupLayer | TmxObjectLayer | TmxTileLayer
+  )[];
+  type: TmxLayerType.Group;
+}
+
+export type TmxLayer = TmxObjectLayer | TmxTileLayer | TmxGroupLayer;
 
 /** An external tileset that must be loaded before it can be used. */
 export interface TmxExternalTileset {

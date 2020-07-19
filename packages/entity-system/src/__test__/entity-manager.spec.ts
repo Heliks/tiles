@@ -1,4 +1,5 @@
-import { ENTITY_BITS, ENTITY_MASK, EntityManager } from '../entity-manager';
+import { EntityManager } from '../entity-manager';
+import { ENTITY_BITS, ENTITY_MASK } from '../entity';
 
 describe('EntityManager', () => {
   let em: EntityManager;

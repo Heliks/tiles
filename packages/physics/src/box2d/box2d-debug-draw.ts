@@ -1,27 +1,35 @@
-import { b2Color, b2Draw, b2Transform, b2Vec2, b2World } from "@flyover/box2d";
-import { DebugDraw } from "@tiles/pixi";
+import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2 } from '@flyover/box2d';
+import { DebugDraw, Renderer } from '@tiles/pixi';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
+export class Box2dDebugDraw extends b2Draw  {
 
-export class DrawRigidBodiesBox2d extends b2Draw  {
+  /** @internal */
+  private readonly debugDraw: DebugDraw;
 
-  /** @hidden */
+  /** @internal */
+  private readonly unitSize: number;
+
+  /** @internal */
   private get ctx(): CanvasRenderingContext2D {
     return this.debugDraw.ctx;
   }
 
-  constructor(
-    protected readonly debugDraw: DebugDraw,
-    protected readonly us: number
-  ) {
+  /**
+   * @param renderer The renderer service.
+   */
+  constructor(renderer: Renderer) {
     super();
-  }
 
-  /** {@inheritDoc} */
-  public update(bWorld: b2World): void {
-    // Draw the Box2D debug information.
-    bWorld.DrawDebugData();
+    this.debugDraw = renderer.debugDraw;
+    this.unitSize  = renderer.config.unitSize;
+
+    // Enable all relevant draw flags.
+    // eslint-disable-next-line new-cap
+    this.SetFlags(
+      b2DrawFlags.e_jointBit | b2DrawFlags.e_shapeBit
+    );
   }
 
   /** Box2D callback to translate the drawing canvas. */
@@ -30,8 +38,8 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
 
     // Apply translate with unit size.
     this.debugDraw.translate(
-      transform.p.x * this.us,
-      transform.p.y * this.us
+      transform.p.x * this.unitSize,
+      transform.p.y * this.unitSize
     );
 
     // Set rotation
@@ -46,14 +54,14 @@ export class DrawRigidBodiesBox2d extends b2Draw  {
   /** Helper method to draw the lines of a polygon. */
   protected _drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[0].x * this.us,
-      vertices[0].y * this.us
+      vertices[0].x * this.unitSize,
+      vertices[0].y * this.unitSize
     );
 
     for (const vertex of vertices) {
       this.ctx.lineTo(
-        vertex.x * this.us,
-        vertex.y * this.us
+        vertex.x * this.unitSize,
+        vertex.y * this.unitSize
       );
     }
 

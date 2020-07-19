@@ -1,6 +1,7 @@
-import { ClassType, ComponentEvent, ComponentEventType, Entity, Storage as Base } from './types';
+import { ClassType, ComponentEvent, ComponentEventType, Storage as Base } from './types';
 import { EventQueue } from '@heliks/event-queue';
 import { Changes } from './changes';
+import { Entity } from './entity';
 
 export class Storage<T = unknown> implements Base<T> {
 
@@ -55,7 +56,7 @@ export class Storage<T = unknown> implements Base<T> {
     const component = this.components.get(entity) as T;
 
     if (! component) {
-      throw new Error('No component found for entity.');
+      throw new Error(`No component found for entity ${entity}`);
     }
 
     return component;
@@ -94,6 +95,10 @@ export class Storage<T = unknown> implements Base<T> {
   /** @inheritDoc */
   public events(): EventQueue<ComponentEvent> {
     return this._events;
+  }
+
+  public toString(): string {
+    return this.type.name;
   }
 
 }

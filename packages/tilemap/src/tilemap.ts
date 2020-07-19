@@ -1,9 +1,6 @@
-import { Tileset, TmxTilesetFormat } from './tileset';
+import { Tileset } from './tileset';
 import { Grid } from '@tiles/engine';
-import { TmxLayer, TmxLayerType, TmxTilemap } from './tmx-json';
-import { AssetLoader, Format, getDirectory, LoadType } from '@tiles/assets';
-import { Layer, ObjectLayer, TileLayer } from './layer';
-import { parseProperties } from './tmx-utils';
+import { Layer } from './layers/layer';
 
 export class TilesetItem {
 
@@ -42,7 +39,7 @@ export class Tilemap extends Grid {
     rows: number,
     tileWidth: number,
     tileHeight: number,
-    public readonly layers: Layer[] = [],
+    public readonly layers: Layer<Tilemap>[] = [],
     public readonly tilesets: TilesetItem[] = []
   ) {
     super(cols, rows, tileWidth, tileHeight)
@@ -69,87 +66,3 @@ export class Tilemap extends Grid {
 
 }
 
-export function parseLayer(data: TmxLayer): Layer {
-  const properties = parseProperties(data.properties ?? []);
-
-  switch (data.type) {
-    case TmxLayerType.Tiles:
-      return new TileLayer(data.data, properties);
-    case TmxLayerType.Objects:
-      // Convert the TmxObjects to WorldObjects
-      const objects = data.objects.map(item => {
-        return {
-          tileId: item.gid,
-          ...item
-        };
-      });
-
-      return new ObjectLayer(objects, properties);
-    default:
-      throw new Error('');
-  }
-}
-
-/** Asset loader format for loading TMX tilemaps. */
-export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
-
-  /** {@inheritDoc} */
-  public readonly name = 'tmx-tilemap';
-
-  /** {@inheritDoc} */
-  public readonly type = LoadType.Json;
-
-  protected async getExternalTileset(
-    path: string,
-    firstId: number,
-    loader: AssetLoader
-  ): Promise<TilesetItem> {
-    return new TilesetItem(
-      await loader.fetch(path, new TmxTilesetFormat()),
-      firstId
-    );
-  }
-
-  /** @inheritDoc */
-  public async process(
-    data: TmxTilemap,
-    file: string,
-    loader: AssetLoader
-  ): Promise<Tilemap> {
-    // Check if we've got the right TMX format.
-    if (data.type !== 'map') {
-      throw new Error('Data is not a TMX tilemap.');
-    }
-
-    // Infinite maps are not supported as of now.
-    // Todo: Implement infinite maps
-    if (data.infinite) {
-      throw new Error('Infinite maps are not supported.');
-    }
-
-    // All paths in this file will be relative to the directory where the map file
-    // is located.
-    const basePath = getDirectory(file);
-
-    // Load all tilesets on the tile map.
-    const tilesets = await Promise.all(data.tilesets.map(
-      item => this.getExternalTileset(
-        `${basePath}/${item.source}`,
-        item.firstgid,
-        loader
-      )
-    ));
-
-    const layers = data.layers.map(parseLayer);
-
-    return new Tilemap(
-      data.width,
-      data.height,
-      data.tilewidth,
-      data.tileheight,
-      layers,
-      tilesets
-    );
-  }
-
-}

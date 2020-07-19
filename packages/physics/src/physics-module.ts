@@ -1,7 +1,11 @@
-import { GameBuilder, Module } from "@tiles/engine";
-import { PhysicsWorld } from "./world";
-import { PhysicsSystem } from "./physics-system";
-import { parseConfig, PhysicsConfig, TK_PHYSICS_CONFIG } from "./config";
+import { GameBuilder, Module } from '@tiles/engine';
+import { parseConfig, PhysicsConfig, TK_PHYSICS_CONFIG } from './config';
+import { ContactEvents } from './events';
+import { ADAPTER_TK } from './physics-adapter';
+import { Box2dWorld } from './box2d';
+import { SyncBodies } from './sync-bodies';
+import { SyncWorlds } from './sync-worlds';
+import { PhysicsSystem } from './physics-system';
 
 export class PhysicsModule implements Module {
 
@@ -15,12 +19,19 @@ export class PhysicsModule implements Module {
     const config = parseConfig(this.config);
 
     builder
+      // Todo: Make this configurable
+      .provide({
+        token: ADAPTER_TK,
+        value: new Box2dWorld([0, 0])
+      })
       .provide({
         token: TK_PHYSICS_CONFIG,
         value: config
       })
-      .provide(PhysicsWorld)
-      .system(PhysicsSystem);
+      .provide(ContactEvents)
+      .system(SyncWorlds)
+      .system(SyncBodies)
+      .system(PhysicsSystem)
   }
 
 }
