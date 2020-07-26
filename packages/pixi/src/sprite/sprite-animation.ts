@@ -1,16 +1,5 @@
-import { FlipDirection } from "../utils";
-
-export interface AnimationData {
-  /** The direction in which the sprites of all frames should be flipped. */
-  flip?: FlipDirection;
-  /** Contains the indexes of all sprites of which the animation consists. */
-  frames: number[];
-  /**
-   * Duration in milliseconds how long each frame is visible before the animation
-   * switches to the next one.
-   */
-  frameDuration?: number;
-}
+import { FlipDirection } from '../utils';
+import { AnimationData } from '../sprite-sheet';
 
 export class SpriteAnimation implements AnimationData {
 

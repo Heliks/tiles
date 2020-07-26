@@ -1,6 +1,7 @@
 import { Format, LoadType } from '@tiles/assets';
-import { TextureFormat } from "../utils";
-import { SpriteSheet } from "./sprite-sheet";
+import { TextureFormat } from '../utils';
+import { SpriteGrid, SpriteSheet } from '../sprite-sheet';
+import { Grid } from '@tiles/engine';
 
 /** (WIP) */
 export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
@@ -20,12 +21,9 @@ export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
 
   /** {@inheritDoc} */
   public process(data: Blob): SpriteSheet {
-    return new SpriteSheet(
+    return new SpriteGrid(
+      new Grid(this.cols, this.rows, this.spriteWidth, this.spriteHeight),
       new TextureFormat().process(data),
-      this.cols,
-      this.rows,
-      this.spriteWidth,
-      this.spriteHeight
     );
   }
 

@@ -1,11 +1,11 @@
 import { System } from '@tiles/entity-system';
 import { Inject, Injectable } from '@tiles/injector';
 import { Renderer } from './renderer';
-import { World } from "@tiles/engine";
-import { RENDERER_PLUGINS_TOKEN } from "./config";
-import { RendererPlugin } from "./types";
-import { Stage } from "./stage";
-import { Camera } from "./camera";
+import { World } from '@tiles/engine';
+import { RENDERER_PLUGINS_TOKEN } from './config';
+import { RendererPlugin } from './types';
+import { Stage } from './stage';
+import { Camera } from './camera';
 
 /** Automatically updates the [[Renderer]] once on each frame. */
 @Injectable()
@@ -25,7 +25,7 @@ export class RendererSystem implements System {
     protected readonly stage: Stage
   ) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     // Update each plugin.
     for (const plugin of this.plugins) {

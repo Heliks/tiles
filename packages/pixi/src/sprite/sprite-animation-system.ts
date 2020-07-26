@@ -1,10 +1,10 @@
-import { Inject, Injectable } from "@tiles/injector";
-import { Query } from "@tiles/entity-system";
-import { ProcessingSystem, Ticker, World } from "@tiles/engine";
-import { SpriteAnimation } from "./sprite-animation";
-import { SpriteDisplay } from "./sprite-display";
-import { SpriteSheet } from "./sprite-sheet";
-import { AssetStorage } from "@tiles/assets";
+import { Inject, Injectable } from '@tiles/injector';
+import { Query } from '@tiles/entity-system';
+import { ProcessingSystem, Ticker, World } from '@tiles/engine';
+import { SpriteAnimation } from './sprite-animation';
+import { SpriteDisplay } from './sprite-display';
+import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
+import { AssetStorage } from '@tiles/assets';
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
@@ -14,7 +14,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * @param ticker [[Ticker]]
    */
   constructor(
-    @Inject(SpriteSheet.STORAGE)
+    @Inject(SPRITE_SHEET_STORAGE)
     protected readonly storage: AssetStorage<SpriteSheet>,
     protected readonly ticker: Ticker
   ) {

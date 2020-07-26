@@ -1,14 +1,14 @@
-import { Inject, Injectable } from "@tiles/injector";
-import { ProcessingSystem, Subscriber, Transform, World } from "@tiles/engine";
-import { Sprite } from "pixi.js";
-import { Renderer } from "../renderer";
-import { Stage } from "../stage";
-import { ComponentEventType, Entity, Query } from "@tiles/entity-system";
-import { cropTexture, flip } from "../utils";
-import { SpriteDisplay } from "./sprite-display";
-import { RENDERER_CONFIG_TOKEN, RendererConfig } from "../config";
-import { SpriteSheet } from "./sprite-sheet";
-import { AssetStorage } from "@tiles/assets";
+import { Inject, Injectable } from '@tiles/injector';
+import { ProcessingSystem, Subscriber, Transform, World } from '@tiles/engine';
+import { Sprite } from 'pixi.js';
+import { Renderer } from '../renderer';
+import { Stage } from '../stage';
+import { ComponentEventType, Entity, Query } from '@tiles/entity-system';
+import { flip } from '../utils';
+import { SpriteDisplay } from './sprite-display';
+import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
+import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
+import { AssetStorage } from '@tiles/assets';
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -24,7 +24,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     protected readonly config: RendererConfig,
     protected readonly renderer: Renderer,
     protected readonly stage: Stage,
-    @Inject(SpriteSheet.STORAGE)
+    @Inject(SPRITE_SHEET_STORAGE)
     protected readonly storage: AssetStorage<SpriteSheet>
   ) {
     super();
@@ -104,11 +104,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
         // to re-render the sprite more than once.
         display.dirty = false;
 
-        sprite.texture = cropTexture(
-          sheet.texture,
-          sheet.pos(display.spriteIndex as number),
-          sheet.getSpriteSize()
-        );
+        sprite.texture = sheet.texture(display.spriteIndex as number);
 
         flip(sprite, display.flip);
       }
