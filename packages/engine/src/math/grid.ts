@@ -20,12 +20,24 @@ export class Grid {
     public readonly cellHeight: number
   ) {}
 
-  /** Returns the position of the sprite at the given `index`. */
+  /** Returns the top-left aligned position of the sprite at the given `index`. */
   public pos(index: number): Vec2 {
     return [
       index % this.cols * this.cellWidth,              // X
       Math.floor(index / this.cols) * this.cellHeight  // Y
     ];
+  }
+
+  /**
+   * Converts a top-left aligned `pos` vector and converts its values to be center
+   * relative to this grid.
+   */
+  public toCenter(pos: Vec2): Vec2 {
+    // The bitshift is a faster way of dividing by 2.
+    pos[0] += this.cellWidth >> 1;
+    pos[1] += this.cellHeight >> 1;
+
+    return pos;
   }
 
 }
