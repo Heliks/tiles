@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@tiles/injector';
 import { ProcessingSystem, Subscriber, Transform, World } from '@tiles/engine';
-import { Sprite } from 'pixi.js';
 import { Renderer } from '../renderer';
 import { Stage } from '../stage';
-import { ComponentEventType, Entity, Query } from '@tiles/entity-system';
+import { ComponentEventType, Query } from '@tiles/entity-system';
 import { flip } from '../utils';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
@@ -16,9 +15,6 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   /** Subscription for modifications in the [[SpriteDisplay]] storage. */
   protected onDisplayModify$!: Subscriber;
 
-  /** Contains sprites mapped to the [[Entity]] to which they belong. */
-  protected sprites = new Map<Entity, Sprite>();
-
   constructor(
     @Inject(RENDERER_CONFIG_TOKEN)
     protected readonly config: RendererConfig,
@@ -30,7 +26,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public boot(world: World): void {
     super.boot(world);
 
@@ -38,7 +34,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     this.onDisplayModify$ = world.storage(SpriteDisplay).events().subscribe();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public getQuery(): Query {
     return {
       contains: [
@@ -48,29 +44,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     };
   }
 
-  /** Adds the sprite for `entity` to the game stage. */
-  protected create(entity: Entity, comp: SpriteDisplay): void {
-    const sprite = new Sprite();
-
-    // The engine uses center positions instead of top left for transforms, this will
-    // save us a calculation in `update()`.
-    sprite.anchor.set(0.5);
-
-    this.sprites.set(entity, sprite);
-    this.stage.add(sprite, comp.layer);
-  }
-
-  /** Removes the sprite of `entity` from the game stage. */
-  protected delete(entity: Entity): void {
-    const sprite = this.sprites.get(entity);
-
-    if (sprite) {
-      this.sprites.delete(entity);
-      this.stage.remove(sprite);
-    }
-  }
-
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     const _display = world.storage(SpriteDisplay);
     const _transform = world.storage(Transform);
@@ -79,10 +53,10 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     for (const event of _display.events().read(this.onDisplayModify$)) {
       switch (event.type) {
         case ComponentEventType.Added:
-          this.create(event.entity, _display.get(event.entity));
+          this.stage.add(event.component, event.component.layer);
           break;
         case ComponentEventType.Removed:
-          this.delete(event.entity);
+          this.stage.remove(event.component);
           break;
       }
     }
@@ -94,26 +68,22 @@ export class SpriteDisplaySystem extends ProcessingSystem {
         ? this.storage.get(display.sheet)?.data
         : display.sheet;
 
-      // This should never fail as long as the user doesn't meddle with the queried
-      // entity group manually.
-      const sprite = this.sprites.get(entity) as Sprite;
-
       // No sheet means that the asset hasn't finished loading yet.
       if (display.dirty && sheet) {
         // Remove flag before the update is complete so we don't accidentally attempt
         // to re-render the sprite more than once.
         display.dirty = false;
 
-        sprite.texture = sheet.texture(display.spriteIndex as number);
+        display.texture = sheet.texture(display.spriteIndex as number);
 
-        flip(sprite, display.flip);
+        flip(display, display.flip);
       }
 
       // Update the sprites position.
       const trans = _transform.get(entity);
 
-      sprite.x = trans.x * this.config.unitSize;
-      sprite.y = trans.y * this.config.unitSize;
+      display.x = trans.x * this.config.unitSize;
+      display.y = trans.y * this.config.unitSize;
     }
   }
 

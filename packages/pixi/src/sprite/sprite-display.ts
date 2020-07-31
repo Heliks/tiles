@@ -1,18 +1,19 @@
 import { SpriteSheet } from '../sprite-sheet';
 import { FlipDirection } from '../utils';
 import { Handle } from '@tiles/assets';
+import { Sprite } from 'pixi.js';
 
 /**
  * Component used to render a sprite.
  */
-export class SpriteDisplay {
+export class SpriteDisplay extends Sprite {
 
   /** Indicates if the sprite needs to be re-rendered.*/
   public dirty = true;
 
   /**
-   * The direction in which the sprite should be flipped. Changing this
-   * requires re-rendering the sprite.
+   * The direction in which the sprite should be flipped. Changing this requires
+   * re-rendering the sprite.
    */
   public flip = FlipDirection.None;
 
@@ -27,7 +28,13 @@ export class SpriteDisplay {
     public sheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
     public layer = 0
-  ) {}
+  ) {
+    super();
+
+    // The engine uses center aligned positions instead of top-left. This will save us
+    // a calculation in the renderer `update()`.
+    this.anchor.set(0.5);
+  }
 
   /**
    * Sets the sprite that should be rendered to the sprite matching the given `index` on

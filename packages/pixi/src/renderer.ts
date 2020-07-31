@@ -1,10 +1,4 @@
-import {
-  BaseRenderTexture,
-  Container as BaseContainer,
-  Renderer as PixiRenderer,
-  RenderTexture,
-  Texture
-} from 'pixi.js';
+import { Container as BaseContainer, Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
@@ -176,7 +170,6 @@ export class Renderer {
       dim.dirty = false;
     }
 
-
     // Update the position of the stage according to the current camera position.
     this.stage.setOffset(
       this.camera.sx,
@@ -184,19 +177,6 @@ export class Renderer {
     );
 
     this.renderer.render(this.root);
-  }
-
-  public toTexture(container: Container) {
-    const texture = new RenderTexture(
-      new BaseRenderTexture({
-        width: container.width,
-        height: container.height
-      })
-    );
-
-    this.renderer.render(container, texture);
-
-    return texture;
   }
 
 }
