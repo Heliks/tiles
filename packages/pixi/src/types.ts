@@ -1,5 +1,4 @@
-import { World } from "@tiles/engine";
-import { DisplayObject } from 'pixi.js';
+import { World } from '@tiles/engine';
 
 /** Plugin that can be added to the renderer. */
 export interface RendererPlugin {

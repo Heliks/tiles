@@ -16,7 +16,7 @@ export class TileLayer implements Layer<Tilemap> {
   ) {}
 
   /** @internal */
-  private *iter(tilemap: Tilemap): IterableIterator<{ gId: number, pos: Vec2 }> {
+  private *iter(tilemap: Tilemap): IterableIterator<{ gId: number; pos: Vec2 }> {
     for (let i = 0, l = this.data.length; i < l; i++) {
       const gId = this.data[i];
 
@@ -37,7 +37,7 @@ export class TileLayer implements Layer<Tilemap> {
     // Get the unit size from the renderer config.
     const us = world.get(Renderer).config.unitSize;
 
-    for (let { gId, pos } of this.iter(tilemap)) {
+    for (const { gId, pos } of this.iter(tilemap)) {
       const tileset = tilemap.tileset(gId);
       const idx = tileset.toLocal(gId) - 1;
 

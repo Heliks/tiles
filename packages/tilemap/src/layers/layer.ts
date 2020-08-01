@@ -1,13 +1,20 @@
-import { Struct, World } from '@tiles/engine';
+import { World } from '@tiles/engine';
 
 export interface LayerProperties {
+
+  /**
+   * The depth at which the layer should be displayed (e.g. the renderer layer). For
+   * example a layer with this property set to `1` will be displayed on the first
+   * renderer regardless of its actual index or depth.
+   */
+  depth?: number;
+
   /**
    * If set to `true` the layer counts as a floor, which means that the player character
    * can be spawned on it.
    */
   isFloorLayer?: boolean;
 
-  depth?: number;
 }
 
 /**

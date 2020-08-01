@@ -23,7 +23,7 @@ export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
   public process(data: Blob): SpriteSheet {
     return new SpriteGrid(
       new Grid(this.cols, this.rows, this.spriteWidth, this.spriteHeight),
-      new TextureFormat().process(data),
+      new TextureFormat().process(data)
     );
   }
 

@@ -13,11 +13,7 @@ export class TmxTilesetFormat implements Format<TmxTileset, Tileset> {
   public readonly type = LoadType.Json;
 
   /** Creates a `Tileset` from `data`. */
-  public async process(
-    data: TmxTileset,
-    file: string,
-    loader: AssetLoader
-  ): Promise<Tileset> {
+  public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {
     // Amount of rows is not contained in the tiled format so it needs to be calculated
     // manually. The number is rounded down to cut of partial tiles.
     const rows = Math.floor(data.imageheight / data.tileheight);

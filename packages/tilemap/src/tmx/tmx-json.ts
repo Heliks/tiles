@@ -2,7 +2,7 @@ export type TmxOrientation = 'orthogonal' | 'isometric' | 'staggered' | 'hexagon
 
 export interface TmxProperty {
   name: string;
-  value: string;
+  value: string | number;
   type: 'bool' | 'float' | 'int' | 'string';
 }
 

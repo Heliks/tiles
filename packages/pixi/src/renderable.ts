@@ -8,8 +8,6 @@ export type Renderable = DisplayObject;
  * is a `Renderable` also.
  */
 export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
-
   /** @inheritDoc */
   public readonly children: T[] = [];
-
 }

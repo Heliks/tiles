@@ -1,8 +1,12 @@
 import { Struct } from '@tiles/engine';
 import { TmxProperty } from './tmx-json';
 
-export function parseProperties(properties: TmxProperty[]): Struct<any> {
-  const data: Struct = {};
+// Possible values for the parsed TMX property.
+type PropertyValue = string | number;
+
+/** Parses a list of tmx properties. */
+export function parseProperties(properties: TmxProperty[]): Struct<PropertyValue> {
+  const data: Struct<PropertyValue> = {};
 
   for (const item of properties) {
     data[ item.name ] = item.value;

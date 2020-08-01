@@ -2,10 +2,10 @@ import { Vec2 } from '@tiles/engine';
 import { Container, Renderable } from './renderable';
 import { depthSort, DepthSortable } from './depth';
 
-export class StageLayer extends Container<Renderable & DepthSortable> {
-
+/** @internal */
+class StageLayer extends Container<Renderable & DepthSortable> {
+  /** If set to `true` the layer will be depth sorted automatically on each frame. */
   public sortable = false;
-
 }
 
 export class Stage {
@@ -78,10 +78,12 @@ export class Stage {
     return this;
   }
 
+  /** Sets `layer` as sortable. */
   public setLayerAsSortable(layer: number): void {
     this.getLayerContainer(layer).sortable = true;
   }
 
+  /** Updates the stage. */
   public update(): void {
     for (const layer of this.layers.children) {
       if (layer.sortable) {

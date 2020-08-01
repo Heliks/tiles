@@ -5,7 +5,8 @@ import { Tilemap, TilesetItem } from '../tilemap';
 import { parseProperties } from './utils';
 import { TmxTilesetFormat } from './tmx-tileset-format';
 
-export function parseLayer(data: TmxLayer): Layer<Tilemap> {
+/** @internal */
+function parseLayer(data: TmxLayer): Layer<Tilemap> {
   const properties = parseProperties(data.properties ?? []);
 
   switch (data.type) {
@@ -43,31 +44,28 @@ export function parseLayer(data: TmxLayer): Layer<Tilemap> {
       // Todo: any cast
       return new LayerGroup(data.layers.map(parseLayer), properties);
     default:
-      throw new Error('');
+      throw new Error('Unknown layer type');
   }
+}
+
+/** @internal */
+async function getExternalTileset(path: string, firstId: number, loader: AssetLoader): Promise<TilesetItem> {
+  return new TilesetItem(
+    await loader.fetch(path, new TmxTilesetFormat()),
+    firstId
+  );
 }
 
 /** Asset loader format for loading TMX tilemaps. */
 export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly name = 'tmx-tilemap';
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-  protected async getExternalTileset(
-    path: string,
-    firstId: number,
-    loader: AssetLoader
-  ): Promise<TilesetItem> {
-    return new TilesetItem(
-      await loader.fetch(path, new TmxTilesetFormat()),
-      firstId
-    );
-  }
-
-  /** @inheritDoc */
+  /** Creates a `Tilemap` from `data`. */
   public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap> {
     // Check if we've got the right TMX format.
     if (data.type !== 'map') {
@@ -86,11 +84,7 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
 
     // Load all tilesets on the tile map.
     const tilesets = await Promise.all(data.tilesets.map(
-      item => this.getExternalTileset(
-        `${basePath}/${item.source}`,
-        item.firstgid,
-        loader
-      )
+      item => getExternalTileset(`${basePath}/${item.source}`, item.firstgid, loader)
     ));
 
     const layers = data.layers.map(parseLayer);
