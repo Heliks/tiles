@@ -1,4 +1,4 @@
-import { Container as BaseContainer, Renderer as PixiRenderer, Texture } from 'pixi.js';
+import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
 import { Inject, Injectable } from '@tiles/injector';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
@@ -6,17 +6,9 @@ import { Stage } from './stage';
 import { EventQueue } from '@tiles/engine';
 import { DebugDraw } from './debug-draw';
 import { initPixi } from './utils';
-import { Renderable } from './types';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
-
-/** A container that can contain many other [[Renderable]] objects. */
-export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
-
-  /** @inheritDoc */
-  public readonly children: T[] = [];
-
-}
+import { Container } from './renderable';
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -175,6 +167,8 @@ export class Renderer {
       this.camera.sx,
       this.camera.sy
     );
+
+    this.stage.update();
 
     this.renderer.render(this.root);
   }

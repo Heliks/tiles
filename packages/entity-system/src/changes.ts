@@ -8,7 +8,7 @@ import { Entity } from './entity';
 export type Composition = BitSet;
 
 /**
- * Wrapper over `number` that represents  bit that indicates the existence of a certain
+ * Wrapper over `number` that represents a bit that indicates the existence of a certain
  * component kind on an entity.
  */
 export type CompositionBit = number;

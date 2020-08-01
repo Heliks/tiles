@@ -1,7 +1,7 @@
-import { Struct, Transform, World } from '@tiles/engine';
+import { Transform, Vec2, World } from '@tiles/engine';
 import { Tilemap } from '../tilemap';
 import { Renderer, SpriteDisplay } from '@tiles/pixi';
-import { Layer } from './layer';
+import { Layer, LayerProperties } from './layer';
 
 /** A layer that contains tiles structured in a grid. */
 export class TileLayer implements Layer<Tilemap> {
@@ -12,17 +12,11 @@ export class TileLayer implements Layer<Tilemap> {
    */
   constructor(
     public readonly data: number[],
-    public readonly properties: Struct
+    public readonly properties: LayerProperties
   ) {}
 
-  /** @inheritDoc */
-  public spawn(world: World, tilemap: Tilemap): void {
-    const tw2 = tilemap.cellWidth / 2;
-    const th2 = tilemap.cellHeight / 2;
-
-    // Get the unit size from the renderer config.
-    const us = world.get(Renderer).config.unitSize;
-
+  /** @internal */
+  private *iter(tilemap: Tilemap): IterableIterator<{ gId: number, pos: Vec2 }> {
     for (let i = 0, l = this.data.length; i < l; i++) {
       const gId = this.data[i];
 
@@ -31,21 +25,52 @@ export class TileLayer implements Layer<Tilemap> {
         continue;
       }
 
-      const position = tilemap.pos(i);
-      const tileset = tilemap.tileset(gId);
+      yield {
+        gId: gId,
+        pos: tilemap.pos(i)
+      };
+    }
+  }
 
-      // Convert the local tile id to an index.
+  /** @inheritDoc */
+  public spawn(world: World, tilemap: Tilemap, index: number): void {
+    // Get the unit size from the renderer config.
+    const us = world.get(Renderer).config.unitSize;
+
+    for (let { gId, pos } of this.iter(tilemap)) {
+      const tileset = tilemap.tileset(gId);
       const idx = tileset.toLocal(gId) - 1;
+
+      // Grids are top left aligned. Convert to center aligned world position.
+      tilemap.toCenter(pos);
 
       world
         .builder()
-        // Tiled anchors tiles from the top left corner so we need to calculate the
-        // center position manually.
-        .use(new Transform((position[0] + tw2) / us, (position[1] + th2) / us))
-        .use(new SpriteDisplay(tileset.tileset, idx))
+        .use(new Transform(
+          pos[0] / us,
+          pos[1] / us
+        ))
+        .use(new SpriteDisplay(tileset.tileset, idx, index))
         .build();
     }
   }
+
+  /** @inheritDoc */
+  /*
+  public render(world: World, tilemap: Tilemap, target: Container): void {
+    for (let { gId, pos } of this.iter(tilemap)) {
+      const tileset = tilemap.tileset(gId);
+      const idx = tileset.toLocal(gId) - 1;
+
+      const sprite = tileset.tileset.sprite(idx);
+
+      sprite.x = pos[0];
+      sprite.y = pos[1];
+
+      target.addChild(sprite);
+    }
+  }
+  */
 
 }
 

@@ -3,6 +3,7 @@ import { AssetLoader, AssetStorage, Handle } from '@tiles/assets';
 import { Tilemap } from './tilemap';
 import { World } from '@tiles/engine';
 import { TmxTilemapFormat } from './tmx';
+import { Stage } from '@tiles/pixi';
 
 @Injectable()
 export class TilemapManager {
@@ -44,14 +45,23 @@ export class TilemapManager {
     return tilemap.data;
   }
 
-  /**
-   *
-   */
+  /** */
   public spawn(world: World, handle: Handle<Tilemap>): void {
     const tilemap = this.get(handle);
 
+    let depth = 0;
+
     for (const layer of tilemap.layers) {
-      layer.spawn(world, tilemap);
+      // Increase the depth when we encounter a floor layer. This makes sure that it is
+      // rendered on a different layer than everything that came before.
+      if (layer.properties.isFloorLayer) {
+        depth++;
+
+        world.get(Stage).setLayerAsSortable(depth);
+      }
+
+      // Check for manual overwrite of layer depth and spawn it.
+      layer.spawn(world, tilemap, layer.properties.depth ?? depth);
     }
   }
 

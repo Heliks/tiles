@@ -121,3 +121,4 @@ export function initPixi(config: RendererConfig): Renderer {
 
   return new Renderer(_config);
 }
+

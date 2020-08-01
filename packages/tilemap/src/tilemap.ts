@@ -1,6 +1,6 @@
 import { Tileset } from './tileset';
 import { Grid } from '@tiles/engine';
-import { Layer } from './layers/layer';
+import { Layer } from './layers';
 
 export class TilesetItem {
 
@@ -9,7 +9,7 @@ export class TilesetItem {
    * is occupying.
    */
   public get lastId(): number {
-    return this.firstId + this.tileset.size - 1;
+    return this.firstId + this.tileset.size() - 1;
   }
 
   /**
@@ -62,6 +62,14 @@ export class Tilemap extends Grid {
   /** Converts a global `id` to a local one. */
   public toLocalId(id: number): number {
     return this.tileset(id).toLocal(id);
+  }
+
+  /**
+   * Returns all layers that count as a floor. Floors are the layers where player
+   * characters and other movable entities should be spawned on.
+   */
+  public getFloorLayers(): Layer<Tilemap>[] {
+    return this.layers.filter(item => item.properties.isFloorLayer);
   }
 
 }

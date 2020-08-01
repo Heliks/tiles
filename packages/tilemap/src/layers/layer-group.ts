@@ -1,24 +1,23 @@
-import { Layer } from './layer';
-import { Struct, World } from '@tiles/engine';
+import { Layer, LayerProperties } from './layer';
+import { World } from '@tiles/engine';
 import { Tilemap } from '../tilemap';
 
 /**
- * A group that contains other layers as children. The group itself is counted as a
- * layer as well.
+ * A layer group.
  *
  * @typeparam T The kind of layer that is allowed to be a child of this group.
  */
-export class LayerGroup<T extends Layer<Tilemap>> implements Layer<Tilemap> {
+export class LayerGroup<T extends Layer<Tilemap, unknown>> implements Layer<Tilemap> {
 
   constructor(
     public readonly children: T[],
-    public readonly properties: Struct
+    public readonly properties: LayerProperties
   ) {}
 
   /** @inheritDoc */
-  public spawn(world: World, tilemap: Tilemap): void {
+  public spawn(world: World, tilemap: Tilemap, index: number): void {
     for (const child of this.children) {
-      child.spawn(world, tilemap);
+      child.spawn(world, tilemap, index);
     }
   }
 }

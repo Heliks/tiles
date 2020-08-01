@@ -19,7 +19,7 @@ export class SpriteDisplay extends Sprite {
 
   /**
    * @param sheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>` is
-   *  passed the sprite rendering is deferred until the asset is loaded.
+   *  passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite on [[sheet]] that should be rendered.
    * @param layer The layer on which the sprite should be rendered. Sprites on a lower
    *  layer with always be rendered before sprites on a higher one.

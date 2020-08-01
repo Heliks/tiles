@@ -29,8 +29,8 @@ export class Grid {
   }
 
   /**
-   * Converts a top-left aligned `pos` vector and converts its values to be center
-   * relative to this grid.
+   * Converts a top-left aligned `pos` vector of a cell and converts its values to be
+   * center aligned.
    */
   public toCenter(pos: Vec2): Vec2 {
     // The bitshift is a faster way of dividing by 2.

@@ -1,10 +1,7 @@
 import { TmxLayer, TmxLayerType, TmxTilemap } from './tmx-json';
-import { Layer } from '../layers/layer';
+import { Layer, LayerGroup, ObjectLayer, TileLayer } from '../layers';
 import { AssetLoader, Format, getDirectory, LoadType } from '@tiles/assets';
 import { Tilemap, TilesetItem } from '../tilemap';
-import { TileLayer } from '../layers/tile-layer';
-import { ObjectLayer } from '../layers/object-layer';
-import { LayerGroup } from '../layers/layer-group';
 import { parseProperties } from './utils';
 import { TmxTilesetFormat } from './tmx-tileset-format';
 
@@ -43,6 +40,7 @@ export function parseLayer(data: TmxLayer): Layer<Tilemap> {
 
       return new ObjectLayer(objects, properties);
     case TmxLayerType.Group:
+      // Todo: any cast
       return new LayerGroup(data.layers.map(parseLayer), properties);
     default:
       throw new Error('');

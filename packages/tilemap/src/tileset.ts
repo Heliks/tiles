@@ -1,7 +1,8 @@
-import { SpriteSheet } from '@tiles/pixi';
+import { SpriteGrid } from '@tiles/pixi';
 import { Texture } from 'pixi.js';
+import { Grid } from '@tiles/engine';
 
-export class Tileset extends SpriteSheet {
+export class Tileset extends SpriteGrid {
 
   constructor(
     public readonly name: string,
@@ -11,7 +12,7 @@ export class Tileset extends SpriteSheet {
     sw: number,
     sh: number
   ) {
-    super(texture, cols, rows, sw, sh);
+    super(new Grid(cols, rows, sw, sh), texture);
   }
 
 }

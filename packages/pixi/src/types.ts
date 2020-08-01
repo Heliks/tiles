@@ -12,5 +12,4 @@ export interface RendererPlugin {
 
 }
 
-/** Something that can be displayed by the renderer. */
-export type Renderable = DisplayObject
+

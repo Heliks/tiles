@@ -1,7 +1,7 @@
 **/__test__/**/*
 
 # Test game package is not here to stay
-packages/test/**
+testgame/**
 
 # Dependencies
 **/node_modules/**

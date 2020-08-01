@@ -9,7 +9,7 @@ jobs:
       - checkout
       # Installs dependencies without touching the lockfile.
       - run: yarn install --immutable
-      # Build all packages to verify that there are not errors.
+      # Build all packages to verify that there are no errors.
       - run: yarn run build
       # Run unit tests. This has to happen after the build because some import related
       # linting rules require build fragments to verify if they are valid.

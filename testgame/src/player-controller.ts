@@ -34,7 +34,7 @@ export class PlayerController extends ProcessingSystem {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public getQuery(): Query {
     return {
       contains: [

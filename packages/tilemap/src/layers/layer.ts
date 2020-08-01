@@ -1,16 +1,31 @@
 import { Struct, World } from '@tiles/engine';
 
-/** A layer inside a tilemap. */
-export interface Layer<T> {
+export interface LayerProperties {
+  /**
+   * If set to `true` the layer counts as a floor, which means that the player character
+   * can be spawned on it.
+   */
+  isFloorLayer?: boolean;
+
+  depth?: number;
+}
+
+/**
+ * A layer inside a tilemap.
+ *
+ * @typeparam T The kind of tilemap.
+ * @typeparam P Possible properties.
+ */
+export interface Layer<T, P = LayerProperties> {
 
   /** Custom properties attached to this layer. */
-  readonly properties: Struct;
+  readonly properties: P;
 
   /**
-   * Spawns the layer to `world`, using `tilemap` to resolve tilesets, properties
-   * and other values.
+   * Spawns the layer to `world`, using `tilemap` to resolve tilesets, properties and
+   * other values. The `index` is the index at which the layer is supposed to be spawned.
    */
-  spawn(world: World, tilemap: T): void;
+  spawn(world: World, tilemap: T, index: number): void;
 
 }
 

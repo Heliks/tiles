@@ -6,7 +6,7 @@ import { Entity } from './entity';
 export class Storage<T = unknown> implements Base<T> {
 
   /** The event queue to which this storage will push events. */
-  protected readonly _events = new EventQueue<ComponentEvent>();
+  protected readonly _events = new EventQueue<ComponentEvent<T>>();
 
   /** Contains all component instances mapped to the entity to which they belong. */
   protected readonly components = new Map<Entity, T>();
@@ -35,19 +35,23 @@ export class Storage<T = unknown> implements Base<T> {
     this.changes.add(entity, this.id);
 
     this._events.push({
-      entity, type: ComponentEventType.Added
+      component,
+      entity,
+      type: ComponentEventType.Added
     });
 
     return component;
   }
 
   /** @inheritDoc */
-  public set(entity: Entity, instance: T): void {
-    this.components.set(entity, instance);
+  public set(entity: Entity, component: T): void {
+    this.components.set(entity, component);
     this.changes.add(entity, this.id);
 
     this._events.push({
-      entity, type: ComponentEventType.Added
+      component,
+      entity,
+      type: ComponentEventType.Added
     });
   }
 
@@ -62,14 +66,18 @@ export class Storage<T = unknown> implements Base<T> {
     return component;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove(entity: Entity): boolean {
     if (this.components.has(entity)) {
+      const component = this.get(entity);
+
       this.components.delete(entity);
       this.changes.remove(entity, this.id);
 
       this._events.push({
-        entity, type: ComponentEventType.Removed
+        component,
+        entity,
+        type: ComponentEventType.Removed
       });
 
       return true;
@@ -93,7 +101,7 @@ export class Storage<T = unknown> implements Base<T> {
   }
 
   /** @inheritDoc */
-  public events(): EventQueue<ComponentEvent> {
+  public events(): EventQueue<ComponentEvent<T>> {
     return this._events;
   }
 

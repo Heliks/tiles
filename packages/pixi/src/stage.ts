@@ -1,6 +1,12 @@
-import { Renderable } from "./types";
-import { Container } from "./renderer";
-import { Vec2 } from "@tiles/engine";
+import { Vec2 } from '@tiles/engine';
+import { Container, Renderable } from './renderable';
+import { depthSort, DepthSortable } from './depth';
+
+export class StageLayer extends Container<Renderable & DepthSortable> {
+
+  public sortable = false;
+
+}
 
 export class Stage {
 
@@ -8,11 +14,10 @@ export class Stage {
   public readonly view = new Container();
 
   /**
-   * Container for layer containers. Layers hold most of what is displayed in the games
-   * "world" (e.g. terrain, characters etc.). The order of those layer containers is
-   * guaranteed, meaning that the container at index `0` is the first layer.
+   * Container for stage layers. The order of those layer containers is guaranteed, which
+   * means that the container at index `0` is the first layer, `1` the second and so on.
    */
-  protected readonly layers = new Container<Container>();
+  private readonly layers = new Container<StageLayer>();
 
   constructor() {
     this.view.addChild(this.layers);
@@ -35,12 +40,12 @@ export class Stage {
   }
 
   /** Returns the `Container` that belongs to a `layer` index. */
-  protected getLayerContainer(layer: number): Container {
+  protected getLayerContainer(layer: number): StageLayer {
     const containers = this.layers.children;
 
     // Grow layers until we can access the given index.
     while (layer > containers.length - 1) {
-      this.layers.addChild(new Container());
+      this.layers.addChild(new StageLayer());
     }
 
     return containers[layer];
@@ -71,6 +76,18 @@ export class Stage {
     this.view.scale.set(x, y ?? x);
 
     return this;
+  }
+
+  public setLayerAsSortable(layer: number): void {
+    this.getLayerContainer(layer).sortable = true;
+  }
+
+  public update(): void {
+    for (const layer of this.layers.children) {
+      if (layer.sortable) {
+        depthSort(layer.children)
+      }
+    }
   }
 
 }

@@ -1,5 +1,5 @@
-export const RENDERER_CONFIG_TOKEN = Symbol('Configuration for renderer module.');
-export const RENDERER_PLUGINS_TOKEN = Symbol('Plugins for renderer module.');
+import { token } from '@tiles/injector';
+import { RendererPlugin } from './types';
 
 /** Configuration for the renderer module. */
 export interface RendererConfig {
@@ -39,6 +39,10 @@ export interface RendererConfig {
   unitSize: number;
 
 }
+
+// Injector tokens.
+export const RENDERER_CONFIG_TOKEN = token<RendererConfig>();
+export const RENDERER_PLUGINS_TOKEN = token<RendererPlugin[]>();
 
 /** Parses a `Partial<RendererConfig>` and fills missing keys with fallback values. */
 export function parseConfig(config: Partial<RendererConfig>): RendererConfig {

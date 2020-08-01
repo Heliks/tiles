@@ -1,7 +1,7 @@
 import { Injectable } from "@tiles/injector";
 import { DebugDraw, Renderer } from "@tiles/pixi";
 import { Vec2 } from "@tiles/engine";
-import { RendererPlugin } from "@tiles/pixi/lib/types";
+import { RendererPlugin } from "@tiles/pixi";
 
 /**
  * System that draws a grid on top of the stage for debugging purposes.

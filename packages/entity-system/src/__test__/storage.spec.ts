@@ -28,19 +28,19 @@ describe('Storage', () => {
     });
 
     it('should update entity compositions', () => {
+      const composition = world.changes.composition(entity);
+
       storage.add(entity);
 
-      expect(
-        world.changes.composition(entity).has(storage.id)
-      ).toBeTruthy();
+      expect(composition.has(storage.id)).toBeTruthy();
     });
 
     it('should emit a ComponentEvent', () => {
       const subscriber = storage.events().subscribe();
-
-      storage.add(entity);
+      const component = storage.add(entity);
 
       expect(storage.events().next(subscriber)).toEqual({
+        component,
         entity,
         type: ComponentEventType.Added
       });
@@ -59,10 +59,10 @@ describe('Storage', () => {
 
     it('should emit a ComponentEvent', () => {
       const subscriber = storage.events().subscribe();
-
-      storage.set(entity, new A());
+      const component = storage.add(entity);
 
       expect(storage.events().next(subscriber)).toEqual({
+        component,
         entity,
         type: ComponentEventType.Added
       });
@@ -81,7 +81,7 @@ describe('Storage', () => {
     });
 
     it('should emit a ComponentEvent', () => {
-      storage.add(entity);
+      const component = storage.add(entity);
 
       // Subscribe after component was added because we are only interested
       // in the second one when the component is removed.
@@ -90,6 +90,7 @@ describe('Storage', () => {
       storage.remove(entity);
 
       expect(storage.events().next(subscriber)).toEqual({
+        component,
         entity,
         type: ComponentEventType.Removed
       });

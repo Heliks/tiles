@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
-import { Game, GameBuilder, Transform, World } from '@tiles/engine';
+import { Game, GameBuilder, rand, Transform, World } from '@tiles/engine';
 import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
+import { BodyPartType, PhysicsDebugDraw, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
 import { InputHandler } from './input';
 import { DrawGridSystem } from './systems/draw-grid-system';
 import { CollisionGroups } from './const';
@@ -13,7 +13,8 @@ import { DeathSystem } from './systems/death';
 import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
 import { Entity } from '@tiles/entity-system';
 import { lookupEntity } from './utils';
-import { PhysicsDebugDraw } from '@tiles/physics';
+import { spawnJosh } from './spawners/josh';
+import { SPRITE_SHEET_STORAGE } from '@tiles/pixi';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -46,13 +47,14 @@ function spawnCrate(
 function loadSpriteSheet(world: World, path: string, cols: number, rows: number): Handle<SpriteSheet> {
   return world.get(AssetLoader).load(
     path,
+    // Todo: Make sprite size configurable.
     new SpriteSheetFromTexture(cols, rows, 16, 16),
-    world.get(SpriteSheet.STORAGE)
+    world.get(SPRITE_SHEET_STORAGE)
   );
 }
 
 async function getPawnSpriteSheet(world: World) {
-  const storage = world.get(SpriteSheet.STORAGE);
+  const storage = world.get(SPRITE_SHEET_STORAGE);
 
   // Load the sprite sheet.
   const handle = await world.get(AssetLoader).async(
@@ -110,7 +112,7 @@ window.onload = () => {
         unitSize: UNIT_SIZE
       })
         .plugin(PhysicsDebugDraw)
-        .plugin(DrawGridSystem)
+        // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
     .system(DeathSystem)
@@ -136,11 +138,13 @@ window.onload = () => {
   body.group = CollisionGroups.Player;
 
   getPawnSpriteSheet(game.world).then(pawnSheet => {
+    const pawnTransform = new Transform(25, 25);
+
     // Insert player character.
     game.world
       .builder()
       // .use(new Camera(200, 200))
-      .use(new Transform(2, 2))
+      .use(pawnTransform)
       .use(new SpriteDisplay(pawnSheet, 1, 1))
       .use(new SpriteAnimation([]))
       .use(new Pawn())
@@ -152,6 +156,15 @@ window.onload = () => {
 
     // Spawn some terrain for debugging purposes.
     const woodCrateSheet = loadSpriteSheet(game.world, 'spritesheets/wood-crate.png', 1, 1);
+    const joshSheet = loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1);
+
+    // Spawn the josh in a random location near the player
+    spawnJosh(
+      game.world,
+      joshSheet,
+      pawnTransform.x + rand(-3, 3),
+      pawnTransform.y + rand(-3, 3)
+    );
 
     spawnCrate(game.world, woodCrateSheet, 14, 2);
     spawnCrate(game.world, woodCrateSheet, 14, 3);

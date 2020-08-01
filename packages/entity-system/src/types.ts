@@ -19,10 +19,9 @@ export enum ComponentEventType {
   Removed
 }
 
-export interface ComponentEvent {
-  /** The entity that triggered the event. */
+export interface ComponentEvent<T> {
+  component: T;
   entity: Entity;
-  /** The event type. */
   type: ComponentEventType;
 }
 
@@ -69,7 +68,7 @@ export interface Storage<T> {
    * Returns the event queue to which this storage will push events. You can subscribe
    * to this to be notified about component changes.
    */
-  events(): EventQueue<ComponentEvent>;
+  events(): EventQueue<ComponentEvent<T>>;
 
 }
 
