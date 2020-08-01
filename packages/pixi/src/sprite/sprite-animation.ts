@@ -39,8 +39,8 @@ export class SpriteAnimation implements AnimationData {
   public transform?: string;
 
   /**
-   * @param frames {@inheritDoc}
-   * @param frameDuration {@inheritDoc}
+   * @param frames @inheritDoc
+   * @param frameDuration @inheritDoc
    */
   constructor(
     public frames: number[],

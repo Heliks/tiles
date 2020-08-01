@@ -30,7 +30,7 @@ export class DrawGridSystem implements RendererPlugin {
     this.ctx = renderer.debugDraw.ctx;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(): void {
     const draw = this.debugDraw
       .save()

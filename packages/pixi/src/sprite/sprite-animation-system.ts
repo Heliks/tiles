@@ -21,7 +21,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public getQuery(): Query {
     return {
       contains: [
@@ -73,7 +73,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     animation.transform = undefined;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     const _anim = world.storage(SpriteAnimation);
     const _disp = world.storage(SpriteDisplay);

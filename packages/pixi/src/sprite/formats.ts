@@ -6,10 +6,10 @@ import { Grid } from '@tiles/engine';
 /** (WIP) */
 export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly name = 'PIXI:sprite-sheet';
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly type = LoadType.Blob;
 
   constructor(
@@ -19,7 +19,7 @@ export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
     public readonly spriteHeight: number
   ) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public process(data: Blob): SpriteSheet {
     return new SpriteGrid(
       new Grid(this.cols, this.rows, this.spriteWidth, this.spriteHeight),

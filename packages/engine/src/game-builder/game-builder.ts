@@ -26,14 +26,14 @@ export class GameBuilder implements Builder {
    */
   protected readonly tasks: Task[] = [];
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public provide(provider: Provider): this {
     this.tasks.push(new AddProvider(provider));
 
     return this;
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public system(system: ClassType<System>): this {
     this.tasks.push(new AddSystem(system));
 

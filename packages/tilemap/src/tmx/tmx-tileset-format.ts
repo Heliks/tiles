@@ -6,10 +6,10 @@ import { Tileset } from '../tileset';
 /** Asset loader format for loading TMX tilesets. */
 export class TmxTilesetFormat implements Format<TmxTileset, Tileset> {
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly name = 'tmx-tileset';
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly type = LoadType.Json;
 
   /** Creates a `Tileset` from `data`. */

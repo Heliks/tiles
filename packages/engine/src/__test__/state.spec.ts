@@ -2,15 +2,15 @@ import { State, StateMachine } from "../state";
 
 /** A state that does nothing. */
 class NoopState<T = any> implements State<T> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onStart = jest.fn();
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onStop = jest.fn();
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onPause = jest.fn();
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onResume = jest.fn();
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update = jest.fn();
 }
 

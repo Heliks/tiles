@@ -41,7 +41,7 @@ export class PixiModule implements Module {
     };
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public build(builder: GameBuilder): void {
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();

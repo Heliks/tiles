@@ -36,7 +36,7 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
   /** Movement speed. */
   protected speed = 2;
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   update(state: StateMachine<PawnStateData>): void {
     const { animation, input, pawn, ticker } = state.data;
 
@@ -121,7 +121,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
     }
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   onStart(state: StateMachine<PawnStateData>): void {
     if (this.direction === Direction.Left) {
       state.data.animation.reset().play('bow-right', false).flipTo(FlipDirection.Horizontal);
@@ -135,7 +135,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
     state.pop();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   update(state: StateMachine<PawnStateData>): void {
     this.duration -= state.data.ticker.delta;
 
@@ -222,17 +222,17 @@ export class IdleState implements State<StateMachine<PawnStateData>> {
     }
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onStart(state: StateMachine<PawnStateData>): void {
     this.play(state.data.animation, state.data.pawn.direction);
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public onResume(state: StateMachine<PawnStateData>): void {
     this.play(state.data.animation, state.data.pawn.direction);
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(state: StateMachine<PawnStateData>): void {
     const { input } = state.data;
 

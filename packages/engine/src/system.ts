@@ -14,13 +14,13 @@ export abstract class ProcessingSystem implements System {
    */
   public abstract getQuery(): Query;
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public boot(world: World): void {
     // Query all entities and cache the resulting group for later use.
     this.group = world.query(this.getQuery());
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract update(world: World): unknown;
 
 }

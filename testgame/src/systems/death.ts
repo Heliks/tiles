@@ -13,7 +13,7 @@ export class DeathSystem extends ProcessingSystem {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public getQuery(): Query {
     return {
       contains: [
@@ -22,7 +22,7 @@ export class DeathSystem extends ProcessingSystem {
     };
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     const _health = world.storage(Health);
 

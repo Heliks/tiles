@@ -20,7 +20,7 @@ export class AddSystem implements Task {
    */
   constructor(protected readonly system: ClassType<System>) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public exec(game: Game): void {
     const system = game.container.make(this.system);
 
@@ -39,7 +39,7 @@ export class AddProvider implements Task {
    */
   constructor(protected readonly provider: Provider) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public exec(game: Game): void {
     const container = game.container;
     const provider = this.provider;

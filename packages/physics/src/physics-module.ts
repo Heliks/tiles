@@ -14,7 +14,7 @@ export class PhysicsModule implements Module {
    */
   constructor(public readonly config: Partial<PhysicsConfig>) {}
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public build(builder: GameBuilder): void {
     const config = parseConfig(this.config);
 

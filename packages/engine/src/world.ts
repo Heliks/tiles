@@ -12,7 +12,7 @@ export class World extends WorldBase implements ImmutableContainer {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public make<T = object>(target: ClassType<T>, params: unknown[] = [], bind = false): T {
     return this.container.make<T>(target, params, bind);
   }

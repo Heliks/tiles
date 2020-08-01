@@ -14,7 +14,7 @@ export class ArrowSystem implements System {
     this.event$ = onContact.subscribe();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     const _health = world.storage(Health);
 

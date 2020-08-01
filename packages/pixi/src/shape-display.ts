@@ -116,7 +116,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
     super();
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public boot(world: World): void {
     // Subscribe to modifications in the ShapeDisplay storage.
     this.onDisplayModify$ = world.storage(ShapeDisplay).events().subscribe();
@@ -124,7 +124,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
     return super.boot(world);
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public getQuery(): Query {
     return {
       contains: [
@@ -134,7 +134,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
     };
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public update(world: World): void {
     // Get unit size.
     const us = this.renderer.config.unitSize;
