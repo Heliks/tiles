@@ -1,7 +1,5 @@
-import { ProcessingSystem, World } from '@tiles/engine';
-import { Query } from '@tiles/entity-system';
-import { Injectable } from "@tiles/injector";
-import { Health } from "../components/health";
+import { EntityQuery, Injectable, ProcessingSystem, World } from '@tiles/engine';
+import { Health } from '../components/health';
 
 /**
  * Handles death.
@@ -14,7 +12,7 @@ export class DeathSystem extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         Health

@@ -1,9 +1,8 @@
 import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@tiles/assets';
-import { Inject, Injectable } from '@tiles/injector';
+import { EventQueue, Inject, Injectable } from '@tiles/engine';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
-import { EventQueue } from '@tiles/engine';
 import { DebugDraw } from './debug-draw';
 import { initPixi } from './utils';
 import { Camera } from './camera';

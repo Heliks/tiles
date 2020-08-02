@@ -1,6 +1,4 @@
-import { System } from '@tiles/entity-system';
-import { Subscriber, World } from '@tiles/engine';
-import { Injectable } from '@tiles/injector';
+import { Injectable, Subscriber, System, World } from '@tiles/engine';
 import { ContactEvent, ContactEvents } from '@tiles/physics';
 import { Health } from '../components/health';
 

@@ -1,8 +1,6 @@
-import { Inject, Injectable } from '@tiles/injector';
-import { Subscriber, Transform, World } from '@tiles/engine';
-import { ComponentEventType, System } from '@tiles/entity-system';
+import { ComponentEventType, Inject, Injectable, Subscriber, System, Transform, World } from '@tiles/engine';
 import { RigidBody } from './rigid-body';
-import { PhysicsAdapter, ADAPTER_TK } from './physics-adapter';
+import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 
 /**
  * Synchronizes the entity world with the physics world. E.g. it spawns a body when a

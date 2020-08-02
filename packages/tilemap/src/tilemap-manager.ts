@@ -1,7 +1,6 @@
-import { Injectable } from '@tiles/injector';
+import { Injectable, World } from '@tiles/engine';
 import { AssetLoader, AssetStorage, Handle } from '@tiles/assets';
 import { Tilemap } from './tilemap';
-import { World } from '@tiles/engine';
 import { TmxTilemapFormat } from './tmx';
 import { Stage } from '@tiles/pixi';
 

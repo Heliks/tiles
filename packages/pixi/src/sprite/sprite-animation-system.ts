@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@tiles/injector';
-import { Query } from '@tiles/entity-system';
-import { ProcessingSystem, Ticker, World } from '@tiles/engine';
+import { Inject, Injectable } from '@tiles/engine';
+import { EntityQuery, ProcessingSystem, Ticker, World } from '@tiles/engine';
 import { SpriteAnimation } from './sprite-animation';
 import { SpriteDisplay } from './sprite-display';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
@@ -22,7 +21,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         SpriteAnimation,

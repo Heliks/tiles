@@ -1,5 +1,4 @@
-import { ltrim, rtrim } from '@tiles/engine';
-import { Injectable } from '@tiles/injector';
+import { ltrim, rtrim, Injectable } from '@tiles/engine';
 import { AssetStorage, Format, Handle, LoadType } from './types';
 
 @Injectable()

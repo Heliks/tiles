@@ -1,5 +1,4 @@
-import { Entity } from '@tiles/entity-system';
-import { EventQueue } from '@tiles/engine';
+import { Entity, EventQueue } from '@tiles/engine';
 import { RigidBody } from './rigid-body';
 
 export enum ContactEvent {

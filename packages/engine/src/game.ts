@@ -1,6 +1,6 @@
 import { Container } from '@tiles/injector';
 import { Ticker } from './ticker';
-import { World } from './world';
+import { World } from './entity-system';
 import { SystemDispatcher } from '@tiles/entity-system';
 
 export class Game {

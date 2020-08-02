@@ -1,7 +1,6 @@
-import { Entity } from '@tiles/entity-system';
 import { PhysicsAdapter } from '../physics-adapter';
 import { RigidBody } from '../rigid-body';
-import { Transform, Vec2, World } from '@tiles/engine';
+import { Entity, Transform, Vec2, World } from '@tiles/engine';
 import { bCreateBody, bCreateBodyPart } from './utils';
 import { b2Body, b2FixtureDef, b2Vec2, b2World } from '@flyover/box2d';
 import { Box2dContactListener } from './box2d-contact-listener';

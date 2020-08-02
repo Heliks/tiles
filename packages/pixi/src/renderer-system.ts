@@ -1,7 +1,5 @@
-import { System } from '@tiles/entity-system';
-import { Inject, Injectable } from '@tiles/injector';
+import { Inject, Injectable, System, World } from '@tiles/engine';
 import { Renderer } from './renderer';
-import { World } from '@tiles/engine';
 import { RENDERER_PLUGINS_TOKEN } from './config';
 import { RendererPlugin } from './types';
 import { Stage } from './stage';

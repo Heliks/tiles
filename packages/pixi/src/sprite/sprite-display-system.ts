@@ -1,8 +1,7 @@
-import { Inject, Injectable } from '@tiles/injector';
-import { ProcessingSystem, Subscriber, Transform, World } from '@tiles/engine';
+import { Inject, Injectable } from '@tiles/engine';
+import { ComponentEventType, EntityQuery, ProcessingSystem, Subscriber, Transform, World } from '@tiles/engine';
 import { Renderer } from '../renderer';
 import { Stage } from '../stage';
-import { ComponentEventType, Query } from '@tiles/entity-system';
 import { flip } from '../utils';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
@@ -35,7 +34,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         SpriteDisplay,

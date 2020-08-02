@@ -1,7 +1,5 @@
-import { Query } from '@tiles/entity-system';
-import { ProcessingSystem, Transform, World } from '@tiles/engine';
+import { EntityQuery, Inject, Injectable, ProcessingSystem, Transform, World } from '@tiles/engine';
 import { RigidBody } from './rigid-body';
-import { Inject, Injectable } from '@tiles/injector';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */
@@ -16,7 +14,7 @@ export class SyncBodies extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         RigidBody,

@@ -1,8 +1,17 @@
-import { ProcessingSystem, Subscriber, Transform, Vec2, World } from "@tiles/engine";
-import { ComponentEventType, Entity, Query, System } from "@tiles/entity-system";
+import {
+  ComponentEventType,
+  Entity,
+  EntityQuery,
+  Injectable,
+  ProcessingSystem,
+  Subscriber,
+  System,
+  Transform,
+  Vec2,
+  World
+} from '@tiles/engine';
 import { Graphics } from 'pixi.js';
-import { Renderer } from "./renderer";
-import { Injectable } from "@tiles/injector";
+import { Renderer } from './renderer';
 
 /** Shape forms. */
 export enum ShapeKind {
@@ -125,7 +134,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         ShapeDisplay,

@@ -1,5 +1,5 @@
 import { Sprite, Texture } from 'pixi.js';
-import { token } from '@tiles/injector';
+import { token } from '@tiles/engine';
 import { AssetStorage } from '@tiles/assets';
 import { FlipDirection } from '../utils';
 

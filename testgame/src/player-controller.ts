@@ -1,12 +1,19 @@
-import { ProcessingSystem, ReadVec2, StateMachine, Ticker, Transform, World } from '@tiles/engine';
-import { Entity, Query } from '@tiles/entity-system';
-import { RigidBody } from "@tiles/physics";
-import { Injectable } from "@tiles/injector";
-import { SpriteAnimation } from "@tiles/pixi";
-import { InputHandler } from "./input";
-import { IdleState, PawnStateData } from "./pawn-state";
-import { Direction } from "./const";
-import { Camera } from "@tiles/pixi";
+import {
+  Entity,
+  EntityQuery,
+  Injectable,
+  ProcessingSystem,
+  ReadVec2,
+  StateMachine,
+  Ticker,
+  Transform,
+  World
+} from '@tiles/engine';
+import { RigidBody } from '@tiles/physics';
+import { Camera, SpriteAnimation } from '@tiles/pixi';
+import { InputHandler } from './input';
+import { IdleState, PawnStateData } from './pawn-state';
+import { Direction } from './const';
 
 export class Pawn {
 
@@ -35,7 +42,7 @@ export class PlayerController extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public getQuery(): Query {
+  public getQuery(): EntityQuery {
     return {
       contains: [
         Pawn,

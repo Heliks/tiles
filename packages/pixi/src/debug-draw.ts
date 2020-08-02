@@ -1,7 +1,6 @@
 import { Sprite, Texture } from 'pixi.js';
-import { Vec2 } from '@tiles/engine';
+import { Injectable, Vec2 } from '@tiles/engine';
 import { hex2rgb } from './utils';
-import { Injectable } from '@tiles/injector';
 import { Camera } from './camera';
 
 @Injectable()

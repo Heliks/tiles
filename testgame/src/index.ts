@@ -11,7 +11,7 @@ import { ArrowSystem } from './systems/arrow';
 import { Health } from './components/health';
 import { DeathSystem } from './systems/death';
 import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
-import { Entity } from '@tiles/entity-system';
+import { Entity } from '@tiles/engine';
 import { lookupEntity } from './utils';
 import { spawnJosh } from './spawners/josh';
 import { SPRITE_SHEET_STORAGE } from '@tiles/pixi';

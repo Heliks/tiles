@@ -1,4 +1,4 @@
-import { GameBuilder } from '../game-builder';
+import { GameBuilder } from './index';
 import { Game } from '../game';
 
 describe('GameBuilder', () => {

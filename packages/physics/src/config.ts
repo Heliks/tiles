@@ -1,4 +1,4 @@
-import { token } from '@tiles/injector';
+import { token } from '@tiles/engine';
 
 /** Configuration for physics module. */
 export interface PhysicsConfig {

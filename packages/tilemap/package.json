@@ -3,7 +3,6 @@
   "peerDependencies": {
     "@tiles/assets": "^0.0.1-alpha.0",
     "@tiles/engine": "^0.0.1-alpha.0",
-    "@tiles/injector": "^0.0.1-alpha.0",
     "@tiles/physics": "^0.0.1-alpha.0",
     "@tiles/pixi": "^0.0.1-alpha.0"
   },
@@ -11,7 +10,6 @@
   "devDependencies": {
     "@tiles/assets": "^0.0.1-alpha.0",
     "@tiles/engine": "^0.0.1-alpha.0",
-    "@tiles/injector": "^0.0.1-alpha.0",
     "@tiles/physics": "^0.0.1-alpha.0",
     "@tiles/pixi": "^0.0.1-alpha.0",
     "@types/jest": "^25.1.2",

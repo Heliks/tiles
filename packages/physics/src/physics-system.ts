@@ -1,6 +1,4 @@
-import { System } from '@tiles/entity-system';
-import { Ticker, World } from '@tiles/engine';
-import { Inject, Injectable } from '@tiles/injector';
+import { Inject, Injectable, System, Ticker, World } from '@tiles/engine';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */

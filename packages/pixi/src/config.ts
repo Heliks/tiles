@@ -1,4 +1,4 @@
-import { token } from '@tiles/injector';
+import { token } from '@tiles/engine';
 import { RendererPlugin } from './types';
 
 /** Configuration for the renderer module. */

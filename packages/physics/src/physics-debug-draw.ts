@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@tiles/injector';
-import { RendererPlugin } from '@tiles/pixi';
+import { Inject, Injectable } from '@tiles/engine';
+import { Renderer, RendererPlugin } from '@tiles/pixi';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
-import { Renderer } from '@tiles/pixi';
 
 /**
  * A `RendererPlugin` that can be used to draw rigid body debug information to the

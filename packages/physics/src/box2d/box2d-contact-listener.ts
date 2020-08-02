@@ -1,7 +1,6 @@
 import { b2Contact, b2ContactListener } from '@flyover/box2d';
 import { ContactEvent, ContactEvents } from '../events';
-import { World } from '@tiles/engine';
-import { Entity } from '@tiles/entity-system';
+import { Entity, World } from '@tiles/engine';
 import { RigidBody } from '../rigid-body';
 
 // Needs to be disabled for Box2D.

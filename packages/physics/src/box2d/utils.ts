@@ -1,6 +1,6 @@
-import { BodyPart, RigidBody, RigidBodyType } from "../rigid-body";
-import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2World } from "@flyover/box2d";
-import { Vec2 } from "@tiles/engine";
+import { BodyPart, RigidBody, RigidBodyType } from '../rigid-body';
+import { b2Body, b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2World } from '@flyover/box2d';
+import { Vec2 } from '@tiles/engine';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */

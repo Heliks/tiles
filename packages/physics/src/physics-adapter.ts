@@ -1,7 +1,5 @@
-import { Entity } from '@tiles/entity-system';
+import { Entity, token, Transform, Vec2, World } from '@tiles/engine';
 import { RigidBody } from './rigid-body';
-import { Transform, Vec2, World } from '@tiles/engine';
-import { token } from '@tiles/injector';
 import { Renderer } from '@tiles/pixi';
 
 /** Adapter for a physics system (box2d, p2 etc.) to be used with the physics module. */

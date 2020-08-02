@@ -1,4 +1,4 @@
-import { System } from "@tiles/entity-system";
+import { System } from "@tiles/engine";
 import { ReadVec2, Vec2 } from "@tiles/engine";
 
 export enum KeyCode {
