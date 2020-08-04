@@ -1,4 +1,4 @@
-import { ComponentEventType, Inject, Injectable, Subscriber, System, Transform, World } from '@tiles/engine';
+import { ComponentEventType, Inject, Injectable, Subscriber, System, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from './rigid-body';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 

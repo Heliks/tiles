@@ -1,6 +1,6 @@
-import { Transform, Vec2, World } from '@tiles/engine';
+import { Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
-import { Renderer, SpriteDisplay } from '@tiles/pixi';
+import { Renderer, SpriteDisplay } from '@heliks/tiles-pixi';
 import { Layer, LayerProperties } from './layer';
 
 /** A layer that contains tiles structured in a grid. */

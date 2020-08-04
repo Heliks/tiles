@@ -1,5 +1,5 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2 } from '@flyover/box2d';
-import { DebugDraw, Renderer } from '@tiles/pixi';
+import { DebugDraw, Renderer } from '@heliks/tiles-pixi';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */

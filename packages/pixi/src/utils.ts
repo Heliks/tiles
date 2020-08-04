@@ -1,8 +1,8 @@
-import { Struct, Vec2 } from '@tiles/engine';
+import { Struct, Vec2 } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js'
 import { DisplayObject, Rectangle, Renderer, Texture } from 'pixi.js'
-import { RendererConfig } from "./config";
-import { Format, ImageFormat, LoadType } from "@tiles/assets";
+import { RendererConfig } from './config';
+import { Format, ImageFormat, LoadType } from '@heliks/tiles-assets';
 
 /** Reads a `Blob` and produces image nodes. */
 export class TextureFormat implements Format<Blob, Texture> {

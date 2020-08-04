@@ -1,12 +1,20 @@
-import { Inject, Injectable } from '@tiles/engine';
-import { ComponentEventType, EntityQuery, ProcessingSystem, Subscriber, Transform, World } from '@tiles/engine';
+import {
+  ComponentEventType,
+  EntityQuery,
+  Inject,
+  Injectable,
+  ProcessingSystem,
+  Subscriber,
+  Transform,
+  World
+} from '@heliks/tiles-engine';
 import { Renderer } from '../renderer';
 import { Stage } from '../stage';
 import { flip } from '../utils';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
-import { AssetStorage } from '@tiles/assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {

@@ -1,7 +1,7 @@
 import { ClassType } from '../types';
-import { System } from '@tiles/entity-system';
+import { System } from '@heliks/tiles-entity-system';
 import { Game } from '../game';
-import { isFactoryProvider, Provider } from "./provider";
+import { isFactoryProvider, Provider } from './provider';
 
 /**
  * A builder task. Will be executed when the `build()` method

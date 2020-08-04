@@ -1,8 +1,8 @@
-import { Injectable, World } from '@tiles/engine';
-import { AssetLoader, AssetStorage, Handle } from '@tiles/assets';
+import { Injectable, World } from '@heliks/tiles-engine';
+import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
 import { Tilemap } from './tilemap';
 import { TmxTilemapFormat } from './tmx';
-import { Stage } from '@tiles/pixi';
+import { Stage } from '@heliks/tiles-pixi';
 
 @Injectable()
 export class TilemapManager {

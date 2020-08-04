@@ -1,6 +1,6 @@
-import { SpriteGrid } from '@tiles/pixi';
+import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { Grid } from '@tiles/engine';
+import { Grid } from '@heliks/tiles-engine';
 
 export class Tileset extends SpriteGrid {
 

@@ -1,17 +1,17 @@
 {
   "author": "Felix Wolf",
   "peerDependencies": {
-    "@tiles/assets": "^0.0.1-alpha.0",
-    "@tiles/engine": "^0.0.1-alpha.0",
-    "@tiles/physics": "^0.0.1-alpha.0",
-    "@tiles/pixi": "^0.0.1-alpha.0"
+    "@heliks/tiles-assets": "^0.0.0",
+    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-physics": "^0.0.0",
+    "@heliks/tiles-pixi": "^0.0.0"
   },
   "description": "Tilemap Module",
   "devDependencies": {
-    "@tiles/assets": "^0.0.1-alpha.0",
-    "@tiles/engine": "^0.0.1-alpha.0",
-    "@tiles/physics": "^0.0.1-alpha.0",
-    "@tiles/pixi": "^0.0.1-alpha.0",
+    "@heliks/tiles-assets": "^0.0.0",
+    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-physics": "^0.0.0",
+    "@heliks/tiles-pixi": "^0.0.0",
     "@types/jest": "^25.1.2",
     "jest": "^25.1.0",
     "jest-canvas-mock": "^2.2.0",
@@ -25,12 +25,12 @@
   "keywords": [],
   "license": "MIT",
   "main": "./lib/index.js",
-  "name": "@tiles/tilemap",
+  "name": "@heliks/tiles-tilemap",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.1-alpha.0"
+  "version": "0.0.0"
 }

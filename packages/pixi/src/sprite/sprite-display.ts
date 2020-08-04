@@ -1,6 +1,6 @@
 import { SpriteSheet } from '../sprite-sheet';
 import { FlipDirection } from '../utils';
-import { Handle } from '@tiles/assets';
+import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
 
 /**

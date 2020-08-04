@@ -1,4 +1,4 @@
-import { ltrim, rtrim, Injectable } from '@tiles/engine';
+import { Injectable, ltrim, rtrim } from '@heliks/tiles-engine';
 import { AssetStorage, Format, Handle, LoadType } from './types';
 
 @Injectable()

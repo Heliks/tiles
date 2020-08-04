@@ -5,8 +5,8 @@
   },
   "description": "Tiles PIXI.JS module",
   "devDependencies": {
-    "@tiles/assets": "^0.0.1-alpha.0",
-    "@tiles/engine": "^0.0.1-alpha.0",
+    "@heliks/tiles-assets": "^0.0.0",
+    "@heliks/tiles-engine": "^0.0.0",
     "@types/jest": "^25.1.2",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
@@ -18,15 +18,15 @@
   "keywords": [],
   "license": "MIT",
   "main": "./lib/index.js",
-  "name": "@tiles/pixi",
+  "name": "@heliks/tiles-pixi",
   "peerDependencies": {
-    "@tiles/assets": "^0.0.1-alpha.0",
-    "@tiles/engine": "^0.0.1-alpha.0"
+    "@heliks/tiles-assets": "^0.0.0",
+    "@heliks/tiles-engine": "^0.0.0"
   },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.1-alpha.0"
+  "version": "0.0.0"
 }

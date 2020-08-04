@@ -8,9 +8,9 @@ import {
   Ticker,
   Transform,
   World
-} from '@tiles/engine';
-import { RigidBody } from '@tiles/physics';
-import { Camera, SpriteAnimation } from '@tiles/pixi';
+} from '@heliks/tiles-engine';
+import { RigidBody } from '@heliks/tiles-physics';
+import { Camera, SpriteAnimation } from '@heliks/tiles-pixi';
 import { InputHandler } from './input';
 import { IdleState, PawnStateData } from './pawn-state';
 import { Direction } from './const';

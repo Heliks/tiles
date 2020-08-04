@@ -1,4 +1,4 @@
-import { Vec2 } from '@tiles/engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import { Container, Renderable } from './renderable';
 import { depthSort, DepthSortable } from './depth';
 

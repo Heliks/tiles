@@ -1,7 +1,7 @@
-import { Format, LoadType } from '@tiles/assets';
+import { Format, LoadType } from '@heliks/tiles-assets';
 import { TextureFormat } from '../utils';
 import { SpriteGrid, SpriteSheet } from '../sprite-sheet';
-import { Grid } from '@tiles/engine';
+import { Grid } from '@heliks/tiles-engine';
 
 /** (WIP) */
 export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {

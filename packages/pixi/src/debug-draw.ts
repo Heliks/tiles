@@ -1,5 +1,5 @@
 import { Sprite, Texture } from 'pixi.js';
-import { Injectable, Vec2 } from '@tiles/engine';
+import { Injectable, Vec2 } from '@heliks/tiles-engine';
 import { hex2rgb } from './utils';
 import { Camera } from './camera';
 

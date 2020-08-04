@@ -1,20 +1,25 @@
 import 'reflect-metadata';
-import { AssetLoader, AssetsModule, Handle } from '@tiles/assets';
-import { Game, GameBuilder, rand, Transform, World } from '@tiles/engine';
-import { PixiModule, Renderer, SpriteAnimation, SpriteDisplay, SpriteSheet, SpriteSheetFromTexture } from '@tiles/pixi';
+import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
+import { Entity, Game, GameBuilder, rand, Transform, World } from '@heliks/tiles-engine';
+import {
+  PixiModule,
+  Renderer,
+  SPRITE_SHEET_STORAGE,
+  SpriteAnimation,
+  SpriteDisplay,
+  SpriteSheet,
+  SpriteSheetFromTexture
+} from '@heliks/tiles-pixi';
 import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, PhysicsDebugDraw, PhysicsModule, RigidBody, RigidBodyType } from '@tiles/physics';
+import { BodyPartType, PhysicsDebugDraw, PhysicsModule, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { InputHandler } from './input';
-import { DrawGridSystem } from './systems/draw-grid-system';
 import { CollisionGroups } from './const';
 import { ArrowSystem } from './systems/arrow';
 import { Health } from './components/health';
 import { DeathSystem } from './systems/death';
-import { TilemapManager, TilemapModule } from '@tiles/tilemap/src';
-import { Entity } from '@tiles/engine';
+import { TilemapManager, TilemapModule } from '@heliks/tiles-tilemap/src';
 import { lookupEntity } from './utils';
 import { spawnJosh } from './spawners/josh';
-import { SPRITE_SHEET_STORAGE } from '@tiles/pixi';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;

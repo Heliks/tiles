@@ -1,5 +1,5 @@
 import { AssetLoader } from './asset-loader';
-import { Module, GameBuilder } from '@tiles/engine';
+import { GameBuilder, Module } from '@heliks/tiles-engine';
 
 
 /** Module that provides tools for asset loading and management. */

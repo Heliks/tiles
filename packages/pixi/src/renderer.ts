@@ -1,6 +1,6 @@
 import { Renderer as PixiRenderer, Texture } from 'pixi.js';
-import { AssetStorage } from '@tiles/assets';
-import { EventQueue, Inject, Injectable } from '@tiles/engine';
+import { AssetStorage } from '@heliks/tiles-assets';
+import { EventQueue, Inject, Injectable } from '@heliks/tiles-engine';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';

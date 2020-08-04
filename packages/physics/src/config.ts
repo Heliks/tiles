@@ -1,4 +1,4 @@
-import { token } from '@tiles/engine';
+import { token } from '@heliks/tiles-engine';
 
 /** Configuration for physics module. */
 export interface PhysicsConfig {

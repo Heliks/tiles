@@ -2,7 +2,7 @@
   "author": "Felix Wolf",
   "description": "Tiles assets module",
   "devDependencies": {
-    "@tiles/engine": "^0.0.1-alpha.0",
+    "@heliks/tiles-engine": "^0.0.0",
     "typescript": "^3.3.3333"
   },
   "files": [
@@ -11,9 +11,9 @@
   "keywords": [],
   "license": "MIT",
   "main": "./lib/index.js",
-  "name": "@tiles/assets",
+  "name": "@heliks/tiles-assets",
   "peerDependencies": {
-    "@tiles/engine": "^0.0.1-alpha.0"
+    "@heliks/tiles-engine": "^0.0.0"
   },
   "scripts": {
     "build": "tsc",
@@ -21,5 +21,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.1-alpha.0"
+  "version": "0.0.0"
 }

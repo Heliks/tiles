@@ -1,4 +1,4 @@
-import { World } from '@tiles/engine';
+import { World } from '@heliks/tiles-engine';
 
 /** Plugin that can be added to the renderer. */
 export interface RendererPlugin {

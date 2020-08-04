@@ -1,6 +1,6 @@
-import { Transform, World } from '@tiles/engine';
-import { Handle } from '@tiles/assets';
-import { SpriteDisplay, SpriteSheet } from '@tiles/pixi';
+import { Transform, World } from '@heliks/tiles-engine';
+import { Handle } from '@heliks/tiles-assets';
+import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health } from '../components/health';
 
 /** Spawns a josh into the world. */

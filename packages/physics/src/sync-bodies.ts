@@ -1,4 +1,4 @@
-import { EntityQuery, Inject, Injectable, ProcessingSystem, Transform, World } from '@tiles/engine';
+import { EntityQuery, Inject, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from './rigid-body';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 

@@ -1,8 +1,8 @@
-import { Transform, World } from '@tiles/engine';
+import { Transform, World } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
-import { Renderer, SpriteDisplay } from '@tiles/pixi';
+import { Renderer, SpriteDisplay } from '@heliks/tiles-pixi';
 import { Layer, LayerProperties, WorldObject, WorldObjectType } from './layer';
-import { BodyPartType, RigidBody } from '@tiles/physics';
+import { BodyPartType, RigidBody } from '@heliks/tiles-physics';
 
 /** A layer that contains world objects. */
 export class ObjectLayer implements Layer<Tilemap> {

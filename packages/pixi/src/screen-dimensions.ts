@@ -1,4 +1,4 @@
-import { Vec2 } from "@tiles/engine";
+import { Vec2 } from '@heliks/tiles-engine';
 
 /** Manages the dimensions of the screen. */
 export class ScreenDimensions {

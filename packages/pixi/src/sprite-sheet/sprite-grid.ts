@@ -1,4 +1,4 @@
-import { Grid, Vec2 } from '@tiles/engine';
+import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
 import { cropTexture } from '../utils';
 import { SpriteSheet } from './sprite-sheet';

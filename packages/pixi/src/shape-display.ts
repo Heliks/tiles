@@ -9,7 +9,7 @@ import {
   Transform,
   Vec2,
   World
-} from '@tiles/engine';
+} from '@heliks/tiles-engine';
 import { Graphics } from 'pixi.js';
 import { Renderer } from './renderer';
 

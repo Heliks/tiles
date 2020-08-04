@@ -1,5 +1,5 @@
 import { Layer, LayerProperties } from './layer';
-import { World } from '@tiles/engine';
+import { World } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
 
 /**

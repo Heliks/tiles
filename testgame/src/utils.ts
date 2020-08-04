@@ -1,4 +1,4 @@
-import { Entity, entityId, entityVersion, World } from '@tiles/engine';
+import { Entity, entityId, entityVersion, World } from '@heliks/tiles-engine';
 
 /** @internal */
 export function lookupEntity(world: World, entity: Entity): void {

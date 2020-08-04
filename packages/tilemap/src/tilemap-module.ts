@@ -1,5 +1,5 @@
-import { GameBuilder, Module } from '@tiles/engine';
-import { TilemapManager } from "./tilemap-manager";
+import { GameBuilder, Module } from '@heliks/tiles-engine';
+import { TilemapManager } from './tilemap-manager';
 
 export class TilemapModule implements Module {
 

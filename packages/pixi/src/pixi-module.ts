@@ -1,4 +1,4 @@
-import { ClassType, GameBuilder, Module, Provider } from '@tiles/engine';
+import { ClassType, GameBuilder, Module, Provider } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { parseConfig, RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';

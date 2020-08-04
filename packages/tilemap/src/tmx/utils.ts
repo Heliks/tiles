@@ -1,4 +1,4 @@
-import { Struct } from '@tiles/engine';
+import { Struct } from '@heliks/tiles-engine';
 import { TmxProperty } from './tmx-json';
 
 // Possible values for the parsed TMX property.

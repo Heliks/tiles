@@ -1,4 +1,4 @@
-import { token } from '@tiles/engine';
+import { token } from '@heliks/tiles-engine';
 import { RendererPlugin } from './types';
 
 /** Configuration for the renderer module. */

@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@tiles/engine';
-import { EntityQuery, ProcessingSystem, Ticker, World } from '@tiles/engine';
+import { EntityQuery, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteAnimation } from './sprite-animation';
 import { SpriteDisplay } from './sprite-display';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
-import { AssetStorage } from '@tiles/assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {

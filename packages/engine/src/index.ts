@@ -12,6 +12,6 @@ export * from '@heliks/event-queue';
 
 // Re-export the injector so that it can be used by modules without the need for peer
 // dependencies, as it'll be required by most packages anyway.
-export * from '@tiles/injector';
+export * from '@heliks/tiles-injector';
 
 

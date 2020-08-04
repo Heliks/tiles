@@ -1,9 +1,9 @@
-import { System } from '@tiles/entity-system';
+import { System } from '@heliks/tiles-entity-system';
 import { Game } from '../game';
 import { ClassType } from '../types';
 import { AddProvider, AddSystem, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
-import { Provider } from "./provider";
+import { Provider } from './provider';
 
 export class Foo extends Error {
 

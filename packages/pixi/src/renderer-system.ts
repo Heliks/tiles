@@ -1,4 +1,4 @@
-import { Inject, Injectable, System, World } from '@tiles/engine';
+import { Inject, Injectable, System, World } from '@heliks/tiles-engine';
 import { Renderer } from './renderer';
 import { RENDERER_PLUGINS_TOKEN } from './config';
 import { RendererPlugin } from './types';

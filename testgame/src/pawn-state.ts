@@ -1,9 +1,9 @@
-import { FlipDirection, ShapeDisplay, ShapeKind, SpriteAnimation } from "@tiles/pixi";
-import { BodyPartType, RigidBody, RigidBodyType } from "@tiles/physics";
-import { InputHandler, KeyCode } from "./input";
-import { deg2rad, State, StateMachine, Ticker, Transform, Vec2, World } from "@tiles/engine";
-import { CollisionGroups, Direction } from "./const";
-import { Pawn } from "./player-controller";
+import { FlipDirection, ShapeDisplay, ShapeKind, SpriteAnimation } from '@heliks/tiles-pixi';
+import { BodyPartType, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
+import { InputHandler, KeyCode } from './input';
+import { deg2rad, State, StateMachine, Ticker, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { CollisionGroups, Direction } from './const';
+import { Pawn } from './player-controller';
 
 export interface PawnStateData {
   animation: SpriteAnimation;

@@ -1,6 +1,6 @@
 import { Sprite, Texture } from 'pixi.js';
-import { token } from '@tiles/engine';
-import { AssetStorage } from '@tiles/assets';
+import { token } from '@heliks/tiles-engine';
+import { AssetStorage } from '@heliks/tiles-assets';
 import { FlipDirection } from '../utils';
 
 export interface AnimationData {

@@ -1,11 +1,11 @@
 import { PhysicsAdapter } from '../physics-adapter';
 import { RigidBody } from '../rigid-body';
-import { Entity, Transform, Vec2, World } from '@tiles/engine';
+import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { bCreateBody, bCreateBodyPart } from './utils';
 import { b2Body, b2FixtureDef, b2Vec2, b2World } from '@flyover/box2d';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { ContactEvents } from '../events';
-import { Renderer } from '@tiles/pixi';
+import { Renderer } from '@heliks/tiles-pixi';
 import { Box2dDebugDraw } from './box2d-debug-draw';
 
 // Needs to be disabled for Box2D.

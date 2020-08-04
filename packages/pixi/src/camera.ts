@@ -1,4 +1,4 @@
-import { Injectable } from '@tiles/engine';
+import { Injectable } from '@heliks/tiles-engine';
 import { ScreenDimensions } from './screen-dimensions';
 
 @Injectable()

@@ -1,5 +1,5 @@
-import { Injectable, Subscriber, System, World } from '@tiles/engine';
-import { ContactEvent, ContactEvents } from '@tiles/physics';
+import { Injectable, Subscriber, System, World } from '@heliks/tiles-engine';
+import { ContactEvent, ContactEvents } from '@heliks/tiles-physics';
 import { Health } from '../components/health';
 
 @Injectable()

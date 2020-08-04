@@ -1,5 +1,5 @@
 import { Tileset } from './tileset';
-import { Grid } from '@tiles/engine';
+import { Grid } from '@heliks/tiles-engine';
 import { Layer } from './layers';
 
 export class TilesetItem {

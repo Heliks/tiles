@@ -1,6 +1,6 @@
 import { TmxLayer, TmxLayerType, TmxTilemap } from './tmx-json';
 import { Layer, LayerGroup, ObjectLayer, TileLayer } from '../layers';
-import { AssetLoader, Format, getDirectory, LoadType } from '@tiles/assets';
+import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Tilemap, TilesetItem } from '../tilemap';
 import { parseProperties } from './utils';
 import { TmxTilesetFormat } from './tmx-tileset-format';

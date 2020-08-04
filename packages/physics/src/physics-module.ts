@@ -1,4 +1,4 @@
-import { GameBuilder, Module } from '@tiles/engine';
+import { GameBuilder, Module } from '@heliks/tiles-engine';
 import { parseConfig, PhysicsConfig, TK_PHYSICS_CONFIG } from './config';
 import { ContactEvents } from './events';
 import { ADAPTER_TK } from './physics-adapter';

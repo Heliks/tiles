@@ -1,4 +1,4 @@
-import { EntityQuery, Injectable, ProcessingSystem, World } from '@tiles/engine';
+import { EntityQuery, Injectable, ProcessingSystem, World } from '@heliks/tiles-engine';
 import { Health } from '../components/health';
 
 /**

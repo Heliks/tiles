@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@tiles/engine';
-import { Renderer, RendererPlugin } from '@tiles/pixi';
+import { Inject, Injectable } from '@heliks/tiles-engine';
+import { Renderer, RendererPlugin } from '@heliks/tiles-pixi';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 
 /**

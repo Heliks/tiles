@@ -1,5 +1,4 @@
-import { System } from "@tiles/engine";
-import { ReadVec2, Vec2 } from "@tiles/engine";
+import { ReadVec2, System, Vec2 } from '@heliks/tiles-engine';
 
 export enum KeyCode {
   A = 'KeyA',

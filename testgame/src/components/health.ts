@@ -1,4 +1,4 @@
-import { clamp } from '@tiles/engine';
+import { clamp } from '@heliks/tiles-engine';
 
 export class Health {
 
