@@ -10,7 +10,7 @@ export {
   entityVersion,
   Query as EntityQuery,
   Storage,
-  System,
+  System
 } from '@heliks/tiles-entity-system';
 
 export * from './processing-system';

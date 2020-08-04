@@ -1,4 +1,6 @@
+# Ignore test files for now:
 **/__test__/**/*
+*.spec.ts
 
 # Test game package is not here to stay
 testgame/**
