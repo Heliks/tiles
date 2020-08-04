@@ -5,18 +5,6 @@ import { AddProvider, AddSystem, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
 
-export class Foo extends Error {
-
-  constructor(
-    public readonly task: Task,
-    public readonly error: Error,
-    message: string
-  ) {
-    super(message);
-  }
-
-}
-
 /** Game builder. */
 export class GameBuilder implements Builder {
 
