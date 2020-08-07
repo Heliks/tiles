@@ -111,9 +111,8 @@ export function initPixi(config: RendererConfig): Renderer {
   }
   else {
     // Prevent sub-pixel smoothing when anti aliasing is disabled.
-    // Fixme: figure out if this can be somehow set on the renderer without
-    //  setting it globally as it forces two games running on the same page
-    //  to use the same scale mode.
+    // Fixme: figure out if this can be somehow set on the renderer as it currently forces
+    //  two games running on the same page to use the same scale mode.
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     _config.antialias = false;

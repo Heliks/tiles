@@ -7,7 +7,7 @@ import { DebugDraw } from './debug-draw';
 import { initPixi } from './utils';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
-import { Container } from './renderable';
+import { Container } from './container';
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
