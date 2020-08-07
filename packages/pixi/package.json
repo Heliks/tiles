@@ -8,6 +8,7 @@
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
     "@types/jest": "^25.1.2",
+    "canvas": "^2.6.1",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.3.3333"
@@ -25,7 +26,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
   "version": "0.0.0"
