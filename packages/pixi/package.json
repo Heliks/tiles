@@ -1,7 +1,7 @@
 {
   "author": "Felix Wolf",
   "dependencies": {
-    "pixi.js": "^5.2.4"
+    "pixi.js": "^5.3.3"
   },
   "description": "Tiles PIXI.JS module",
   "devDependencies": {
