@@ -1,7 +1,7 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { TmxTileset } from './tmx-json';
 import { TextureFormat } from '@heliks/tiles-pixi';
-import { Tileset } from '../tileset';
+import { Tileset } from '@heliks/tiles-tilemap';
 
 /** Asset loader format for loading TMX tilesets. */
 export class TmxTilesetFormat implements Format<TmxTileset, Tileset> {

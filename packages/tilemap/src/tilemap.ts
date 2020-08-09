@@ -1,6 +1,6 @@
 import { Tileset } from './tileset';
 import { Grid } from '@heliks/tiles-engine';
-import { Layer } from './layers';
+import { Layer } from './layer';
 
 export class TilesetItem {
 
@@ -32,17 +32,23 @@ export class TilesetItem {
 
 }
 
-export class Tilemap extends Grid {
+export class Tilemap {
 
+  /**
+   * @param grid The grid that represents the boundaries of the map, and also where
+   *  individual tiles are placed.
+   * @param tilesets Collection of tilesets that are used for rendering the tiles.
+   * @param layers Individual layers that make up this map.
+   */
   constructor(
-    cols: number,
-    rows: number,
-    tileWidth: number,
-    tileHeight: number,
-    public readonly layers: Layer<Tilemap>[] = [],
-    public readonly tilesets: TilesetItem[] = []
-  ) {
-    super(cols, rows, tileWidth, tileHeight)
+    public readonly grid: Grid,
+    private readonly tilesets: TilesetItem[] = [],
+    private readonly layers: Layer<Tilemap>[] = []
+  ) {}
+
+  /** Returns the layers of the tilemap. */
+  public getLayers(): readonly Layer<Tilemap>[] {
+    return this.layers;
   }
 
   /**
@@ -64,13 +70,4 @@ export class Tilemap extends Grid {
     return this.tileset(id).toLocal(id);
   }
 
-  /**
-   * Returns all layers that count as a floor. Floors are the layers where player
-   * characters and other movable entities should be spawned on.
-   */
-  public getFloorLayers(): Layer<Tilemap>[] {
-    return this.layers.filter(item => item.properties.isFloorLayer);
-  }
-
 }
-
