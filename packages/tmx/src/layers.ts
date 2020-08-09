@@ -114,7 +114,7 @@ export function tmxParseLayers(grid: Grid, data: TmxLayer[]): Layer<Tilemap>[] {
 
       // We need an existing object layer to where we can add our composite tile to.
       if (!(prev instanceof ObjectLayer)) {
-        throw new Error('Cannot convert the first layer to a multi tile.');
+        throw new TypeError('Cannot convert the first layer to a multi tile.');
       }
 
       prev.data.push(convertLayerToTile(layer, grid));

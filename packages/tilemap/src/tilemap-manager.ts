@@ -18,11 +18,11 @@ export class TilemapManager {
       // Increase the depth when we encounter a floor layer. This makes sure that it is
       // rendered on a different layer than everything that came before.
       // if (layer.properties.isFloorLayer) {
-        depth++;
+      depth++;
 
-        console.log(depth);
+      console.log(depth);
 
-        // world.get(Stage).setLayerAsSortable(depth);
+      // world.get(Stage).setLayerAsSortable(depth);
       // }
 
       // Check for manual overwrite of layer depth and spawn it.

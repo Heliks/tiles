@@ -4,6 +4,8 @@ import { WorldObject } from './world-object';
 import { Container, Renderer } from '@heliks/tiles-pixi';
 import { TileLayer } from './tile-layer';
 
+// Todo: Spawn on correct renderer layer
+
 /***/
 export class TileComposition extends WorldObject<Tilemap> {
 
@@ -18,7 +20,7 @@ export class TileComposition extends WorldObject<Tilemap> {
   }
 
   /** @inheritDoc */
-  public spawn(world: World, tilemap: Tilemap, index: number): void {
+  public spawn(world: World, tilemap: Tilemap): void {
     const container = new Container();
 
     for (const layer of this.data) {
