@@ -1,19 +1,15 @@
 import { Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Tilemap } from '../tilemap';
-import { Renderer, SpriteDisplay } from '@heliks/tiles-pixi';
-import { Layer, LayerProperties } from './layer';
+import { Tilemap } from './tilemap';
+import { Container, Renderer, SpriteDisplay } from '@heliks/tiles-pixi';
+import { Layer } from './layer';
 
 /** A layer that contains tiles structured in a grid. */
 export class TileLayer implements Layer<Tilemap> {
 
-  /**
-   * @param data
-   * @param properties @inheritDoc
-   */
-  constructor(
-    public readonly data: number[],
-    public readonly properties: LayerProperties
-  ) {}
+  /** @inheritDoc */
+  public readonly isFloorLayer = false;
+
+  constructor(public readonly data: number[]) {}
 
   /** @internal */
   private *iter(tilemap: Tilemap): IterableIterator<{ gId: number; pos: Vec2 }> {
@@ -27,7 +23,7 @@ export class TileLayer implements Layer<Tilemap> {
 
       yield {
         gId: gId,
-        pos: tilemap.pos(i)
+        pos: tilemap.grid.pos(i)
       };
     }
   }
@@ -42,7 +38,7 @@ export class TileLayer implements Layer<Tilemap> {
       const idx = tileset.toLocal(gId) - 1;
 
       // Grids are top left aligned. Convert to center aligned world position.
-      tilemap.toCenter(pos);
+      tilemap.grid.toCenter(pos);
 
       world
         .builder()
@@ -56,7 +52,6 @@ export class TileLayer implements Layer<Tilemap> {
   }
 
   /** @inheritDoc */
-  /*
   public render(world: World, tilemap: Tilemap, target: Container): void {
     for (let { gId, pos } of this.iter(tilemap)) {
       const tileset = tilemap.tileset(gId);
@@ -70,7 +65,6 @@ export class TileLayer implements Layer<Tilemap> {
       target.addChild(sprite);
     }
   }
-  */
 
 }
 

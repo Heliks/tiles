@@ -6,8 +6,12 @@ export interface TmxProperty {
   type: 'bool' | 'float' | 'int' | 'string';
 }
 
+export interface TmxHasProperty {
+  properties?: TmxProperty[];
+}
+
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TmxTileset {
+export interface TmxTileset extends TmxHasProperty {
   backgroundcolor: string;
   columns: number;
   image: string;
@@ -15,7 +19,6 @@ export interface TmxTileset {
   imagewidth: number;
   name: string;
   margin: number;
-  properties?: TmxProperty[];
   source: string;
   spacing: number;
   tilecount: number;
@@ -25,14 +28,13 @@ export interface TmxTileset {
   type: 'tileset';
 }
 
-interface BaseLayer {
+interface BaseLayer extends TmxHasProperty {
   width: number;
   height: number;
   name: string;
   offsetx: number;
   offsety: number;
   opacity: number;
-  properties?: TmxProperty[];
   x: number;
   y: number;
 }
@@ -84,7 +86,7 @@ export interface TmxExternalTileset {
 }
 
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#map */
-export interface TmxTilemap {
+export interface TmxTilemap extends TmxHasProperty {
   backgroundcolor: string;
   height: number;
   hexsidelength: number;
@@ -93,8 +95,6 @@ export interface TmxTilemap {
   nextlayerid: number;
   nextobjectid: number;
   orientation: TmxOrientation;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  properties: any[];
   tiledversion: string;
   tileheight: number;
   // Todo: Tiled also supports inline tilesets.

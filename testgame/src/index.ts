@@ -1,29 +1,22 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, rand, Transform, World } from '@heliks/tiles-engine';
-import {
-  PixiModule,
-  Renderer,
-  SPRITE_SHEET_STORAGE,
-  SpriteAnimation,
-  SpriteDisplay,
-  SpriteSheet,
-  SpriteSheetFromTexture
-} from '@heliks/tiles-pixi';
-import { Pawn, PlayerController } from './player-controller';
-import { BodyPartType, PhysicsDebugDraw, PhysicsModule, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
+import { Entity, Game, GameBuilder, rand, World } from '@heliks/tiles-engine';
+import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFromTexture } from '@heliks/tiles-pixi';
+import { PlayerController } from './player-controller';
+import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { InputHandler } from './input';
-import { CollisionGroups } from './const';
 import { ArrowSystem } from './systems/arrow';
-import { Health } from './components/health';
 import { DeathSystem } from './systems/death';
-import { TilemapManager, TilemapModule } from '@heliks/tiles-tilemap/src';
-import { lookupEntity } from './utils';
+import { TilemapManager, TilemapModule } from '@heliks/tiles-tilemap';
+import { loadSpriteSheet, lookupEntity } from './utils';
 import { spawnJosh } from './spawners/josh';
+import { TmxTilemapFormat } from '@heliks/tiles-tmx';
+import { spawnPawn } from './spawners/pawn';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
 
+/*
 function spawnCrate(
   world: World,
   sheet: Handle<SpriteSheet>,
@@ -48,17 +41,23 @@ function spawnCrate(
     .use(new SpriteDisplay(sheet, 0, 1))
     .build();
 }
+ */
 
-function loadSpriteSheet(world: World, path: string, cols: number, rows: number): Handle<SpriteSheet> {
-  return world.get(AssetLoader).load(
-    path,
-    // Todo: Make sprite size configurable.
-    new SpriteSheetFromTexture(cols, rows, 16, 16),
-    world.get(SPRITE_SHEET_STORAGE)
-  );
+
+
+/** Sets up some global functions for debugging. */
+function setupDebugGlobals(game: Game): void {
+  const _w = window as any;
+
+  // The game instance itself.
+  _w.GAME = game;
+
+  // Utility to look up entities.
+  _w.LOOKUP_ENTITY = (entity: Entity) => lookupEntity(game.world, entity);
 }
 
-async function getPawnSpriteSheet(world: World) {
+/** @internal */
+async function initPawn(world: World): Promise<Handle<SpriteSheet>> {
   const storage = world.get(SPRITE_SHEET_STORAGE);
 
   // Load the sprite sheet.
@@ -85,15 +84,23 @@ async function getPawnSpriteSheet(world: World) {
   return handle;
 }
 
-/** Sets up some global functions for debugging. */
-function setupDebugGlobals(game: Game): void {
-  const _w = window as any;
+/** @internal */
+async function loadMap(world: World, file: string): Promise<void> {
+  const manager = world.get(TilemapManager);
+  const handle = await world.get(AssetLoader).async(
+    file,
+    new TmxTilemapFormat(),
+    manager.cache
+  );
 
-  // The game instance itself.
-  _w.GAME = game;
+  const asset = manager.cache.get(handle);
 
-  // Utility to look up entities.
-  _w.LOOKUP_ENTITY = (entity: Entity) => lookupEntity(game.world, entity);
+  if (asset) {
+    manager.spawn(world, asset.data);
+  }
+  else {
+    throw new Error('Failed to load map');
+  }
 }
 
 window.onload = () => {
@@ -126,65 +133,36 @@ window.onload = () => {
 
   setupDebugGlobals(game);
 
-  // Configure asset directory
+  // Configure asset directory and add renderer to DOM.
   game.world.get(AssetLoader).setBaseUrl('assets');
-
-  // Add renderer to DOM.
   game.world.get(Renderer).appendTo(domTarget);
 
-  // Initialize rigid body.
-  const body = new RigidBody(RigidBodyType.Dynamic).attach({
-    data: [0.4, 0.4],
-    density: 120,
-    type: BodyPartType.Rect
-  });
+  // Initial player position.
+  const x = 25;
+  const y = 25;
 
-  body.damping = 10;
-  body.group = CollisionGroups.Player;
+  const map = 'tilemaps/test01.json';
 
-  getPawnSpriteSheet(game.world).then(pawnSheet => {
-    const pawnTransform = new Transform(25, 25);
-
-    // Insert player character.
-    game.world
-      .builder()
-      // .use(new Camera(200, 200))
-      .use(pawnTransform)
-      .use(new SpriteDisplay(pawnSheet, 1, 1))
-      .use(new SpriteAnimation([]))
-      .use(new Pawn())
-      .use(body)
-      .build();
-
+  initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.
     game.start();
 
-    // Spawn some terrain for debugging purposes.
-    const woodCrateSheet = loadSpriteSheet(game.world, 'spritesheets/wood-crate.png', 1, 1);
-    const joshSheet = loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1);
-
-    // Spawn the josh in a random location near the player
+    // Spawn Josh in a random location near the player
     spawnJosh(
       game.world,
-      joshSheet,
-      pawnTransform.x + rand(-3, 3),
-      pawnTransform.y + rand(-3, 3)
+      loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
+      x + rand(-3, 3),
+      y + rand(-3, 3)
     );
 
-    spawnCrate(game.world, woodCrateSheet, 14, 2);
-    spawnCrate(game.world, woodCrateSheet, 14, 3);
-    spawnCrate(game.world, woodCrateSheet, 14, 4);
-    spawnCrate(game.world, woodCrateSheet, 0, 0);
-
-    spawnCrate(game.world, woodCrateSheet, 10, 3, 200, RigidBodyType.Dynamic);
-
-    const tilemapMgr = game.world.get(TilemapManager);
-
-    tilemapMgr.async('tilemaps/test01.json').then(handle => {
-      tilemapMgr.spawn(game.world, handle);
+    // Init map.
+    loadMap(game.world, map).then(() => {
+      // Spawn player character.
+      spawnPawn(game.world, pawnSpriteSheet, x, y);
     });
   });
-
 };
+
+
 
 

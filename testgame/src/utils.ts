@@ -1,4 +1,6 @@
 import { Entity, entityId, entityVersion, World } from '@heliks/tiles-engine';
+import { AssetLoader, Handle } from '@heliks/tiles-assets';
+import { SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFromTexture } from '@heliks/tiles-pixi';
 
 /** @internal */
 export function lookupEntity(world: World, entity: Entity): void {
@@ -26,3 +28,13 @@ export function lookupEntity(world: World, entity: Entity): void {
 
   console.groupEnd();
 }
+
+export function loadSpriteSheet(world: World, path: string, cols: number, rows: number): Handle<SpriteSheet> {
+  return world.get(AssetLoader).load(
+    path,
+    // Todo: Make sprite size configurable.
+    new SpriteSheetFromTexture(cols, rows, 16, 16),
+    world.get(SPRITE_SHEET_STORAGE)
+  );
+}
+

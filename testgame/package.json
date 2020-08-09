@@ -5,7 +5,8 @@
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-physics": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-tilemap": "^0.0.0"
+    "@heliks/tiles-tilemap": "^0.0.0",
+    "@heliks/tiles-tmx": "^0.0.0"
   },
   "description": "Just trying out things.",
   "devDependencies": {

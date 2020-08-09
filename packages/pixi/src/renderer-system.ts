@@ -92,6 +92,8 @@ export class RendererSystem extends ProcessingSystem {
 
       container.x = transform.x * this.config.unitSize;
       container.y = transform.y * this.config.unitSize;
+
+      // container.setTransform(transform.x * this.config.unitSize, transform.y * this.config.unitSize)
     }
 
     for (const plugin of this.plugins) {

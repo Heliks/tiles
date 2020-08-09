@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 
-import { Tileset } from "../tileset";
-import { Tilemap, TilesetItem } from "../tilemap";
+import { Tileset } from '../tileset';
+import { Tilemap, TilesetItem } from '../tilemap';
+import { Grid } from '@heliks/tiles-engine';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const NOOP_TILESET = new Tileset('', undefined as any, 5, 5, 16, 16);
@@ -24,10 +25,7 @@ describe('Tilemap', () => {
     const item1 = new TilesetItem(NOOP_TILESET, 1);
     const item2 = new TilesetItem(NOOP_TILESET, 50);
 
-    const tilemap = new Tilemap(0, 0, 0, 0, [], [
-      item1,
-      item2
-    ]);
+    const tilemap = new Tilemap(new Grid(0, 0, 0, 0));
 
     expect(tilemap.tileset(23)).toBe(item1);
     expect(tilemap.tileset(58)).toBe(item2);

@@ -1,6 +1,8 @@
 import { Container as BaseContainer } from 'pixi.js';
 import { Renderable } from './renderable';
 
+let foo = false;
+
 /**
  * A container that can contain many for other renderable objects. The container itself
  * is a `Renderable` also.
@@ -16,14 +18,16 @@ export class Container<T extends Renderable = Renderable> extends BaseContainer 
    * position according to the new pivot.
    */
   public setPivot(value: number) {
-    const hw = this.width * value;
-    const hh = this.height * value;
+    const bounds = this.getLocalBounds();
 
-    this.pivot.set(hw, hh);
+    const hw = bounds.width * value;
+    const hh = bounds.height * value;
 
-    // Convert position values to retain original position.
+    // Update position values to retain original position.
     this.x += hw;
     this.y += hh;
+
+    this.pivot.set(hw, hh);
 
     return this;
   }
