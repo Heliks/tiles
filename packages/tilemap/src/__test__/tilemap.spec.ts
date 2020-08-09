@@ -25,7 +25,10 @@ describe('Tilemap', () => {
     const item1 = new TilesetItem(NOOP_TILESET, 1);
     const item2 = new TilesetItem(NOOP_TILESET, 50);
 
-    const tilemap = new Tilemap(new Grid(0, 0, 0, 0));
+    const tilemap = new Tilemap(new Grid(0, 0, 0, 0), [
+      item1,
+      item2
+    ]);
 
     expect(tilemap.tileset(23)).toBe(item1);
     expect(tilemap.tileset(58)).toBe(item2);
