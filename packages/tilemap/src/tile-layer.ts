@@ -53,7 +53,7 @@ export class TileLayer implements Layer<Tilemap> {
 
   /** @inheritDoc */
   public render(world: World, tilemap: Tilemap, target: Container): void {
-    for (let { gId, pos } of this.iter(tilemap)) {
+    for (const { gId, pos } of this.iter(tilemap)) {
       const tileset = tilemap.tileset(gId);
       const idx = tileset.toLocal(gId) - 1;
 

@@ -1,8 +1,6 @@
 import { Container as BaseContainer } from 'pixi.js';
 import { Renderable } from './renderable';
 
-let foo = false;
-
 /**
  * A container that can contain many for other renderable objects. The container itself
  * is a `Renderable` also.
@@ -40,8 +38,10 @@ export class Container<T extends Renderable = Renderable> extends BaseContainer 
 
     // Find the lowest possible x and y values. DON'T use sort() here because that would
     // destroy the render order of the container.
+    /* eslint-disable unicorn/no-reduce */
     const minX = children.reduce<number>((val, item) => val > item.x ? item.x : val, Infinity);
     const minY = children.reduce<number>((val, item) => val > item.y ? item.y : val, Infinity);
+    /* eslint-enable unicorn/no-reduce */
 
     for (const child of children) {
       child.x -= minX;
