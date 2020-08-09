@@ -1,5 +1,6 @@
 import { Injectable, ltrim, rtrim } from '@heliks/tiles-engine';
-import { AssetStorage, Format, Handle, LoadType } from './types';
+import { AssetStorage, Handle } from './asset';
+import { Format, LoadType } from './formats';
 
 @Injectable()
 export class AssetLoader {
@@ -27,7 +28,6 @@ export class AssetLoader {
   public getBaseUrl(): string {
     return this.baseUrl;
   }
-
 
   /** Called internally to complete a download. */
   protected complete<D>(
