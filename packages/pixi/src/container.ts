@@ -17,11 +17,9 @@ export class Container<T extends Renderable = Renderable> extends BaseContainer 
    * pivot to the center of the container. This also updates the [[x]] and [[y]]
    * position according to the new pivot.
    */
-  public setPivot(value: number) {
-    const bounds = this.getLocalBounds();
-
-    const hw = bounds.width * value;
-    const hh = bounds.height * value;
+  public setPivot(value: number): this {
+    const hw = this.width * value;
+    const hh = this.height * value;
 
     // Update position values to retain original position.
     this.x += hw;
