@@ -1,13 +1,12 @@
-import { Renderer as PixiRenderer, Texture } from 'pixi.js';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { EventQueue, Inject, Injectable } from '@heliks/tiles-engine';
+import { EventQueue, Inject, Injectable, Struct } from '@heliks/tiles-engine';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';
-import { initPixi } from './utils';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
 import { Container } from './container';
+import * as PIXI from 'pixi.js'
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -20,6 +19,36 @@ export interface OnResizeEvent {
   ratio: number;
 }
 
+/** Initializes a PIXI renderer from the `config`. */
+function initPixi(config: RendererConfig): PIXI.Renderer {
+  const _config: Struct = {
+    transparent: config.transparent ?? true
+  };
+
+  if (config.transparent) {
+    _config.transparent = true;
+  }
+  else {
+    // By default render the background as black.
+    _config.backgroundColor = config.background ?? 0x0;
+  }
+
+  if (config.antiAlias) {
+    _config.antialias = true;
+  }
+  else {
+    // Prevent sub-pixel smoothing when anti aliasing is disabled.
+    // Fixme: figure out if this can be somehow set on the renderer as it currently forces
+    //  two games running on the same page to use the same scale mode.
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+    _config.antialias = false;
+  }
+
+  return new PIXI.Renderer(_config);
+}
+
+
 @Injectable()
 export class Renderer {
 
@@ -27,7 +56,7 @@ export class Renderer {
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
   /** Asset storage for loaded textures. */
-  public readonly textures: AssetStorage<Texture> = new Map();
+  public readonly textures: AssetStorage<PIXI.Texture> = new Map();
 
   /**
    * If this contains `true` as value the render will always be resized via
@@ -36,7 +65,7 @@ export class Renderer {
   protected autoResize = false;
 
   /** PIXI.JS renderer. */
-  protected readonly renderer: PixiRenderer;
+  protected readonly renderer: PIXI.Renderer;
 
   protected readonly root = new Container();
 

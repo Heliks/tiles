@@ -11,8 +11,8 @@ export class SpriteGrid extends SpriteSheet {
    * @param _texture Texture from which the sprites will be created.
    */
   constructor(
-    protected readonly grid: Grid,
-    protected readonly _texture: Texture
+    private readonly grid: Grid,
+    private readonly _texture: Texture
   ) {
     super();
   }

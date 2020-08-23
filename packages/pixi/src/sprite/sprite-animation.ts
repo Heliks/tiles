@@ -1,5 +1,5 @@
 import { FlipDirection } from '../utils';
-import { AnimationData } from '../sprite-sheet';
+import { AnimationData } from './sprite-sheet';
 
 export class SpriteAnimation implements AnimationData {
 

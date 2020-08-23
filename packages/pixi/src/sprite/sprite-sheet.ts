@@ -21,7 +21,10 @@ export interface AnimationData {
  */
 export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>();
 
-/**  */
+/**
+ * A sheet that contains multiple sprites and data associated with it
+ * (e.g. animations).
+ */
 export abstract class SpriteSheet {
 
   /** @internal */
