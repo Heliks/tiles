@@ -4,6 +4,8 @@ import { Renderable } from './renderable';
 /**
  * A container that can contain many for other renderable objects. The container itself
  * is a `Renderable` also.
+ *
+ * @typeparam T Kind of `Renderable` contained in this container.
  */
 export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
 

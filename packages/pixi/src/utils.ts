@@ -1,25 +1,6 @@
-import { Struct, Vec2 } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js'
-import { DisplayObject, Rectangle, Renderer, Texture } from 'pixi.js'
-import { RendererConfig } from './config';
-import { Format, ImageFormat, LoadType } from '@heliks/tiles-assets';
-
-/** Reads a `Blob` and produces image nodes. */
-export class TextureFormat implements Format<Blob, Texture> {
-
-  /** @inheritDoc */
-  public readonly name = 'PIXI:texture';
-
-  /** @inheritDoc */
-  public readonly type = LoadType.Blob;
-
-  /** @inheritDoc */
-  public process(data: Blob): Texture {
-    // Todo: always creating a new image format instance is probably a bad idea.
-    return Texture.from(new ImageFormat().process(data));
-  }
-
-}
+import { DisplayObject, Rectangle, Texture } from 'pixi.js'
 
 /** Crops a texture. */
 export function cropTexture(
@@ -92,32 +73,5 @@ export function flip(
   }
 }
 
-/** Initializes a PIXI renderer from the `config`. */
-export function initPixi(config: RendererConfig): Renderer {
-  const _config: Struct = {
-    transparent: config.transparent ?? true
-  };
 
-  if (config.transparent) {
-    _config.transparent = true;
-  }
-  else {
-    // By default render the background as black.
-    _config.backgroundColor = config.background ?? 0x0;
-  }
-
-  if (config.antiAlias) {
-    _config.antialias = true;
-  }
-  else {
-    // Prevent sub-pixel smoothing when anti aliasing is disabled.
-    // Fixme: figure out if this can be somehow set on the renderer as it currently forces
-    //  two games running on the same page to use the same scale mode.
-    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-
-    _config.antialias = false;
-  }
-
-  return new Renderer(_config);
-}
 

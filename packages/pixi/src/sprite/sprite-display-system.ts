@@ -13,7 +13,7 @@ import { Stage } from '../stage';
 import { flip } from '../utils';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
-import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
+import { SPRITE_SHEET_STORAGE, SpriteSheet } from './sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 
 @Injectable()
