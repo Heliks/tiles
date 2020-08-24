@@ -10,11 +10,32 @@ import {
 } from '@heliks/tiles-engine';
 import { Renderer } from '../renderer';
 import { Stage } from '../stage';
-import { flip } from '../utils';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
-import { SPRITE_SHEET_STORAGE, SpriteSheet } from './sprite-sheet';
+import { FlipMode, SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet/sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
+
+/** @internal */
+function applyFlipMode(display: SpriteDisplay): void {
+  switch (display.flipMode) {
+    case FlipMode.Both:
+      display.scale.x = -1;
+      display.scale.y = -1;
+      break;
+    case FlipMode.Horizontal:
+      display.scale.x = -1;
+      display.scale.y = 1;
+      break;
+    case FlipMode.Vertical:
+      display.scale.x = 1;
+      display.scale.y = -1;
+      break;
+    case FlipMode.None:
+      display.scale.x = 1;
+      display.scale.y = 1;
+      break;
+  }
+}
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -71,19 +92,16 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     // Update sprites.
     for (const entity of this.group.entities) {
       const display = _display.get(entity);
-      const sheet = typeof display.sheet === 'symbol'
-        ? this.storage.get(display.sheet)?.data
-        : display.sheet;
+      const sheet = typeof display.spritesheet === 'symbol'
+        ? this.storage.get(display.spritesheet)?.data
+        : display.spritesheet;
 
       // No sheet means that the asset hasn't finished loading yet.
       if (display.dirty && sheet) {
-        // Remove flag before the update is complete so we don't accidentally attempt
-        // to re-render the sprite more than once.
         display.dirty = false;
+        display.texture = sheet.texture(display.spriteIndex);
 
-        display.texture = sheet.texture(display.spriteIndex as number);
-
-        flip(display, display.flip);
+        applyFlipMode(display);
       }
 
       // Update the sprites position.

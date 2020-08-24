@@ -6,6 +6,5 @@ export type Renderable = DisplayObject;
 // Re-export PIXI renderables for which we don't have a custom type.
 export {
   AnimatedSprite,
-  Graphics,
-  Sprite
+  Graphics
 } from 'pixi.js';

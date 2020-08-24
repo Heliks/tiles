@@ -1,7 +1,6 @@
 import { Vec2 } from '@heliks/tiles-engine';
-import { Renderable } from './renderable';
+import { Container, Renderable } from './renderables';
 import { depthSort, DepthSortable } from './depth';
-import { Container } from './container';
 
 /** @internal */
 class StageLayer extends Container<Renderable & DepthSortable> {

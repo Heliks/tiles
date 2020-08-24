@@ -5,7 +5,7 @@ import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
-import { Container } from './container';
+import { Container } from './renderables';
 import * as PIXI from 'pixi.js'
 
 export interface OnResizeEvent {

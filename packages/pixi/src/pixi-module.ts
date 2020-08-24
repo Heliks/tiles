@@ -3,13 +3,14 @@ import * as PIXI from 'pixi.js';
 import { parseConfig, RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
+import { SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
 import { Stage } from './stage';
 import { ShapeDisplaySystem } from './shape-display';
 import { RendererPlugin } from './types';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
 import { DebugDraw } from './debug-draw';
+import { SPRITE_SHEET_STORAGE } from './sprite-sheet';
 
 /**
  * Module that provides a WebGL drawing context.

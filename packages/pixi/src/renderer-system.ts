@@ -13,7 +13,7 @@ import { RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from '.
 import { RendererPlugin } from './types';
 import { Stage } from './stage';
 import { Camera } from './camera';
-import { Container } from './container';
+import { Container } from './renderables';
 import { Storage } from '@heliks/tiles-entity-system';
 
 /** Automatically updates the [[Renderer]] once on each frame. */
