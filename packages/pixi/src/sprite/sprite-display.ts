@@ -1,5 +1,4 @@
-import { SpriteSheet } from './sprite-sheet';
-import { FlipDirection } from '../utils';
+import { FlipMode, SpriteSheet } from '../sprite-sheet/sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
 
@@ -11,21 +10,18 @@ export class SpriteDisplay extends Sprite {
   /** Indicates if the sprite needs to be re-rendered.*/
   public dirty = true;
 
-  /**
-   * The direction in which the sprite should be flipped. Changing this requires
-   * re-rendering the sprite.
-   */
-  public flip = FlipDirection.None;
+  /** Direction(s) in which the sprite should be flipped. */
+  public flipMode = FlipMode.None;
 
   /**
-   * @param sheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>` is
-   *  passed the rendering of the sprite will be deferred until the asset is loaded.
-   * @param spriteIndex Index of the sprite on [[sheet]] that should be rendered.
+   * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
+   *  is passed the rendering of the sprite will be deferred until the asset is loaded.
+   * @param spriteIndex Index of the sprite that should be rendered.
    * @param layer The layer on which the sprite should be rendered. Sprites on a lower
    *  layer with always be rendered before sprites on a higher one.
    */
   constructor(
-    public sheet: SpriteSheet | Handle<SpriteSheet>,
+    public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
     public layer = 0
   ) {
@@ -51,9 +47,9 @@ export class SpriteDisplay extends Sprite {
    * Flips the sprite in the given direction and queues the sprite for re- rendering if
    * necessary.
    */
-  public flipTo(direction = FlipDirection.Horizontal): this {
-    if (this.flip !== direction) {
-      this.flip = direction;
+  public flipTo(direction = FlipMode.Horizontal): this {
+    if (this.flipMode !== direction) {
+      this.flipMode = direction;
       this.dirty = true;
     }
 

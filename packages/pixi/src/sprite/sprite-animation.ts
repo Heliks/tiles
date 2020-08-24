@@ -1,13 +1,13 @@
-import { FlipDirection } from '../utils';
-import { AnimationData } from './sprite-sheet';
+import { FlipMode } from '../sprite-sheet/sprite-sheet';
 
-export class SpriteAnimation implements AnimationData {
+/** Component to animate a sprite. */
+export class SpriteAnimation {
 
   /** Elapsed time since the animation has started. */
   public elapsedTime = -1;
 
-  /** The direction in which the sprites of all frames should be flipped. */
-  public flip = FlipDirection.None;
+  /** Direction in which the sprites of this animation should be flipped. */
+  public flipMode = FlipMode.None;
 
   /**
    * Index of the frame that is currently displayed by the animation. A value of `-1`
@@ -15,37 +15,33 @@ export class SpriteAnimation implements AnimationData {
    */
   public frame = -1;
 
-  /**
-   * If set to `true` the animation will start from the beginning after it has
-   * completed.
-   */
+  /** If set to `true` the animation will start from scratch after it has completed. */
   public loop = true;
 
   /** The name of the animation that is currently playing. */
   public playing?: string;
 
   /**
-   * The animation speed. Will be calculated together with the frame duration. If the
-   * value is `0.5` and the [[frameDuration]] is `100`, the effective duration a frame is
-   * displayed will be 50ms.
+   * The speed at which the animation is played. If the animation has a frame duration
+   * of `100ms` and a speed of `0.5` the real frame duration will be `50ms`.
    */
   public speed = 1;
 
   /**
-   * Name of an animation on the sprite-sheet of the [[SpriteDisplay]] that accompanies
-   * this component on the same entity to which this animation should be changed to. Does
-   * not wait for the current animation to complete.
+   * Name of the animation that should be played next. The animation data that will be
+   * used is from the [[SpriteDisplay]] component adjacent to this animation. This
+   * does not wait for the current animation to complete.
+   *
+   * Do not modify this directly and instead use [[play()]] to avoid unwanted side-
+   * effects.
    */
   public transform?: string;
 
   /**
-   * @param frames @inheritDoc
-   * @param frameDuration @inheritDoc
+   * @param frames Contains the indexes of all sprites of which the animation consists.
+   * @param frameDuration Duration in ms of how long each frame is displayed.
    */
-  constructor(
-    public frames: number[],
-    public frameDuration = 100
-  ) {}
+  constructor(public frames: number[], public frameDuration = 100) {}
 
   /** Resets the animation back to the beginning. */
   public reset(): this {
@@ -104,11 +100,13 @@ export class SpriteAnimation implements AnimationData {
     return this;
   }
 
-  /** Flips the sprite of each frame in the animation in the given direction. */
-  public flipTo(direction = FlipDirection.Horizontal): this {
-    this.flip = direction;
-
-    return this;
+  /**
+   * Returns `true` if the animation is "complete". An animation is considered complete
+   * when it displays its last frame. If the animation loops it means that it is
+   * considered incomplete on the next frame again.
+   */
+  public isComplete(): boolean {
+    return this.frame === this.frames.length - 1;
   }
 
 }

@@ -1,8 +1,22 @@
 import { EntityQuery, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteAnimation } from './sprite-animation';
 import { SpriteDisplay } from './sprite-display';
-import { SPRITE_SHEET_STORAGE, SpriteSheet } from './sprite-sheet';
+import { FlipMode, SPRITE_SHEET_STORAGE, SpriteAnimationData, SpriteSheet } from '../sprite-sheet/sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
+
+/** @internal */
+function translateFlipMode(data: SpriteAnimationData): FlipMode {
+  switch (data.flip) {
+    case 'both':
+      return FlipMode.Both;
+    case 'horizontal':
+      return FlipMode.Horizontal;
+    case 'vertical':
+      return FlipMode.Vertical;
+    default:
+      return FlipMode.None;
+  }
+}
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
@@ -35,9 +49,9 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * component.
    */
   protected transformAnimation(animation: SpriteAnimation, display: SpriteDisplay): void {
-    const sheet = typeof display.sheet === 'symbol'
-      ? this.storage.get(display.sheet)?.data
-      : display.sheet;
+    const sheet = typeof display.spritesheet === 'symbol'
+      ? this.storage.get(display.spritesheet)?.data
+      : display.spritesheet;
 
     // The SpriteSheet asset is not loaded yet.
     if (!sheet) {
@@ -51,15 +65,9 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       animation.reset();
 
       // Don't copy a reference here, otherwise editing the animation frames would also
-      // edit the original `AnimationData`.
-      animation.frames = [
-        ...data.frames
-      ];
-
-      // Flip animation.
-      if (data.flip !== undefined) {
-        animation.flipTo(data.flip);
-      }
+      // edit the original animation data.
+      animation.frames = [ ...data.frames ];
+      animation.flipMode = translateFlipMode(data);
 
       // Inherit frame duration set by the animation, otherwise we continue to use the
       // one that is currently set.
@@ -102,9 +110,8 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
 
-        display.flipTo(animation.flip).setIndex(animation.frames[
-          nextFrame
-        ]);
+        display.flipMode = animation.flipMode;
+        display.setIndex(animation.frames[nextFrame]);
       }
     }
   }

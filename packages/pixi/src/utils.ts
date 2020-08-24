@@ -1,6 +1,6 @@
 import { Vec2 } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js'
-import { DisplayObject, Rectangle, Texture } from 'pixi.js'
+import { Rectangle, Texture } from 'pixi.js'
 
 /** Crops a texture. */
 export function cropTexture(
@@ -37,40 +37,6 @@ export function rgb2hex(r: number, g: number, b: number): number {
  */
 export function hex2rgb(hex: number): [number, number, number] {
   return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
-}
-
-
-/** Directions in which a renderable object can be flipped. */
-export enum FlipDirection {
-  None,
-  Both,
-  Horizontal,
-  Vertical
-}
-
-/** Flips a `renderable` in the given `direction`. */
-export function flip(
-  renderable: DisplayObject,
-  direction: FlipDirection
-): void {
-  switch (direction) {
-    case FlipDirection.None:
-      renderable.scale.x = 1;
-      renderable.scale.y = 1;
-      break;
-    case FlipDirection.Both:
-      renderable.scale.x = -1;
-      renderable.scale.y = -1;
-      break;
-    case FlipDirection.Horizontal:
-      renderable.scale.x = -1;
-      renderable.scale.y = 1;
-      break;
-    case FlipDirection.Vertical:
-      renderable.scale.y = -1;
-      renderable.scale.y = 1;
-      break;
-  }
 }
 
 
