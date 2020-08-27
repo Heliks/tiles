@@ -21,4 +21,17 @@ export class Transform {
     return [ this.x, this.y ];
   }
 
+  public clone(): Transform {
+    return new Transform(this.x, this.y, this.rotation);
+  }
+
+  public transform(x: number, y: number, rotation: number): this {
+    this.rotation = rotation;
+
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
 }

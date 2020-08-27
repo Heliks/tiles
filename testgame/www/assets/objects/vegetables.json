@@ -1,0 +1,7 @@
+{
+  "cols": 2,
+  "image": "./vegetables.png",
+  "rows": 1,
+  "spriteSize": [16, 16],
+  "type": "spritesheet"
+}
