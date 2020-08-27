@@ -4,9 +4,3 @@ export enum CollisionGroups {
   Enemy = 4
 }
 
-export enum Direction {
-  Left,
-  Right,
-  Up,
-  Down
-}

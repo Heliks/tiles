@@ -1,16 +1,24 @@
-import { TmxTilemap } from './tmx-json';
+import { TmxExternalTileset, TmxLayerType, TmxTilemap, TmxTileset } from './tmx-json';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { Tilemap, TilesetItem } from '@heliks/tiles-tilemap';
+import { Tilemap, Tileset } from '@heliks/tiles-tilemap';
 import { TmxTilesetFormat } from './tmx-tileset-format';
 import { Grid } from '@heliks/tiles-engine';
-import { tmxParseLayers } from './layers';
+import { tmxParseLayer } from './layers';
 
 /** @internal */
-async function getExternalTileset(loader: AssetLoader, firstId: number, path: string): Promise<TilesetItem> {
-  return new TilesetItem(
-    await loader.fetch(path, new TmxTilesetFormat()),
-    firstId
-  );
+function isExternalTileset(data: TmxTileset): data is TmxExternalTileset {
+  return data.source !== undefined;
+}
+
+/** @internal */
+async function processTileset(loader: AssetLoader, basePath: string, data: TmxTileset): Promise<Tileset> {
+  const format = new TmxTilesetFormat(data.firstgid);
+
+  // If the given data is an external tileset we load it using the loader. Otherwise
+  // we can simply parse it directly.
+  return isExternalTileset(data)
+    ? loader.fetch(`${basePath}/${data.source}`, format)
+    : format.process(data, '', loader);
 }
 
 /** @internal */
@@ -21,7 +29,6 @@ function verify(data: TmxTilemap): void {
   }
 
   // Infinite maps are not supported as of now.
-  // Todo: Implement infinite maps
   if (data.infinite) {
     throw new Error('Infinite maps are not supported.');
   }
@@ -36,18 +43,18 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-  /** Creates a `Tilemap` from `data`. */
+  /**
+   * Creates a `Tilemap` from `data`.
+   *
+   * Todo: Infinite maps
+   */
   public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap> {
     // Make sure that the map data we've got is not corrupted.
     verify(data);
 
-    // All paths in this file will be relative to the directory where the map file
-    // is located.
-    const basePath = getDirectory(file);
-
     // Load all tilesets on the tile map.
     const tilesets = await Promise.all(data.tilesets.map(
-      item => getExternalTileset(loader, item.firstgid, `${basePath}/${item.source}`)
+      item => processTileset(loader, getDirectory(file), item)
     ));
 
     const grid = new Grid(
@@ -60,7 +67,7 @@ export class TmxTilemapFormat implements Format<TmxTilemap, Tilemap> {
     return new Tilemap(
       grid,
       tilesets,
-      tmxParseLayers(grid, data.layers)
+      data.layers.map(item => tmxParseLayer(item))
     );
   }
 
