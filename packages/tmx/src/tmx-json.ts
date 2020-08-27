@@ -11,7 +11,7 @@ export interface TmxHasProperty {
 }
 
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TmxTileset extends TmxHasProperty {
+export interface TmxTilesetData extends TmxHasProperty {
   backgroundcolor: string;
   columns: number;
   image: string;
@@ -19,7 +19,6 @@ export interface TmxTileset extends TmxHasProperty {
   imagewidth: number;
   name: string;
   margin: number;
-  source: string;
   spacing: number;
   tilecount: number;
   tiledversion: string;
@@ -71,19 +70,25 @@ export interface TmxTileLayer extends BaseLayer {
 export interface TmxGroupLayer extends BaseLayer {
   layers: (
     TmxGroupLayer | TmxObjectLayer | TmxTileLayer
-  )[];
+    )[];
   type: TmxLayerType.Group;
 }
 
 export type TmxLayer = TmxObjectLayer | TmxTileLayer | TmxGroupLayer;
 
-/** An external tileset that must be loaded before it can be used. */
+/** An external tileset that must be loaded manually. */
 export interface TmxExternalTileset {
-  /** The Id of the first tile in the tile set. */
   firstgid: number;
-  /** The source file of the tileset that should be loaded. */
   source: string;
 }
+
+/** A tileset that is embedded directly into the map. */
+export interface TmxInlineTileset extends TmxTilesetData {
+  firstgid: number;
+  source: undefined;
+}
+
+export type TmxTileset = TmxExternalTileset | TmxInlineTileset;
 
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#map */
 export interface TmxTilemap extends TmxHasProperty {
@@ -98,7 +103,7 @@ export interface TmxTilemap extends TmxHasProperty {
   tiledversion: string;
   tileheight: number;
   // Todo: Tiled also supports inline tilesets.
-  tilesets: TmxExternalTileset[];
+  tilesets: TmxTileset[];
   tilewidth: number;
   type: 'map';
   width: number;

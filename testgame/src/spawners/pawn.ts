@@ -3,13 +3,14 @@ import { Handle } from '@heliks/tiles-assets';
 import { BodyPartType, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { CollisionGroups } from '../const';
 import { SpriteAnimation, SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
-import { Pawn } from '../player-controller';
+import { Pawn } from '../pawn/pawn-controller';
+import { Direction } from '../components/direction';
 
 export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: number, y: number): void {
   // Initialize rigid body.
   const body = new RigidBody(RigidBodyType.Dynamic).attach({
     data: [0.4, 0.4],
-    density: 120,
+    density: 0,
     type: BodyPartType.Rect
   });
 
@@ -26,6 +27,7 @@ export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: num
     .use(new SpriteDisplay(spritesheet, 1, 1))
     .use(new SpriteAnimation([]))
     .use(new Pawn())
+    .use(new Direction())
     .use(body)
     .build();
 }

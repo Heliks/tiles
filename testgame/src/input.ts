@@ -1,4 +1,4 @@
-import { ReadVec2, System, Vec2 } from '@heliks/tiles-engine';
+import { Vec2Readonly, System, Vec2 } from '@heliks/tiles-engine';
 
 export enum KeyCode {
   A = 'KeyA',
@@ -67,7 +67,7 @@ export class InputHandler implements System {
   }
 
   /** Returns the last known position of the mouse. */
-  public getMousePos(): ReadVec2 {
+  public getMousePos(): Vec2Readonly {
     return this.mousePos;
   }
 

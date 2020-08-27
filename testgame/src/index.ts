@@ -1,17 +1,19 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
 import { Entity, Game, GameBuilder, rand, World } from '@heliks/tiles-engine';
-import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFromTexture } from '@heliks/tiles-pixi';
-import { PlayerController } from './player-controller';
-import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
+import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
+import { PawnController } from './pawn/pawn-controller';
+import { PhysicsModule } from '@heliks/tiles-physics';
 import { InputHandler } from './input';
 import { ArrowSystem } from './systems/arrow';
 import { DeathSystem } from './systems/death';
-import { TilemapManager, TilemapModule } from '@heliks/tiles-tilemap';
+import { TilemapModule } from '@heliks/tiles-tilemap';
 import { loadSpriteSheet, lookupEntity } from './utils';
 import { spawnJosh } from './spawners/josh';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { spawnPawn } from './spawners/pawn';
+import { DrawGridSystem } from './systems/draw-grid-system';
+import { Direction } from './components/direction';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -61,9 +63,9 @@ async function initPawn(world: World): Promise<Handle<SpriteSheet>> {
   const storage = world.get(SPRITE_SHEET_STORAGE);
 
   // Load the sprite sheet.
-  const handle = await world.get(AssetLoader).async(
-    'spritesheets/pawn.png', new SpriteSheetFromTexture(27, 1, 32, 32), storage
-  );
+  const handle = await world
+    .get(AssetLoader)
+    .async('spritesheets/pawn.json', new SpriteSheetFormat(), storage);
 
   const sheet = storage.get(handle);
 
@@ -71,37 +73,43 @@ async function initPawn(world: World): Promise<Handle<SpriteSheet>> {
     throw new Error('Unexpected Error');
   }
 
-  // Manually set animation data.
-  sheet.data
-    .setAnimation('idle-down', { frames: [0] })
-    .setAnimation('idle-up', { frames: [1] })
-    .setAnimation('idle-right', { frames: [2] })
-    .setAnimation('walk-down', { frames: [3, 4, 5, 6, 7, 8] })
-    .setAnimation('walk-up', { frames: [9, 10, 11, 12, 13, 14] })
-    .setAnimation('walk-right', { frames: [15, 16, 17, 18, 19, 20] })
-    .setAnimation('bow-right', { frames: [21, 22, 23, 24, 25, 26] });
-
   return handle;
 }
 
-/** @internal */
-async function loadMap(world: World, file: string): Promise<void> {
-  const manager = world.get(TilemapManager);
-  const handle = await world.get(AssetLoader).async(
-    file,
-    new TmxTilemapFormat(),
-    manager.cache
-  );
-
-  const asset = manager.cache.get(handle);
-
-  if (asset) {
-    manager.spawn(world, asset.data);
-  }
-  else {
-    throw new Error('Failed to load map');
-  }
+async function fetchMap(world: World, file: string) {
+  return world.get(AssetLoader).fetch(file, new TmxTilemapFormat());
 }
+
+/** @internal */
+/*
+async function spawnMap(world: World, file: string): Promise<void> {
+  const map = await fetchMap(world, file);
+
+  for (let i = 0, l = map.layers.length; i < l; i++) {
+    const layer = map.layers[i];
+
+    switch (layer.constructor) {
+      case TileLayer:
+        for (const { id, index } of layer.iter()) {
+          // Grids are top left aligned. Convert to center aligned world position.
+          const position = map.grid.toCenter(map.grid.pos(index));
+          const tileset  = map.tileset(id);
+
+          world
+            .builder()
+            .use(new Transform(position[0] / 16, position[1] / 16))
+            .use(new SpriteDisplay(
+              tileset.spritesheet,
+              // Convert global tile id to a local sprite index.
+              tileset.toLocal(id) - 1,
+              i
+            ))
+            .build();
+        }
+      break;
+    }
+  }
+}*/
 
 window.onload = () => {
   const domTarget = document.getElementById('stage');
@@ -110,11 +118,13 @@ window.onload = () => {
     throw new Error();
   }
 
+  console.log(new Direction(2).toCardinal())
+
   const game = new GameBuilder()
     .system(InputHandler)
     .module(new AssetsModule())
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
-    .system(PlayerController)
+    .system(PawnController)
     .module(
       new PixiModule({
         antiAlias: false,
@@ -123,7 +133,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(PhysicsDebugDraw)
+        // .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -138,14 +148,17 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(domTarget);
 
   // Initial player position.
-  const x = 25;
-  const y = 25;
+  const x = 0;
+  const y = 0;
 
   const map = 'tilemaps/test01.json';
 
   initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.
     game.start();
+
+    // Spawn player character.
+    spawnPawn(game.world, pawnSpriteSheet, x, y);
 
     // Spawn Josh in a random location near the player
     spawnJosh(
@@ -155,11 +168,12 @@ window.onload = () => {
       y + rand(-3, 3)
     );
 
+
+
     // Init map.
-    loadMap(game.world, map).then(() => {
-      // Spawn player character.
-      spawnPawn(game.world, pawnSpriteSheet, x, y);
-    });
+    // spawnMap(game.world, map).then(() => {
+
+    // });
   });
 };
 

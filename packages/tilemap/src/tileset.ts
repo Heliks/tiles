@@ -1,20 +1,31 @@
-import { SpriteGrid } from '@heliks/tiles-pixi';
-import { Texture } from 'pixi.js';
-import { Grid } from '@heliks/tiles-engine';
+import { SpriteSheet } from '@heliks/tiles-pixi';
 
-export class Tileset extends SpriteGrid {
+export class Tileset {
 
+  /**
+   * Contains the last ID in the global ID range that the tileset is occupying on a
+   * maps global range.
+   */
+  public get lastId(): number {
+    return this.firstId + this.spritesheet.size() - 1;
+  }
+
+  /**
+   * @param spritesheet Spritesheet for rendering individual sprites.
+   * @param firstId First ID in the global ID range of the map that this tileset occupies.
+   */
   constructor(
-    public readonly name: string,
-    texture: Texture,
-    cols: number,
-    rows: number,
-    sw: number,
-    sh: number
-  ) {
-    super(new Grid(cols, rows, sw, sh), texture);
+    public readonly spritesheet: SpriteSheet,
+    public readonly firstId: number
+  ) {}
+
+  /**
+   * Converts `id` to its local counterpart on [[tileset]]. For example if [[firstId]]
+   * is `12` this function will return the local ID `3` when given a global ID of `15`.
+   */
+  public toLocal(id: number): number {
+    return id - this.firstId + 1;
   }
 
 }
-
 

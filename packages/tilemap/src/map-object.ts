@@ -4,7 +4,7 @@ import { World } from '@heliks/tiles-engine';
  * An object on a tilemap that exists inside the game world. For example: Objects, tiles
  * or shapes are all considered "world objects".
  */
-export abstract class WorldObject<T> {
+export abstract class MapObject<T = any> {
 
   /** Object rotation in degrees (0-360). */
   public rotation = 0;

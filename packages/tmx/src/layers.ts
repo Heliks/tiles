@@ -1,6 +1,6 @@
 import { TmxLayer, TmxLayerType, TmxObjectLayer } from './tmx-json';
-import { Grid, Struct } from '@heliks/tiles-engine';
-import { Layer, LayerGroup, ObjectLayer, TileComposition, TileLayer, Tilemap } from '@heliks/tiles-tilemap';
+import { Struct } from '@heliks/tiles-engine';
+import { Layer, LayerGroup, ObjectLayer, TileLayer } from '@heliks/tiles-tilemap';
 import { tmxConvertObjectToTile } from './objects';
 import { tmxParseProperties } from './properties';
 
@@ -25,6 +25,7 @@ export interface LayerProperties extends Struct {
 }
 
 /** @internal */
+/*
 function assignLayerDataToTile(data: TmxLayer, target: TileComposition): TileComposition {
   switch (data.type) {
     case TmxLayerType.Tiles:
@@ -43,13 +44,14 @@ function assignLayerDataToTile(data: TmxLayer, target: TileComposition): TileCom
 
   return target;
 }
-
+*/
 /**
  * Creates a `TileComposition` from the given layer `data`.
  *
  * Only tile layers and layer groups with only tile layers as children can be converted
  * to a tile composition. Throws an error if anything else is passed.
  */
+/*
 function convertLayerToTile(data: TmxLayer, grid: Grid): TileComposition {
   const multi = new TileComposition(-1, grid);
 
@@ -60,7 +62,7 @@ function convertLayerToTile(data: TmxLayer, grid: Grid): TileComposition {
 
   return multi;
 }
-
+*/
 /** @internal */
 function parseObjectLayer(data: TmxObjectLayer): ObjectLayer {
   const objects = [];
@@ -76,13 +78,13 @@ function parseObjectLayer(data: TmxObjectLayer): ObjectLayer {
   }
 
   // Parse custom properties.
-  const props = tmxParseProperties<LayerProperties>(data);
+  // const props = tmxParseProperties<LayerProperties>(data);
 
-  return new ObjectLayer(objects, props.isFloorLayer);
+  return new ObjectLayer(objects);
 }
 
 /** Parses TMX layer `data` to a `Layer<Tilemap>`. */
-export function tmxParseLayer(data: TmxLayer): Layer<Tilemap> {
+export function tmxParseLayer(data: TmxLayer): Layer {
   switch (data.type) {
     case TmxLayerType.Tiles:
       return new TileLayer(data.data);
@@ -95,35 +97,3 @@ export function tmxParseLayer(data: TmxLayer): Layer<Tilemap> {
   }
 }
 
-/**
- * Parses the given array of `TmxLayer` data. The `grid` is required for parsing tile
- * layers and tile compositions.
- *
- * Note: The amount of layers given as input may differ from the amount of layers that
- * will be returned because some layers (a.E. floor layers) may be merged or split
- * during the process.
- */
-export function tmxParseLayers(grid: Grid, data: TmxLayer[]): Layer<Tilemap>[] {
-  const layers = [];
-
-  for (const layer of data) {
-    const props = tmxParseProperties<LayerProperties>(layer);
-
-    if (props.isWorldObject) {
-      const prev = layers[ layers.length - 1 ];
-
-      // We need an existing object layer to where we can add our composite tile to.
-      if (!(prev instanceof ObjectLayer)) {
-        throw new TypeError('Cannot convert the first layer to a multi tile.');
-      }
-
-      prev.data.push(convertLayerToTile(layer, grid));
-    }
-    else {
-      // Parse layer
-      layers.push(tmxParseLayer(layer));
-    }
-  }
-
-  return layers;
-}
