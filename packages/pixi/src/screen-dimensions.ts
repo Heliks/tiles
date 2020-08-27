@@ -9,6 +9,7 @@ export class ScreenDimensions {
   private readonly _scale: Vec2 = [1, 1]
   private readonly _resolution: Vec2;
   private readonly _size: Vec2;
+  private readonly _offset: Vec2 = [0, 0];
 
   /**
    * Vector that contains the width and height in px of the resolution in which the
@@ -56,6 +57,23 @@ export class ScreenDimensions {
     this.dirty = true;
 
     return this;
+  }
+
+  public setOffset(x: number, y: number): void {
+    this._offset[0] = x;
+    this._offset[1] = y;
+  }
+
+  public getOffset(): Vec2 {
+    return this._offset;
+  }
+
+  /** Converts a screen `position` to a world position. */
+  public toWorld(position: Vec2): Vec2 {
+    position[0] = ((position[0] / this._scale[0]) - (this._offset[0]) ) / this.unitSize;
+    position[1] = ((position[1] / this._scale[1]) - (this._offset[1]) ) / this.unitSize;
+
+    return position;
   }
 
 }

@@ -1,6 +1,7 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { Injectable } from '@heliks/tiles-engine';
 import { Container, Renderable } from './renderables';
 import { depthSort, DepthSortable } from './depth';
+import { ScreenDimensions } from './screen-dimensions';
 
 /** @internal */
 class StageLayer extends Container<Renderable & DepthSortable> {
@@ -8,6 +9,7 @@ class StageLayer extends Container<Renderable & DepthSortable> {
   public sortable = false;
 }
 
+@Injectable()
 export class Stage {
 
   /** Contains everything that the stage displays. */
@@ -19,24 +21,8 @@ export class Stage {
    */
   private readonly layers = new Container<StageLayer>();
 
-  constructor() {
+  constructor(private readonly dimensions: ScreenDimensions) {
     this.view.addChild(this.layers);
-  }
-
-  /** Sets the offset of the stage. */
-  public setOffset(x: number, y: number): this {
-    this.layers.x = x;
-    this.layers.y = y;
-
-    return this;
-  }
-
-  /** Returns the current offset. */
-  public getOffset(): Vec2 {
-    return [
-      this.layers.x,
-      this.layers.y
-    ];
   }
 
   /** Returns the `Container` that belongs to a `layer` index. */
@@ -85,6 +71,11 @@ export class Stage {
 
   /** Updates the stage. */
   public update(): void {
+    const offset = this.dimensions.getOffset();
+
+    this.layers.x = offset[0];
+    this.layers.y = offset[1];
+
     for (const layer of this.layers.children) {
       if (layer.sortable) {
         depthSort(layer.children)

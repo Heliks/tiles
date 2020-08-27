@@ -12,7 +12,7 @@ import { Renderer } from '../renderer';
 import { Stage } from '../stage';
 import { SpriteDisplay } from './sprite-display';
 import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
-import { FlipMode, SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet/sprite-sheet';
+import { FlipMode, SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 
 /** @internal */
@@ -109,6 +109,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
 
       display.x = trans.x * this.config.unitSize;
       display.y = trans.y * this.config.unitSize;
+
+      display.rotation = trans.rotation;
     }
   }
 
