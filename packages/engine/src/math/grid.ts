@@ -1,4 +1,4 @@
-import { Vec2 } from '../types';
+import { Vec2 } from './vec2';
 
 export class Grid {
 
