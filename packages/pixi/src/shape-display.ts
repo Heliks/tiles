@@ -162,8 +162,8 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
           // Draw the entity shape on a canvas.
           canvas = draw(_display.get(event.entity), us);
 
-          canvas.x = transform.x;
-          canvas.y = transform.y;
+          canvas.x = transform.x * us;
+          canvas.y = transform.y * us;
 
           this.canvases.set(event.entity, canvas);
 
