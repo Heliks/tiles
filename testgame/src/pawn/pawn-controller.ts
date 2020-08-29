@@ -1,4 +1,5 @@
 import {
+  atan2,
   Entity,
   EntityQuery,
   Injectable,
@@ -7,7 +8,6 @@ import {
   Ticker,
   Transform,
   Vec2,
-  Vec2Readonly,
   World
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
@@ -20,14 +20,11 @@ import {
   SpriteSheet,
   SpriteSheetFromTexture
 } from '@heliks/tiles-pixi';
-import { InputHandler, KeyCode } from '../input';
+import { InputHandler } from '../input';
 import { PawnStateData } from './utils';
 import { Idle } from './states/idle';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { CardinalDirection, Direction } from '../components/direction';
-
-/** 90 degrees in radians. */
-const DEG90_RAD = 1.5708;
 
 export class Pawn {
 
@@ -65,9 +62,9 @@ function updateDirectionIndicator(
   // The magic number simply fits well with the feet of the character sprite. Adjust
   // accordingly.
   transform.x = (Math.sin(direction) / 2) + origin.x;
-  transform.y = (Math.cos(direction) / 2) + origin.y + 0.6;
+  transform.y = (-Math.cos(direction) / 2) + origin.y + 0.6;
 
-  transform.rotation = DEG90_RAD + Math.atan2(
+  transform.rotation = atan2(
     target[1] - transform.y,
     target[0] - transform.x
   );
@@ -152,7 +149,7 @@ export class PawnController extends ProcessingSystem {
       const direction = world.storage(Direction).get(entity);
 
       // Set the direction in which we are facing or aiming projectiles etc.
-      direction.transform(transform.toVec2(), obsPoint);
+      direction.lookAt(transform.toVec2(), obsPoint);
 
       updateDirectionIndicator(
         transform,
