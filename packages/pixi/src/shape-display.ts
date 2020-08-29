@@ -158,8 +158,12 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
 
       switch (event.type) {
         case ComponentEventType.Added:
-        // Draw the entity shape on a canvas.
+          const transform = _trans.get(event.entity);
+          // Draw the entity shape on a canvas.
           canvas = draw(_display.get(event.entity), us);
+
+          canvas.x = transform.x;
+          canvas.y = transform.y;
 
           this.canvases.set(event.entity, canvas);
 
