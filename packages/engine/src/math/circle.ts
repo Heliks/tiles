@@ -19,3 +19,12 @@ export function rad2deg(value: number): number {
 export function deg2rad(value: number): number {
   return value * DEG2RAD_FACTOR;
 }
+
+/**
+ * Returns the angle (in radians) from the x axis to a point. Unlike `Math.atan2` this
+ * starts the circle at 12 o'clock instead of 3.
+ */
+export function atan2(y: number, x: number): number {
+  return Math.atan2(y, x) + DEG90_RAD;
+}
+
