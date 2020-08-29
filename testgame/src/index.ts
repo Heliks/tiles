@@ -12,7 +12,6 @@ import { loadSpriteSheet, lookupEntity } from './utils';
 import { spawnJosh } from './spawners/josh';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { spawnPawn } from './spawners/pawn';
-import { DrawGridSystem } from './systems/draw-grid-system';
 import { Direction } from './components/direction';
 
 // Meter to pixel ratio.
