@@ -14,7 +14,7 @@ import { BodyPartType, ContactEvents, RigidBody, RigidBodyType } from '@heliks/t
 import { Health } from '../components/health';
 import { CollisionGroups } from '../const';
 import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
-import { CardinalDirection } from '../components/direction';
+import { CardinalDirection, Direction } from '../components/direction';
 
 /** Component for an arrow projectile. */
 export class Arrow {
@@ -49,9 +49,9 @@ function getArrowVelocity(direction: CardinalDirection): Vec2 {
 }
 
 /** Shoots an `arrow` in `direction` from the `x` and `y` position. */
-export function shootArrow(world: World, x: number, y: number, direction: CardinalDirection, arrow: Arrow): Entity {
+export function shootArrow(world: World, x: number, y: number, direction: Direction, arrow: Arrow): Entity {
   const body = new RigidBody(RigidBodyType.Dynamic).attach({
-    data: [0.5, 0.1],
+    data: [0.1, 0.5],
     type: BodyPartType.Rect
   });
 
@@ -63,13 +63,15 @@ export function shootArrow(world: World, x: number, y: number, direction: Cardin
   body.isBullet = true;
 
   // Apply rotation and velocity according to the direction in which the arrow is shot.
-  body.rotation = getArrowRotation(direction);
-  body.velocity = getArrowVelocity(direction);
+  body.rotation = direction.rad;
+
+  body.velocity[0] = Math.sin(body.rotation) * 25;
+  body.velocity[1] = -Math.cos(body.rotation) * 25;
 
   return world
     .builder()
     .use(new Transform(x, y))
-    .use(new ShapeDisplay(ShapeKind.Rect, [0.5, 0.1]).fill(0xFF00FF))
+    .use(new ShapeDisplay(ShapeKind.Rect, [0.1, 0.5]).fill(0xFF00FF))
     .use(arrow)
     .use(body)
     .build();

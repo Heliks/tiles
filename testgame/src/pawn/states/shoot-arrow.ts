@@ -79,7 +79,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
           break;
       }
 
-      shootArrow(world, x, y, pawn.direction, new Arrow(5));
+      shootArrow(world, x, y, state.data.direction, new Arrow(5));
 
       // Arrow was show, prevent it from shooting again.
       this.casting = false;
