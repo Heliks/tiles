@@ -1,20 +1,58 @@
 {
   "animations": {
-    "bow-down": { "frames": [27, 28, 29, 30, 31, 32] },
-    "bow-left": { "flip": "horizontal", "frames": [21, 22, 23, 24, 25, 26] },
-    "bow-right": { "frames": [21, 22, 23, 24, 25, 26] },
-    "dodge-down": { "flip": "vertical", "frames": [39, 40, 41, 42, 43, 44, 45] },
-    "dodge-left": { "flip": "horizontal", "frames": [33, 34, 35, 36, 37, 38] },
-    "dodge-right": { "frames": [33, 34, 35, 36, 37, 38] },
-    "dodge-up": { "frames": [39, 40, 41, 42, 43, 44, 45] },
-    "idle-down": { "frames": [0] },
-    "idle-left": { "flip": "horizontal", "frames": [2] },
-    "idle-right": { "frames": [2] },
-    "idle-up": { "frames": [1] },
-    "walk-down": { "frames": [3, 4, 5, 6, 7, 8] },
-    "walk-left": { "flip": "horizontal",  "frames": [15, 16, 17, 18, 19, 20] },
-    "walk-right": { "frames": [15, 16, 17, 18, 19, 20] },
-    "walk-up": { "frames": [9, 10, 11, 12, 13, 14] }
+    "bow-down": {
+      "frames": [27, 28, 29, 30, 31, 32]
+    },
+    "bow-up": {
+      "frames": [33, 34, 35, 36, 37, 38]
+    },
+    "bow-left": {
+      "flip": "horizontal",
+      "frames": [21, 22, 23, 24, 25, 26]
+    },
+    "bow-right": {
+      "frames": [21, 22, 23, 24, 25, 26]
+    },
+    "dodge-down": {
+      "flip": "vertical",
+      "frames": [45, 46, 47, 48, 49, 50, 51]
+    },
+    "dodge-left": {
+      "flip": "horizontal",
+      "frames": [39, 40, 41, 42, 43, 44]
+    },
+    "dodge-right": {
+      "frames": [39, 40, 41, 42, 43, 44]
+    },
+    "dodge-up": {
+      "frames": [45, 46, 47, 48, 49, 50, 51]
+    },
+    "idle-down": {
+      "frames": [0]
+    },
+    "idle-left": {
+      "flip": "horizontal",
+      "frames": [2]
+    },
+    "idle-right": {
+      "frames": [2]
+    },
+    "idle-up": {
+      "frames": [1]
+    },
+    "walk-down": {
+      "frames": [3, 4, 5, 6, 7, 8]
+    },
+    "walk-left": {
+      "flip": "horizontal",
+      "frames": [15, 16, 17, 18, 19, 20]
+    },
+    "walk-right": {
+      "frames": [15, 16, 17, 18, 19, 20]
+    },
+    "walk-up": {
+      "frames": [9, 10, 11, 12, 13, 14]
+    }
   },
   "cols": 8,
   "image": "./pawn.png",
