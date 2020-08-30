@@ -23,6 +23,7 @@ function getAnimation(direction: CardinalDirection): string {
   switch (direction) {
     // Todo
     case CardinalDirection.North:
+      return 'bow-up';
     case CardinalDirection.West:
       return 'bow-left';
     case CardinalDirection.East:
