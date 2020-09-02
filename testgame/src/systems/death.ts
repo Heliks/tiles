@@ -1,16 +1,14 @@
+import { AssetLoader } from '@heliks/tiles-assets';
 import { EntityQuery, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
+import { Rectangle, RigidBody } from '@heliks/tiles-physics';
+import { SPRITE_SHEET_STORAGE, SpriteDisplay, SpriteSheetFormat } from '@heliks/tiles-pixi';
 import { Health } from '../components/health';
 import { Inventory, Item } from '../components/inventory';
-import { BodyPartType, RigidBody } from '@heliks/tiles-physics';
-import { AssetLoader } from '@heliks/tiles-assets';
-import { SPRITE_SHEET_STORAGE, SpriteDisplay, SpriteSheetFormat } from '@heliks/tiles-pixi';
 
 /** @internal */
 function dropItem(world: World, item: Item, x: number, y: number) {
-  const body = new RigidBody().attach({
-    data: [0.1, 0.1],
-    density: 1,
-    type: BodyPartType.Rect
+  const body = new RigidBody().attach(new Rectangle(0.1, 0.1), {
+    density: 1
   });
 
   const handle = world
