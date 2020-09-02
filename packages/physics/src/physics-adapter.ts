@@ -1,6 +1,6 @@
 import { Entity, token, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { RigidBody } from './rigid-body';
 import { Renderer } from '@heliks/tiles-pixi';
+import { RigidBody } from './rigid-body';
 
 /** Adapter for a physics system (box2d, p2 etc.) to be used with the physics module. */
 export interface PhysicsAdapter {
@@ -30,7 +30,7 @@ export interface PhysicsAdapter {
    * Updates the values of the rigid `body` of `entity` with its counterpart in the
    * physics world. The current position of the physics body will be applied to `trans`.
    */
-  updateBody(entity: Entity, body: RigidBody, trans: Transform): void;
+  updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void;
 
   /**
    * Called when the `DebugDraw` plugin is set up by the renderer module. Can be used
@@ -42,6 +42,7 @@ export interface PhysicsAdapter {
   drawDebugData(): void;
 
 }
+
 
 /** Token that can be used to inject the active physics `Adapter` into a service. */
 export const ADAPTER_TK = token<PhysicsAdapter>();

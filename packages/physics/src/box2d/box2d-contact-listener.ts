@@ -56,9 +56,9 @@ export class Box2dContactListener extends b2ContactListener {
     const entityB = contact.GetFixtureB().GetBody().GetUserData();
 
     // Todo: This is a race-condition with the entity world that already cleaned up the
-    // rigid bodies. This should be fixed because as of right now there is no
-    // ContactEvent.End if the entity is destroyed during the contact, but that
-    // information might be useful for certain systems.
+    //  rigid bodies. This should be fixed because as of right now there is no
+    //  ContactEvent.End if the entity is destroyed during the contact, but that
+    //  information might be useful for certain systems.
     if (this.world.alive(entityA) && this.world.alive(entityB)) {
       this.push(entityA, entityB, ContactEvent.End);
     }

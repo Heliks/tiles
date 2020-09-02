@@ -1,77 +1,71 @@
 import { Vec2 } from '@heliks/tiles-engine';
-
-// File is WIP
+import { Collider, ColliderData, Shape } from './collider';
 
 export enum RigidBodyType {
+  /**
+   * Static bodies do not react to forces like impulses and can only be moved manually by
+   * manipulating the x and y position. This is the default for all newly created bodies.
+   * Does not collide with other static or kinematic bodies.
+   */
+  Static,
+  /**
+   * Dynamic bodies react to external forces (e.g. impulses, collisions etc.) and can
+   * be moved by applying velocity. They collide with all other body types.
+   */
   Dynamic,
-  Kinetic,
-  Static
+  /**
+   * Kinematic bodies do not react to external forces like impulses but unlike static
+   * bodies they can be moved with velocity. Kinematic bodies only collide with static or
+   * other kinematic bodies.
+   */
+  Kinematic
 }
 
-export enum BodyPartType {
-  Rect
-}
-
-export interface BodyPartData {
-  density?: number;
-  friction?: number;
-  position?: Vec2;
-}
-
-export interface RectangleBodyPart extends BodyPartData {
-  data: [number, number];
-  type: BodyPartType.Rect;
-}
-
-export type BodyPart = RectangleBodyPart;
-
+/** A bit mask for a collision group that collides with all other collision groups. */
 export const COLLIDE_ALL_MASK = 0xFFFF;
 
-/**
- * A 2D rigid body component.
- */
+/** A 2D rigid body component. */
 export class RigidBody {
 
-  public bodyParts: BodyPart[] = [];
+  /** Colliders attached to this body. */
+  public colliders: Collider[] = [];
 
   /**
-   * The linear damping that is applied to the whole body. This determines how
-   * much the velocity of the body degrades over time in relation to the worlds
-   * gravity. In top-down games where the world usually does not have a gravity,
-   * this needs to be set to an appropriate value for characters or they will
-   * continue to move forever.
+   * Linear damping that is applied to the whole body. This determines how much the
+   * velocity of the body degrades over time in relation to the worlds gravity. In top-
+   * down games where the world usually does not have a gravity this needs to be set to
+   * an appropriate value for characters or they will continue to move forever.
    */
   public damping = 0;
 
   /**
-   * If this flag is set to true, the entire rigid body will be re-build on the
-   * next frame. Some changes to the rigid body require this to take effect.
+   * If this flag is set to `true`, the entire rigid body will be re-build on the next
+   * frame. Some changes to the rigid body require this to take effect.
    */
   public dirty = true;
 
   /**
-   * Bits that determine the rigid bodies collision groups. This can exclude
-   * other rigid bodies from colliding with this one, depending on their
-   * collision [[mask]].
+   * Bits that determine the rigid bodies collision groups. This can exclude other rigid
+   * bodies from colliding with this one, depending on their own collision [[mask]].
    */
   public group = 0x0001;
 
   /**
-   * Enables continuous collision detection on all body parts, which prevents small
-   * body parts (like bullets would usually have) from passing through thin bodies
-   * when travelling at high velocity.
+   * Enables continuous collision detection on all colliders which prevents small
+   * colliders (like bullets would usually have) from passing through thin bodies when
+   * travelling at high velocity.
    */
   public isBullet = false;
 
   /**
-   * Bits that determine with which collision groups this rigid body is allowed to
-   * collide. By default it will collide with all other groups.
+   * Bits that determine with which collision groups we are allowed to collide with. By
+   * default we will collide with all other groups.
    */
   public mask = COLLIDE_ALL_MASK;
 
   /**
-   * Value between 0 and 1 that determines how "bouncy" each body parts should be,
-   * closer to 0 is less bouncy, closer to 1 more.
+   * Value between 0 and 1 that determines how "bouncy" each collider should be, closer
+   * to 0 is less bouncy, closer to 1 more.
    */
   public restitution = 0;
 
@@ -81,11 +75,58 @@ export class RigidBody {
   /** Current rotation angle of the body in radians. */
   public rotation = 0;
 
+  /** Current velocity. */
   public velocity: Vec2 = [0, 0];
-  public transVelocity?: Vec2;
 
+  /** Transform flag indicating that the velocity was updated. */
+  public isVelocityDirty = false;
 
+  /**
+   * @param type The type of the rigid body (e.g. static, kinematic etc.).
+   */
+  constructor(public readonly type = RigidBodyType.Static) {}
 
+  /** Creates a new dynamic rigid body. */
+  public static dynamic(): RigidBody {
+    return new RigidBody(RigidBodyType.Dynamic);
+  }
+
+  /** Creates a new kinematic rigid body. */
+  public static kinematic(): RigidBody {
+    return new RigidBody(RigidBodyType.Kinematic);
+  }
+
+  /**
+   * Attaches a `Collider` with the given `shape` to this body.
+   *
+   * @param shape The colliders shape.
+   * @param data The colliders initial data.
+   */
+  public attach(shape: Shape, data?: Partial<ColliderData>): this {
+    const collider = new Collider(shape);
+
+    if (data) {
+      Object.assign(collider, data);
+    }
+    
+    this.colliders.push(collider);
+
+    return this;
+  }
+
+  /** Updates the velocity. */
+  public setVelocity(x: number, y: number): this {
+    this.velocity[0] = x;
+    this.velocity[1] = y;
+
+    this.isVelocityDirty = true;
+
+    return this;
+  }
+
+  // Todo: The tag system is currently a work around. Will probably be removed when I
+  //  find a better way to do this.
+  // eslint-disable
   public tags: string[] = [];
 
   public tag(tag: string): this {
@@ -96,31 +137,9 @@ export class RigidBody {
     return this;
   }
 
-
-  constructor(public type = RigidBodyType.Static) {}
-
-  public setType(type: RigidBodyType): this {
-    this.type = type;
-    this.dirty = true;
-
-    return this;
-  }
-
-  public transformVelocity(x: number, y: number): this {
-    this.transVelocity = [x, y];
-
-    return this;
-  }
-
-  public attach(bodyPart: BodyPart): this {
-    this.bodyParts.push(bodyPart);
-    this.dirty = true;
-
-    return this;
-  }
-
   public hasTag(tag: string): boolean {
     return this.tags.includes(tag);
   }
+  // eslint-enable
 
 }

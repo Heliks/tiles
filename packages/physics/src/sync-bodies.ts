@@ -1,6 +1,6 @@
 import { EntityQuery, Inject, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
-import { RigidBody } from './rigid-body';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
+import { RigidBody } from './rigid-body';
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */
 @Injectable()
@@ -25,12 +25,12 @@ export class SyncBodies extends ProcessingSystem {
 
   /** @inheritDoc */
   public update(world: World): void {
-    const bodies  = world.storage(RigidBody);
+    const bodies = world.storage(RigidBody);
     const transforms = world.storage(Transform);
 
     // Update entities with rigid bodies.
     for (const entity of this.group.entities) {
-      this.adapter.updateBody(
+      this.adapter.updateEntityBody(
         entity,
         bodies.get(entity),
         transforms.get(entity)
