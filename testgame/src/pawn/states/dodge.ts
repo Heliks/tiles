@@ -48,7 +48,7 @@ export class Dodge implements State<StateMachine<PawnStateData>> {
         break;
     }
 
-    state.data.body.transformVelocity(vx, vy);
+    state.data.body.setVelocity(vx, vy);
 
     this.isDodging = true;
   }

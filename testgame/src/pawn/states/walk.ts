@@ -10,9 +10,9 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
   update(state: StateMachine<PawnStateData>): void {
     const { animation, input, pawn, ticker } = state.data;
 
-    // Check if movement was canceled in favor of engaing in combat.
+    // Check if movement was canceled in favor of engaging in combat.
     if (isShooting(state)) {
-      state.switch(new ShootArrow())
+      state.switch(new ShootArrow());
 
       return;
     }
@@ -55,7 +55,7 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
     // If the character is moving we transform its velocity, otherwise
     // we exit the state as we are no longer moving.
     if (vx !== 0 || vy !== 0) {
-      state.data.body.transformVelocity(vx, vy);
+      state.data.body.setVelocity(vx, vy);
     }
     else {
       state.pop();

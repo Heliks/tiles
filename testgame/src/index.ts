@@ -1,50 +1,20 @@
-import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
 import { Entity, Game, GameBuilder, rand, World } from '@heliks/tiles-engine';
-import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
-import { PawnController } from './pawn/pawn-controller';
 import { PhysicsModule } from '@heliks/tiles-physics';
+import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
+import { TilemapModule } from '@heliks/tiles-tilemap';
+import { TmxTilemapFormat } from '@heliks/tiles-tmx';
+import 'reflect-metadata';
 import { InputHandler } from './input';
+import { PawnController } from './pawn/pawn-controller';
+import { spawnJosh } from './spawners/josh';
+import { spawnPawn } from './spawners/pawn';
 import { ArrowSystem } from './systems/arrow';
 import { DeathSystem } from './systems/death';
-import { TilemapModule } from '@heliks/tiles-tilemap';
 import { loadSpriteSheet, lookupEntity } from './utils';
-import { spawnJosh } from './spawners/josh';
-import { TmxTilemapFormat } from '@heliks/tiles-tmx';
-import { spawnPawn } from './spawners/pawn';
-import { Direction } from './components/direction';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
-
-/*
-function spawnCrate(
-  world: World,
-  sheet: Handle<SpriteSheet>,
-  x: number,
-  y: number,
-  health = 25,
-  type = RigidBodyType.Static
-): void {
-  const body = new RigidBody(type).attach({
-    data: [0.75, 0.875],
-    density: 20,
-    type: BodyPartType.Rect
-  });
-
-  body.damping = 5;
-  body.group = CollisionGroups.Terrain;
-
-  world.builder()
-    .use(body)
-    .use(new Transform(x, y))
-    .use(new Health(health, health))
-    .use(new SpriteDisplay(sheet, 0, 1))
-    .build();
-}
- */
-
-
 
 /** Sets up some global functions for debugging. */
 function setupDebugGlobals(game: Game): void {
@@ -110,15 +80,18 @@ async function spawnMap(world: World, file: string): Promise<void> {
   }
 }*/
 
-window.onload = () => {
+/** @internal */
+function getDomTarget(): HTMLElement {
   const domTarget = document.getElementById('stage');
 
   if (!domTarget) {
-    throw new Error();
+    throw new Error('Could not find stage.');
   }
 
-  console.log(new Direction(2).toCardinal())
+  return domTarget;
+}
 
+window.onload = () => {
   const game = new GameBuilder()
     .system(InputHandler)
     .module(new AssetsModule())
@@ -144,7 +117,7 @@ window.onload = () => {
 
   // Configure asset directory and add renderer to DOM.
   game.world.get(AssetLoader).setBaseUrl('assets');
-  game.world.get(Renderer).appendTo(domTarget);
+  game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
   const x = 0;
@@ -167,12 +140,7 @@ window.onload = () => {
       y + rand(-3, 3)
     );
 
-
-
-    // Init map.
-    // spawnMap(game.world, map).then(() => {
-
-    // });
+    // spawnMap
   });
 };
 

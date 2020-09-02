@@ -1,20 +1,11 @@
 import {
-  deg2rad,
-  Entity,
-  EntityQuery,
-  Injectable,
-  ProcessingSystem,
-  Subscriber,
-  Ticker,
-  Transform,
-  Vec2,
-  World
+  deg2rad, Entity, EntityQuery, Injectable, ProcessingSystem, Subscriber, Ticker, Transform, Vec2, World
 } from '@heliks/tiles-engine';
-import { BodyPartType, ContactEvents, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
-import { Health } from '../components/health';
-import { CollisionGroups } from '../const';
+import { ContactEvents, Rectangle, RigidBody } from '@heliks/tiles-physics';
 import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
 import { CardinalDirection, Direction } from '../components/direction';
+import { Health } from '../components/health';
+import { CollisionGroups } from '../const';
 
 /** Component for an arrow projectile. */
 export class Arrow {
@@ -50,10 +41,7 @@ function getArrowVelocity(direction: CardinalDirection): Vec2 {
 
 /** Shoots an `arrow` in `direction` from the `x` and `y` position. */
 export function shootArrow(world: World, x: number, y: number, direction: Direction, arrow: Arrow): Entity {
-  const body = new RigidBody(RigidBodyType.Dynamic).attach({
-    data: [0.1, 0.5],
-    type: BodyPartType.Rect
-  });
+  const body = RigidBody.dynamic().attach(new Rectangle(0.1, 0.5));
 
   // Only allow the body to collide with the terrain
   // Todo: Should collide with enemies too.
