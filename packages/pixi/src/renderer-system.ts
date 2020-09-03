@@ -90,8 +90,8 @@ export class RendererSystem extends ProcessingSystem {
       const transform = transforms.get(entity);
       const container = containers.get(entity);
 
-      container.x = transform.x * this.config.unitSize;
-      container.y = transform.y * this.config.unitSize;
+      container.x = transform.world[0] * this.config.unitSize;
+      container.y = transform.world[1] * this.config.unitSize;
 
       // container.setTransform(transform.x * this.config.unitSize, transform.y * this.config.unitSize)
     }

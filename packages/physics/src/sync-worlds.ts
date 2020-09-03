@@ -34,7 +34,7 @@ export class SyncWorlds implements System {
           this.adapter.createBody(
             event.entity,
             _bodies.get(event.entity),
-            _transform.get(event.entity).toVec2()
+            _transform.get(event.entity).world
           );
           break;
         case ComponentEventType.Removed:

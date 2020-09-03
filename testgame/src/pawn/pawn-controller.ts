@@ -10,6 +10,8 @@ import {
   Vec2,
   World
 } from '@heliks/tiles-engine';
+import { Parent } from '@heliks/tiles-engine';
+import { rad2deg } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
   Camera,
@@ -59,14 +61,13 @@ function updateDirectionIndicator(
   direction: number,
   target: Vec2
 ): void {
-  // The magic number simply fits well with the feet of the character sprite. Adjust
-  // accordingly.
-  transform.x = (Math.sin(direction) / 2) + origin.x;
-  transform.y = (-Math.cos(direction) / 2) + origin.y + 0.6;
+  // The magic number "0.6" simply fits well with thesd feet position of the player.
+  transform.local[0] = Math.sin(direction) / 2;// Math.sin(direction) / 2;
+  transform.local[1] = -Math.cos(direction) / 2 + 0.6; // -Math.cos(direction) / 2 + + 0.6;
 
   transform.rotation = atan2(
-    target[1] - transform.y,
-    target[0] - transform.x
+    target[1] - transform.world[1],
+    target[0] - transform.world[0]
   );
 }
 
@@ -103,11 +104,13 @@ export class PawnController extends ProcessingSystem {
 
     const transform = world.storage(Transform).get(entity);
 
+
     const directionIndicator = world
       .builder()
       .use(new SpriteDisplay(getDirectionIndicatorHandle(world), 0))
+      .use(new Parent(entity))
       .use(transform.clone())
-      .build()
+      .build();
 
     state = new StateMachine<PawnStateData>({
       animation: world.storage(SpriteAnimation).get(entity),
@@ -149,7 +152,7 @@ export class PawnController extends ProcessingSystem {
       const direction = world.storage(Direction).get(entity);
 
       // Set the direction in which we are facing or aiming projectiles etc.
-      direction.lookAt(transform.toVec2(), obsPoint);
+      direction.lookAt(transform.world, obsPoint);
 
       updateDirectionIndicator(
         transform,
@@ -159,13 +162,12 @@ export class PawnController extends ProcessingSystem {
       );
 
       state.data.pawn.direction = direction.toCardinal();
-
       state.update();
 
       // Todo: Do this correctly
       world.get(Camera).transform(
-        -transform.x,
-        -transform.y
+        -transform.world[0],
+        -transform.world[1]
       );
     }
   }

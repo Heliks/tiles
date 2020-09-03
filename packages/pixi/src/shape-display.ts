@@ -193,8 +193,8 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
         // Move the canvas according to the entities position. This needs to be displaced
         // because the transform position is based on the center, while the renderer uses
         // positions relative to the top left corner.
-        canvas.x = trans.x * us;
-        canvas.y = trans.y * us;
+        canvas.x = trans.world[0] * us;
+        canvas.y = trans.world[1] * us;
 
         canvas.rotation = trans.rotation;
       }

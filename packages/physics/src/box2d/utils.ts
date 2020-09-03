@@ -51,10 +51,8 @@ export function parseBody(body: RigidBody, position: Vec2): b2BodyDef {
   def.fixedRotation = !body.rotate;
   def.position.Set(position[0], position[1]);
 
-  def.linearVelocity.Set(
-    body.velocity[0],
-    body.velocity[1]
-  );
+  // Initially inherit the velocity value set on the body.1q
+  def.linearVelocity.Set(body.velocity[0], body.velocity[1]);
 
   // assign body type
   switch (body.type) {

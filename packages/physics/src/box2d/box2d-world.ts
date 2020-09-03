@@ -102,8 +102,8 @@ export class Box2dWorld implements PhysicsAdapter {
     const position = bBody.GetPosition();
     const velocity = bBody.GetLinearVelocity();
 
-    trans.x = position.x;
-    trans.y = position.y;
+    trans.world[0] = position.x;
+    trans.world[1] = position.y;
     trans.rotation = bBody.GetAngle();
 
     // Update velocity on the rigid body if it was transformed.
