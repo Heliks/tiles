@@ -15,14 +15,12 @@ function dropItem(world: World, item: Item, x: number, y: number) {
     .get(AssetLoader)
     .load(item.spritesheet, new SpriteSheetFormat(), world.get(SPRITE_SHEET_STORAGE));
 
-  const e = world
+  world
     .builder()
     .use(new SpriteDisplay(handle, item.sprite))
     .use(new Transform(x + 2, y + 2))
     .use(body)
     .build();
-
-  console.log('NEW ENTITY', e);
 }
 
 /**

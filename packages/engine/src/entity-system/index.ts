@@ -11,7 +11,7 @@ export {
   Query as EntityQuery,
   Storage,
   System
-} from '@heliks/tiles-entity-system';
+} from '@heliks/ecs';
 
 export * from './processing-system';
 export * from './world';

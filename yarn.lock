@@ -352,10 +352,27 @@
   dependencies:
     "@types/systemjs" "^0.20.6"
 
+"@heliks/ecs@^0.0.1-alpha.0":
+  version "0.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@heliks/ecs/-/ecs-0.0.1-alpha.0.tgz#f8abb927ee98bd6deaf32a5ab2362221c536295b"
+  integrity sha512-6GZBmu6DbjBKN+3Er1GYd1IfU9BoPwTJPYvacY6aLPmgj37qqb71TS+p3L08C+C5iCYtGoDLpLwfWASykjZTHg==
+  dependencies:
+    "@heliks/event-queue" "^0.1.1"
+
 "@heliks/event-queue@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@heliks/event-queue/-/event-queue-0.1.1.tgz#c8461f6bd57d2b01358cb2446890715ab5765b84"
   integrity sha512-6/EJ8WjVUaWK7jpdZA7E3ZRZMvNIVdOn/MoY69r3boxAA4VVC6f2wi1bsIZhtzzfSduK8Qo4/JimT61W+Rdaww==
+
+"@heliks/hierarchy@^0.0.1-alpha.0":
+  version "0.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@heliks/hierarchy/-/hierarchy-0.0.1-alpha.0.tgz#8f000fbf914b25364affc8dd846b120d6dfe4ba3"
+  integrity sha512-JZuuB4cS5UCGMOVzrPBNVIXL8NBl9C4xzGNXU3Znz6jQ6eksPMIDxZiwRJN62rTvN0XiE8lE1/UTbysP8408jw==
+
+"@heliks/transform@^0.0.1-alpha.0":
+  version "0.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@heliks/transform/-/transform-0.0.1-alpha.0.tgz#d4a3f68d22c4cea3702879973ad69c2c42a478e1"
+  integrity sha512-xZzjt6RN9Yl5w0VThGHyI3d7xb/xEAVkOsBwRJanWsHPdTI4/EKKZ70DVfP3acnD7QIMnq6/bM/bLAzDpdbWSA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

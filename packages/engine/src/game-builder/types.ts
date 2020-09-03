@@ -1,4 +1,4 @@
-import { System } from '@heliks/tiles-entity-system';
+import { System } from '@heliks/ecs';
 import { ClassType } from '../types';
 import { Provider } from './provider';
 

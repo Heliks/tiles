@@ -14,7 +14,7 @@ import { RendererPlugin } from './types';
 import { Stage } from './stage';
 import { Camera } from './camera';
 import { Container } from './renderables';
-import { Storage } from '@heliks/tiles-entity-system';
+import { Storage } from '@heliks/ecs';
 
 /** Automatically updates the [[Renderer]] once on each frame. */
 @Injectable()
