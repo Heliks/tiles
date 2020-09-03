@@ -1,6 +1,8 @@
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
 import { Entity, Game, GameBuilder, rand, World } from '@heliks/tiles-engine';
+import { TransformSystem } from '@heliks/tiles-engine';
 import { PhysicsModule } from '@heliks/tiles-physics';
+import { PhysicsDebugDraw } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
@@ -11,6 +13,7 @@ import { spawnJosh } from './spawners/josh';
 import { spawnPawn } from './spawners/pawn';
 import { ArrowSystem } from './systems/arrow';
 import { DeathSystem } from './systems/death';
+import { DrawGridSystem } from './systems/draw-grid-system';
 import { loadSpriteSheet, lookupEntity } from './utils';
 
 // Meter to pixel ratio.
@@ -94,6 +97,7 @@ function getDomTarget(): HTMLElement {
 window.onload = () => {
   const game = new GameBuilder()
     .system(InputHandler)
+    .system(TransformSystem)
     .module(new AssetsModule())
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
     .system(PawnController)
@@ -105,8 +109,8 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        // .plugin(PhysicsDebugDraw)
-        // .plugin(DrawGridSystem)
+        .plugin(PhysicsDebugDraw)
+        .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
     .system(DeathSystem)
@@ -120,8 +124,8 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 0;
-  const y = 0;
+  const x = 5;
+  const y = 5;
 
   const map = 'tilemaps/test01.json';
 
