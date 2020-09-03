@@ -1,5 +1,5 @@
 import { ClassType } from '../types';
-import { System } from '@heliks/tiles-entity-system';
+import { System } from '@heliks/ecs';
 import { Game } from '../game';
 import { isFactoryProvider, Provider } from './provider';
 

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
-import { Storage, World as WorldBase } from '@heliks/tiles-entity-system';
+import { Storage, World as WorldBase } from '@heliks/ecs';
 import { ClassType } from '../types';
 
 export class World extends WorldBase implements ImmutableContainer {

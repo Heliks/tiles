@@ -22,8 +22,10 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@heliks/tiles-entity-system": "^0.0.0",
+    "@heliks/ecs": "^0.0.1-alpha.0",
     "@heliks/event-queue": "^0.1.1",
+    "@heliks/hierarchy": "^0.0.1-alpha.0",
+    "@heliks/transform": "^0.0.1-alpha.0",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {

@@ -1,4 +1,4 @@
-import { EntityGroup, Query, System, World } from '@heliks/tiles-entity-system';
+import { EntityGroup, Query, System, World } from '@heliks/ecs';
 
 export abstract class ProcessingSystem implements System {
 
