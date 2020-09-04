@@ -1,5 +1,5 @@
 {
-  "name": "@heliks/tiles-engine",
+  "name": "@heliks/tiles-math",
   "version": "0.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -19,14 +19,5 @@
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.5"
-  },
-  "dependencies": {
-    "@heliks/ecs": "^0.0.1-alpha.0",
-    "@heliks/event-queue": "^0.1.1",
-    "@heliks/hierarchy": "^0.0.1-alpha.0",
-    "@heliks/tiles-injector": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0",
-    "@heliks/transform": "^0.0.1-alpha.0",
-    "reflect-metadata": "^0.1.13"
   }
 }
