@@ -12,13 +12,15 @@
     "eslint": "^7.0.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-unicorn": "^20.1.0",
-    "lerna": "^3.20.2"
+    "lerna": "^3.20.2",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
     "lint": "eslint 'packages/**/*.ts' --config .eslintrc.json",
     "link": "lerna link",
     "test": "lerna run test --no-prefix --stream",
     "build": "lerna run --stream --sort build",
+    "build:clean": "rimraf packages/*/*/lib",
     "build:watch": "lerna run build:watch --no-prefix --parallel",
     "clean": "lerna clean && rm -rf node_modules"
   }
