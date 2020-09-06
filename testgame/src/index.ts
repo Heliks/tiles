@@ -1,8 +1,6 @@
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, rand, World } from '@heliks/tiles-engine';
-import { TransformSystem } from '@heliks/tiles-engine';
-import { PhysicsModule } from '@heliks/tiles-physics';
-import { PhysicsDebugDraw } from '@heliks/tiles-physics';
+import { Entity, Game, GameBuilder, rand, TransformSystem, World } from '@heliks/tiles-engine';
+import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
@@ -12,7 +10,7 @@ import { PawnController } from './pawn/pawn-controller';
 import { spawnJosh } from './spawners/josh';
 import { spawnPawn } from './spawners/pawn';
 import { ArrowSystem } from './systems/arrow';
-import { DeathSystem } from './systems/death';
+import { DeathBundle, DebugDeathReporter } from './death';
 import { DrawGridSystem } from './systems/draw-grid-system';
 import { loadSpriteSheet, lookupEntity } from './utils';
 
@@ -113,7 +111,8 @@ window.onload = () => {
         .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
-    .system(DeathSystem)
+    .module(new DeathBundle())
+    .system(DebugDeathReporter)
     .module(new TilemapModule())
     .build();
 

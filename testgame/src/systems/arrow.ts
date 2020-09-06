@@ -1,42 +1,44 @@
 import {
-  deg2rad, Entity, EntityQuery, Injectable, ProcessingSystem, Subscriber, Ticker, Transform, Vec2, World
+  contains,
+  Entity,
+  Injectable,
+  ProcessingSystem,
+  Subscriber,
+  Ticker,
+  Transform,
+  Vec2,
+  World
 } from '@heliks/tiles-engine';
 import { ContactEvents, Rectangle, RigidBody } from '@heliks/tiles-physics';
 import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
-import { CardinalDirection, Direction } from '../components/direction';
+import { Direction } from '../components/direction';
 import { Health } from '../components/health';
 import { CollisionGroups } from '../const';
+import { rand } from '@heliks/tiles-math';
 
 /** Component for an arrow projectile. */
 export class Arrow {
 
-  /** Time in MS that the projectile has been alive in the world. */
+  /** Time in MS that the projectile has been alive. */
   public lifetime = 0;
 
   /**
-   * @param damage The base damage value of the arrow projectile.
+   * @param source The entity that shot this arrow.
+   * @param damage Min and max damage value of the arrow projectile.
    */
-  constructor(public damage = 1) {}
+  constructor(public source: Entity, public damage: Vec2) {}
 
-}
-
-/** @internal */
-function getArrowRotation(direction: CardinalDirection): number {
-  return direction === CardinalDirection.North || direction === CardinalDirection.South ? deg2rad(90) : 0;
-}
-
-/** @internal */
-function getArrowVelocity(direction: CardinalDirection): Vec2 {
-  switch (direction) {
-    case CardinalDirection.West:
-      return [-50, 0];
-    case CardinalDirection.East:
-      return [50, 0];
-    case CardinalDirection.North:
-      return [0, -50];
-    case CardinalDirection.South:
-      return [0, 50];
+  /**
+   * Returns a random damage value between the minimum and maximum damage of this
+   * projectile.
+   */
+  public getDamage(): number {
+    return Math.round(rand(
+      this.damage[0],
+      this.damage[1]
+    ));
   }
+
 }
 
 /** Shoots an `arrow` in `direction` from the `x` and `y` position. */
@@ -82,16 +84,11 @@ export class ArrowSystem extends ProcessingSystem {
     private readonly events: ContactEvents,
     private readonly ticker: Ticker
   ) {
-    super();
+    super(contains(Arrow));
+
     this.event$ = events.subscribe();
   }
 
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [ Arrow ]
-    };
-  }
 
   /** @inheritDoc */
   public update(world: World): void {
@@ -105,13 +102,9 @@ export class ArrowSystem extends ProcessingSystem {
 
         if (healths.has(entityB)) {
           const health = healths.get(entityB);
+          const arrow = arrows.get(entityA);
 
-          // Apply damage according to the projectiles damage value.
-          health.current -= arrows.get(entityA).damage;
-
-          // Todo: For debugging purposes. Should be removed after I have a GUI for
-          //  entity health.
-          console.log(`${entityB} hit (hp ${health.current} / ${health.total})`);
+          health.damage(arrow.source, arrow.getDamage());
         }
       }
     }

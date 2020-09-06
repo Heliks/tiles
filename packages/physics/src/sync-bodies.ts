@@ -1,4 +1,4 @@
-import { EntityQuery, Inject, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
+import { contains, Inject, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
 import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 import { RigidBody } from './rigid-body';
 
@@ -10,17 +10,7 @@ export class SyncBodies extends ProcessingSystem {
    * @param adapter The physics adapter.
    */
   constructor(@Inject(ADAPTER_TK) private readonly adapter: PhysicsAdapter) {
-    super();
-  }
-
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        RigidBody,
-        Transform
-      ]
-    };
+    super(contains(RigidBody, Transform));
   }
 
   /** @inheritDoc */

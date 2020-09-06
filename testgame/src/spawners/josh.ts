@@ -1,15 +1,12 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Transform, World } from '@heliks/tiles-engine';
-import { Parent } from '@heliks/tiles-engine';
 import { Rectangle, RigidBody } from '@heliks/tiles-physics';
-import { ShapeDisplay, ShapeKind, SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
+import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health } from '../components/health';
 import { Inventory } from '../components/inventory';
 
 /** Spawns a josh into the world. */
 export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y: number): void {
-
-
   const inventory = new Inventory();
 
   inventory.add({
@@ -23,7 +20,7 @@ export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y
     density: 20
   });
 
-  const josh = world
+  world
     .builder()
     .use(new Transform(x, y))
     .use(new Health(15, 15))
@@ -31,11 +28,4 @@ export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y
     .use(body)
     .use(inventory)
     .build();
-
-  const child = world
-    .builder()
-    // a.use(new Parent(josh))
-    .use(new ShapeDisplay(ShapeKind.Rect, [0.2, 0.2]).fill(0xFF00FF))
-    .use(new Transform(1, 1))
-    .build()
 }

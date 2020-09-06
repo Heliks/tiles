@@ -10,6 +10,7 @@ export interface PawnStateData {
   body: RigidBody;
   directionIndicator: Entity;
   direction: Direction;
+  entity: Entity;
   input: InputHandler;
   pawn: Pawn;
   ticker: Ticker;

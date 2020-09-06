@@ -1,8 +1,9 @@
 import {
   atan2,
+  contains,
   Entity,
-  EntityQuery,
   Injectable,
+  Parent,
   ProcessingSystem,
   StateMachine,
   Ticker,
@@ -10,8 +11,6 @@ import {
   Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Parent } from '@heliks/tiles-engine';
-import { rad2deg } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
   Camera,
@@ -78,20 +77,13 @@ export class PawnController extends ProcessingSystem {
   private readonly states = new Map<Entity, StateMachine<PawnStateData>>();
 
   constructor(protected readonly ticker: Ticker) {
-    super();
-  }
-
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        Direction,
-        Pawn,
-        RigidBody,
-        SpriteAnimation,
-        Transform
-      ]
-    };
+    super(contains(
+      Direction,
+      Pawn,
+      RigidBody,
+      SpriteAnimation,
+      Transform
+    ));
   }
 
   // Todo: Do this correcly
@@ -103,7 +95,6 @@ export class PawnController extends ProcessingSystem {
     }
 
     const transform = world.storage(Transform).get(entity);
-
 
     const directionIndicator = world
       .builder()
@@ -117,6 +108,7 @@ export class PawnController extends ProcessingSystem {
       direction: world.storage(Direction).get(entity),
       body: world.storage(RigidBody).get(entity),
       directionIndicator,
+      entity,
       input: this.input,
       ticker: this.ticker,
       transform,

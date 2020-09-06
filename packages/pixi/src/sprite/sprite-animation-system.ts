@@ -1,7 +1,7 @@
-import { EntityQuery, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
+import { contains, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteAnimation } from './sprite-animation';
 import { SpriteDisplay } from './sprite-display';
-import { FlipMode, SPRITE_SHEET_STORAGE, SpriteAnimationData, SpriteSheet } from '../sprite-sheet/sprite-sheet';
+import { FlipMode, SPRITE_SHEET_STORAGE, SpriteAnimationData, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 
 /** @internal */
@@ -30,17 +30,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     protected readonly storage: AssetStorage<SpriteSheet>,
     protected readonly ticker: Ticker
   ) {
-    super();
-  }
-
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        SpriteAnimation,
-        SpriteDisplay
-      ]
-    };
+    super(contains(SpriteAnimation, SpriteDisplay));
   }
 
   /**
