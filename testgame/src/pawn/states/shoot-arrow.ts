@@ -1,22 +1,8 @@
-import { State, StateMachine, Vec2 } from '@heliks/tiles-engine';
+import { State, StateMachine } from '@heliks/tiles-engine';
 import { Arrow, shootArrow } from '../../systems/arrow';
 import { PawnStateData } from '../utils';
 import { KeyCode } from '../../input';
 import { CardinalDirection } from '../../components/direction';
-
-/** @internal */
-function getVelocity(direction: CardinalDirection): Vec2 {
-  switch (direction) {
-    case CardinalDirection.West:
-      return [-50, 0];
-    case CardinalDirection.East:
-      return [50, 0];
-    case CardinalDirection.North:
-      return [0, -50];
-    case CardinalDirection.South:
-      return [0, 50];
-  }
-}
 
 /** @internal */
 function getAnimation(direction: CardinalDirection): string {
@@ -80,7 +66,7 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
           break;
       }
 
-      shootArrow(world, x, y, state.data.direction, new Arrow(5));
+      shootArrow(world, x, y, state.data.direction, new Arrow(state.data.entity, [2, 6]));
 
       // Arrow was show, prevent it from shooting again.
       this.casting = false;

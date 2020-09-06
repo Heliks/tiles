@@ -1,6 +1,6 @@
 import {
   ComponentEventType,
-  EntityQuery,
+  contains,
   Inject,
   Injectable,
   ProcessingSystem,
@@ -51,7 +51,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     @Inject(SPRITE_SHEET_STORAGE)
     protected readonly storage: AssetStorage<SpriteSheet>
   ) {
-    super();
+    super(contains(SpriteDisplay, Transform));
   }
 
   /** @inheritDoc */
@@ -60,16 +60,6 @@ export class SpriteDisplaySystem extends ProcessingSystem {
 
     // Subscribe to modifications on the SpriteDisplay storage.
     this.onDisplayModify$ = world.storage(SpriteDisplay).events().subscribe();
-  }
-
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        SpriteDisplay,
-        Transform
-      ]
-    };
   }
 
   /** @inheritDoc */

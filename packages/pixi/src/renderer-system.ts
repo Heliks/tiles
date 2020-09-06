@@ -1,6 +1,6 @@
 import {
   ComponentEventType,
-  EntityQuery,
+  contains,
   Inject,
   Injectable,
   ProcessingSystem,
@@ -39,7 +39,7 @@ export class RendererSystem extends ProcessingSystem {
     protected readonly renderer: Renderer,
     protected readonly stage: Stage
   ) {
-    super();
+    super(contains(Container, Transform));
   }
 
   /** @inheritDoc */
@@ -48,16 +48,6 @@ export class RendererSystem extends ProcessingSystem {
     this.subscriber = world.storage(Container).events().subscribe();
 
     super.boot(world);
-  }
-
-  /** @internal */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        Container,
-        Transform
-      ]
-    };
   }
 
   /**

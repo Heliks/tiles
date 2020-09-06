@@ -1,7 +1,7 @@
 import {
   ComponentEventType,
+  contains,
   Entity,
-  EntityQuery,
   Injectable,
   ProcessingSystem,
   Subscriber,
@@ -122,7 +122,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
    * @param renderer [[Renderer]]
    */
   constructor(protected readonly renderer: Renderer) {
-    super();
+    super(contains(ShapeDisplay, Transform));
   }
 
   /** @inheritDoc */
@@ -131,16 +131,6 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
     this.onDisplayModify$ = world.storage(ShapeDisplay).events().subscribe();
 
     return super.boot(world);
-  }
-
-  /** @inheritDoc */
-  public getQuery(): EntityQuery {
-    return {
-      contains: [
-        ShapeDisplay,
-        Transform
-      ]
-    };
   }
 
   /** @inheritDoc */
