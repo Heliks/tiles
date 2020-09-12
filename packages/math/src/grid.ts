@@ -7,6 +7,16 @@ export class Grid {
     return this.cols * this.rows;
   }
 
+  /** Contains the total width of the grid. */
+  public get width(): number {
+    return this.cols * this.cellWidth;
+  }
+
+  /** Contains the total height of the grid. */
+  public get height(): number {
+    return this.rows * this.cellHeight;
+  }
+
   /**
    * @param cols The total amount of columns in the grid.
    * @param rows The total amount of rows in the grid.
