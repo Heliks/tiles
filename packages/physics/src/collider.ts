@@ -1,12 +1,4 @@
-/** A rectangle shape. */
-export class Rectangle {
-
-  constructor(
-    public readonly width: number,
-    public readonly height: number
-  ) {}
-
-}
+import { Rectangle } from '@heliks/tiles-math';
 
 /** A shape that can be attached to a collider to give it its physical form. */
 export type Shape = Rectangle;
