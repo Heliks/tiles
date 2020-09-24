@@ -190,10 +190,12 @@ export class Renderer {
       dim.dirty = false;
     }
 
-    // Update the screen offset according to the camera position.
-    dim.setOffset(this.camera.sx, this.camera.sy);
-
-    this.stage.update();
+    // Update stage position according to the camera position and update the offset
+    // in ScreenDimensions accordingly.
+    this.stage.setPosition(
+      dim.offset[0] = this.camera.screen[0],
+      dim.offset[1] = this.camera.screen[1]
+    );
 
     this.renderer.render(this.root);
   }

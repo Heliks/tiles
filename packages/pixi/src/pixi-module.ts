@@ -58,8 +58,8 @@ export class PixiModule implements Module {
       .provide({
         token: ScreenDimensions,
         value: new ScreenDimensions(
-          0,
-          0,
+          config.resolution[0],
+          config.resolution[1],
           config.resolution[0],
           config.resolution[1],
           config.unitSize

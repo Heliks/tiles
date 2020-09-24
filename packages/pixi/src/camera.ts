@@ -1,34 +1,25 @@
 import { Injectable } from '@heliks/tiles-engine';
 import { ScreenDimensions } from './screen-dimensions';
+import { Vec2 } from '@heliks/tiles-math';
 
 @Injectable()
 export class Camera {
 
-  /** Position on x axis. */
-  public x = 0;
+  /** Local position in the world. */
+  public readonly local: Vec2 = [0, 0];
 
-  /** Position on y axis. */
-  public y = 0;
-
-  /** Contains the cameras screen position on the x axis. */
-  public get sx(): number {
-    return this.x + (this.dimensions.resolution[0] / 2);
-  }
-
-  /** Contains the cameras screen position on the y axis. */
-  public get sy(): number {
-    return this.y + (this.dimensions.resolution[1] / 2);
-  }
+  /** Screen position in px. */
+  public readonly screen: Vec2 = [0, 0];
 
   constructor(public readonly dimensions: ScreenDimensions) {}
 
-  /**
-   * Transforms the camera position using the given `x` and `y` world positions and
-   * translates them to a pixel position.
-   */
+  /** Transforms the camera position using the given `x` and `y` local position. */
   public transform(x: number, y: number): this {
-    this.x = x * this.dimensions.unitSize;
-    this.y = y * this.dimensions.unitSize;
+    this.local[0] = x;
+    this.local[1] = y;
+
+    this.screen[0] = (x * this.dimensions.unitSize) + (this.dimensions.resolution[0] / 2);
+    this.screen[1] = (y * this.dimensions.unitSize) + (this.dimensions.resolution[1] / 2);
 
     return this;
   }

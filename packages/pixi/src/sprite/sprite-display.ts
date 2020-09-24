@@ -23,7 +23,7 @@ export class SpriteDisplay extends Sprite {
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
-    public layer = 0
+    public node?: Node
   ) {
     super();
 

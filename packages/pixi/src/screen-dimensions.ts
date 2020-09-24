@@ -6,31 +6,23 @@ export class ScreenDimensions {
   /** Indicates if the screen dimensions were updated recently. */
   public dirty = true;
 
-  private readonly _scale: Vec2 = [1, 1]
-  private readonly _resolution: Vec2;
-  private readonly _size: Vec2;
-  private readonly _offset: Vec2 = [0, 0];
+  /**
+   * The scale in which everything is rendered. Should not be updated manually because
+   * this is calculated based on resolution and screen size.
+   */
+  public readonly scale: Vec2 = [1, 1];
 
   /**
-   * Vector that contains the width and height in px of the resolution in which the
-   * screen is rendered.
+   * Screen resolution in px. Do not update this directly.
+   * Todo: Implement a way to switch screen resolutions.
    */
-  public get resolution(): Readonly<Vec2> {
-    return this._resolution;
-  }
+  public readonly resolution: Vec2;
 
-  /**
-   * Vector that contains the scale in which the game stage has to be rendered so that
-   * the [[resolution]] meets the expected [[size]].
-   */
-  public get scale(): Readonly<Vec2> {
-    return this._scale;
-  }
+  /** Screen size in px. Do not update this directly. Use [[resize()]] instead. */
+  public readonly size: Vec2;
 
-  /** Vector that contains the width and height of the screen in px. */
-  public get size(): Readonly<Vec2> {
-    return this._size;
-  }
+  /** Offset. */
+  public readonly offset: Vec2 = [0, 0];
 
   /**
    * @param w Initial width of the screen in px.
@@ -41,17 +33,17 @@ export class ScreenDimensions {
    *  be multiplied to translate those values into pixel positions.
    */
   constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
-    this._size = [w, h];
-    this._resolution = [rw, rh];
+    this.size = [w, h];
+    this.resolution = [rw, rh];
   }
 
   /** Resizes the screen dimensions. This also re-calculates the [[scale]]. */
   public resize(width: number, height: number): this {
-    this._size[0] = width;
-    this._size[1] = height;
+    this.size[0] = width;
+    this.size[1] = height;
 
-    this._scale[0] = width / this._resolution[0];
-    this._scale[1] = height / this._resolution[1];
+    this.scale[0] = width / this.resolution[0];
+    this.scale[1] = height / this.resolution[1];
 
     // Indicate that there are changes that need to be carried over to the renderer.
     this.dirty = true;
@@ -59,19 +51,10 @@ export class ScreenDimensions {
     return this;
   }
 
-  public setOffset(x: number, y: number): void {
-    this._offset[0] = x;
-    this._offset[1] = y;
-  }
-
-  public getOffset(): Vec2 {
-    return this._offset;
-  }
-
   /** Converts a screen `position` to a world position. */
   public toWorld(position: Vec2): Vec2 {
-    position[0] = ((position[0] / this._scale[0]) - (this._offset[0]) ) / this.unitSize;
-    position[1] = ((position[1] / this._scale[1]) - (this._offset[1]) ) / this.unitSize;
+    position[0] = ((position[0] / this.scale[0]) - (this.offset[0]) ) / this.unitSize;
+    position[1] = ((position[1] / this.scale[1]) - (this.offset[1]) ) / this.unitSize;
 
     return position;
   }

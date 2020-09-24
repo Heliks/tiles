@@ -11,9 +11,9 @@ import {
 import { Renderer } from '../renderer';
 import { Stage } from '../stage';
 import { SpriteDisplay } from './sprite-display';
-import { RENDERER_CONFIG_TOKEN, RendererConfig } from '../config';
 import { FlipMode, SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
+import { ScreenDimensions } from '../screen-dimensions';
 
 /** @internal */
 function applyFlipMode(display: SpriteDisplay): void {
@@ -44,12 +44,11 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   protected onDisplayModify$!: Subscriber;
 
   constructor(
-    @Inject(RENDERER_CONFIG_TOKEN)
-    protected readonly config: RendererConfig,
-    protected readonly renderer: Renderer,
-    protected readonly stage: Stage,
+    private readonly dimensions: ScreenDimensions,
+    private readonly renderer: Renderer,
+    private readonly stage: Stage,
     @Inject(SPRITE_SHEET_STORAGE)
-    protected readonly storage: AssetStorage<SpriteSheet>
+    private readonly storage: AssetStorage<SpriteSheet>
   ) {
     super(contains(SpriteDisplay, Transform));
   }
@@ -71,7 +70,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     for (const event of _display.events().read(this.onDisplayModify$)) {
       switch (event.type) {
         case ComponentEventType.Added:
-          this.stage.add(event.component, event.component.layer);
+          this.stage.add(event.component);
           break;
         case ComponentEventType.Removed:
           this.stage.remove(event.component);
@@ -97,8 +96,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
       // Update the sprites position.
       const trans = _transform.get(entity);
 
-      display.x = trans.world[0] * this.config.unitSize;
-      display.y = trans.world[1] * this.config.unitSize;
+      display.x = trans.world[0] * this.dimensions.unitSize;
+      display.y = trans.world[1] * this.dimensions.unitSize;
 
       display.rotation = trans.rotation;
     }
