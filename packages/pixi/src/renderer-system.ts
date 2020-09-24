@@ -9,12 +9,13 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Renderer } from './renderer';
-import { RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
+import { RENDERER_PLUGINS_TOKEN } from './config';
 import { RendererPlugin } from './types';
 import { Stage } from './stage';
 import { Camera } from './camera';
 import { Container } from './renderables';
 import { Storage } from '@heliks/ecs';
+import { ScreenDimensions } from './screen-dimensions';
 
 /** Automatically updates the [[Renderer]] once on each frame. */
 @Injectable()
@@ -25,19 +26,18 @@ export class RendererSystem extends ProcessingSystem {
 
   /**
    * @param camera [[Camera]]
-   * @param config [[RendererConfig]]
+   * @param dimensions [[ScreenDimensions]]
    * @param plugins Renderer plugins that were registered with the renderer module.
    * @param renderer [[Renderer]]
    * @param stage [[Stage]]
    */
   constructor(
-    protected readonly camera: Camera,
-    @Inject(RENDERER_CONFIG_TOKEN)
-    protected readonly config: RendererConfig,
+    private readonly camera: Camera,
+    private readonly dimensions: ScreenDimensions,
     @Inject(RENDERER_PLUGINS_TOKEN)
-    protected readonly plugins: RendererPlugin[],
-    protected readonly renderer: Renderer,
-    protected readonly stage: Stage
+    private readonly plugins: RendererPlugin[],
+    private readonly renderer: Renderer,
+    private readonly stage: Stage
   ) {
     super(contains(Container, Transform));
   }
@@ -80,10 +80,8 @@ export class RendererSystem extends ProcessingSystem {
       const transform = transforms.get(entity);
       const container = containers.get(entity);
 
-      container.x = transform.world[0] * this.config.unitSize;
-      container.y = transform.world[1] * this.config.unitSize;
-
-      // container.setTransform(transform.x * this.config.unitSize, transform.y * this.config.unitSize)
+      container.x = transform.world[0] * this.dimensions.unitSize;
+      container.y = transform.world[1] * this.dimensions.unitSize;
     }
 
     for (const plugin of this.plugins) {
