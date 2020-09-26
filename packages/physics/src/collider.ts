@@ -20,8 +20,8 @@ export interface ColliderData {
   /**
    * Flags the collider to be a sensor. Sensors will detect collisions but won't produce
    * any responses and can only collide when one of the colliding bodies is dynamic. E.g.
-   * when attached to a kinematic body a sensor won't detect collisions on collision with
-   * a static or another kinematic body.
+   * when attached to a kinematic body a sensor won't detect collisions with a static or
+   * another kinematic body.
    */
   sensor: boolean;
 }

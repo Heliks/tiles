@@ -1,7 +1,8 @@
 import { b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2Shape } from '@flyover/box2d';
 import { Vec2 } from '@heliks/tiles-engine';
-import { Collider, Rectangle, Shape } from '../collider';
+import { Collider, Shape } from '../collider';
 import { RigidBody, RigidBodyType } from '../rigid-body';
+import { Rectangle } from '@heliks/tiles-math';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
