@@ -1,6 +1,7 @@
-import { FlipMode, SpriteSheet } from '../sprite-sheet/sprite-sheet';
+import { FlipMode, SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
+import { NodeHandle } from '../stage';
 
 /**
  * Component used to render a sprite.
@@ -17,13 +18,13 @@ export class SpriteDisplay extends Sprite {
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
-   * @param layer The layer on which the sprite should be rendered. Sprites on a lower
-   *  layer with always be rendered before sprites on a higher one.
+   * @param node (optional) Reference to the node to which this sprite display should
+   *  be attached to as opposed to the stage root.
    */
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
-    public node?: Node
+    public node?: NodeHandle
   ) {
     super();
 
