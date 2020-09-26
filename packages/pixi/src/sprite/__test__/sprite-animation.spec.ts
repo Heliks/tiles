@@ -1,4 +1,4 @@
-import { SpriteAnimation } from './sprite-animation';
+import { SpriteAnimation } from '../sprite-animation';
 
 describe('SpriteAnimation', () => {
   it('should check if an animation is complete', () => {

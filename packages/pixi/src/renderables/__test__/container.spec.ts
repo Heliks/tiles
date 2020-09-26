@@ -1,4 +1,4 @@
-import { Container } from './container';
+import { Container } from '../container';
 
 /** @hidden */
 function createContainer(x = 0, y = 0): Container {
