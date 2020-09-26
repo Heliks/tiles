@@ -1,5 +1,5 @@
-import { Stage } from './stage';
-import { Container } from './renderables';
+import { Stage } from '../stage';
+import { Container } from '../renderables';
 
 describe('Stage', () => {
   let stage: Stage;
