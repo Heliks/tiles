@@ -1,5 +1,6 @@
 export * from './camera';
 export * from './debug-draw';
+export * from './depth';
 export * from './texture-format';
 export * from './pixi-module';
 export * from './renderables';
