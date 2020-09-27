@@ -8,6 +8,20 @@ describe('Stage', () => {
     stage = new Stage();
   });
 
+  it('should register a node', () => {
+    const node = stage.registerNode(new Container());
+
+    expect(typeof node).toBe('symbol');
+  });
+
+  it('should destroy a node', () => {
+    const node = stage.registerNode(new Container());
+
+    stage.destroyNode(node);
+
+    expect(stage.view.children.length).toBe(0);
+  });
+
   it('should add renderables', () => {
     const item = new Container();
 
@@ -19,7 +33,7 @@ describe('Stage', () => {
   });
 
   it('should add renderables as child of a node', () => {
-    const node = stage.createNode();
+    const node = stage.registerNode(new Container());
     const item = new Container();
 
     stage.add(item, node);
@@ -38,7 +52,7 @@ describe('Stage', () => {
   });
 
   it('should remove renderables that are part of a node', () => {
-    const node = stage.createNode();
+    const node = stage.registerNode(new Container());
     const item = new Container();
 
     stage.add(item, node).remove(item);
@@ -46,19 +60,5 @@ describe('Stage', () => {
     const length = stage.getNodeContainer(node).children.length;
 
     expect(length).toBe(0);
-  });
-
-  it('should create a node', () => {
-    const node = stage.createNode();
-
-    expect(typeof node).toBe('symbol');
-  });
-
-  it('should destroy a node', () => {
-    const node = stage.createNode();
-
-    stage.destroyNode(node);
-
-    expect(stage.view.children.length).toBe(0);
   });
 });

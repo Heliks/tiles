@@ -66,7 +66,6 @@ export class Renderer {
 
   /** PIXI.JS renderer. */
   protected readonly renderer: PIXI.Renderer;
-
   protected readonly root = new Container();
 
   /** Contains the renderers height in px. */
@@ -197,6 +196,9 @@ export class Renderer {
       dim.offset[1] = this.camera.screen[1]
     );
 
+    this.stage.updateNodes();
+
+    // Render the final image.
     this.renderer.render(this.root);
   }
 

@@ -4,6 +4,14 @@ import { Container, Renderable } from './renderables';
 /** A reference to a sub-group of renderables inside of the stage. */
 export type NodeHandle = symbol;
 
+/** A node in the stage, used to group other renderables. */
+export abstract class StageNode extends Container {
+
+  /** Updates the node. If implemented, this will be called on every frame. */
+  public abstract update?(): void;
+
+}
+
 @Injectable()
 export class Stage {
 
@@ -11,7 +19,7 @@ export class Stage {
   public readonly view = new Container();
 
   /** @internal */
-  private readonly nodes = new Map<NodeHandle, Container>();
+  private readonly nodes = new Map<NodeHandle, StageNode>();
 
   /** @internal */
   public getNodeContainer(node: NodeHandle): Container {
@@ -42,20 +50,20 @@ export class Stage {
   /** Removes a `renderable` from the stage. */
   public remove(renderable: Renderable): this {
     // Instead of using removeChild on this.view we do this via the renderables parent
-    // because it might be a child of a node instead of the stage root.
+    // because it might be a child of a node instead of the stage root. This is faster
+    // than iterating over all nodes.
     renderable.parent.removeChild(renderable);
 
     return this;
   }
 
   /**
-   * Creates an empty node and returns a `NodeHandle` that acts as a reference to it.
-   *
-   * In this example we use nodes to render `item3` behind `item1` and `item2` even
-   * though it was added last to the render graph:
+   * Registers a node and returns a reference to access it. The reference ensures that
+   * renderables can not be added to arbitrary containers that don't actually exist
+   * inside of the stage.
    *
    * ```ts
-   * const handle = stage.createNode();
+   * const handle = stage.registerNode(new Container());
    *
    * stage.add(item1);
    * stage.add(item2);
@@ -64,15 +72,13 @@ export class Stage {
    * stage.add(item3, handle);
    * ```
    */
-  public createNode(): NodeHandle {
-    const item = new Container();
-    const node = Symbol();
+  public registerNode(node: StageNode): NodeHandle {
+    const handle = Symbol();
 
-    this.nodes.set(node, item);
+    this.nodes.set(handle, node);
+    this.add(node);
 
-    this.add(item);
-
-    return node;
+    return handle;
   }
 
   /**
@@ -82,14 +88,21 @@ export class Stage {
    * Todo: This somehow needs to interact with the SpriteDisplaySystem so that it does
    *  not process entities that will no longer be rendered when they were part of a node.
    */
-  public destroyNode(node: NodeHandle): this {
-    const container = this.nodes.get(node);
+  public destroyNode(handle: NodeHandle): this {
+    const node = this.nodes.get(handle);
 
-    if (container) {
-      this.remove(container);
+    if (node) {
+      this.remove(node);
     }
 
     return this;
+  }
+
+  /** Calls `update` on all registered render nodes. */
+  public updateNodes(): void {
+    for (const node of this.nodes.values()) {
+      node.update?.();
+    }
   }
 
   /**
