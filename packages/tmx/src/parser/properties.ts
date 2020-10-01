@@ -1,8 +1,17 @@
 import { Struct } from '@heliks/tiles-engine';
-import { TmxHasProperty } from './tmx-json';
+
+export interface TmxPropertyData {
+  name: string;
+  value: string | number;
+  type: 'bool' | 'float' | 'int' | 'string';
+}
+
+export interface HasTmxPropertyData {
+  properties?: TmxPropertyData[];
+}
 
 /** Extracts the custom properties from any TMX formatted data. */
-export function tmxParseProperties<T>(target: TmxHasProperty): Partial<T> {
+export function tmxParseProperties<T>(target: HasTmxPropertyData): Partial<T> {
   const data: Struct = {};
 
   if (target.properties) {
