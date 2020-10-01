@@ -109,7 +109,7 @@ export class DebugDeathReporter implements System {
 }
 
 /** Death bundle to add as a module to the engine. */
-export class DeathBundle implements Module<GameBuilder> {
+export class DeathBundle implements Module {
 
   /** @inheritDoc */
   public build(builder: GameBuilder): void {

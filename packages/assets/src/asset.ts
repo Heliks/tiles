@@ -1,4 +1,5 @@
 /** A unique pointer to an asset. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type Handle<T = unknown> = symbol;
 
 /**

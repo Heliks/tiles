@@ -48,8 +48,8 @@ export class TilemapRenderer extends ReactiveSystem {
     container.y = 0;
   }
 
-  public onEntityRemoved(world: World, entity: Entity): void {
-
+  public onEntityRemoved(): void {
+    return;
   }
 
 }

@@ -52,6 +52,9 @@ export class Stage {
     // Instead of using removeChild on this.view we do this via the renderables parent
     // because it might be a child of a node instead of the stage root. This is faster
     // than iterating over all nodes.
+    //
+    // Also disable the false-positive unicorn rule.
+    // eslint-disable-next-line unicorn/prefer-node-remove
     renderable.parent.removeChild(renderable);
 
     return this;
