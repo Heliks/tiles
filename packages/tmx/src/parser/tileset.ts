@@ -1,10 +1,27 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { TmxTilesetData } from './tmx-json';
 import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
 import { Tileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
+import { HasTmxPropertyData } from './properties';
 
-/** Asset loader format for loading TMX tilesets. */
+/** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
+export interface TmxTilesetData extends HasTmxPropertyData {
+  backgroundcolor: string;
+  columns: number;
+  image: string;
+  imageheight: number;
+  imagewidth: number;
+  name: string;
+  margin: number;
+  spacing: number;
+  tilecount: number;
+  tiledversion: string;
+  tileheight: number;
+  tilewidth: number;
+  type: 'tileset';
+}
+
+/** Asset loader format for TMX tilesets. */
 export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
 
   /** @inheritDoc */

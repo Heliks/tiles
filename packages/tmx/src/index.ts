@@ -1,2 +1,4 @@
-export * from './tmx-tilemap-format';
-export * from './tmx-tileset-format';
+export * from './parser';
+export * from './game-map';
+export * from './game-map-handler';
+export * from './tmx-module';
