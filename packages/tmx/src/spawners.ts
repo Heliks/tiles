@@ -1,11 +1,11 @@
-import { Container, SortNode, SpriteDisplay, Stage } from '@heliks/tiles-pixi';
+import { Container, ScreenDimensions, SortNode, SpriteDisplay, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { Layer } from './game-map';
+import { GameMapLayer } from './game-map';
 import { Transform, World } from '@heliks/tiles-engine';
 import { LayerType, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
 
 /** @internal */
-function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileLayer): Layer {
+function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileLayer): GameMapLayer {
   const node = stage.registerNode(new Container());
   const entity = world
     .builder()
@@ -17,25 +17,23 @@ function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileL
     ))
     .build();
 
-  return new Layer(node, [
+  return new GameMapLayer(node, [
     entity
   ]);
 }
 
 /** @internal */
-function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObjectLayer): Layer {
-  const node = stage.registerNode(new SortNode());
+function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObjectLayer): GameMapLayer {
   const entities = [];
+  const node = stage.registerNode(new SortNode());
+  const us = world.get(ScreenDimensions).unitSize;
 
   for (const obj of layer.data) {
     const tileset = map.tileset(obj.tileId);
     const entity = world
       .builder()
-      // Todo: Use real unit size.
-      .use(new Transform(
-        obj.x / 16,
-        obj.y / 16
-      ))
+      // Convert pixel position to world coordinates.
+      .use(new Transform(obj.x / us, obj.y / us))
       .use(new SpriteDisplay(
         tileset.spritesheet,
         tileset.toLocal(obj.tileId) - 1,
@@ -46,10 +44,14 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     entities.push(entity);
   }
 
-  return new Layer(node, entities, true);
+  return new GameMapLayer(
+    node,
+    entities,
+    layer.properties.isPawnLayer
+  );
 }
 
-export function spawnLayer(world: World, map: TmxMap, layer: TmxLayer): Layer {
+export function spawnLayer(world: World, map: TmxMap, layer: TmxLayer): GameMapLayer {
   const stage = world.get(Stage);
 
   switch (layer.type) {
