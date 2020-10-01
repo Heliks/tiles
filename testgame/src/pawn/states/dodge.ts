@@ -1,5 +1,5 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
-import { getMovementVelocity, PawnStateData } from '../utils';
+import { PawnStateData } from '../utils';
 import { KeyCode } from '../../input';
 import { CardinalDirection } from '../../components/direction';
 
@@ -27,7 +27,7 @@ export class Dodge implements State<StateMachine<PawnStateData>> {
     let vx = 0;
     let vy = 0;
 
-    const velocity = getMovementVelocity(pawn.speed * 12, state.data.ticker.delta);
+    const velocity = 25;
 
     switch (state.data.pawn.direction) {
       case CardinalDirection.West:

@@ -1,12 +1,13 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Transform, World } from '@heliks/tiles-engine';
-import { Rectangle, RigidBody } from '@heliks/tiles-physics';
-import { SpriteAnimation, SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
+import { RigidBody } from '@heliks/tiles-physics';
+import { NodeHandle, SpriteAnimation, SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Direction } from '../components/direction';
 import { CollisionGroups } from '../const';
 import { Pawn } from '../pawn/pawn-controller';
+import { Rectangle } from '@heliks/tiles-math';
 
-export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: number, y: number): void {
+export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: number, y: number, node?: NodeHandle): void {
   const body = RigidBody.dynamic()
     .attach(new Rectangle(0.4, 0.4), {
       density: 120
@@ -23,7 +24,7 @@ export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: num
     .builder()
     // .use(new Camera(200, 200))
     .use(new Transform(x, x))
-    .use(new SpriteDisplay(spritesheet, 1, 1))
+    .use(new SpriteDisplay(spritesheet, 1, node))
     .use(new SpriteAnimation([]))
     .use(new Pawn())
     .use(new Direction())

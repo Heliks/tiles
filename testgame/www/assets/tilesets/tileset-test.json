@@ -21,11 +21,35 @@
         {
          "name":"Street01",
          "tile":52
+        }, 
+        {
+         "name":"GrassPatch",
+         "tile":12
         }],
  "tilecount":152,
  "tiledversion":"1.4.2",
  "tileheight":16,
  "tiles":[
+        {
+         "id":12,
+         "terrain":[2, 2, 2, 2]
+        }, 
+        {
+         "id":20,
+         "terrain":[-1, -1, -1, 2]
+        }, 
+        {
+         "id":21,
+         "terrain":[-1, -1, 2, 2]
+        }, 
+        {
+         "id":22,
+         "terrain":[-1, -1, 2, 2]
+        }, 
+        {
+         "id":23,
+         "terrain":[-1, -1, 2, -1]
+        }, 
         {
          "id":26,
          "properties":[
@@ -34,6 +58,54 @@
                  "type":"bool",
                  "value":true
                 }]
+        }, 
+        {
+         "id":28,
+         "terrain":[-1, 2, -1, 2]
+        }, 
+        {
+         "id":29,
+         "terrain":[2, 2, 2, -1]
+        }, 
+        {
+         "id":30,
+         "terrain":[2, 2, -1, 2]
+        }, 
+        {
+         "id":31,
+         "terrain":[2, -1, 2, -1]
+        }, 
+        {
+         "id":36,
+         "terrain":[-1, 2, -1, 2]
+        }, 
+        {
+         "id":37,
+         "terrain":[2, -1, 2, 2]
+        }, 
+        {
+         "id":38,
+         "terrain":[-1, 2, 2, 2]
+        }, 
+        {
+         "id":39,
+         "terrain":[2, -1, 2, -1]
+        }, 
+        {
+         "id":44,
+         "terrain":[-1, 2, -1, -1]
+        }, 
+        {
+         "id":45,
+         "terrain":[2, 2, -1, -1]
+        }, 
+        {
+         "id":46,
+         "terrain":[2, 2, -1, -1]
+        }, 
+        {
+         "id":47,
+         "terrain":[2, -1, -1, -1]
         }, 
         {
          "id":48,

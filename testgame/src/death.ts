@@ -12,10 +12,11 @@ import {
   Transform,
   World
 } from '@heliks/tiles-engine';
-import { Rectangle, RigidBody } from '@heliks/tiles-physics';
+import { RigidBody } from '@heliks/tiles-physics';
 import { SPRITE_SHEET_STORAGE, SpriteDisplay, SpriteSheetFormat } from '@heliks/tiles-pixi';
 import { Health } from './components/health';
 import { Inventory, Item } from './components/inventory';
+import { Rectangle } from '@heliks/tiles-math';
 
 /** @internal */
 function dropItem(world: World, item: Item, x: number, y: number) {
@@ -116,9 +117,5 @@ export class DeathBundle implements Module<GameBuilder> {
       .provide(DeathEvents)
       .system(DeathSystem);
   }
-
-}
-
-function update() {
 
 }

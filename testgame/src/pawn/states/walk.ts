@@ -2,7 +2,7 @@ import { State, StateMachine } from '@heliks/tiles-engine';
 import { KeyCode } from '../../input';
 import { isShooting, ShootArrow } from './shoot-arrow';
 import { Dodge, isDodging } from './dodge';
-import { getMovementVelocity, PawnStateData } from '../utils';
+import { PawnStateData } from '../utils';
 
 export class WalkState implements State<StateMachine<PawnStateData>> {
 
@@ -28,7 +28,7 @@ export class WalkState implements State<StateMachine<PawnStateData>> {
     let vy = 0;
 
     // Characters movement velocity adjusted to frame rate.
-    const velocity = getMovementVelocity(pawn.speed, ticker.delta);
+    const velocity = 5;
 
     // Move left
     if (input.isKeyDown(KeyCode.A)) {

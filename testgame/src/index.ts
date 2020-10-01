@@ -1,17 +1,16 @@
+import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
 import { Entity, Game, GameBuilder, rand, TransformSystem, World } from '@heliks/tiles-engine';
 import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
-import { TmxTilemapFormat } from '@heliks/tiles-tmx';
-import 'reflect-metadata';
+import { GameMapHandler, TmxModule, TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { InputHandler } from './input';
 import { PawnController } from './pawn/pawn-controller';
 import { spawnJosh } from './spawners/josh';
 import { spawnPawn } from './spawners/pawn';
-import { ArrowSystem } from './systems/arrow';
+import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
-import { DrawGridSystem } from './systems/draw-grid-system';
 import { loadSpriteSheet, lookupEntity } from './utils';
 
 // Meter to pixel ratio.
@@ -51,37 +50,6 @@ async function fetchMap(world: World, file: string) {
 }
 
 /** @internal */
-/*
-async function spawnMap(world: World, file: string): Promise<void> {
-  const map = await fetchMap(world, file);
-
-  for (let i = 0, l = map.layers.length; i < l; i++) {
-    const layer = map.layers[i];
-
-    switch (layer.constructor) {
-      case TileLayer:
-        for (const { id, index } of layer.iter()) {
-          // Grids are top left aligned. Convert to center aligned world position.
-          const position = map.grid.toCenter(map.grid.pos(index));
-          const tileset  = map.tileset(id);
-
-          world
-            .builder()
-            .use(new Transform(position[0] / 16, position[1] / 16))
-            .use(new SpriteDisplay(
-              tileset.spritesheet,
-              // Convert global tile id to a local sprite index.
-              tileset.toLocal(id) - 1,
-              i
-            ))
-            .build();
-        }
-      break;
-    }
-  }
-}*/
-
-/** @internal */
 function getDomTarget(): HTMLElement {
   const domTarget = document.getElementById('stage');
 
@@ -108,12 +76,13 @@ window.onload = () => {
         unitSize: UNIT_SIZE
       })
         .plugin(PhysicsDebugDraw)
-        .plugin(DrawGridSystem)
+        // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
     .module(new DeathBundle())
     .system(DebugDeathReporter)
     .module(new TilemapModule())
+    .module(new TmxModule())
     .build();
 
   setupDebugGlobals(game);
@@ -123,27 +92,37 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 5;
-  const y = 5;
+  const x = 45;
+  const y = 45;
 
-  const map = 'tilemaps/test01.json';
+  const mapFile = 'tilemaps/test03.json';
 
   initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.
     game.start();
 
-    // Spawn player character.
-    spawnPawn(game.world, pawnSpriteSheet, x, y);
-
-    // Spawn Josh in a random location near the player
-    spawnJosh(
-      game.world,
-      loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
-      x + rand(-3, 3),
-      y + rand(-3, 3)
-    );
+    const mapHandler = game.world.get(GameMapHandler);
 
     // spawnMap
+    fetchMap(game.world, mapFile).then(mapData => {
+      const map = mapHandler.spawn(game.world, mapData);
+
+      // Get the layer where our pawn is allowed to be spawned
+      // Todo: Handle maps that don't have a single pawn layer
+      // Todo: Currently only one player floor is allowed.
+      const layer = map.getPawnLayers()[0];
+
+      // Spawn player character.
+      spawnPawn(game.world, pawnSpriteSheet, x, y, layer.node);
+
+      // Spawn Josh in a random location near the player
+      spawnJosh(
+        game.world,
+        loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
+        x + rand(-3, 3),
+        y + rand(-3, 3)
+      );
+    });
   });
 };
 

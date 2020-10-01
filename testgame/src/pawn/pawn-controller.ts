@@ -156,10 +156,12 @@ export class PawnController extends ProcessingSystem {
       state.data.pawn.direction = direction.toCardinal();
       state.update();
 
+      const dt = 1 - Math.exp(-state.data.ticker.delta / 100);
+
       // Todo: Do this correctly
       world.get(Camera).transform(
-        -transform.world[0],
-        -transform.world[1]
+      -transform.world[0],
+      -transform.world[1]
       );
     }
   }
