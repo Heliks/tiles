@@ -1,5 +1,5 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
-import { Arrow, shootArrow } from '../../systems/arrow';
+import { Arrow, shootArrow } from '../../arrow';
 import { PawnStateData } from '../utils';
 import { KeyCode } from '../../input';
 import { CardinalDirection } from '../../components/direction';

@@ -1,9 +1,16 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":5,
  "infinite":false,
  "layers":[
         {
-         "data":[14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14],
+         "data":[1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1],
          "height":5,
          "id":1,
          "name":"Tile Layer 1",
@@ -13,12 +20,119 @@
          "width":5,
          "x":0,
          "y":0
+        }, 
+        {
+         "data":[0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0, 78, 0],
+         "height":5,
+         "id":2,
+         "name":"Tile Layer 2",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "gid":45,
+                 "height":16,
+                 "id":1,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":15.968434427874,
+                 "y":63.7480104326891
+                }, 
+                {
+                 "gid":48,
+                 "height":16,
+                 "id":2,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":47.5340065538688,
+                 "y":64.1760181903297
+                }, 
+                {
+                 "gid":46,
+                 "height":16,
+                 "id":3,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":31.8047214605765,
+                 "y":63.8550123720992
+                }, 
+                {
+                 "gid":21,
+                 "height":16,
+                 "id":4,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":16.1824383066943,
+                 "y":47.6977195211663
+                }, 
+                {
+                 "gid":22,
+                 "height":16,
+                 "id":5,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":31.9117233999866,
+                 "y":47.9117233999866
+                }, 
+                {
+                 "gid":24,
+                 "height":16,
+                 "id":6,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":47.7480104326891,
+                 "y":48.1257272788069
+                }, 
+                {
+                 "gid":58,
+                 "height":16,
+                 "id":7,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":32.0187253393968,
+                 "y":32.3964421855146
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":4,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.3.3",
+ "tiledversion":"1.4.2",
  "tileheight":16,
  "tilesets":[
         {
@@ -27,6 +141,6 @@
         }],
  "tilewidth":16,
  "type":"map",
- "version":1.2,
+ "version":1.4,
  "width":5
 }

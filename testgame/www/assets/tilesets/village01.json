@@ -1,12 +1,20 @@
 { "columns":13,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
  "image":"village01.png",
  "imageheight":220,
  "imagewidth":220,
  "margin":0,
  "name":"trees01",
  "spacing":0,
- "tilecount":2,
- "tiledversion":"1.4.1",
+ "tilecount":169,
+ "tiledversion":"1.4.2",
  "tileheight":16,
  "tilewidth":16,
  "type":"tileset",

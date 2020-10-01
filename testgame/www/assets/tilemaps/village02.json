@@ -1,0 +1,96 @@
+{ "columns":37,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
+ "image":"..\/tilesets\/village02.png",
+ "imageheight":400,
+ "imagewidth":600,
+ "margin":0,
+ "name":"village02",
+ "spacing":0,
+ "terrains":[
+        {
+         "name":"New Terrain",
+         "tile":0
+        }],
+ "tilecount":925,
+ "tiledversion":"1.4.2",
+ "tileheight":16,
+ "tiles":[
+        {
+         "id":435,
+         "terrain":[0, 0, 0, -1]
+        }, 
+        {
+         "id":436,
+         "terrain":[0, 0, -1, -1]
+        }, 
+        {
+         "id":437,
+         "terrain":[0, 0, -1, -1]
+        }, 
+        {
+         "id":438,
+         "terrain":[0, 0, -1, 0]
+        }, 
+        {
+         "id":439,
+         "terrain":[0, 0, 0, 0]
+        }, 
+        {
+         "id":472,
+         "terrain":[0, -1, 0, -1]
+        }, 
+        {
+         "id":473,
+         "terrain":[-1, -1, -1, 0]
+        }, 
+        {
+         "id":474,
+         "terrain":[-1, -1, 0, -1]
+        }, 
+        {
+         "id":475,
+         "terrain":[-1, 0, -1, 0]
+        }, 
+        {
+         "id":509,
+         "terrain":[0, -1, 0, -1]
+        }, 
+        {
+         "id":510,
+         "terrain":[-1, 0, -1, -1]
+        }, 
+        {
+         "id":511,
+         "terrain":[0, -1, -1, -1]
+        }, 
+        {
+         "id":512,
+         "terrain":[-1, 0, -1, 0]
+        }, 
+        {
+         "id":546,
+         "terrain":[0, -1, 0, 0]
+        }, 
+        {
+         "id":547,
+         "terrain":[-1, -1, 0, 0]
+        }, 
+        {
+         "id":548,
+         "terrain":[-1, -1, 0, 0]
+        }, 
+        {
+         "id":549,
+         "terrain":[-1, 0, 0, 0]
+        }],
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.4
+}

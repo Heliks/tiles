@@ -1,9 +1,10 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Transform, World } from '@heliks/tiles-engine';
-import { Rectangle, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
+import { RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health } from '../components/health';
 import { CollisionGroups } from '../const';
+import { Rectangle } from '@heliks/tiles-math';
 
 function spawnCrate(
   world: World,
@@ -25,6 +26,6 @@ function spawnCrate(
     .use(body)
     .use(new Transform(x, y))
     .use(new Health(health, health))
-    .use(new SpriteDisplay(sheet, 0, 1))
+    .use(new SpriteDisplay(sheet, 0))
     .build();
 }
