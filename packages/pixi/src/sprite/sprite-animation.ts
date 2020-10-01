@@ -1,4 +1,4 @@
-import { FlipMode } from '../sprite-sheet/sprite-sheet';
+import { FlipMode } from '../sprite-sheet';
 
 /** Component to animate a sprite. */
 export class SpriteAnimation {
