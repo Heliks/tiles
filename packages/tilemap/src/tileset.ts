@@ -1,4 +1,4 @@
-import { SpriteSheet } from '@heliks/tiles-pixi';
+import { Sprite, SpriteSheet } from '@heliks/tiles-pixi';
 
 export class Tileset {
 
@@ -25,6 +25,11 @@ export class Tileset {
    */
   public toLocal(id: number): number {
     return id - this.firstId + 1;
+  }
+
+  /** Creates a sprite from the given global `id`. */
+  public sprite(id: number): Sprite {
+    return this.spritesheet.sprite(this.toLocal(id) - 1);
   }
 
 }

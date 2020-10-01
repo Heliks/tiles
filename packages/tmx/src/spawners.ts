@@ -44,6 +44,8 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     entities.push(entity);
   }
 
+  console.log(layer.properties)
+
   return new GameMapLayer(
     node,
     entities,
