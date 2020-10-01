@@ -70,7 +70,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
     for (const event of _display.events().read(this.onDisplayModify$)) {
       switch (event.type) {
         case ComponentEventType.Added:
-          this.stage.add(event.component);
+          this.stage.add(event.component, event.component.node);
           break;
         case ComponentEventType.Removed:
           this.stage.remove(event.component);
