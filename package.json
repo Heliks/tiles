@@ -7,11 +7,11 @@
     "testgame"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
-    "eslint": "^7.0.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-unicorn": "^20.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/parser": "^4.3.0",
+    "eslint": "^7.10.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-unicorn": "^22.0.0",
     "lerna": "^3.20.2",
     "rimraf": "^3.0.2"
   },

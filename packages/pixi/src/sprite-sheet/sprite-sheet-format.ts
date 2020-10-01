@@ -10,7 +10,7 @@ interface SpriteSheetData {
   image: string;
   rows: number;
   spriteSize: Vec2;
-  animations?: Struct<SpriteAnimationData>
+  animations?: Struct<SpriteAnimationData>;
 }
 
 /**

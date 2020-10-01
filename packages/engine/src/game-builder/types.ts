@@ -7,7 +7,7 @@ export interface GameBuilder {
   system(system: ClassType<System>): this;
 }
 
-export interface Module<T extends GameBuilder = GameBuilder> {
+export interface Module {
   build(builder: GameBuilder): unknown;
 }
 

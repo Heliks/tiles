@@ -80,6 +80,8 @@
     ],
     "space-unary-ops": ["off"],
     "unicorn/no-fn-reference-in-iterator": "off",
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/no-abusive-eslint-disable": "off",
+    "@typescript-eslint/ban-types": "off"
   }
 }

@@ -32,7 +32,7 @@ export class GameBuilder implements Builder {
    * Adds a `module` and immediately invokes the `build()` function to queue
    * additional tasks from inside the module.
    */
-  public module(module: Module<GameBuilder>): this {
+  public module(module: Module): this {
     // Modules will just add additional tasks to the task list,
     // so there is no reason to create an extra task for it.
     module.build(this);
