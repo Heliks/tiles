@@ -1,5 +1,5 @@
 import { Tile, TmxObjectData, tmxParseObject } from './objects';
-import { HasTmxPropertyData } from './properties';
+import { HasTmxPropertyData, tmxParseProperties, TmxProperties } from './properties';
 
 export enum LayerTypeData {
   Objects = 'objectgroup',
@@ -13,11 +13,13 @@ export enum LayerType {
 }
 
 /** @internal */
-interface BaseLayer {
+interface BaseLayer<P = TmxProperties> {
   /** The layers name. This is mainly for debugging purposes. */
   name: string;
   /** Layer type. */
   type: LayerType;
+  /** Custom properties. */
+  properties: P;
 }
 
 /** @internal */
@@ -41,7 +43,7 @@ export interface TmxTileLayerData extends BaseLayerData {
 /** A layer containing tiles arranged in a grid. */
 export interface TmxTileLayer extends BaseLayer {
   data: number[];
-  type: LayerType.Tiles
+  type: LayerType.Tiles;
 }
 
 /** JSON format for object layers. */
@@ -50,8 +52,17 @@ export interface TmxObjectLayerData extends BaseLayerData {
   type: LayerTypeData.Objects;
 }
 
+/** Custom properties for object layers. */
+export interface ObjectLayerProperties {
+  /**
+   * Indicates if pawns (e.g. player controlled characters, entities etc.) should be
+   * placed on the same level as this layer.
+   */
+  isPawnLayer?: boolean;
+}
+
 /** A layer containing free-positioned objects. */
-export interface TmxObjectLayer extends BaseLayer {
+export interface TmxObjectLayer extends BaseLayer<ObjectLayerProperties> {
   data: Tile[];
   type: LayerType.Objects;
 }
@@ -80,8 +91,9 @@ function parseObjectLayer(data: TmxObjectLayerData): TmxObjectLayer {
   }
 
   return {
-    name: data.name,
     data: objects,
+    name: data.name,
+    properties: tmxParseProperties(data),
     type: LayerType.Objects
   };
 }
@@ -94,8 +106,9 @@ export function tmxParseLayer(data: TmxLayerData, out: TmxLayer[] = []): TmxLaye
   switch (data.type) {
     case LayerTypeData.Tiles:
       out.push({
-        name: data.name,
         data: data.data,
+        name: data.name,
+        properties: tmxParseProperties(data),
         type: LayerType.Tiles
       });
 

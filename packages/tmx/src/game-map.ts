@@ -4,7 +4,7 @@ import { Entity } from '@heliks/tiles-engine';
 /**
  *
  */
-export class Layer {
+export class GameMapLayer {
 
   /**
    * @param node The handle referencing the `StageNode` where this layer is
@@ -24,13 +24,13 @@ export class Layer {
 /** A game map that is currently spawned in the world. */
 export class GameMap {
 
-  constructor(public readonly layers: Layer[]) {}
+  constructor(public readonly layers: GameMapLayer[]) {}
 
   /**
    * Returns all layers where pawns (e.g. player controlled characters) are
    * allowed to be spawned.
    */
-  public getPawnLayers(): Layer[] {
+  public getPawnLayers(): GameMapLayer[] {
     return this.layers.filter(item => item.isPawnLayer);
   }
 
