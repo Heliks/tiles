@@ -1,11 +1,11 @@
 import { GameBuilder, Module } from '@heliks/tiles-engine';
-import { TilemapManager } from './tilemap-manager';
+import { TilemapRenderer } from './tilemap-renderer';
 
 export class TilemapModule implements Module {
 
   /** @inheritDoc */
   public build(builder: GameBuilder): void {
-    builder.provide(TilemapManager);
+    builder.system(TilemapRenderer);
   }
 
 }
