@@ -92,8 +92,8 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 45;
-  const y = 45;
+  const x = 40;
+  const y = 40;
 
   const mapFile = 'tilemaps/test03.json';
 

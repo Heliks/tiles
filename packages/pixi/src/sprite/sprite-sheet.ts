@@ -1,6 +1,8 @@
 import { Sprite, Texture } from 'pixi.js';
 import { token } from '@heliks/tiles-engine';
 import { AssetStorage } from '@heliks/tiles-assets';
+import { FlipMode } from './flip';
+import { SpriteAnimation } from './components';
 
 /**
  * The token that is used to provide the `AssetStorage` for sprite sheets to the
@@ -8,17 +10,9 @@ import { AssetStorage } from '@heliks/tiles-assets';
  */
 export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>();
 
-/** Determines in which direction(s) a sprite should be flipped. */
-export enum FlipMode {
-  None,
-  Both,
-  Horizontal,
-  Vertical
-}
-
 export interface SpriteAnimationData {
   /** Direction in which the sprites of this animation should be flipped. */
-  flip?: 'both' | 'horizontal' | 'vertical';
+  flip?: FlipMode;
   /** Contains the indexes of all sprites of which the animation consists. */
   frames: number[];
   /** Duration in ms of how long each frame is displayed. */
@@ -61,6 +55,33 @@ export abstract class SpriteSheet {
   /** Returns the animation registered with the given `name`. */
   public getAnimation(name: string): SpriteAnimationData | undefined {
     return this.animations.get(name);
+  }
+
+  public createAnimation(name: string, animation = new SpriteAnimation()): SpriteAnimation {
+    const data = this.getAnimation(name);
+
+    if (!data) {
+      throw new Error(`Unknown animation "${name}"`);
+    }
+
+    // Reset the animation. This is in case a previously used SpriteAnimation instance
+    // was provided for re-use.
+    animation.reset();
+    animation.playing = name;
+
+    // Assign animation data to sprite animation.
+    animation.frames = [...data.frames];
+
+    if (data.frameDuration) {
+      animation.frameDuration = data.frameDuration;
+    }
+
+    // Assign flip mode if set.
+    if (data.flip) {
+      animation.flipMode = data.flip;
+    }
+
+    return animation;
   }
 
 }

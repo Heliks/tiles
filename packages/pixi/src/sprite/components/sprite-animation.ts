@@ -1,6 +1,6 @@
-import { FlipMode } from '../sprite-sheet';
+import { FlipMode } from '../flip';
 
-/** Component to animate a sprite. */
+/** Component to animate a `SpriteDisplay` component. */
 export class SpriteAnimation {
 
   /** Elapsed time since the animation has started. */
@@ -41,13 +41,20 @@ export class SpriteAnimation {
    * @param frames Contains the indexes of all sprites of which the animation consists.
    * @param frameDuration Duration in ms of how long each frame is displayed.
    */
-  constructor(public frames: number[], public frameDuration = 100) {}
+  constructor(
+    public frames: number[] = [],
+    public frameDuration = 100
+  ) {}
 
   /** Resets the animation back to the beginning. */
   public reset(): this {
-    this.elapsedTime = 0;
     this.frame = -1;
+    this.frameDuration = 100;
+
+    this.elapsedTime = 0;
     this.speed = 1;
+
+    this.flipMode = FlipMode.None;
 
     return this;
   }

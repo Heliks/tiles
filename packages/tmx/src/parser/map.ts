@@ -1,6 +1,6 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { Tileset, TilesetBag } from '@heliks/tiles-tilemap';
-import { TmxTilesetData as TilesetBaseData, TmxTilesetFormat } from './tileset';
+import { TilesetBag } from '@heliks/tiles-tilemap';
+import { Tileset, TmxTilesetData as TilesetBaseData, TmxTilesetFormat } from './tileset';
 import { Grid } from '@heliks/tiles-engine';
 import { TmxLayer, TmxLayerData, tmxParseLayer } from './layers';
 import { HasTmxPropertyData } from './properties';
@@ -53,7 +53,7 @@ export interface TmxMapData extends HasTmxPropertyData {
   width: number;
 }
 
-export class TmxMap extends TilesetBag {
+export class TmxMap extends TilesetBag<Tileset> {
 
   constructor(
     public readonly grid: Grid,
