@@ -1,7 +1,8 @@
-import { FlipMode, SpriteSheet } from '../sprite-sheet';
+import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
-import { NodeHandle } from '../stage';
+import { NodeHandle } from '../../stage';
+import { FlipMode } from '../flip';
 
 /**
  * Component used to render a sprite.

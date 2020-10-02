@@ -1,22 +1,7 @@
 import { contains, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
-import { SpriteAnimation } from './sprite-animation';
-import { SpriteDisplay } from './sprite-display';
-import { FlipMode, SPRITE_SHEET_STORAGE, SpriteAnimationData, SpriteSheet } from '../sprite-sheet';
+import { SpriteAnimation, SpriteDisplay } from '../components';
 import { AssetStorage } from '@heliks/tiles-assets';
-
-/** @internal */
-function translateFlipMode(data: SpriteAnimationData): FlipMode {
-  switch (data.flip) {
-    case 'both':
-      return FlipMode.Both;
-    case 'horizontal':
-      return FlipMode.Horizontal;
-    case 'vertical':
-      return FlipMode.Vertical;
-    default:
-      return FlipMode.None;
-  }
-}
+import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
@@ -27,8 +12,8 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    */
   constructor(
     @Inject(SPRITE_SHEET_STORAGE)
-    protected readonly storage: AssetStorage<SpriteSheet>,
-    protected readonly ticker: Ticker
+    private readonly storage: AssetStorage<SpriteSheet>,
+    private readonly ticker: Ticker
   ) {
     super(contains(SpriteAnimation, SpriteDisplay));
   }
@@ -43,40 +28,26 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       ? this.storage.get(display.spritesheet)?.data
       : display.spritesheet;
 
-    // The SpriteSheet asset is not loaded yet.
-    if (!sheet) {
-      return;
+
+    // Only create the animation if the sprite-sheet is loaded yet.
+    if (sheet) {
+      sheet.createAnimation(
+        animation.transform as string,
+        animation
+      );
+
+      animation.transform = undefined;
     }
-
-    const data = sheet.getAnimation(animation.transform as string);
-
-    if (data) {
-      animation.playing = animation.transform;
-      animation.reset();
-
-      // Don't copy a reference here, otherwise editing the animation frames would also
-      // edit the original animation data.
-      animation.frames = [ ...data.frames ];
-      animation.flipMode = translateFlipMode(data);
-
-      // Inherit frame duration set by the animation, otherwise we continue to use the
-      // one that is currently set.
-      if (data.frameDuration) {
-        animation.frameDuration = data.frameDuration;
-      }
-    }
-
-    animation.transform = undefined;
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    const _anim = world.storage(SpriteAnimation);
-    const _disp = world.storage(SpriteDisplay);
+    const animations = world.storage(SpriteAnimation);
+    const displays = world.storage(SpriteDisplay);
 
     for (const entity of this.group.entities) {
-      const animation = _anim.get(entity);
-      const display = _disp.get(entity);
+      const animation = animations.get(entity);
+      const display = displays.get(entity);
 
       // Apply animation transform if necessary.
       if (animation.transform) {

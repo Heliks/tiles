@@ -1,8 +1,8 @@
 import { Grid, Struct, Vec2 } from '@heliks/tiles-engine';
-import { SpriteAnimationData, SpriteSheet } from './sprite-sheet';
+import { SpriteAnimationData, SpriteSheet } from '../sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteGrid } from './sprite-grid';
-import { TextureFormat } from '../texture-format';
+import { SpriteGrid } from '../sprite-grid';
+import { TextureFormat } from '../../texture-format';
 
 /** The raw data of a sprite sheet loaded from JSON. */
 interface SpriteSheetData {
@@ -58,7 +58,7 @@ export class SpriteSheetFormat implements Format<SpriteSheetData, SpriteSheet> {
     if (data.animations) {
       for (const name in data.animations) {
         if (data.animations.hasOwnProperty(name)) {
-          sheet.setAnimation(name, data.animations[ name ]);
+          sheet.setAnimation(name, data.animations[name]);
         }
       }
     }

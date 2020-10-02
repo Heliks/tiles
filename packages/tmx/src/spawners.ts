@@ -30,21 +30,27 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
 
   for (const obj of layer.data) {
     const tileset = map.tileset(obj.tileId);
+    const tileId = tileset.toLocal(obj.tileId) - 1;
+
     const entity = world
       .builder()
       // Convert pixel position to world coordinates.
       .use(new Transform(obj.x / us, obj.y / us))
       .use(new SpriteDisplay(
         tileset.spritesheet,
-        tileset.toLocal(obj.tileId) - 1,
+        tileId,
         node
-      ))
-      .build();
+      ));
 
-    entities.push(entity);
+    const properties = tileset.properties.get(tileId);
+
+    // Add animation component if the properties specify an animation name.
+    if (properties?.animation) {
+      entity.use(tileset.spritesheet.createAnimation(properties.animation));
+    }
+
+    entities.push(entity.build());
   }
-
-  console.log(layer.properties)
 
   return new GameMapLayer(
     node,

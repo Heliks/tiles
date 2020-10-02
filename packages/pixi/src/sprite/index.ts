@@ -1,5 +1,8 @@
-export * from './sprite-animation';
-export * from './sprite-animation-system';
-export * from './sprite-display';
-export * from './sprite-display-system';
+export * from './components';
+export * from './flip';
+export * from './formats';
+export * from './sprite-grid';
+export * from './sprite-sheet';
+export * from './systems';
+
 export { Sprite } from 'pixi.js';

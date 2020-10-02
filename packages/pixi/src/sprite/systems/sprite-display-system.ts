@@ -8,34 +8,13 @@ import {
   Transform,
   World
 } from '@heliks/tiles-engine';
-import { Renderer } from '../renderer';
-import { Stage } from '../stage';
-import { SpriteDisplay } from './sprite-display';
-import { FlipMode, SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
+import { Renderer } from '../../renderer';
+import { Stage } from '../../stage';
+import { SpriteDisplay } from '../components';
+import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { ScreenDimensions } from '../screen-dimensions';
-
-/** @internal */
-function applyFlipMode(display: SpriteDisplay): void {
-  switch (display.flipMode) {
-    case FlipMode.Both:
-      display.scale.x = -1;
-      display.scale.y = -1;
-      break;
-    case FlipMode.Horizontal:
-      display.scale.x = -1;
-      display.scale.y = 1;
-      break;
-    case FlipMode.Vertical:
-      display.scale.x = 1;
-      display.scale.y = -1;
-      break;
-    case FlipMode.None:
-      display.scale.x = 1;
-      display.scale.y = 1;
-      break;
-  }
-}
+import { ScreenDimensions } from '../../screen-dimensions';
+import { flipSprite } from '../flip';
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -90,7 +69,7 @@ export class SpriteDisplaySystem extends ProcessingSystem {
         display.dirty = false;
         display.texture = sheet.texture(display.spriteIndex);
 
-        applyFlipMode(display);
+        flipSprite(display, display.flipMode);
       }
 
       // Update the sprites position.

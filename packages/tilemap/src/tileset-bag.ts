@@ -1,17 +1,17 @@
 import { Tileset } from './tileset';
 
-export class TilesetBag {
+export class TilesetBag<T extends Tileset = Tileset> {
 
   /**
    * @param tilesets Tilesets that are contained in this bag.
    */
-  constructor(public readonly tilesets: Tileset[] = []) {}
+  constructor(public readonly tilesets: T[] = []) {}
 
   /**
    * Returns the `TilesetItem` that has a `firstId` greater or equal, and a lastId
    * smaller or equal to the given tile `id`. Throws an error if none could be found.
    */
-  public tileset(id: number): Tileset {
+  public tileset(id: number): T {
     const item = this.tilesets.find(item => item.firstId <= id && item.lastId >= id);
 
     if (!item) {

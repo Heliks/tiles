@@ -52,7 +52,7 @@ export class ShapeDisplay {
    */
   constructor(
     public readonly kind: ShapeKind,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line
     public readonly data: any
   ) {}
 

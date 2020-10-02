@@ -8,7 +8,6 @@ export * from './renderer';
 export * from './screen-dimensions';
 export * from './shape-display';
 export * from './sprite';
-export * from './sprite-sheet';
 export * from './stage';
 
 export { RendererPlugin } from './types';

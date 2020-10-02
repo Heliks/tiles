@@ -1,5 +1,13 @@
 { "columns":6,
- "image":"..\/objects\/brazier-common01.png",
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
+ "image":"brazier-common01.png",
  "imageheight":32,
  "imagewidth":192,
  "margin":0,
@@ -39,7 +47,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -59,7 +66,13 @@
              "visible":true,
              "x":0,
              "y":0
-            }
+            },
+         "properties":[
+                {
+                 "name":"animation",
+                 "type":"string",
+                 "value":"0"
+                }]
         }],
  "tilewidth":32,
  "type":"tileset",
