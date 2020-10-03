@@ -1,7 +1,7 @@
-import { Rectangle } from '@heliks/tiles-math';
+import { Circle, Rectangle } from '@heliks/tiles-math';
 
 /** A shape that can be attached to a collider to give it its physical form. */
-export type Shape = Rectangle;
+export type Shape = Circle | Rectangle;
 
 /** Collider config. */
 export interface ColliderData {

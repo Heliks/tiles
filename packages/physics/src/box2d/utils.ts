@@ -1,31 +1,45 @@
-import { b2BodyDef, b2BodyType, b2FixtureDef, b2PolygonShape, b2Shape } from '@flyover/box2d';
+import { b2BodyDef, b2BodyType, b2CircleShape, b2FixtureDef, b2PolygonShape, b2Shape } from '@flyover/box2d';
 import { Vec2 } from '@heliks/tiles-engine';
 import { Collider, Shape } from '../collider';
 import { RigidBody, RigidBodyType } from '../rigid-body';
 import { Rectangle } from '@heliks/tiles-math';
+import { Circle } from '@heliks/tiles-math';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
 
 /** @internal */
 function parseShape(shape: Shape): b2Shape {
+  let b2shape;
+
   switch (shape.constructor) {
     case Rectangle:
-      const result = new b2PolygonShape();
+      b2shape = new b2PolygonShape();
 
       // Convert the polygon to a box.
-      result.SetAsBox(shape.width / 2, shape.height / 2);
-
-      return result;
+      b2shape.SetAsBox(
+        shape.width / 2,
+        shape.height / 2,
+        shape
+      );
+      break;
+    case Circle:
+      b2shape = new b2CircleShape();
+      b2shape.Set(shape, shape.radius);
+      break;
     default:
       throw new Error('Shape can not be parsed to box2d shape.');
   }
+
+  return b2shape;
 }
 
 /** @internal */
 export function parseCollider(body: RigidBody, def: b2FixtureDef, collider: Collider): void {
   // Attach the shape to the fixture.
   def.shape = parseShape(collider.shape);
+
+  console.log(def)
 
   if (collider.sensor) {
     def.isSensor = true;
