@@ -1,5 +1,6 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2 } from '@flyover/box2d';
 import { DebugDraw, Renderer } from '@heliks/tiles-pixi';
+import { PI_2 } from '@heliks/tiles-math';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
@@ -52,7 +53,7 @@ export class Box2dDebugDraw extends b2Draw  {
   }
 
   /** Helper method to draw the lines of a polygon. */
-  protected _drawPolygonVertices(vertices: b2Vec2[]): void {
+  protected drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
       vertices[0].x * this.unitSize,
       vertices[0].y * this.unitSize
@@ -75,7 +76,7 @@ export class Box2dDebugDraw extends b2Draw  {
     ctx.beginPath();
     ctx.strokeStyle = color.MakeStyleString(1);
 
-    this._drawPolygonVertices(vertices);
+    this.drawPolygonVertices(vertices);
 
     // Draw the shape.
     ctx.fill();
@@ -91,7 +92,7 @@ export class Box2dDebugDraw extends b2Draw  {
     ctx.fillStyle = color.MakeStyleString(0.5);
     ctx.strokeStyle = color.MakeStyleString(1);
 
-    this._drawPolygonVertices(vertices);
+    this.drawPolygonVertices(vertices);
 
     // Draw the shape.
     ctx.fill();
@@ -104,8 +105,29 @@ export class Box2dDebugDraw extends b2Draw  {
   }
 
   /** Box2D callback to draw the inside of a circle. */
-  public DrawSolidCircle(): void {
-    console.warn('DrawSolidCircle is not yet implemented.');
+  public DrawSolidCircle(center: b2Vec2, _radius: number, axis: b2Vec2, color: b2Color): void {
+    const ctx = this.ctx;
+
+    // Apply unit size to radius and position.
+    const radius = _radius * this.unitSize;
+    const cx = center.x * this.unitSize;
+    const cy = center.y * this.unitSize;
+
+    ctx.beginPath();
+
+    ctx.arc(cx, cy, radius, 0, PI_2, true);
+    ctx.moveTo(cx, cy);
+
+    ctx.lineTo(
+      cx + axis.x * radius,
+      cy + axis.y * radius
+    );
+
+    ctx.fillStyle = color.MakeStyleString(0.5);
+    ctx.strokeStyle = color.MakeStyleString(1);
+
+    ctx.fill();
+    ctx.stroke();
   }
 
   /** Box2D callback to draw particles. */
