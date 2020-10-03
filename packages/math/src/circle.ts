@@ -15,16 +15,32 @@ export function rad2deg(value: number): number {
   return value * RAD2DEG_FACTOR;
 }
 
-/** Converts the given `value` if degrees to radians. */
+/** Converts the given `value` of degrees to radians. */
 export function deg2rad(value: number): number {
   return value * DEG2RAD_FACTOR;
 }
 
 /**
- * Returns the angle (in radians) from the x axis to a point. Unlike `Math.atan2` this
- * starts the circle at 12 o'clock instead of 3.
+ * Returns the angle (in radians) from the x axis to a point. Unlike `Math.atan2` the
+ * radian starting position is 12 o'clock instead of 3.
  */
 export function atan2(y: number, x: number): number {
   return Math.atan2(y, x) + DEG90_RAD;
 }
 
+/** A circle shape. */
+export class Circle {
+
+  /**
+   * @param radius The radius of the circle.
+   * @param x (optional) Position on x axis.
+   * @param y (optional) Position on y axis.
+   */
+  constructor(public radius: number, public x = 0, public y = 0) {}
+
+  /** Creates a new `Rectangle` from this one. */
+  public copy(): Circle {
+    return new Circle(this.radius, this.x, this.y);
+  }
+
+}
