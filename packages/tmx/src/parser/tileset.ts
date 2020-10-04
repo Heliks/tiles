@@ -3,6 +3,7 @@ import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
 import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
 import { HasTmxPropertyData, tmxParseProperties } from './properties';
+import { tmxParseShape, Shape, TmxShape } from './shape';
 
 interface TileData extends HasTmxPropertyData {
   animation?: {
@@ -10,6 +11,9 @@ interface TileData extends HasTmxPropertyData {
     tileid: number;
   }[];
   id: number;
+  objectgroup?: {
+    objects: TmxShape[]
+  }
 }
 
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
@@ -51,6 +55,9 @@ export class Tileset extends BaseTileset {
   /** Custom tile properties mapped to the ID of the tile to which they belong */
   public readonly properties = new Map<TileId, TileProperties>();
 
+
+  public readonly shapes = new Map<TileId, Shape[]>();
+
 }
 
 /** Asset loader format for TMX tilesets. */
@@ -90,18 +97,29 @@ export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
           // Individual durations for frames are not supported by the SpriteRenderer so we
           // grab the duration from the first frame and re-use it for all other frames.
           const frameDuration = tileData.animation[0].duration;
-          const frames = tileData.animation.map(item => item.tileid);
 
           // Use the ID of the tile as name for the animation.
           spritesheet.setAnimation(tileData.id.toString(), {
             frameDuration,
-            frames
+            frames: tileData.animation.map(item => item.tileid)
           });
         }
 
         // Parse properties.
         if (tileData.properties) {
           tileset.properties.set(tileData.id, tmxParseProperties(tileData));
+        }
+
+        // Parse object shapes.
+        if (tileData.objectgroup) {
+          tileset.shapes.set(
+            tileData.id,
+            tileData.objectgroup.objects.map(object => tmxParseShape(
+              object,
+              data.tilewidth,
+              data.tileheight
+            ))
+          );
         }
       }
     }
