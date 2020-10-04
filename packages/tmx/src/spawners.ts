@@ -3,6 +3,8 @@ import { Tilemap } from '@heliks/tiles-tilemap';
 import { GameMapLayer } from './game-map';
 import { Transform, World } from '@heliks/tiles-engine';
 import { LayerType, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
+import { RigidBody } from '@heliks/tiles-physics';
+import { Circle, Rectangle } from '@heliks/tiles-math';
 
 /** @internal */
 function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileLayer): GameMapLayer {
@@ -47,6 +49,37 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     // Add animation component if the properties specify an animation name.
     if (properties?.animation) {
       entity.use(tileset.spritesheet.createAnimation(properties.animation));
+    }
+
+    const shapes = tileset.shapes.get(tileId);
+
+    if (shapes) {
+      const colliders = shapes.filter(shape => shape.type === 'collision');
+
+      if (colliders.length) {
+        const body = new RigidBody();
+
+        for (const collider of colliders) {
+          const shape = collider.data.copy();
+
+          shape.x /= us;
+          shape.y /= us;
+
+          switch (shape.constructor) {
+            case Rectangle:
+              shape.height /= us;
+              shape.width /= us;
+              break;
+            case Circle:
+              shape.radius /= us;
+              break;
+          }
+
+          body.attach(shape);
+        }
+
+        entity.use(body);
+      }
     }
 
     entities.push(entity.build());

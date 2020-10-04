@@ -9,7 +9,7 @@ import { Rectangle } from '@heliks/tiles-math';
 
 export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: number, y: number, node?: NodeHandle): void {
   const body = RigidBody.dynamic()
-    .attach(new Rectangle(0.4, 0.4), {
+    .attach(new Rectangle(0.4, 0.4, 0, 0.1), {
       density: 120
     });
     // .attach(new Rectangle(1.5, 1.5), {
@@ -23,7 +23,7 @@ export function spawnPawn(world: World, spritesheet: Handle<SpriteSheet>, x: num
   world
     .builder()
     // .use(new Camera(200, 200))
-    .use(new Transform(x, x))
+    .use(new Transform(x, y))
     .use(new SpriteDisplay(spritesheet, 1, node))
     .use(new SpriteAnimation([]))
     .use(new Pawn())

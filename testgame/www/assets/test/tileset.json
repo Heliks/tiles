@@ -1,13 +1,75 @@
-{ "columns":5,
+{ "columns":6,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
  "image":"tileset.png",
  "imageheight":16,
- "imagewidth":80,
+ "imagewidth":96,
  "margin":0,
  "name":"tileset",
  "spacing":0,
- "tilecount":4,
+ "tilecount":6,
  "tiledversion":"1.4.2",
  "tileheight":16,
+ "tiles":[
+        {
+         "id":3,
+         "objectgroup":
+            {
+             "draworder":"index",
+             "id":2,
+             "name":"",
+             "objects":[
+                    {
+                     "height":9,
+                     "id":1,
+                     "name":"",
+                     "rotation":0,
+                     "type":"collision",
+                     "visible":true,
+                     "width":16,
+                     "x":0,
+                     "y":7
+                    }],
+             "opacity":1,
+             "type":"objectgroup",
+             "visible":true,
+             "x":0,
+             "y":0
+            }
+        }, 
+        {
+         "id":5,
+         "objectgroup":
+            {
+             "draworder":"index",
+             "id":2,
+             "name":"",
+             "objects":[
+                    {
+                     "ellipse":true,
+                     "height":11.375,
+                     "id":1,
+                     "name":"",
+                     "rotation":0,
+                     "type":"collision",
+                     "visible":true,
+                     "width":11.375,
+                     "x":2.3125,
+                     "y":2.3125
+                    }],
+             "opacity":1,
+             "type":"objectgroup",
+             "visible":true,
+             "x":0,
+             "y":0
+            }
+        }],
  "tilewidth":16,
  "type":"tileset",
  "version":1.4

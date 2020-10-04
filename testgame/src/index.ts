@@ -92,10 +92,10 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 40;
-  const y = 40;
+  const x = 0;
+  const y = 5;
 
-  const mapFile = 'tilemaps/test03.json';
+  const mapFile = 'test/tilemap.json';
 
   initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.
