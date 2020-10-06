@@ -12,26 +12,21 @@ import { Circle } from '@heliks/tiles-math';
 function parseShape(shape: Shape): b2Shape {
   let b2shape;
 
-  switch (shape.constructor) {
-    case Rectangle:
-      b2shape = new b2PolygonShape();
-
-      // Convert the polygon to a box.
-      b2shape.SetAsBox(
-        shape.width / 2,
-        shape.height / 2,
-        shape
-      );
-      break;
-    case Circle:
-      b2shape = new b2CircleShape();
-      b2shape.Set(shape, shape.radius);
-      break;
-    default:
-      throw new Error('Shape can not be parsed to box2d shape.');
+  // Circles.
+  if (shape instanceof Circle) {
+    return new b2CircleShape().Set(shape, shape.radius);
   }
 
-  return b2shape;
+  const box = new b2PolygonShape();
+
+  // Convert the polygon to a box.
+  box.SetAsBox(
+    shape.width / 2,
+    shape.height / 2,
+    shape
+  );
+
+  return box;
 }
 
 /** @internal */

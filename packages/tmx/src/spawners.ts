@@ -65,14 +65,12 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
           shape.x /= us;
           shape.y /= us;
 
-          switch (shape.constructor) {
-            case Rectangle:
-              shape.height /= us;
-              shape.width /= us;
-              break;
-            case Circle:
-              shape.radius /= us;
-              break;
+          if (shape instanceof Rectangle) {
+            shape.height /= us;
+            shape.width /= us;
+          }
+          else {
+            shape.radius /= us;
           }
 
           body.attach(shape);
