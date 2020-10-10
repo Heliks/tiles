@@ -1,11 +1,14 @@
 import { SpriteAnimation } from '@heliks/tiles-pixi';
 import { RigidBody } from '@heliks/tiles-physics';
 import { InputHandler } from '../input';
-import { Pawn } from './pawn-controller';
-import { Entity, State, StateMachine, Ticker, Transform, World } from '@heliks/tiles-engine';
+import { Pawn } from './pawn';
+import { Entity, Ticker, Transform, World } from '@heliks/tiles-engine';
 import { Direction } from '../components/direction';
 
-export interface PawnStateData {
+/**
+ * Blackboard for pawns.
+ */
+export interface PawnBlackboard {
   animation: SpriteAnimation;
   body: RigidBody;
   directionIndicator: Entity;
@@ -17,5 +20,3 @@ export interface PawnStateData {
   world: World;
   transform: Transform;
 }
-
-type PawnState = State<StateMachine<PawnStateData>>;

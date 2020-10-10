@@ -94,6 +94,8 @@ export class SpriteAnimation {
   public play(name: string, loop = true): this {
     // Only start playing the animation if we aren't playing it already.
     if (this.playing !== name) {
+      this.reset();
+
       this.loop = loop;
       this.transform = name;
     }

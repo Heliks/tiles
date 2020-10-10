@@ -2,12 +2,12 @@ import { State, StateMachine } from '@heliks/tiles-engine';
 import { KeyCode } from '../../input';
 import { isShooting, ShootArrow } from './shoot-arrow';
 import { Dodge, isDodging } from './dodge';
-import { PawnStateData } from '../utils';
+import { PawnBlackboard } from '../pawn-blackboard';
 
-export class WalkState implements State<StateMachine<PawnStateData>> {
+export class WalkState implements State<PawnBlackboard> {
 
   /** @inheritDoc */
-  update(state: StateMachine<PawnStateData>): void {
+  update(state: StateMachine<PawnBlackboard>): void {
     const { animation, input, pawn, ticker } = state.data;
 
     // Check if movement was canceled in favor of engaging in combat.
