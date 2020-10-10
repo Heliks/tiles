@@ -64,9 +64,6 @@ export abstract class SpriteSheet {
       throw new Error(`Unknown animation "${name}"`);
     }
 
-    // Reset the animation. This is in case a previously used SpriteAnimation instance
-    // was provided for re-use.
-    animation.reset();
     animation.playing = name;
 
     // Assign animation data to sprite animation.

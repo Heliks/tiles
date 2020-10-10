@@ -1,13 +1,13 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
 import { SpriteAnimation } from '@heliks/tiles-pixi';
 import { KeyCode } from '../../input';
-import { PawnStateData } from '../utils';
+import { PawnBlackboard } from '../pawn-blackboard';
 import { WalkState } from './walk';
 import { Dodge, isDodging } from './dodge';
 import { isShooting, ShootArrow } from './shoot-arrow';
-import { CardinalDirection } from '../../components/direction';
+import { CardinalDirection } from '../../components';
 
-export class Idle implements State<StateMachine<PawnStateData>> {
+export class Idle implements State<PawnBlackboard> {
 
   /** Plays the Idle animation for the appropriate `direction`. */
   public play(animation: SpriteAnimation, direction: CardinalDirection): void {
@@ -28,17 +28,17 @@ export class Idle implements State<StateMachine<PawnStateData>> {
   }
 
   /** @inheritDoc */
-  public onStart(state: StateMachine<PawnStateData>): void {
-    this.play(state.data.animation, state.data.pawn.direction);
+  public onStart(state: StateMachine<PawnBlackboard>): void {
+    this.play(state.data.animation, state.data.direction.toCardinal());
   }
 
   /** @inheritDoc */
-  public onResume(state: StateMachine<PawnStateData>): void {
-    this.play(state.data.animation, state.data.pawn.direction);
+  public onResume(state: StateMachine<PawnBlackboard>): void {
+    this.play(state.data.animation, state.data.direction.toCardinal());
   }
 
   /** @inheritDoc */
-  public update(state: StateMachine<PawnStateData>): void {
+  public update(state: StateMachine<PawnBlackboard>): void {
     const { input } = state.data;
 
     // Check if character should move, if so enter the walking state.

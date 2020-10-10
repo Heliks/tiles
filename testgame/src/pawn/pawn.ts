@@ -6,14 +6,16 @@ import {
   Parent,
   ProcessingSystem,
   StateMachine,
+  Subscriber,
   Ticker,
   Transform,
-  Vec2,
-  World
+  World,
+  Rectangle, Vec2
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
   Camera,
+  NodeHandle,
   ScreenDimensions,
   SPRITE_SHEET_STORAGE,
   SpriteAnimation,
@@ -22,10 +24,24 @@ import {
   SpriteSheetFromTexture
 } from '@heliks/tiles-pixi';
 import { InputHandler } from '../input';
-import { PawnStateData } from './utils';
-import { Idle } from './states/idle';
+import { Idle } from './states';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
-import { CardinalDirection, Direction } from '../components/direction';
+import { CardinalDirection, Direction } from '../components';
+import { GroupEvent } from '@heliks/ecs';
+import { CollisionGroups } from '../const';
+
+export interface PawnStateData {
+  animation: SpriteAnimation;
+  body: RigidBody;
+  directionIndicator: Entity;
+  direction: Direction;
+  entity: Entity;
+  input: InputHandler;
+  pawn: Pawn;
+  ticker: Ticker;
+  world: World;
+  transform: Transform;
+}
 
 export class Pawn {
 
@@ -52,7 +68,6 @@ function getDirectionIndicatorHandle(world: World): Handle<SpriteSheet> {
 
 /**
  * Updates the direction indicator that is displayed for some entities.
-
  */
 function updateDirectionIndicator(
   origin: Transform,
@@ -60,14 +75,40 @@ function updateDirectionIndicator(
   direction: number,
   target: Vec2
 ): void {
-  // The magic number "0.6" simply fits well with thesd feet position of the player.
-  transform.local[0] = Math.sin(direction) / 2;// Math.sin(direction) / 2;
-  transform.local[1] = -Math.cos(direction) / 2 + 0.6; // -Math.cos(direction) / 2 + + 0.6;
+  // The magic number "0.6" simply fits well with thes feet position of the player.
+  transform.local[0] = Math.sin(direction) / 2;
+  transform.local[1] = -Math.cos(direction) / 2 + 0.6;
 
   transform.rotation = atan2(
     target[1] - transform.world[1],
     target[0] - transform.world[0]
   );
+}
+
+/** Spawns a pawn into the `world`. */
+export function spawnPawn(
+  world: World,
+  spritesheet: Handle<SpriteSheet>,
+  x: number,
+  y: number,
+  node?: NodeHandle
+): void {
+  const body = RigidBody.dynamic().attach(new Rectangle(0.4, 0.4, 0, 0.1), {
+    density: 120,
+  });
+
+  body.damping = 10;
+  body.group = CollisionGroups.Player;
+
+  world
+    .builder()
+    .use(body)
+    .use(new Direction())
+    .use(new Pawn())
+    .use(new Transform(x, y))
+    .use(new SpriteDisplay(spritesheet, 1, node))
+    .use(new SpriteAnimation([]))
+    .build();
 }
 
 @Injectable()
@@ -76,7 +117,13 @@ export class PawnController extends ProcessingSystem {
   private readonly input  = new InputHandler();
   private readonly states = new Map<Entity, StateMachine<PawnStateData>>();
 
-  constructor(protected readonly ticker: Ticker) {
+  /** @internal */
+  private group$!: Subscriber;
+
+  constructor(
+    private readonly dimensions: ScreenDimensions,
+    private readonly ticker: Ticker
+  ) {
     super(contains(
       Direction,
       Pawn,
@@ -86,14 +133,15 @@ export class PawnController extends ProcessingSystem {
     ));
   }
 
-  // Todo: Do this correcly
-  private getPawnState(world: World, entity: Entity): StateMachine<PawnStateData> {
-    let state = this.states.get(entity);
+  /** @inheritDoc */
+  public boot(world: World): void {
+    super.boot(world);
 
-    if (state) {
-      return state;
-    }
+    // Subscribe to added / removed pawns.
+    this.group$ = this.group.subscribe();
+  }
 
+  private spawn(world: World, entity: Entity): void {
     const transform = world.storage(Transform).get(entity);
 
     const directionIndicator = world
@@ -103,7 +151,7 @@ export class PawnController extends ProcessingSystem {
       .use(transform.clone())
       .build();
 
-    state = new StateMachine<PawnStateData>({
+    const state = new StateMachine<PawnStateData>({
       animation: world.storage(SpriteAnimation).get(entity),
       direction: world.storage(Direction).get(entity),
       body: world.storage(RigidBody).get(entity),
@@ -119,12 +167,17 @@ export class PawnController extends ProcessingSystem {
     state.start(new Idle());
 
     this.states.set(entity, state);
-
-    return state;
   }
 
   /** @inheritDoc */
   public update(world: World): void {
+    // Todo: De-spawn removed pawns.
+    for (const event of this.group.events(this.group$)) {
+      if (event.type === GroupEvent.Added) {
+        this.spawn(world, event.entity);
+      }
+    }
+
     for (const entity of this.group.entities) {
       const pawn = world.storage(Pawn).get(entity);
 
@@ -133,8 +186,8 @@ export class PawnController extends ProcessingSystem {
         pawn.cooldown -= this.ticker.delta;
       }
 
-      const state = this.getPawnState(world, entity);
-      const { input, transform } = state.data;
+      const state = this.states.get(entity)!;
+      const { input } = state.data;
 
       // The exact x/y position in the world that the pawn is observing.
       const obsPoint = world.get(ScreenDimensions).toWorld([
@@ -142,6 +195,7 @@ export class PawnController extends ProcessingSystem {
       ]);
 
       const direction = world.storage(Direction).get(entity);
+      const transform = world.storage(Transform).get(entity);
 
       // Set the direction in which we are facing or aiming projectiles etc.
       direction.lookAt(transform.world, obsPoint);
@@ -156,12 +210,10 @@ export class PawnController extends ProcessingSystem {
       state.data.pawn.direction = direction.toCardinal();
       state.update();
 
-      const dt = 1 - Math.exp(-state.data.ticker.delta / 100);
-
       // Todo: Do this correctly
       world.get(Camera).transform(
-      -transform.world[0],
-      -transform.world[1]
+        -transform.world[0],
+        -transform.world[1]
       );
     }
   }

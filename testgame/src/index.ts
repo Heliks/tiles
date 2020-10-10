@@ -6,9 +6,8 @@ import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFor
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { GameMapHandler, TmxModule, TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { InputHandler } from './input';
-import { PawnController } from './pawn/pawn-controller';
+import { PawnController, spawnPawn } from './pawn';
 import { spawnJosh } from './spawners/josh';
-import { spawnPawn } from './spawners/pawn';
 import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
 import { loadSpriteSheet, lookupEntity } from './utils';
@@ -66,7 +65,6 @@ window.onload = () => {
     .system(TransformSystem)
     .module(new AssetsModule())
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
-    .system(PawnController)
     .module(
       new PixiModule({
         antiAlias: false,
@@ -75,7 +73,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(PhysicsDebugDraw)
+        // .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -83,6 +81,7 @@ window.onload = () => {
     .system(DebugDeathReporter)
     .module(new TilemapModule())
     .module(new TmxModule())
+    .system(PawnController)
     .build();
 
   setupDebugGlobals(game);
@@ -92,8 +91,8 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 0;
-  const y = 5;
+  const x = 25;
+  const y = 25;
 
   const mapFile = 'test/tilemap.json';
 

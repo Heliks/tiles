@@ -27,6 +27,7 @@ export enum KeyCode {
   X = 'KeyX',
   Y = 'KeyY',
   Z = 'KeyZ',
+  Space = 'Space'
 }
 
 export class InputHandler implements System {
@@ -46,22 +47,23 @@ export class InputHandler implements System {
   }
 
   /** Event listener for when a key was pressed. */
-  protected onKeyDown(event: KeyboardEvent): void {
+  private onKeyDown(event: KeyboardEvent): void {
     this.keysDown.add(event.code);
   }
 
   /** Event listener for when a key was released. */
-  protected onKeyUp(event: KeyboardEvent): void {
+  private onKeyUp(event: KeyboardEvent): void {
     this.keysDown.delete(event.code);
     this.keysUp.add(event.code);
   }
 
   /** Event listener for when the hardware mouse moves. */
-  protected onMouseMove(event: MouseEvent): void {
+  private onMouseMove(event: MouseEvent): void {
     this.mousePos[0] = event.x;
     this.mousePos[1] = event.y;
   }
 
+  /** Returns `true` if `key` is currently pressed. */
   public isKeyDown(key: KeyCode): boolean {
     return this.keysDown.has(key);
   }
@@ -71,6 +73,19 @@ export class InputHandler implements System {
     return this.mousePos;
   }
 
-  public update() {}
+  private mousePosAxis: Vec2 = [0, 0];
+
+  public getMousePosAxis(origin: Vec2, out: Vec2 = [0, 0]): Vec2 {
+    out[0] = this.mousePos[0] - origin[0];
+    out[1] = this.mousePos[1] - origin[1];
+
+    return out;
+  }
+
+  public setOrigin() {
+
+  }
+
+  public update(): void {}
 
 }

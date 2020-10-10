@@ -1,55 +1,67 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
-import { PawnStateData } from '../utils';
+import { PawnBlackboard } from '../pawn-blackboard';
 import { KeyCode } from '../../input';
-import { CardinalDirection } from '../../components/direction';
+import { CardinalDirection } from '../../components';
+import { SpriteAnimation } from '@heliks/tiles-pixi';
 
-export function isDodging(state: StateMachine<PawnStateData>) {
-  return state.data.input.isKeyDown(KeyCode.E);
+export function isDodging(state: StateMachine<PawnBlackboard>): boolean {
+  return state.data.input.isKeyDown(KeyCode.Space);
 }
 
-export class Dodge implements State<StateMachine<PawnStateData>> {
+// Lookup table for animation names based on cardinal direction.
+const ANIMATION_MAP = {
+  [CardinalDirection.West]: 'dodge-left',
+  [CardinalDirection.East]: 'dodge-right',
+  [CardinalDirection.North]: 'dodge-up',
+  [CardinalDirection.South]: 'dodge-down'
+};
+
+// Time in MS how long the entity is accelerated during the dodge.
+const ACCELERATION_TIME_MS = 200;
+
+// The force that is applied to the entity during the acceleration.
+const ACCELERATION_FORCE = 15;
+
+/** Accelerates an entity in the direction in which it is currently facing. */
+export class Dodge implements State<PawnBlackboard> {
 
   /** @internal */
   private isDodging = false;
 
+  /** Velocity to apply during the acceleration on x axis. */
+  private vx = 0;
+
+  /** Velocity to apply during the acceleration on y axis. */
+  private vy = 0;
+
+  /** Remaining amount of the of the entity acceleration. */
+  private acceleration = 0;
+
   /** @inheritDoc */
-  public update(state: StateMachine<PawnStateData>): void {
-    const { animation, pawn } = state.data;
+  public update(state: StateMachine<PawnBlackboard>, data: PawnBlackboard): void {
+    const animation = data.world.storage(SpriteAnimation).get(data.entity);
 
     if (this.isDodging) {
       if (animation.isComplete()) {
         state.pop();
       }
+      else if (this.acceleration > 0) {
+        this.acceleration -= data.ticker.delta;
+
+        // Accelerate entity.
+        data.body.setVelocity(this.vx, this.vy);
+      }
 
       return;
     }
 
-    let vx = 0;
-    let vy = 0;
+    // Play dodge animation that fits the direction in which the entity is dodging.
+    animation.play(ANIMATION_MAP[data.direction.toCardinal()]);
 
-    const velocity = 25;
+    this.vx = Math.sin(data.direction.rad) * ACCELERATION_FORCE;
+    this.vy = -Math.cos(data.direction.rad) * ACCELERATION_FORCE;
 
-    switch (state.data.pawn.direction) {
-      case CardinalDirection.West:
-        animation.play('dodge-left');
-        vx -= velocity;
-        break;
-      case CardinalDirection.East:
-        animation.play('dodge-right');
-        vx += velocity;
-        break;
-      case CardinalDirection.North:
-        animation.play('dodge-up');
-        vy -= velocity;
-        break;
-      case CardinalDirection.South:
-        animation.play('dodge-down');
-        vy += velocity;
-        break;
-    }
-
-    state.data.body.setVelocity(vx, vy);
-
+    this.acceleration = ACCELERATION_TIME_MS;
     this.isDodging = true;
   }
 

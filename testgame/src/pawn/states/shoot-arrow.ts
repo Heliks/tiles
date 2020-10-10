@@ -1,8 +1,8 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
 import { Arrow, shootArrow } from '../../arrow';
-import { PawnStateData } from '../utils';
+import { PawnBlackboard } from '../pawn-blackboard';
 import { KeyCode } from '../../input';
-import { CardinalDirection } from '../../components/direction';
+import { CardinalDirection } from '../../components';
 
 /** @internal */
 function getAnimation(direction: CardinalDirection): string {
@@ -19,17 +19,17 @@ function getAnimation(direction: CardinalDirection): string {
   }
 }
 
-export function isShooting(state: StateMachine<PawnStateData>) {
+export function isShooting(state: StateMachine<PawnBlackboard>) {
   return state.data.input.isKeyDown(KeyCode.Q) && state.data.pawn.canCast();
 }
 
-export class ShootArrow implements State<StateMachine<PawnStateData>> {
+export class ShootArrow implements State<PawnBlackboard> {
 
   protected duration = 600;
   protected casting = true;
 
   /** @inheritDoc */
-  public onStart(state: StateMachine<PawnStateData>): void {
+  public onStart(state: StateMachine<PawnBlackboard>): void {
     const { animation, pawn } = state.data;
 
     // Add a cool-down so the pawn can't shoot the arrow again right away.
@@ -40,12 +40,12 @@ export class ShootArrow implements State<StateMachine<PawnStateData>> {
   }
 
   /** @inheritDoc */
-  public onResume(state: StateMachine<PawnStateData>): void {
+  public onResume(state: StateMachine<PawnBlackboard>): void {
     state.pop();
   }
 
   /** @inheritDoc */
-  public update(state: StateMachine<PawnStateData>): void {
+  public update(state: StateMachine<PawnBlackboard>): void {
     const { world, pawn } = state.data;
 
     this.duration -= state.data.ticker.delta;
