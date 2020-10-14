@@ -1,5 +1,13 @@
 { "columns":2,
- "image":"..\/objects\/bushes.png",
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
+ "image":"bushes.png",
  "imageheight":64,
  "imagewidth":64,
  "margin":0,

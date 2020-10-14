@@ -1,12 +1,20 @@
 { "columns":1,
- "image":"..\/spritesheets\/barrels.png",
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
+ "image":"wood-barrels.png",
  "imageheight":32,
  "imagewidth":20,
  "margin":0,
  "name":"barrels",
  "spacing":0,
  "tilecount":1,
- "tiledversion":"1.4.1",
+ "tiledversion":"1.4.2",
  "tileheight":32,
  "tiles":[
         {
@@ -14,7 +22,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
