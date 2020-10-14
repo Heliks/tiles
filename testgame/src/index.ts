@@ -94,7 +94,7 @@ window.onload = () => {
   const x = 25;
   const y = 25;
 
-  const mapFile = 'test/tilemap.json';
+  const mapFile = 'maps/test.json';
 
   initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.

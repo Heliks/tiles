@@ -1,5 +1,13 @@
 { "columns":4,
- "image":"..\/spritesheets\/flowers-small.png",
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
+ "image":"flowers-small.png",
  "imageheight":16,
  "imagewidth":64,
  "margin":0,
