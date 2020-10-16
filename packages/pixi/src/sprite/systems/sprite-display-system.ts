@@ -14,7 +14,6 @@ import { SpriteDisplay } from '../components';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { ScreenDimensions } from '../../screen-dimensions';
-import { flipSprite } from '../flip';
 
 @Injectable()
 export class SpriteDisplaySystem extends ProcessingSystem {
@@ -69,7 +68,9 @@ export class SpriteDisplaySystem extends ProcessingSystem {
         display.dirty = false;
         display.texture = sheet.texture(display.spriteIndex);
 
-        flipSprite(display, display.flipMode);
+        // Flip sprite.
+        display.scale.x = display.flipX ? -1 : 1;
+        display.scale.y = display.flipY ? -1 : 1;
       }
 
       // Update the sprites position.

@@ -1,7 +1,6 @@
 import { Sprite, Texture } from 'pixi.js';
 import { token } from '@heliks/tiles-engine';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { FlipMode } from './flip';
 import { SpriteAnimation } from './components';
 
 /**
@@ -11,8 +10,6 @@ import { SpriteAnimation } from './components';
 export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>();
 
 export interface SpriteAnimationData {
-  /** Direction in which the sprites of this animation should be flipped. */
-  flip?: FlipMode;
   /** Contains the indexes of all sprites of which the animation consists. */
   frames: number[];
   /** Duration in ms of how long each frame is displayed. */
@@ -71,11 +68,6 @@ export abstract class SpriteSheet {
 
     if (data.frameDuration) {
       animation.frameDuration = data.frameDuration;
-    }
-
-    // Assign flip mode if set.
-    if (data.flip) {
-      animation.flipMode = data.flip;
     }
 
     return animation;

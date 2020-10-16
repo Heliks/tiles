@@ -2,7 +2,6 @@ import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
 import { NodeHandle } from '../../stage';
-import { FlipMode } from '../flip';
 
 /**
  * Component used to render a sprite.
@@ -12,8 +11,11 @@ export class SpriteDisplay extends Sprite {
   /** Indicates if the sprite needs to be re-rendered.*/
   public dirty = true;
 
-  /** Direction(s) in which the sprite should be flipped. */
-  public flipMode = FlipMode.None;
+  /** If set to `true` the sprite will be flipped on the x axis. */
+  public flipX = false;
+
+  /** If set to `true` the sprite will be flipped on the y axis. */
+  public flipY = false;
 
   /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
@@ -45,15 +47,10 @@ export class SpriteDisplay extends Sprite {
     return this;
   }
 
-  /**
-   * Flips the sprite in the given direction and queues the sprite for re- rendering if
-   * necessary.
-   */
-  public flipTo(direction = FlipMode.Horizontal): this {
-    if (this.flipMode !== direction) {
-      this.flipMode = direction;
-      this.dirty = true;
-    }
+  /** Flips the sprite. */
+  public flip(x = false, y = false): this {
+    this.flipX = x;
+    this.flipY = y;
 
     return this;
   }

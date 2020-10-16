@@ -56,6 +56,10 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
       animation.elapsedTime += this.ticker.delta;
 
+      if (animation.frames.length === 0) {
+        continue;
+      }
+
       // Calculate the next frame index based on the effective frame duration.
       const nextFrame = (
         animation.elapsedTime / (animation.frameDuration / animation.speed)
@@ -71,7 +75,9 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
 
-        display.flipMode = animation.flipMode;
+        display.flipX = animation.flipX;
+        display.flipY = animation.flipY;
+
         display.setIndex(animation.frames[nextFrame]);
       }
     }
