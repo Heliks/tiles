@@ -1,13 +1,14 @@
-import { FlipMode } from '../flip';
-
 /** Component to animate a `SpriteDisplay` component. */
 export class SpriteAnimation {
 
   /** Elapsed time since the animation has started. */
   public elapsedTime = -1;
 
-  /** Direction in which the sprites of this animation should be flipped. */
-  public flipMode = FlipMode.None;
+  /** If set to `true` all frames in the animation will be flipped on the x axis. */
+  public flipX = false;
+
+  /** If set to `true` all frames in the animation will be flipped on the y axis. */
+  public flipY = false;
 
   /**
    * Index of the frame that is currently displayed by the animation. A value of `-1`
@@ -54,8 +55,6 @@ export class SpriteAnimation {
     this.elapsedTime = 0;
     this.speed = 1;
 
-    this.flipMode = FlipMode.None;
-
     return this;
   }
 
@@ -84,10 +83,10 @@ export class SpriteAnimation {
   }
 
   /**
-   * Plays the animation with the given `name` on the [[SpriteDisplay]] that accompanies
-   * this component. Does not wait for the current animation to complete.
+   * Plays the animation with the given `name`. The animation data is derived from
+   * the `SpriteDisplay` of this entity.
    *
-   * @param name The name of the animation that should be played.
+   * @param name Name of the animation that should be played.
    * @param loop (optional) If set to `true` the animation will start playing
    *  from the beginning again after it completes.
    */
@@ -98,6 +97,9 @@ export class SpriteAnimation {
 
       this.loop = loop;
       this.transform = name;
+
+      this.flipX = false;
+      this.flipY = false;
     }
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort
@@ -116,6 +118,19 @@ export class SpriteAnimation {
    */
   public isComplete(): boolean {
     return this.frame === this.frames.length - 1;
+  }
+
+  /**
+   * Flips all frames in the animation.
+   *
+   * @param x If set to `true` all frames will be flipped on the x axis.
+   * @param y If set to `true` all frames will be flipped on the y axis.
+   */
+  public flip(x = false, y = false): this {
+    this.flipX = x;
+    this.flipY = y;
+
+    return this;
   }
 
 }
