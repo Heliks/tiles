@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "src/",
+    "outDir": "lib/",
+    "types": [
+      "jest"
+    ]
+  }
+}
+
+
+
+
