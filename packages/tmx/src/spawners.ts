@@ -1,10 +1,10 @@
 import { Container, ScreenDimensions, SortNode, SpriteDisplay, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { GameMapLayer } from './game-map';
-import { Transform, World } from '@heliks/tiles-engine';
+import { Circle, Transform, World } from '@heliks/tiles-engine';
 import { LayerType, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
-import { RigidBody } from '@heliks/tiles-physics';
-import { Circle, Rectangle } from '@heliks/tiles-math';
+import { RigidBody, Shape as PhysicsShape } from '@heliks/tiles-physics';
+import { Shape } from './parser/shape';
 
 /** @internal */
 function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileLayer): GameMapLayer {
@@ -22,6 +22,36 @@ function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileL
   return new GameMapLayer(node, [
     entity
   ]);
+}
+
+/** @internal */
+function applyUnitSizeToShape(shape: PhysicsShape, us: number): void {
+  shape.x /= us;
+  shape.y /= us;
+
+  if (shape instanceof Circle) {
+    shape.radius /= us;
+  }
+  else {
+    shape.height /= us;
+    shape.width /= us;
+  }
+}
+
+/** @internal */
+function spawnBodyFromShape(world: World, us: number, shape: Shape): void {
+  const data = shape.data.copy();
+
+  data.x = 0;
+  data.y = 0;
+
+  applyUnitSizeToShape(data, us);
+
+  world
+    .builder()
+    .use(new RigidBody().attach(data))
+    .use(new Transform(shape.data.x / us, shape.data.y / us))
+    .build()
 }
 
 /** @internal */
@@ -62,16 +92,7 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
         for (const collider of colliders) {
           const shape = collider.data.copy();
 
-          shape.x /= us;
-          shape.y /= us;
-
-          if (shape instanceof Rectangle) {
-            shape.height /= us;
-            shape.width /= us;
-          }
-          else {
-            shape.radius /= us;
-          }
+          applyUnitSizeToShape(shape, us);
 
           body.attach(shape);
         }
@@ -81,6 +102,13 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     }
 
     entities.push(entity.build());
+  }
+
+  // Spawn free-floating collision shapes.
+  for (const shape of layer.shapes) {
+    if (shape.type === 'collision') {
+      spawnBodyFromShape(world, us, shape);
+    }
   }
 
   return new GameMapLayer(

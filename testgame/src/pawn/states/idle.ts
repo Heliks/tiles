@@ -1,5 +1,4 @@
 import { State, StateMachine } from '@heliks/tiles-engine';
-import { SpriteAnimation } from '@heliks/tiles-pixi';
 import { KeyCode } from '../../input';
 import { PawnBlackboard } from '../pawn-blackboard';
 import { WalkState } from './walk';
@@ -7,34 +6,36 @@ import { Dodge, isDodging } from './dodge';
 import { isShooting, ShootArrow } from './shoot-arrow';
 import { CardinalDirection } from '../../components';
 
-export class Idle implements State<PawnBlackboard> {
+/** @internal */
+function playAnimation(pawn: PawnBlackboard): void {
+  const direction = pawn.direction.toCardinal();
 
-  /** Plays the Idle animation for the appropriate `direction`. */
-  public play(animation: SpriteAnimation, direction: CardinalDirection): void {
-    switch (direction) {
-      case CardinalDirection.West:
-        animation.play('idle-left');
-        break;
-      case CardinalDirection.East:
-        animation.play('idle-right');
-        break;
-      case CardinalDirection.North:
-        animation.play('idle-up');
-        break;
-      case CardinalDirection.South:
-        animation.play('idle-down');
-        break;
-    }
+  switch (direction) {
+    case CardinalDirection.West:
+      pawn.animation.play('idle-right').flip(true);
+      break;
+    case CardinalDirection.East:
+      pawn.animation.play('idle-right');
+      break;
+    case CardinalDirection.North:
+      pawn.animation.play('idle-up');
+      break;
+    case CardinalDirection.South:
+      pawn.animation.play('idle-down');
+      break;
   }
+}
+
+export class Idle implements State<PawnBlackboard> {
 
   /** @inheritDoc */
   public onStart(state: StateMachine<PawnBlackboard>): void {
-    this.play(state.data.animation, state.data.direction.toCardinal());
+    playAnimation(state.data);
   }
 
   /** @inheritDoc */
   public onResume(state: StateMachine<PawnBlackboard>): void {
-    this.play(state.data.animation, state.data.direction.toCardinal());
+    playAnimation(state.data);
   }
 
   /** @inheritDoc */

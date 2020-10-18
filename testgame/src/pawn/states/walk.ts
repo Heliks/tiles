@@ -8,7 +8,7 @@ export class WalkState implements State<PawnBlackboard> {
 
   /** @inheritDoc */
   update(state: StateMachine<PawnBlackboard>): void {
-    const { animation, input, pawn, ticker } = state.data;
+    const { animation, input } = state.data;
 
     // Check if movement was canceled in favor of engaging in combat.
     if (isShooting(state)) {
@@ -23,7 +23,6 @@ export class WalkState implements State<PawnBlackboard> {
       return;
     }
 
-    // Velocity on x and y axis.
     let vx = 0;
     let vy = 0;
 
@@ -32,7 +31,7 @@ export class WalkState implements State<PawnBlackboard> {
 
     // Move left
     if (input.isKeyDown(KeyCode.A)) {
-      animation.play('walk-left');
+      animation.play('walk-right').flip(true);
       vx -= velocity;
     }
     // Move right

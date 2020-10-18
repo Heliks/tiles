@@ -1,5 +1,6 @@
 import { Tile, TmxObjectData, tmxParseObject } from './objects';
 import { HasTmxPropertyData, tmxParseProperties, TmxProperties } from './properties';
+import { Shape, tmxParseShape } from './shape';
 
 export enum LayerTypeData {
   Objects = 'objectgroup',
@@ -64,6 +65,7 @@ export interface ObjectLayerProperties {
 /** A layer containing free-positioned objects. */
 export interface TmxObjectLayer extends BaseLayer<ObjectLayerProperties> {
   data: Tile[];
+  shapes: Shape[];
   type: LayerType.Objects;
 }
 
@@ -79,6 +81,7 @@ export type TmxLayerData = TmxTileLayerData | TmxObjectLayerData | TmxGroupLayer
 /** @internal */
 function parseObjectLayer(data: TmxObjectLayerData): TmxObjectLayer {
   const objects = [];
+  const shapes = [];
 
   for (const item of data.objects) {
     // Object is a tile
@@ -86,7 +89,7 @@ function parseObjectLayer(data: TmxObjectLayerData): TmxObjectLayer {
       objects.push(tmxParseObject(item));
     }
     else {
-      console.warn(item);
+      shapes.push(tmxParseShape(item, 0, 0))
     }
   }
 
@@ -94,6 +97,7 @@ function parseObjectLayer(data: TmxObjectLayerData): TmxObjectLayer {
     data: objects,
     name: data.name,
     properties: tmxParseProperties(data),
+    shapes,
     type: LayerType.Objects
   };
 }

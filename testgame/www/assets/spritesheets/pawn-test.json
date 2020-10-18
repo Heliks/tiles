@@ -1,0 +1,527 @@
+{ "frames": [
+   {
+    "filename": "pawn 0.aseprite",
+    "frame": { "x": 203, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 1.aseprite",
+    "frame": { "x": 87, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 2.aseprite",
+    "frame": { "x": 116, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 3.aseprite",
+    "frame": { "x": 145, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 4.aseprite",
+    "frame": { "x": 174, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 5.aseprite",
+    "frame": { "x": 203, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 6.aseprite",
+    "frame": { "x": 0, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 7.aseprite",
+    "frame": { "x": 174, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 8.aseprite",
+    "frame": { "x": 29, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 9.aseprite",
+    "frame": { "x": 58, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 10.aseprite",
+    "frame": { "x": 87, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 11.aseprite",
+    "frame": { "x": 116, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 12.aseprite",
+    "frame": { "x": 145, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 13.aseprite",
+    "frame": { "x": 87, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 14.aseprite",
+    "frame": { "x": 174, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 15.aseprite",
+    "frame": { "x": 58, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 16.aseprite",
+    "frame": { "x": 0, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 17.aseprite",
+    "frame": { "x": 29, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 18.aseprite",
+    "frame": { "x": 58, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 19.aseprite",
+    "frame": { "x": 87, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 20.aseprite",
+    "frame": { "x": 116, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 21.aseprite",
+    "frame": { "x": 145, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 22.aseprite",
+    "frame": { "x": 174, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 23.aseprite",
+    "frame": { "x": 203, "y": 185, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 24.aseprite",
+    "frame": { "x": 0, "y": 222, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 25.aseprite",
+    "frame": { "x": 29, "y": 222, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 26.aseprite",
+    "frame": { "x": 58, "y": 222, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 27.aseprite",
+    "frame": { "x": 87, "y": 222, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 28.aseprite",
+    "frame": { "x": 145, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 29.aseprite",
+    "frame": { "x": 29, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 30.aseprite",
+    "frame": { "x": 58, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 31.aseprite",
+    "frame": { "x": 87, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 32.aseprite",
+    "frame": { "x": 116, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 33.aseprite",
+    "frame": { "x": 145, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 34.aseprite",
+    "frame": { "x": 174, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 35.aseprite",
+    "frame": { "x": 203, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 36.aseprite",
+    "frame": { "x": 0, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 37.aseprite",
+    "frame": { "x": 29, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 38.aseprite",
+    "frame": { "x": 58, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 39.aseprite",
+    "frame": { "x": 87, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 40.aseprite",
+    "frame": { "x": 116, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 41.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 42.aseprite",
+    "frame": { "x": 174, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 43.aseprite",
+    "frame": { "x": 203, "y": 37, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 44.aseprite",
+    "frame": { "x": 0, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 45.aseprite",
+    "frame": { "x": 29, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 46.aseprite",
+    "frame": { "x": 58, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 47.aseprite",
+    "frame": { "x": 87, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 48.aseprite",
+    "frame": { "x": 116, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 49.aseprite",
+    "frame": { "x": 145, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 50.aseprite",
+    "frame": { "x": 174, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 51.aseprite",
+    "frame": { "x": 203, "y": 148, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 52.aseprite",
+    "frame": { "x": 203, "y": 74, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 53.aseprite",
+    "frame": { "x": 0, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "pawn 54.aseprite",
+    "frame": { "x": 29, "y": 111, "w": 29, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 16, "w": 29, "h": 37 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.25-x64",
+  "image": "pawn.png",
+  "format": "RGBA8888",
+  "size": { "w": 232, "h": 259 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "idle-down", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "idle-up", "from": 1, "to": 1, "direction": "forward" },
+   { "name": "idle-right", "from": 2, "to": 2, "direction": "forward" },
+   { "name": "walk-down", "from": 3, "to": 8, "direction": "forward" },
+   { "name": "walk-up", "from": 9, "to": 14, "direction": "forward" },
+   { "name": "walk-right", "from": 15, "to": 20, "direction": "forward" },
+   { "name": "bow-right", "from": 21, "to": 26, "direction": "forward" },
+   { "name": "bow-down", "from": 27, "to": 32, "direction": "forward" },
+   { "name": "bow-up", "from": 33, "to": 38, "direction": "forward" },
+   { "name": "roll-right", "from": 39, "to": 44, "direction": "forward" },
+   { "name": "roll-up", "from": 45, "to": 50, "direction": "forward" },
+   { "name": "sword-down", "from": 51, "to": 54, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer 4", "opacity": 255, "blendMode": "normal" },
+   { "name": "Bow", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

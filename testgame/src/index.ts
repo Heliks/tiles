@@ -1,16 +1,16 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, rand, TransformSystem, World } from '@heliks/tiles-engine';
+import { Entity, Game, GameBuilder, TransformSystem, World } from '@heliks/tiles-engine';
 import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
-import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFormat } from '@heliks/tiles-pixi';
+import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { GameMapHandler, TmxModule, TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { InputHandler } from './input';
 import { PawnController, spawnPawn } from './pawn';
-import { spawnJosh } from './spawners/josh';
 import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
-import { loadSpriteSheet, lookupEntity } from './utils';
+import { lookupEntity } from './utils';
+import { AsepriteFormat } from '@heliks/tiles-aseprite';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -33,9 +33,9 @@ async function initPawn(world: World): Promise<Handle<SpriteSheet>> {
   // Load the sprite sheet.
   const handle = await world
     .get(AssetLoader)
-    .async('spritesheets/pawn.json', new SpriteSheetFormat(), storage);
+    .async('spritesheets/pawn-test.json', new AsepriteFormat(), storage);
 
-  const sheet = storage.get(handle);
+  const sheet = storage.get(handle)?.data;
 
   if (!sheet) {
     throw new Error('Unexpected Error');
@@ -73,7 +73,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        // .plugin(PhysicsDebugDraw)
+        .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -115,12 +115,12 @@ window.onload = () => {
       spawnPawn(game.world, pawnSpriteSheet, x, y, layer.node);
 
       // Spawn Josh in a random location near the player
-      spawnJosh(
-        game.world,
-        loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
-        x + rand(-3, 3),
-        y + rand(-3, 3)
-      );
+      // spawnJosh(
+      //   game.world,
+      //   loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
+      //   x + rand(-3, 3),
+      //   y + rand(-3, 3)
+      // );
     });
   });
 };
