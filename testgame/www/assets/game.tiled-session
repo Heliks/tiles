@@ -1,0 +1,261 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "exportAsImage.useCurrentScale": false,
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "/home/felix/Documents/Test.tsx": {
+            "dynamicWrapping": true
+        },
+        "/home/felix/Downloads/apple_tree.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/home/felix/Downloads/person1m.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/home/felix/Downloads/spritesheet_small.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/home/felix/Downloads/spritesheet_small2.json": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "/srv/http/tiles/packages/test/www/assets/tilemaps/test01.json": {
+            "scale": 1.5,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 629.3333333333333,
+                "y": 389.66666666666663
+            }
+        },
+        "/srv/http/tiles/packages/test/www/assets/tilemaps/test02.json": {
+            "scale": 9.844375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 40.073646117706815,
+                "y": 40.07364611770681
+            }
+        },
+        "/srv/http/tiles/packages/test/www/assets/tilesets/tileset-test.json": {
+            "scaleInDock": 1
+        },
+        "/srv/http/tiles/packages/test/www/assets/tilesets/trees01.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/srv/http/tiles/packages/test/www/assets/tilesets/village01.json": {
+            "scaleInDock": 1
+        },
+        "maps/test.json": {
+            "scale": 3,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 283.3333333333333,
+                "y": 391.5
+            }
+        },
+        "maps/tileset.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "objects/brazier-common01.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "objects/containers/wood-barrels.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects/floora/bushes/bushes.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects/flora/bushes/bushes.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects/flora/flowers/flowers-small.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects/flora/trees/leaf-trees.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects/furnite-outdoors/brazier-common01.json": {
+            "scaleInDock": 1
+        },
+        "objects/trees01.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "objects/wood-barrels.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "objects/wood-benches.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "test/tilemap.json": {
+            "scale": 2,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 409.75,
+                "y": 419.75
+            }
+        },
+        "test/tileset.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "tilemaps/barrels.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemaps/benches.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemaps/brazier-common01.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemaps/bushes.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "tilemaps/flowers-small.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemaps/house01.json": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 130,
+                "y": 415.5
+            }
+        },
+        "tilemaps/lantern-small.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "tilemaps/leaf-trees.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemaps/test-layer-mergin.json": {
+            "scale": 3,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 85.16666666666667,
+                "y": 70.83333333333333
+            }
+        },
+        "tilemaps/test01.json": {
+            "scale": 1,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 800,
+                "y": 654.5
+            }
+        },
+        "tilemaps/test02.json": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 43,
+                "y": 42.16666666666666
+            }
+        },
+        "tilemaps/test03.json": {
+            "scale": 3,
+            "selectedLayer": 10,
+            "viewCenter": {
+                "x": 879.8333333333333,
+                "y": 751.5
+            }
+        },
+        "tilemaps/village02.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.75,
+            "scaleInEditor": 2
+        },
+        "tilesets/barrels.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "tilesets/tileset-test.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "tilesets/trees01.json": {
+            "scaleInDock": 1
+        },
+        "tilesets/village01.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.75,
+            "scaleInEditor": 2
+        },
+        "tilesets/walls.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        }
+    },
+    "frame.defaultDuration": 100,
+    "loadedWorlds": [
+        "/srv/http/tiles/testgame/www/assets/tilemaps/world01.world"
+    ],
+    "map.fixedSize": true,
+    "map.height": 25,
+    "map.lastUsedFormat": "json",
+    "map.orientation": 1,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 25,
+    "openFiles": [
+    ],
+    "project": "game.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "maps/test.json",
+        "tilesets/village01.json",
+        "tilemaps/test01.json",
+        "tilemaps/village02.json",
+        "tilemaps/test03.json",
+        "test/tilemap.json",
+        "objects/flora/trees/leaf-trees.json",
+        "objects/containers/wood-barrels.json",
+        "objects/flora/flowers/flowers-small.json",
+        "objects/flora/bushes/bushes.json",
+        "objects/wood-benches.json",
+        "objects/floora/bushes/bushes.json"
+    ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFormat": "json",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.transparentColor": "#ff00ff",
+    "tileset.type": 0,
+    "tileset.useTransparentColor": false
+}

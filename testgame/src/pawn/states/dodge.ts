@@ -22,6 +22,26 @@ const ACCELERATION_TIME_MS = 200;
 // The force that is applied to the entity during the acceleration.
 const ACCELERATION_FORCE = 15;
 
+/** @internal */
+function playAnimation(pawn: PawnBlackboard): void {
+  const direction = pawn.direction.toCardinal();
+
+  switch (direction) {
+    case CardinalDirection.West:
+      pawn.animation.play('roll-right').flip(true);
+      break;
+    case CardinalDirection.East:
+      pawn.animation.play('roll-right');
+      break;
+    case CardinalDirection.North:
+      pawn.animation.play('roll-up');
+      break;
+    case CardinalDirection.South:
+      pawn.animation.play('roll-up').flip(false, true);
+      break;
+  }
+}
+
 /** Accelerates an entity in the direction in which it is currently facing. */
 export class Dodge implements State<PawnBlackboard> {
 
@@ -39,10 +59,8 @@ export class Dodge implements State<PawnBlackboard> {
 
   /** @inheritDoc */
   public update(state: StateMachine<PawnBlackboard>, data: PawnBlackboard): void {
-    const animation = data.world.storage(SpriteAnimation).get(data.entity);
-
     if (this.isDodging) {
-      if (animation.isComplete()) {
+      if (data.animation.isComplete()) {
         state.pop();
       }
       else if (this.acceleration > 0) {
@@ -56,7 +74,7 @@ export class Dodge implements State<PawnBlackboard> {
     }
 
     // Play dodge animation that fits the direction in which the entity is dodging.
-    animation.play(ANIMATION_MAP[data.direction.toCardinal()]);
+    playAnimation(data);
 
     this.vx = Math.sin(data.direction.rad) * ACCELERATION_FORCE;
     this.vy = -Math.cos(data.direction.rad) * ACCELERATION_FORCE;

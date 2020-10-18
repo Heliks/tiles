@@ -3,19 +3,25 @@ import { Arrow, shootArrow } from '../../arrow';
 import { PawnBlackboard } from '../pawn-blackboard';
 import { KeyCode } from '../../input';
 import { CardinalDirection } from '../../components';
+import { Dodge, isDodging } from './dodge';
 
 /** @internal */
-function getAnimation(direction: CardinalDirection): string {
+function playAnimation(pawn: PawnBlackboard): void {
+  const direction = pawn.direction.toCardinal();
+
   switch (direction) {
-    // Todo
-    case CardinalDirection.North:
-      return 'bow-up';
     case CardinalDirection.West:
-      return 'bow-left';
+      pawn.animation.play('bow-right').flip(true);
+      break;
     case CardinalDirection.East:
-      return 'bow-right';
+      pawn.animation.play('bow-right');
+      break;
+    case CardinalDirection.North:
+      pawn.animation.play('bow-up');
+      break;
     case CardinalDirection.South:
-      return 'bow-down';
+      pawn.animation.play('bow-down');
+      break;
   }
 }
 
@@ -33,10 +39,11 @@ export class ShootArrow implements State<PawnBlackboard> {
     const { animation, pawn } = state.data;
 
     // Add a cool-down so the pawn can't shoot the arrow again right away.
+    // Todo: Should be handled via a status system or smth.
     pawn.cooldown = 500;
 
     // Play animation.
-    animation.reset().play(getAnimation(pawn.direction));
+    playAnimation(state.data);
   }
 
   /** @inheritDoc */
@@ -45,10 +52,16 @@ export class ShootArrow implements State<PawnBlackboard> {
   }
 
   /** @inheritDoc */
-  public update(state: StateMachine<PawnBlackboard>): void {
+  public update(state: StateMachine<PawnBlackboard>): unknown {
     const { world, pawn } = state.data;
 
     this.duration -= state.data.ticker.delta;
+
+    // Allow player to break out of animation (e.g. something like orb-walking from
+    // Dota or LoL) or to cancel the arrow attack.
+    if (isDodging(state)) {
+      return state.switch(new Dodge());
+    }
 
     if (this.duration <= 300 && this.casting) {
       let { x, y } = state.data.transform;
@@ -58,11 +71,11 @@ export class ShootArrow implements State<PawnBlackboard> {
       switch (pawn.direction) {
         case CardinalDirection.West:
           x -= 0.5;
-          y -= 0.2;
+          y -= 0.3;
           break;
         case CardinalDirection.East:
           x += 0.5;
-          y -= 0.2;
+          y -= 0.3;
           break;
       }
 
@@ -71,6 +84,7 @@ export class ShootArrow implements State<PawnBlackboard> {
       // Arrow was show, prevent it from shooting again.
       this.casting = false;
     }
+
 
     if (this.duration <= 0) {
       // Exit the current state.

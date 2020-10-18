@@ -57,6 +57,6 @@
   "cols": 8,
   "image": "./pawn.png",
   "rows": 100,
-  "spriteSize": [32, 32],
+  "spriteSize": [64, 64],
   "type": "spritesheet"
 }
