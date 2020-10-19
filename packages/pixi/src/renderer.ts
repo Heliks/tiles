@@ -7,7 +7,6 @@ import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
 import { Container } from './renderables';
 import * as PIXI from 'pixi.js'
-import { Shader } from './shaders';
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -103,31 +102,6 @@ export class Renderer {
     this.setAutoResize(config.autoResize)
 
     this.root.addChild(stage.view, this.debugDraw.view);
-
-    const frag = `
-      // Image data and pixel data exposed by PIXI.
-      uniform sampler2D uSampler;
-      varying vec2 vTextureCoord;
-    
-      void main(){
-        vec4 color = texture2D(uSampler, vTextureCoord);
-      
-        gl_FragColor = vec4(color.r, color.g, color.b / vTextureCoord.x, color.a);
-      }
-    `;
-
-    const vert = `
-      varying vec2 vTextureCoord;
-    
-      void main () {
-        vTextureCoord = vec2(vTextureCoord.x, vTextureCoord.y);
-      }
-    
-    `;
-
-    // this.root.filters = [
-      // new Shader('', frag)
-    // ];
   }
 
   /** Sets the renderers background color to the hex value of `color`. */
