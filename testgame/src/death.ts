@@ -14,8 +14,7 @@ import {
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import { SPRITE_SHEET_STORAGE, SpriteDisplay, SpriteSheetFormat } from '@heliks/tiles-pixi';
-import { Health } from './components/health';
-import { Inventory, Item } from './components/inventory';
+import { Health, Inventory, Item } from './components';
 import { Rectangle } from '@heliks/tiles-math';
 
 /** @internal */
@@ -66,7 +65,7 @@ export class DeathSystem extends ProcessingSystem {
           const trans = _transform.get(entity);
 
           for (const item of items) {
-            dropItem(world, item, trans.world[0], trans.world[1]);
+            dropItem(world, item, trans.world.x, trans.world.y);
           }
         }
 

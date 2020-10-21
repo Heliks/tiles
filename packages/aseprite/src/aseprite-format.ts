@@ -54,12 +54,13 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
     for (let i = 0, l = data.frames.length; i < l; i++) {
       const frameData = data.frames[i];
 
-      collection.setFrame(i, new Rectangle(
-        frameData.frame.w,
-        frameData.frame.h,
+      collection.setFrame(
+        i,
         frameData.frame.x,
-        frameData.frame.y
-      ));
+        frameData.frame.y,
+        frameData.frame.w,
+        frameData.frame.h
+      );
     }
 
     // Convert frame tags to animations.

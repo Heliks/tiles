@@ -1,4 +1,4 @@
-import { Vec2 } from './vec2';
+import { vec2, Vec2 } from './vec2';
 
 export class Grid {
 
@@ -32,10 +32,10 @@ export class Grid {
 
   /** Returns the top-left aligned position of the sprite at the given `index`. */
   public pos(index: number): Vec2 {
-    return [
-      index % this.cols * this.cellWidth,              // X
-      Math.floor(index / this.cols) * this.cellHeight  // Y
-    ];
+    return vec2(
+      index % this.cols * this.cellWidth,
+      Math.floor(index / this.cols) * this.cellHeight
+    );
   }
 
   /**
@@ -44,8 +44,8 @@ export class Grid {
    */
   public toCenter(pos: Vec2): Vec2 {
     // The bitshift is a faster way of dividing by 2.
-    pos[0] += this.cellWidth >> 1;
-    pos[1] += this.cellHeight >> 1;
+    pos.x += this.cellWidth >> 1;
+    pos.y += this.cellHeight >> 1;
 
     return pos;
   }

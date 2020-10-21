@@ -1,4 +1,4 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { Vec2, vec2 } from '@heliks/tiles-engine';
 
 /** Manages the dimensions of the screen. */
 export class ScreenDimensions {
@@ -10,7 +10,7 @@ export class ScreenDimensions {
    * The scale in which everything is rendered. Should not be updated manually because
    * this is calculated based on resolution and screen size.
    */
-  public readonly scale: Vec2 = [1, 1];
+  public readonly scale = vec2(1, 1);
 
   /**
    * Screen resolution in px. Do not update this directly.
@@ -22,7 +22,7 @@ export class ScreenDimensions {
   public readonly size: Vec2;
 
   /** Offset. */
-  public readonly offset: Vec2 = [0, 0];
+  public readonly offset = vec2(0, 0);
 
   /**
    * @param w Initial width of the screen in px.
@@ -33,17 +33,17 @@ export class ScreenDimensions {
    *  be multiplied to translate those values into pixel positions.
    */
   constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
-    this.size = [w, h];
-    this.resolution = [rw, rh];
+    this.size = vec2(w, h);
+    this.resolution = vec2(rw, rh);
   }
 
   /** Resizes the screen dimensions. This also re-calculates the [[scale]]. */
   public resize(width: number, height: number): this {
-    this.size[0] = width;
-    this.size[1] = height;
+    this.size.x = width;
+    this.size.y = height;
 
-    this.scale[0] = width / this.resolution[0];
-    this.scale[1] = height / this.resolution[1];
+    this.scale.x = width / this.resolution.x;
+    this.scale.y = height / this.resolution.y;
 
     // Indicate that there are changes that need to be carried over to the renderer.
     this.dirty = true;
@@ -53,8 +53,8 @@ export class ScreenDimensions {
 
   /** Converts a screen `position` to a world position. */
   public toWorld(position: Vec2): Vec2 {
-    position[0] = ((position[0] / this.scale[0]) - (this.offset[0]) ) / this.unitSize;
-    position[1] = ((position[1] / this.scale[1]) - (this.offset[1]) ) / this.unitSize;
+    position.x = ((position.x / this.scale.x) - (this.offset.x) ) / this.unitSize;
+    position.y = ((position.y / this.scale.y) - (this.offset.y) ) / this.unitSize;
 
     return position;
   }

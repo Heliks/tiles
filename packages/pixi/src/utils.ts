@@ -9,10 +9,10 @@ export function cropTexture(
   size: Vec2
 ): PIXI.Texture {
   return new Texture(source.baseTexture, new Rectangle(
-    pos[0],
-    pos[1],
-    size[0],
-    size[1]
+    pos.x,
+    pos.y,
+    size.x,
+    size.y
   ));
 }
 

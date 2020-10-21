@@ -170,19 +170,17 @@ export class Renderer {
 
     // Update the dimensions of the screen.
     if (dim.dirty) {
-      const [ sx, sy ] = dim.scale;
-
       // Resize the renderer and adjust the stage scale to fit into that new dimension.
-      this.renderer.resize(...dim.size);
-      this.stage.scale(sx, sy);
+      this.renderer.resize(dim.size.x, dim.size.y);
+      this.stage.scale(dim.scale.x, dim.scale.y);
 
       // Also update the debug draw accordingly.
-      this.debugDraw.resize(dim.size[0], dim.size[1]).scale(sx, sy);
+      this.debugDraw.resize(dim.size.x, dim.size.y).scale(dim.scale.x, dim.scale.y);
 
       this.onResize.push({
-        height: dim.size[1],
-        width: dim.size[0],
-        ratio: dim.scale[0],
+        height: dim.size.y,
+        width: dim.size.x,
+        ratio: dim.scale.y,
         type: 'resize'
       });
 
@@ -192,8 +190,8 @@ export class Renderer {
     // Update stage position according to the camera position and update the offset
     // in ScreenDimensions accordingly.
     this.stage.setPosition(
-      dim.offset[0] = this.camera.screen[0],
-      dim.offset[1] = this.camera.screen[1]
+      dim.offset.x = this.camera.screen.x,
+      dim.offset.y = this.camera.screen.y
     );
 
     this.stage.updateNodes();

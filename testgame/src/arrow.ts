@@ -7,12 +7,12 @@ import {
   Ticker,
   Transform,
   Vec2,
+  vec2,
   World
 } from '@heliks/tiles-engine';
 import { ContactEvents, RigidBody } from '@heliks/tiles-physics';
 import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
-import { Direction } from './components/direction';
-import { Health } from './components/health';
+import { Direction, Health } from './components';
 import { CollisionGroups } from './const';
 import { rand, Rectangle } from '@heliks/tiles-math';
 
@@ -34,8 +34,8 @@ export class Arrow {
    */
   public getDamage(): number {
     return Math.round(rand(
-      this.damage[0],
-      this.damage[1]
+      this.damage.x,
+      this.damage.y
     ));
   }
 
@@ -55,13 +55,13 @@ export function shootArrow(world: World, x: number, y: number, direction: Direct
   // Apply rotation and velocity according to the direction in which the arrow is shot.
   body.rotation = direction.rad;
 
-  body.velocity[0] = Math.sin(body.rotation) * 25;
-  body.velocity[1] = -Math.cos(body.rotation) * 25;
+  body.velocity.x = Math.sin(body.rotation) * 25;
+  body.velocity.y = -Math.cos(body.rotation) * 25;
 
   return world
     .builder()
     .use(new Transform(x, y))
-    .use(new ShapeDisplay(ShapeKind.Rect, [0.1, 0.5]).fill(0xFF00FF))
+    .use(new ShapeDisplay(ShapeKind.Rect, vec2(0.1, 0.5)).fill(0xFF00FF))
     .use(arrow)
     .use(body)
     .build();

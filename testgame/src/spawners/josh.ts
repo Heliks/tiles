@@ -2,8 +2,7 @@ import { Handle } from '@heliks/tiles-assets';
 import { Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
-import { Health } from '../components/health';
-import { Inventory } from '../components/inventory';
+import { Health, Inventory } from '../components';
 import { Rectangle } from '@heliks/tiles-math';
 
 /** Spawns a josh into the world. */

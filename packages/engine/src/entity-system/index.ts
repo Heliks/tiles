@@ -13,6 +13,9 @@ export {
   System
 } from '@heliks/ecs';
 
+export * from '@heliks/ecs-hierarchy';
+export * from '@heliks/ecs-transform';
+
 export * from './processing-system';
 export * from './reactive-system';
 export * from './world';

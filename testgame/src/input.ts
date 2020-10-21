@@ -1,4 +1,4 @@
-import { Vec2Readonly, System, Vec2 } from '@heliks/tiles-engine';
+import { System, Vec2, vec2 } from '@heliks/tiles-engine';
 
 export enum KeyCode {
   A = 'KeyA',
@@ -36,7 +36,7 @@ export class InputHandler implements System {
   protected keysUp = new Set();
 
   /** Contains the last known position of the hardware mouse. */
-  protected mousePos: Vec2 = [0, 0];
+  protected mousePos = vec2(0, 0);
 
   constructor() {
     document.addEventListener('mousemove', this.onMouseMove.bind(this));
@@ -59,8 +59,8 @@ export class InputHandler implements System {
 
   /** Event listener for when the hardware mouse moves. */
   private onMouseMove(event: MouseEvent): void {
-    this.mousePos[0] = event.x;
-    this.mousePos[1] = event.y;
+    this.mousePos.x = event.x;
+    this.mousePos.y = event.y;
   }
 
   /** Returns `true` if `key` is currently pressed. */
@@ -69,15 +69,15 @@ export class InputHandler implements System {
   }
 
   /** Returns the last known position of the mouse. */
-  public getMousePos(): Vec2Readonly {
+  public getMousePos(): Vec2 {
     return this.mousePos;
   }
 
-  private mousePosAxis: Vec2 = [0, 0];
+  private mousePosAxis = vec2(0, 0);
 
-  public getMousePosAxis(origin: Vec2, out: Vec2 = [0, 0]): Vec2 {
-    out[0] = this.mousePos[0] - origin[0];
-    out[1] = this.mousePos[1] - origin[1];
+  public getMousePosAxis(origin: Vec2, out = vec2(0, 0)): Vec2 {
+    out.x = this.mousePos.x - origin.x;
+    out.y = this.mousePos.y - origin.y;
 
     return out;
   }

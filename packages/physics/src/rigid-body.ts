@@ -1,4 +1,4 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, Shape } from './collider';
 
 export enum RigidBodyType {
@@ -76,7 +76,7 @@ export class RigidBody {
   public rotation = 0;
 
   /** Current velocity. */
-  public velocity: Vec2 = [0, 0];
+  public velocity = vec2(0, 0);
 
   /** Transform flag indicating that the velocity was updated. */
   public isVelocityDirty = false;
@@ -116,8 +116,8 @@ export class RigidBody {
 
   /** Updates the velocity. */
   public setVelocity(x: number, y: number): this {
-    this.velocity[0] = x;
-    this.velocity[1] = y;
+    this.velocity.x = x;
+    this.velocity.y = y;
 
     this.isVelocityDirty = true;
 

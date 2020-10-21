@@ -1,4 +1,4 @@
-import { atan2, DEG90_RAD, rad2deg, Vec2Readonly } from '@heliks/tiles-engine';
+import { atan2, DEG90_RAD, rad2deg, Vec2 } from '@heliks/tiles-engine';
 
 /** Available Cardinal directions. */
 export enum CardinalDirection {
@@ -32,8 +32,8 @@ export class Direction {
    * Updates the current direction based on a `target` that is observed from the
    * point of `origin`.
    */
-  public lookAt(origin: Vec2Readonly, target: Vec2Readonly): this {
-    this.rad = atan2(target[1] - origin[1], target[0] - origin[0]);
+  public lookAt(origin: Vec2, target: Vec2): this {
+    this.rad = atan2(target.y - origin.y, target.x - origin.x);
 
     return this;
   }

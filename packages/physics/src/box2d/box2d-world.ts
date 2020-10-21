@@ -1,4 +1,4 @@
-import { b2Body, b2FixtureDef, b2Vec2, b2World } from '@flyover/box2d';
+import { b2Body, b2FixtureDef, b2World } from '@flyover/box2d';
 import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Renderer } from '@heliks/tiles-pixi';
 import { ContactEvents } from '../events';
@@ -32,10 +32,7 @@ export class Box2dWorld implements PhysicsAdapter {
 
   constructor(gravity: Vec2) {
     // noinspection JSPotentiallyInvalidConstructorUsage
-    this.world = new b2World(new b2Vec2(
-      gravity[0],
-      gravity[1]
-    ));
+    this.world = new b2World(gravity);
   }
 
   /** @inheritDoc */
@@ -102,22 +99,22 @@ export class Box2dWorld implements PhysicsAdapter {
     const position = bBody.GetPosition();
     const velocity = bBody.GetLinearVelocity();
 
-    trans.world[0] = position.x;
-    trans.world[1] = position.y;
+    trans.world.x = position.x;
+    trans.world.y = position.y;
     trans.rotation = bBody.GetAngle();
 
     // Update velocity on the rigid body if it was transformed.
     if (body.isVelocityDirty) {
       bBody.SetLinearVelocity(velocity.Set(
-        body.velocity[0],
-        body.velocity[1]
+        body.velocity.x,
+        body.velocity.y
       ));
 
       body.isVelocityDirty = false;
     }
 
-    body.velocity[0] = velocity.x;
-    body.velocity[1] = velocity.y;
+    body.velocity.x = velocity.x;
+    body.velocity.y = velocity.y;
   }
 
   /** @inheritDoc */
