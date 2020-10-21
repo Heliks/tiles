@@ -5,12 +5,14 @@ import {
   Injectable,
   Parent,
   ProcessingSystem,
+  Rectangle,
   StateMachine,
   Subscriber,
   Ticker,
   Transform,
-  World,
-  Rectangle, Vec2
+  Vec2,
+  vec2copy,
+  World
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
@@ -76,12 +78,12 @@ function updateDirectionIndicator(
   target: Vec2
 ): void {
   // The magic number "0.6" simply fits well with thes feet position of the player.
-  transform.local[0] = Math.sin(direction) / 2;
-  transform.local[1] = -Math.cos(direction) / 2 + 0.6;
+  transform.local.x = Math.sin(direction) / 2;
+  transform.local.y = -Math.cos(direction) / 2 + 0.6;
 
   transform.rotation = atan2(
-    target[1] - transform.world[1],
-    target[0] - transform.world[0]
+    target.y - transform.world.y,
+    target.x - transform.world.x
   );
 }
 
@@ -190,9 +192,9 @@ export class PawnController extends ProcessingSystem {
       const { input } = state.data;
 
       // The exact x/y position in the world that the pawn is observing.
-      const obsPoint = world.get(ScreenDimensions).toWorld([
-        ...input.getMousePos()
-      ]);
+      const obsPoint = world.get(ScreenDimensions).toWorld(
+        vec2copy(input.getMousePos())
+      );
 
       const direction = world.storage(Direction).get(entity);
       const transform = world.storage(Transform).get(entity);
@@ -212,8 +214,8 @@ export class PawnController extends ProcessingSystem {
 
       // Todo: Do this correctly
       world.get(Camera).transform(
-        -transform.world[0],
-        -transform.world[1]
+        -transform.world.x,
+        -transform.world.y
       );
     }
   }

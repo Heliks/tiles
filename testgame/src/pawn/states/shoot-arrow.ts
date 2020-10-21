@@ -1,4 +1,4 @@
-import { State, StateMachine } from '@heliks/tiles-engine';
+import { State, StateMachine, vec2 } from '@heliks/tiles-engine';
 import { Arrow, shootArrow } from '../../arrow';
 import { PawnBlackboard } from '../pawn-blackboard';
 import { KeyCode } from '../../input';
@@ -64,7 +64,7 @@ export class ShootArrow implements State<PawnBlackboard> {
     }
 
     if (this.duration <= 300 && this.casting) {
-      let { x, y } = state.data.transform;
+      let { x, y } = state.data.transform.world;
 
       // Offset the position from where we fire the arrow slightly so that it does not
       // spawn inside of the pawns body.
@@ -79,12 +79,11 @@ export class ShootArrow implements State<PawnBlackboard> {
           break;
       }
 
-      shootArrow(world, x, y, state.data.direction, new Arrow(state.data.entity, [2, 6]));
+      shootArrow(world, x, y, state.data.direction, new Arrow(state.data.entity, vec2(2, 6)));
 
       // Arrow was show, prevent it from shooting again.
       this.casting = false;
     }
-
 
     if (this.duration <= 0) {
       // Exit the current state.

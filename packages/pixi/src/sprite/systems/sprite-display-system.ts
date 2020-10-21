@@ -76,8 +76,8 @@ export class SpriteDisplaySystem extends ProcessingSystem {
       // Update the sprites position.
       const trans = _transform.get(entity);
 
-      display.x = trans.world[0] * this.dimensions.unitSize;
-      display.y = trans.world[1] * this.dimensions.unitSize;
+      display.x = trans.world.x * this.dimensions.unitSize;
+      display.y = trans.world.y * this.dimensions.unitSize;
 
       display.rotation = trans.rotation;
     }

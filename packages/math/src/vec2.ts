@@ -1,13 +1,22 @@
-/**
- * A vector containing two points in a space where the first index is the x axis and
- * the second the y axis.
- */
-export type Vec2 = [number, number];
-
-/** Readonly version of `Vec2` */
-export type Vec2Readonly = readonly [number, number];
-
-/** Returns the Dot product of two 2D vectors `vecA` and `vecB`. */
-export function vec2dot(vecA: Vec2Readonly, vecB: Vec2Readonly): number {
-  return (vecA[0] * vecB[0]) + (vecA[1] * vecB[1]);
+/** A two-dimensional vector. */
+export interface Vec2 {
+  x: number;
+  y: number;
 }
+
+/** Utility to create a `Vec2`. */
+export function vec2(x: number, y: number): Vec2 {
+  return {
+    x,
+    y
+  };
+}
+
+export function vec2copy(vec: Vec2): Vec2 {
+  return vec2(vec.x, vec.y);
+}
+
+// /** Returns the Dot product of two 2D vectors `vecA` and `vecB`. */
+// export function vec2dot(vecA: Vec2Readonly, vecB: Vec2Readonly): number {
+//   return (vecA[0] * vecB[0]) + (vecA[1] * vecB[1]);
+// }

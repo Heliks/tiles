@@ -1,4 +1,4 @@
-import { Injectable, Vec2 } from '@heliks/tiles-engine';
+import { Injectable, vec2 } from '@heliks/tiles-engine';
 import { DebugDraw, Renderer, RendererPlugin } from '@heliks/tiles-pixi';
 
 /**
@@ -37,26 +37,26 @@ export class DrawGridSystem implements RendererPlugin {
 
     const us = this.renderer.dimensions.unitSize;
 
-    const width = this.renderer.dimensions.size[0];
-    const height = this.renderer.dimensions.size[1];
+    const width = this.renderer.dimensions.size.x;
+    const height = this.renderer.dimensions.size.y;
 
     // Calculate the amount of columns and rows to draw.
     const cols = Math.floor(width / us);
     const rows = Math.floor(height / us);
 
     // Convenience to not allocate unnecessary new arrays.
-    const from: Vec2 = [0, 0];
-    const dest: Vec2 = [0, 0];
+    const from = vec2(0, 0);
+    const dest = vec2(0, 0);
 
     // Draw columns.
     for (let i = 0; i < cols; i++) {
       const x = i * us;
 
-      from[0] = x;
-      from[1] = 0;
+      from.x = x;
+      from.y = 0;
 
-      dest[0] = x;
-      dest[1] = height;
+      dest.x = x;
+      dest.y = height;
 
       draw.drawLine(from, dest);
     }
@@ -65,11 +65,11 @@ export class DrawGridSystem implements RendererPlugin {
     for (let i = 0; i < rows; i++) {
       const y = i * us;
 
-      from[0] = 0;
-      from[1] = y;
+      from.x = 0;
+      from.y = y;
 
-      dest[0] = width;
-      dest[1] = y;
+      dest.x = width;
+      dest.y = y;
 
       draw.drawLine(from, dest);
     }

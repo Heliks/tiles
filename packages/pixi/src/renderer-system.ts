@@ -80,8 +80,8 @@ export class RendererSystem extends ProcessingSystem {
       const transform = transforms.get(entity);
       const container = containers.get(entity);
 
-      container.x = transform.world[0] * this.dimensions.unitSize;
-      container.y = transform.world[1] * this.dimensions.unitSize;
+      container.x = transform.world.x * this.dimensions.unitSize;
+      container.y = transform.world.y * this.dimensions.unitSize;
     }
 
     for (const plugin of this.plugins) {

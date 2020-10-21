@@ -1,13 +1,12 @@
 import { SpriteSheet } from './sprite-sheet';
 import { Rectangle } from '@heliks/tiles-engine';
-import { Sprite, Texture } from 'pixi.js';
-import { cropTexture } from '../utils';
+import { Sprite, Texture, Rectangle as PxRectangle } from 'pixi.js';
 
 /** A sprite sheet that consists of multiple individual, different sized sprite frames. */
 export class SpriteCollection extends SpriteSheet {
 
   /** @internal */
-  private readonly frames = new Map<number, Rectangle>();
+  private readonly frames = new Map<number, PxRectangle>();
 
   /**
    * @param tex Texture from which individual sprites will be created.
@@ -17,14 +16,14 @@ export class SpriteCollection extends SpriteSheet {
   }
 
   /** Sets a `frame` at `index`. */
-  public setFrame(index: number, frame: Rectangle): this {
-    this.frames.set(index, frame);
+  public setFrame(index: number, x: number, y: number, width: number, height: number): this {
+    this.frames.set(index, new PxRectangle(x, y, width, height));
 
     return this;
   }
 
-  /** Returns the frame for the sprite at `index`. */
-  public getFrame(index: number): Rectangle {
+  /** @internal */
+  private _getFrame(index: number): PxRectangle {
     const frame = this.frames.get(index);
 
     if (!frame) {
@@ -32,6 +31,18 @@ export class SpriteCollection extends SpriteSheet {
     }
 
     return frame;
+  }
+
+  /** Returns the frame for the sprite at `index`. */
+  public getFrame(index: number): Rectangle {
+    const frame = this._getFrame(index);
+
+    return new Rectangle(
+      frame.width,
+      frame.height,
+      frame.x,
+      frame.y
+    );
   }
 
   /** @inheritDoc */
@@ -48,15 +59,7 @@ export class SpriteCollection extends SpriteSheet {
   public texture(index: number): Texture {
     // Todo: getFrame is a hard error which makes this inconsistent with how sprite grids
     //  work. Maybe an empty frame should be used here instead?
-    const frame = this.getFrame(index);
-
-    return cropTexture(this.tex, [
-      frame.x,
-      frame.y
-    ], [
-      frame.width,
-      frame.height
-    ]);
+    return new Texture(this.tex.baseTexture, this._getFrame(index));
   }
 
 

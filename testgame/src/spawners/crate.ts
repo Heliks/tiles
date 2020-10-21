@@ -2,7 +2,7 @@ import { Handle } from '@heliks/tiles-assets';
 import { Transform, World } from '@heliks/tiles-engine';
 import { RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
-import { Health } from '../components/health';
+import { Health } from '../components';
 import { CollisionGroups } from '../const';
 import { Rectangle } from '@heliks/tiles-math';
 

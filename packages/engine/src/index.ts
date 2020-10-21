@@ -8,7 +8,5 @@ export * from './utils';
 
 // Re-export core-packages.
 export * from '@heliks/event-queue';
-export * from '@heliks/hierarchy';
 export * from '@heliks/tiles-math';
 export * from '@heliks/tiles-injector';
-export * from '@heliks/transform';

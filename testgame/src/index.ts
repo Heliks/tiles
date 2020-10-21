@@ -73,7 +73,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        // .plugin(PhysicsDebugDraw)
+        .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)

@@ -152,8 +152,8 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
           // Draw the entity shape on a canvas.
           canvas = draw(_display.get(event.entity), us);
 
-          canvas.x = transform.x * us;
-          canvas.y = transform.y * us;
+          canvas.x = transform.world.x * us;
+          canvas.y = transform.world.y * us;
 
           this.canvases.set(event.entity, canvas);
 
@@ -183,8 +183,8 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
         // Move the canvas according to the entities position. This needs to be displaced
         // because the transform position is based on the center, while the renderer uses
         // positions relative to the top left corner.
-        canvas.x = trans.world[0] * us;
-        canvas.y = trans.world[1] * us;
+        canvas.x = trans.world.x * us;
+        canvas.y = trans.world.y * us;
 
         canvas.rotation = trans.rotation;
       }

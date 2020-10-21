@@ -34,8 +34,6 @@ export function parseCollider(body: RigidBody, def: b2FixtureDef, collider: Coll
   // Attach the shape to the fixture.
   def.shape = parseShape(collider.shape);
 
-  console.log(def)
-
   if (collider.sensor) {
     def.isSensor = true;
   }
@@ -59,10 +57,10 @@ export function parseBody(body: RigidBody, position: Vec2): b2BodyDef {
 
   // If true the body won't be allowed to rotate.
   def.fixedRotation = !body.rotate;
-  def.position.Set(position[0], position[1]);
+  def.position.Set(position.x, position.y);
 
   // Initially inherit the velocity value set on the body.1q
-  def.linearVelocity.Set(body.velocity[0], body.velocity[1]);
+  def.linearVelocity.Set(body.velocity.x, body.velocity.y);
 
   // assign body type
   switch (body.type) {

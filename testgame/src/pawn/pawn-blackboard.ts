@@ -3,7 +3,7 @@ import { RigidBody } from '@heliks/tiles-physics';
 import { InputHandler } from '../input';
 import { Pawn } from './pawn';
 import { Entity, Ticker, Transform, World } from '@heliks/tiles-engine';
-import { Direction } from '../components/direction';
+import { Direction } from '../components';
 
 /**
  * Blackboard for pawns.

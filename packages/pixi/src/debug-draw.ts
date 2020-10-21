@@ -80,7 +80,7 @@ export class DebugDraw {
 
   /** Adds a translation transformation on the `x` and `y` axis. */
   public translate(x: number, y: number): this {
-    this.ctx.translate(this.camera.screen[0] + x, this.camera.screen[1] + y);
+    this.ctx.translate(this.camera.screen.x + x, this.camera.screen.y + y);
 
     return this;
   }
@@ -105,8 +105,8 @@ export class DebugDraw {
   public drawLine(start: Vec2, dest: Vec2): this {
     this.ctx.beginPath();
 
-    this.ctx.moveTo(start[0], start[1]);
-    this.ctx.lineTo(dest[0], dest[1]);
+    this.ctx.moveTo(start.x, start.y);
+    this.ctx.lineTo(dest.x, dest.y);
 
     this.ctx.stroke();
 
