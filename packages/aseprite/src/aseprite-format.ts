@@ -1,37 +1,10 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { SpriteCollection, TextureFormat } from '@heliks/tiles-pixi';
-import { Rectangle } from '@heliks/tiles-engine';
+import { AsepriteData } from './json';
 
+/** @internal */
 function getTexture(file: string, loader: AssetLoader, image: string) {
   return loader.fetch(`${getDirectory(file)}/${image}`, new TextureFormat());
-}
-
-export interface AsepriteRectangle {
-  h: number;
-  w: number;
-  x: number;
-  y: number;
-}
-
-export interface AsepriteFrameTag {
-  name: string;
-  from: number;
-  to: number;
-}
-
-export interface AsepriteFrameData {
-  duration: number;
-  frame: AsepriteRectangle;
-}
-
-export interface AsepriteMetaData {
-  image: string;
-  frameTags: AsepriteFrameTag[];
-}
-
-export interface AsepriteData {
-  frames: AsepriteFrameData[];
-  meta: AsepriteMetaData;
 }
 
 /**
