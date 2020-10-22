@@ -86,7 +86,7 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     if (shapes) {
       const colliders = shapes.filter(shape => shape.type === 'collision');
 
-      if (colliders.length) {
+      if (colliders.length > 0) {
         const body = new RigidBody();
 
         for (const collider of colliders) {

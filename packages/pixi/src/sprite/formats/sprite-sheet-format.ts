@@ -1,4 +1,4 @@
-import { Grid, Struct, Vec2 } from '@heliks/tiles-engine';
+import { Grid, Struct } from '@heliks/tiles-engine';
 import { SpriteAnimationData, SpriteSheet } from '../sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { SpriteGrid } from '../sprite-grid';
