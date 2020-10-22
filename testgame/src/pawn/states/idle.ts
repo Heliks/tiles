@@ -5,6 +5,7 @@ import { WalkState } from './walk';
 import { Dodge, isDodging } from './dodge';
 import { isShooting, ShootArrow } from './shoot-arrow';
 import { CardinalDirection } from '../../components';
+import { isAttacking, MeleeAttack } from './melee-attack';
 
 /** @internal */
 function playAnimation(pawn: PawnBlackboard): void {
@@ -54,10 +55,18 @@ export class Idle implements State<PawnBlackboard> {
 
     if (isDodging(state)) {
       state.push(new Dodge());
+
+      return;
     }
 
     if (isShooting(state)) {
       state.push(new ShootArrow());
+
+      return;
+    }
+
+    if (isAttacking(state.data)) {
+      state.push(new MeleeAttack());
 
       return;
     }

@@ -27,23 +27,55 @@ export enum KeyCode {
   X = 'KeyX',
   Y = 'KeyY',
   Z = 'KeyZ',
-  Space = 'Space'
+  Space = 'Space',
+  MouseLeft = 'MouseLeft',
+  MouseRight = 'MouseRight'
 }
 
 export class InputHandler implements System {
 
-  protected keysDown = new Set();
-  protected keysUp = new Set();
+  private keysDown = new Set();
+  private keysUp = new Set();
 
   /** Contains the last known position of the hardware mouse. */
-  protected mousePos = vec2(0, 0);
+  private mousePos = vec2(0, 0);
 
   constructor() {
     document.addEventListener('mousemove', this.onMouseMove.bind(this));
-
-    // Keyboard events.
+    document.addEventListener('mousedown', this.onMouseDown.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
     document.addEventListener('keydown', this.onKeyDown.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
+  }
+
+  /** Event listener for when the hardware mouse moves. */
+  private onMouseMove(event: MouseEvent): void {
+    this.mousePos.x = event.x;
+    this.mousePos.y = event.y;
+  }
+
+  /** Handler for `mousedown` events. */
+  private onMouseDown(event: MouseEvent): void {
+    switch (event.button) {
+      case 0:
+        this.keysDown.add(KeyCode.MouseLeft);
+        break;
+      case 2:
+        this.keysDown.add(KeyCode.MouseRight);
+        break;
+    }
+  }
+
+  /** Handler for `mouseup` events. */
+  private onMouseUp(event: MouseEvent): void {
+    switch (event.button) {
+      case 0:
+        this.keysDown.delete(KeyCode.MouseLeft);
+        break;
+      case 2:
+        this.keysDown.delete(KeyCode.MouseRight);
+        break;
+    }
   }
 
   /** Event listener for when a key was pressed. */
@@ -55,12 +87,6 @@ export class InputHandler implements System {
   private onKeyUp(event: KeyboardEvent): void {
     this.keysDown.delete(event.code);
     this.keysUp.add(event.code);
-  }
-
-  /** Event listener for when the hardware mouse moves. */
-  private onMouseMove(event: MouseEvent): void {
-    this.mousePos.x = event.x;
-    this.mousePos.y = event.y;
   }
 
   /** Returns `true` if `key` is currently pressed. */
