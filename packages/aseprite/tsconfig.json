@@ -6,7 +6,8 @@
     "baseUrl": "src/",
     "outDir": "lib/",
     "types": [
-      "jest"
+      "jest",
+      "node"
     ]
   }
 }

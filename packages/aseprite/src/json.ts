@@ -21,7 +21,11 @@ export interface AsepriteMetaData {
   frameTags: AsepriteFrameTagData[];
 }
 
+export interface AsepriteFramesMap {
+  [name: string]: AsepriteFrameData;
+}
+
 export interface AsepriteData {
-  frames: AsepriteFrameData[];
+  frames: AsepriteFrameData[] | AsepriteFramesMap;
   meta: AsepriteMetaData;
 }

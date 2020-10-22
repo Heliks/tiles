@@ -5,12 +5,13 @@
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0"
   },
-  "description": "Tools for aseprite",
+  "description": "Tools for Aseprite",
   "devDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
     "@types/jest": "^25.1.2",
+    "@types/node": "^14.14.2",
     "jest": "^25.1.0",
     "jest-canvas-mock": "^2.2.0",
     "reflect-metadata": "^0.1.13",
@@ -26,7 +27,8 @@
   "name": "@heliks/tiles-aseprite",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
   "version": "0.0.0"
