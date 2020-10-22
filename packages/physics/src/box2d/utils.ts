@@ -2,7 +2,6 @@ import { b2BodyDef, b2BodyType, b2CircleShape, b2FixtureDef, b2PolygonShape, b2S
 import { Vec2 } from '@heliks/tiles-engine';
 import { Collider, Shape } from '../collider';
 import { RigidBody, RigidBodyType } from '../rigid-body';
-import { Rectangle } from '@heliks/tiles-math';
 import { Circle } from '@heliks/tiles-math';
 
 // Needs to be disabled for Box2D.
@@ -10,8 +9,6 @@ import { Circle } from '@heliks/tiles-math';
 
 /** @internal */
 function parseShape(shape: Shape): b2Shape {
-  let b2shape;
-
   // Circles.
   if (shape instanceof Circle) {
     return new b2CircleShape().Set(shape, shape.radius);

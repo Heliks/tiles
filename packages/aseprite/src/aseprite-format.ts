@@ -1,9 +1,9 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteCollection, TextureFormat } from '@heliks/tiles-pixi';
+import { SpriteCollection, Texture, TextureFormat } from '@heliks/tiles-pixi';
 import { AsepriteData } from './json';
 
 /** @internal */
-function getTexture(file: string, loader: AssetLoader, image: string) {
+function getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
   return loader.fetch(`${getDirectory(file)}/${image}`, new TextureFormat());
 }
 
