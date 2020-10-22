@@ -21,7 +21,9 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-
+    "@heliks/ecs": "^0.0.1-alpha.0",
+    "@heliks/ecs-hierarchy": "^0.0.1-alpha.0",
+    "@heliks/ecs-transform": "^0.0.1-alpha.0",
     "@heliks/event-queue": "^0.1.1",
     "@heliks/tiles-injector": "^0.0.0",
     "@heliks/tiles-math": "^0.0.0",
