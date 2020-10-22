@@ -459,6 +459,23 @@
   dependencies:
     "@types/systemjs" "^0.20.6"
 
+"@heliks/ecs-hierarchy@^0.0.1-alpha.0":
+  version "0.0.1-alpha.1"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs-hierarchy/-/ecs-hierarchy-0.0.1-alpha.1.tgz#750acc5d72b6ca6a610c4c35a0af2c8991565627"
+  integrity sha512-5W2q4CusWodu1FEKw0sSqYLhRCc4GGd9iGwX7U4cp/kRiJeBujoebQLWNP/OpTgAUxQgwgoVpCPKX7MOhNkOdw==
+
+"@heliks/ecs-transform@^0.0.1-alpha.0":
+  version "0.0.1-alpha.1"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs-transform/-/ecs-transform-0.0.1-alpha.1.tgz#9c94628737dece3e11486831548bc00a84245fc7"
+  integrity sha512-1gmfWfxaBjfo3WriVpWx+pq8OWkuZOoOKDyFjMr/G3b+kwt8wRZQkokyK+wDR7jXAR1gB58rqqyzVeCckOtUFA==
+
+"@heliks/ecs@^0.0.1-alpha.0":
+  version "0.0.1-alpha.1"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs/-/ecs-0.0.1-alpha.1.tgz#bfa6e518b2b6d124cfc7f3ca627fae2601344e6c"
+  integrity sha512-qAxjYER1sb32uQADeQZ1JC9ioe54RWW7kr3v8t354IROuuszrfBt27BHCf6g4yxPvK8N7mVO4c9wVsT8xtnnFQ==
+  dependencies:
+    "@heliks/event-queue" "^0.1.1"
+
 "@heliks/event-queue@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@heliks/event-queue/-/event-queue-0.1.1.tgz#c8461f6bd57d2b01358cb2446890715ab5765b84"
