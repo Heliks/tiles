@@ -21,7 +21,7 @@ export interface PhysicsAdapter {
    * Creates a body for `entity` in the physics world based on a rigid `body`
    * at `position`.
    */
-  createBody(entity: Entity, body: RigidBody, position: Vec2): void;
+  createBody(entity: Entity, body: RigidBody, transform: Transform): void;
 
   /** Destroys the body of `entity` in the physics world. */
   destroyBody(entity: Entity): void;
@@ -40,6 +40,9 @@ export interface PhysicsAdapter {
 
   /** Draws the adapters debug information to the renderers debug draw. */
   drawDebugData(): void;
+
+  /** Applies a linear impulse at the center of an `entity` using `force`. */
+  impulse(entity: Entity, force: Vec2): void;
 
 }
 

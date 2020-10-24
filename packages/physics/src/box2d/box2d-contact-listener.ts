@@ -42,8 +42,6 @@ export class Box2dContactListener extends b2ContactListener {
 
   /** @inheritDoc */
   public BeginContact(contact: b2Contact): void {
-    console.log('BEGIN CONTACT', contact);
-
     const entityA = contact.GetFixtureA().GetBody().GetUserData();
     const entityB = contact.GetFixtureB().GetBody().GetUserData();
 

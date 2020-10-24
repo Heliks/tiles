@@ -9,8 +9,8 @@ import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 @Injectable()
 export class SyncWorlds implements System {
 
-  /** Listens to component events on `Storage<RigidBody>`. */
-  protected body$!: Subscriber;
+  /** @internal */
+  private body$!: Subscriber;
 
   /**
    * @param adapter The physics adapter.
@@ -25,16 +25,16 @@ export class SyncWorlds implements System {
 
   /** @inheritDoc */
   public update(world: World): void {
-    const _bodies = world.storage(RigidBody);
-    const _transform = world.storage(Transform);
+    const bodies = world.storage(RigidBody);
+    const transforms = world.storage(Transform);
 
-    for (const event of _bodies.events().read(this.body$)) {
+    for (const event of bodies.events().read(this.body$)) {
       switch (event.type) {
         case ComponentEventType.Added:
           this.adapter.createBody(
             event.entity,
-            _bodies.get(event.entity),
-            _transform.get(event.entity).world
+            bodies.get(event.entity),
+            transforms.get(event.entity)
           );
           break;
         case ComponentEventType.Removed:

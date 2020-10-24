@@ -6,6 +6,7 @@ import { Box2dWorld } from './box2d';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
 import { PhysicsSystem } from './physics-system';
+import { Physics } from './physics';
 
 export class PhysicsModule implements Module {
 
@@ -28,6 +29,7 @@ export class PhysicsModule implements Module {
         token: TK_PHYSICS_CONFIG,
         value: config
       })
+      .provide(Physics)
       .provide(ContactEvents)
       .system(PhysicsSystem)
       .system(SyncWorlds)
