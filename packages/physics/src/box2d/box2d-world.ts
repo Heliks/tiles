@@ -51,8 +51,8 @@ export class Box2dWorld implements PhysicsAdapter {
   }
 
   /** @inheritDoc */
-  public createBody(entity: Entity, body: RigidBody, position: Vec2): void {
-    const bBody = this.world.CreateBody(parseBody(body, position));
+  public createBody(entity: Entity, body: RigidBody, transform: Transform): void {
+    const bBody = this.world.CreateBody(parseBody(body, transform.world));
     const bFixtureDef = new b2FixtureDef();
 
     // Add colliders as fixtures.
@@ -67,7 +67,7 @@ export class Box2dWorld implements PhysicsAdapter {
     bBody.SetUserData(entity);
     bBody.SetLinearDamping(body.damping);
 
-    bBody.SetAngle(body.rotation);
+    bBody.SetAngle(transform.rotation);
 
     // Enables continuous collision detection on the body which prevents small fixtures
     // (like bullets) from passing through thin fixtures.
@@ -126,6 +126,17 @@ export class Box2dWorld implements PhysicsAdapter {
   /** @inheritDoc */
   public drawDebugData(): void {
     this.world.DrawDebugData();
+  }
+
+  /** @inheritDoc */
+  public impulse(entity: Entity, force: Vec2): void {
+    const body = this.bodies.get(entity);
+
+    if (body) {
+      console.log(body.GetWorldCenter());
+
+      body.ApplyLinearImpulse(force, body.GetWorldCenter());
+    }
   }
 
 }
