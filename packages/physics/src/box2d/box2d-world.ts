@@ -133,8 +133,6 @@ export class Box2dWorld implements PhysicsAdapter {
     const body = this.bodies.get(entity);
 
     if (body) {
-      console.log(body.GetWorldCenter());
-
       body.ApplyLinearImpulse(force, body.GetWorldCenter());
     }
   }

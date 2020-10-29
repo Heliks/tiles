@@ -1,7 +1,7 @@
 {
   "author": "Felix Wolf",
   "dependencies": {
-    "@flyover/box2d": "https://github.com/flyover/box2d.ts.git"
+    "@flyover/box2d": "1.0.1"
   },
   "description": "Tiles Box2D Module",
   "devDependencies": {
