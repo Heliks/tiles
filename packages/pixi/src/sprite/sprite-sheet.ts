@@ -49,28 +49,31 @@ export abstract class SpriteSheet {
     return this;
   }
 
-  /** Returns the animation registered with the given `name`. */
-  public getAnimation(name: string): SpriteAnimationData | undefined {
-    return this.animations.get(name);
-  }
+  /**
+   * Returns the animation registered with the given `name`. Throws an error if no
+   * animation with that name exists.
+   */
+  public getAnimation(name: string): SpriteAnimationData {
+    const animation = this.animations.get(name);
 
-  public createAnimation(name: string, animation = new SpriteAnimation()): SpriteAnimation {
-    const data = this.getAnimation(name);
-
-    if (!data) {
+    if (!animation) {
       throw new Error(`Unknown animation "${name}"`);
     }
 
-    animation.playing = name;
-
-    // Assign animation data to sprite animation.
-    animation.frames = [...data.frames];
-
-    if (data.frameDuration) {
-      animation.frameDuration = data.frameDuration;
-    }
-
     return animation;
+  }
+
+  /**
+   * Creates a `SpriteAnimation` component from the `SpriteAnimationData` matching the
+   * given animation `name`. Throws an error if the animation does not exist.
+   */
+  public createAnimation(name: string): SpriteAnimation {
+    const data = this.getAnimation(name);
+    const anim = new SpriteAnimation(data.frames, data.frameDuration);
+
+    anim.playing = name;
+
+    return anim;
   }
 
 }

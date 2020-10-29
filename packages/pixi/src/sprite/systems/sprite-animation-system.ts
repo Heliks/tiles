@@ -28,15 +28,20 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       ? this.storage.get(display.spritesheet)?.data
       : display.spritesheet;
 
-
-    // Only create the animation if the sprite-sheet is loaded yet.
     if (sheet) {
-      sheet.createAnimation(
-        animation.transform as string,
-        animation
-      );
+      // At this point we already know that the "transform" value contains something so
+      // we can safely cast this.
+      const name = animation.transform as string;
+      const data = sheet.getAnimation(name);
 
-      animation.transform = undefined;
+      animation.reset();
+      animation.playing = name;
+
+      // Don't copy a reference here, otherwise editing the animation frames would also
+      // edit the original `AnimationData`.
+      animation.frames = [
+        ...data.frames
+      ];
     }
   }
 
@@ -52,6 +57,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       // Apply animation transform if necessary.
       if (animation.transform) {
         this.transformAnimation(animation, display);
+        animation.transform = undefined;
       }
 
       animation.elapsedTime += this.ticker.delta;
