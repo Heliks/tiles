@@ -111,7 +111,7 @@ export class InputHandler implements System {
     const code = event.code as KeyCode;
 
     // Ignore events that are continuously fired by holding the key down.
-    if (this.keysDownThisFrameQueue.has(code)) {
+    if (this.keysDown.has(code)) {
       return;
     }
 
