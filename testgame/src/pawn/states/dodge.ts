@@ -1,11 +1,11 @@
-import { State, StateMachine } from '@heliks/tiles-engine';
+import { State, StateMachine, DEG90_RAD } from '@heliks/tiles-engine';
 import { PawnBlackboard } from '../pawn-blackboard';
 import { KeyCode } from '../../input';
 import { CardinalDirection } from '../../components';
 import { SpriteAnimation } from '@heliks/tiles-pixi';
 
 export function isDodging(state: StateMachine<PawnBlackboard>): boolean {
-  return state.data.input.isKeyDown(KeyCode.Space);
+  return state.data.input.isKeyDownThisFrame(KeyCode.Space);
 }
 
 // Lookup table for animation names based on cardinal direction.
@@ -55,32 +55,30 @@ export class Dodge implements State<PawnBlackboard> {
   private vy = 0;
 
   /** Remaining amount of the of the entity acceleration. */
-  private acceleration = 0;
+  private acceleration = ACCELERATION_TIME_MS;
+
+  public onStart(_: unknown, data: PawnBlackboard): void {
+    // Play dodge animation that fits the direction in which the entity is dodging.
+    playAnimation(data);
+
+    this.vx = Math.sin(data.transform.rotation) * ACCELERATION_FORCE;
+    this.vy = -Math.cos(data.transform.rotation) * ACCELERATION_FORCE;
+  }
 
   /** @inheritDoc */
   public update(state: StateMachine<PawnBlackboard>, data: PawnBlackboard): void {
-    if (this.isDodging) {
-      if (data.animation.isComplete()) {
-        state.pop();
-      }
-      else if (this.acceleration > 0) {
-        this.acceleration -= data.ticker.delta;
-
-        // Accelerate entity.
-        data.body.setVelocity(this.vx, this.vy);
-      }
+    if (data.animation.isComplete()) {
+      state.pop();
 
       return;
     }
 
-    // Play dodge animation that fits the direction in which the entity is dodging.
-    playAnimation(data);
+    if (this.acceleration > 0) {
+      this.acceleration -= data.ticker.delta;
 
-    this.vx = Math.sin(data.direction.rad) * ACCELERATION_FORCE;
-    this.vy = -Math.cos(data.direction.rad) * ACCELERATION_FORCE;
-
-    this.acceleration = ACCELERATION_TIME_MS;
-    this.isDodging = true;
+      // Accelerate entity.
+      data.body.setVelocity(this.vx, this.vy);
+    }
   }
 
 }

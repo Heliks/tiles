@@ -79,7 +79,7 @@ export class ShootArrow implements State<PawnBlackboard> {
           break;
       }
 
-      shootArrow(world, x, y, state.data.direction, new Arrow(state.data.entity, vec2(2, 6)));
+      shootArrow(world, state.data.transform, new Arrow(state.data.entity, vec2(2, 6)));
 
       // Arrow was show, prevent it from shooting again.
       this.casting = false;

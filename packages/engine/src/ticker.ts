@@ -1,25 +1,26 @@
-export type ListenerFn = (delta: number) => void;
+/** @internal */
+type ListenerFn = (delta: number) => void;
 
 /** The ticker used to run the games update loop. */
 export class Ticker {
 
-  /** Indicates if the ticker is currently running. */
-  protected started = false;
+  /** @internal */
+  private started = false;
 
-  /** Contains all listeners that will be called during `update()`. */
-  protected listeners: ListenerFn[] = [];
+  /** @internal */
+  private listeners: ListenerFn[] = [];
 
   /** Id of the animation frame request if there is one. */
-  protected requestId?: number;
+  private requestId?: number;
 
   /** Contains the delta time in MS. */
   public delta = -1;
 
   /**
-   * The timestamp on which the last tick occurred. Contains `-1` if the
-   * ticker hasn't been started yet.
+   * Timestamp of the last frame the ticker ran. A value of `-1` means the ticker has not
+   * been started yet.
    */
-  protected lastTick = -1;
+  private lastTick = -1;
 
   /** Returns the delta time converted to seconds. */
   public getDeltaSeconds(): number {
@@ -45,8 +46,9 @@ export class Ticker {
 
   /**
    * The `requestAnimationFrame()` callback.
-   * The reason this is declared as a closure is because in high performance scenarios
-   * they are significantly faster than a method that is wrapped with `.bind()`.
+   *
+   * Note: This is declared as a closure because in high performance scenarios they are
+   *  significantly faster than a method that is wrapped with `.bind()`.
    */
   private tick = (currentTime: number): void => {
     this.requestId = undefined;
@@ -83,10 +85,7 @@ export class Ticker {
     }
   }
 
-  /**
-   * Adds the given `fn` to be called on each frame if the
-   * ticker is started.
-   */
+  /** Adds the given `fn` to be called on each frame if the ticker is started. */
   public add(fn: ListenerFn): void {
     this.listeners.push(fn);
   }

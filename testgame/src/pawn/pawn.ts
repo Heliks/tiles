@@ -1,11 +1,10 @@
 import {
-  atan2,
+  Circle,
   contains,
   Entity,
   Injectable,
   Parent,
   ProcessingSystem,
-  Rectangle,
   StateMachine,
   Subscriber,
   Ticker,
@@ -25,25 +24,14 @@ import {
   SpriteSheet,
   SpriteSheetFromTexture
 } from '@heliks/tiles-pixi';
-import { InputHandler } from '../input';
+import { InputHandler, KeyCode } from '../input';
 import { Idle } from './states';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { CardinalDirection, Direction } from '../components';
 import { GroupEvent } from '@heliks/ecs';
 import { CollisionGroups } from '../const';
-
-export interface PawnStateData {
-  animation: SpriteAnimation;
-  body: RigidBody;
-  directionIndicator: Entity;
-  direction: Direction;
-  entity: Entity;
-  input: InputHandler;
-  pawn: Pawn;
-  ticker: Ticker;
-  world: World;
-  transform: Transform;
-}
+import { PawnBlackboard } from './pawn-blackboard';
+import { Combat } from '../combat';
 
 export class Pawn {
 
@@ -74,17 +62,13 @@ function getDirectionIndicatorHandle(world: World): Handle<SpriteSheet> {
 function updateDirectionIndicator(
   origin: Transform,
   transform: Transform,
-  direction: number,
   target: Vec2
 ): void {
-  // The magic number "0.6" simply fits well with thes feet position of the player.
-  transform.local.x = Math.sin(direction) / 2;
-  transform.local.y = -Math.cos(direction) / 2 + 0.6;
+  // The magic number "0.6" simply fits well with the feet position of the player.
+  transform.local.x = Math.sin(transform.rotation) / 2;
+  transform.local.y = -Math.cos(transform.rotation) / 2;
 
-  transform.rotation = atan2(
-    target.y - transform.world.y,
-    target.x - transform.world.x
-  );
+  transform.lookAt(target);
 }
 
 /** Spawns a pawn into the `world`. */
@@ -95,7 +79,7 @@ export function spawnPawn(
   y: number,
   node?: NodeHandle
 ): void {
-  const body = RigidBody.dynamic().attach(new Rectangle(0.4, 0.4, 0, 0.1), {
+  const body = RigidBody.dynamic().attach(new Circle(0.2, 0, 0.1), {
     density: 120,
   });
 
@@ -105,6 +89,7 @@ export function spawnPawn(
   world
     .builder()
     .use(body)
+    .use(new Combat())
     .use(new Direction())
     .use(new Pawn())
     .use(new Transform(x, y))
@@ -116,8 +101,7 @@ export function spawnPawn(
 @Injectable()
 export class PawnController extends ProcessingSystem {
 
-  private readonly input  = new InputHandler();
-  private readonly states = new Map<Entity, StateMachine<PawnStateData>>();
+  private readonly states = new Map<Entity, StateMachine<PawnBlackboard>>();
 
   /** @internal */
   private group$!: Subscriber;
@@ -153,13 +137,13 @@ export class PawnController extends ProcessingSystem {
       .use(transform.clone())
       .build();
 
-    const state = new StateMachine<PawnStateData>({
+    const state = new StateMachine<PawnBlackboard>({
       animation: world.storage(SpriteAnimation).get(entity),
       direction: world.storage(Direction).get(entity),
       body: world.storage(RigidBody).get(entity),
       directionIndicator,
       entity,
-      input: this.input,
+      input: world.get(InputHandler),
       ticker: this.ticker,
       transform,
       pawn: world.storage(Pawn).get(entity),
@@ -199,13 +183,11 @@ export class PawnController extends ProcessingSystem {
       const direction = world.storage(Direction).get(entity);
       const transform = world.storage(Transform).get(entity);
 
-      // Set the direction in which we are facing or aiming projectiles etc.
-      direction.lookAt(transform.world, obsPoint);
+      transform.lookAt(obsPoint);
 
       updateDirectionIndicator(
         transform,
         world.storage(Transform).get(state.data.directionIndicator),
-        direction.rad,
         obsPoint
       );
 

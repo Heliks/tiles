@@ -5,10 +5,12 @@
   "publishConfig": {
     "registry": "http://193.31.26.163:4873/"
   },
-  "workspaces": [
-    "packages/*",
-    "testgame"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "testgame"
+    ]
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
@@ -24,7 +26,7 @@
     "test": "lerna run test --no-prefix --stream",
     "build": "lerna run --stream --sort build",
     "build:clean": "rimraf packages/*/*/lib",
-    "build:watch": "lerna run build:watch --no-prefix --parallel",
-    "clean": "lerna clean && rm -rf node_modules"
+    "build:watch": "yarn build:clean && lerna run build:watch --no-prefix --parallel",
+    "clean": "yarn build:clean && lerna clean && rm -rf node_modules"
   }
 }

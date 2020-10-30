@@ -1,6 +1,7 @@
 import {
   contains,
   Entity,
+  Inject,
   Injectable,
   ProcessingSystem,
   Subscriber,
@@ -11,10 +12,11 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { ContactEvents, RigidBody } from '@heliks/tiles-physics';
-import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
-import { Direction, Health } from './components';
+import { ShapeDisplay, ShapeKind, SPRITE_SHEET_STORAGE } from '@heliks/tiles-pixi';
+import { Health } from './components';
 import { CollisionGroups } from './const';
 import { rand, Rectangle } from '@heliks/tiles-math';
+import { AssetLoader } from '@heliks/tiles-assets';
 
 /** Component for an arrow projectile. */
 export class Arrow {
@@ -42,25 +44,22 @@ export class Arrow {
 }
 
 /** Shoots an `arrow` in `direction` from the `x` and `y` position. */
-export function shootArrow(world: World, x: number, y: number, direction: Direction, arrow: Arrow): Entity {
+export function shootArrow(world: World, transform: Transform, arrow: Arrow): Entity {
   const body = RigidBody.dynamic().attach(new Rectangle(0.1, 0.5));
 
   // Only allow the body to collide with the terrain
   // Todo: Should collide with enemies too.
-  body.mask = CollisionGroups.Terrain;
+  body.mask = CollisionGroups.Terrain | CollisionGroups.Enemy;
 
   body.damping = 0.5;
   body.isBullet = true;
 
-  // Apply rotation and velocity according to the direction in which the arrow is shot.
-  body.rotation = direction.rad;
-
-  body.velocity.x = Math.sin(body.rotation) * 25;
-  body.velocity.y = -Math.cos(body.rotation) * 25;
+  body.velocity.x = Math.sin(transform.rotation) * 25;
+  body.velocity.y = -Math.cos(transform.rotation) * 25;
 
   return world
     .builder()
-    .use(new Transform(x, y))
+    .use(transform.clone())
     .use(new ShapeDisplay(ShapeKind.Rect, vec2(0.1, 0.5)).fill(0xFF00FF))
     .use(arrow)
     .use(body)
@@ -81,14 +80,16 @@ export class ArrowSystem extends ProcessingSystem {
   private readonly event$: Subscriber;
 
   constructor(
+    private readonly assets: AssetLoader,
     private readonly events: ContactEvents,
-    private readonly ticker: Ticker
+    private readonly ticker: Ticker,
+    @Inject(SPRITE_SHEET_STORAGE)
+    private readonly s: any
   ) {
     super(contains(Arrow));
 
     this.event$ = events.subscribe();
   }
-
 
   /** @inheritDoc */
   public update(world: World): void {
