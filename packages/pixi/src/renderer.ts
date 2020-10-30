@@ -45,7 +45,12 @@ function initPixi(config: RendererConfig): PIXI.Renderer {
     _config.antialias = false;
   }
 
-  return new PIXI.Renderer(_config);
+  const renderer = new PIXI.Renderer(_config);
+
+  // Disable context menu on the renderers <canvas> DOM element.
+  renderer.view.addEventListener('contextmenu', e => e.preventDefault());
+
+  return renderer;
 }
 
 
