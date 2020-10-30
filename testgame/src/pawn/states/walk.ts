@@ -3,6 +3,7 @@ import { KeyCode } from '../../input';
 import { isShooting, ShootArrow } from './shoot-arrow';
 import { Dodge, isDodging } from './dodge';
 import { PawnBlackboard } from '../pawn-blackboard';
+import { isAttacking, MeleeAttack } from './melee-attack';
 
 export class WalkState implements State<PawnBlackboard> {
 
@@ -23,6 +24,12 @@ export class WalkState implements State<PawnBlackboard> {
       return;
     }
 
+    if (isAttacking(state.data)) {
+      state.switch(new MeleeAttack());
+
+      return;
+    }
+
     let vx = 0;
     let vy = 0;
 
@@ -36,7 +43,7 @@ export class WalkState implements State<PawnBlackboard> {
     }
     // Move right
     else if (input.isKeyDown(KeyCode.D)) {
-      animation.play('walk-right');
+      animation.play('walk-right').flip(false);
       vx += velocity;
     }
 

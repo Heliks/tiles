@@ -34,8 +34,17 @@ export enum KeyCode {
 
 export class InputHandler implements System {
 
-  private keysDown = new Set();
-  private keysUp = new Set();
+  /** Keys that are currently being pressed down. */
+  private readonly keysDown = new Set<KeyCode>();
+
+  /** @internal */
+  private readonly keysDownThisFrameQueue = new Set<KeyCode>();
+
+  /** @internal */
+  private readonly keysDownThisFrame = new Set<KeyCode>();
+
+  /** Keys that were recently released. */
+  private keysUp = new Set<KeyCode>();
 
   /** Contains the last known position of the hardware mouse. */
   private mousePos = vec2(0, 0);
@@ -48,6 +57,14 @@ export class InputHandler implements System {
     document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
+  /** Simulates a key press event using `key`. */
+  public press(key: KeyCode): this {
+    this.keysDown.add(key);
+    this.keysDownThisFrameQueue.add(key);
+
+    return this;
+  }
+
   /** Event listener for when the hardware mouse moves. */
   private onMouseMove(event: MouseEvent): void {
     this.mousePos.x = event.x;
@@ -58,10 +75,10 @@ export class InputHandler implements System {
   private onMouseDown(event: MouseEvent): void {
     switch (event.button) {
       case 0:
-        this.keysDown.add(KeyCode.MouseLeft);
+        this.press(KeyCode.MouseLeft);
         break;
       case 2:
-        this.keysDown.add(KeyCode.MouseRight);
+        this.press(KeyCode.MouseRight);
         break;
     }
   }
@@ -78,15 +95,30 @@ export class InputHandler implements System {
     }
   }
 
-  /** Event listener for when a key was pressed. */
-  private onKeyDown(event: KeyboardEvent): void {
-    this.keysDown.add(event.code);
-  }
-
   /** Event listener for when a key was released. */
   private onKeyUp(event: KeyboardEvent): void {
-    this.keysDown.delete(event.code);
-    this.keysUp.add(event.code);
+    // Todo: Cast
+    const code = event.code as KeyCode;
+
+    // Delete from down keys as key can no longer present if we received this event.
+    this.keysDown.delete(code);
+    this.keysUp.add(code);
+  }
+
+  /** Event listener for when a key was pressed. */
+  private onKeyDown(event: KeyboardEvent): void {
+    // Todo: Cast
+    const code = event.code as KeyCode;
+
+    // Ignore events that are continuously fired by holding the key down.
+    if (this.keysDownThisFrameQueue.has(code)) {
+      return;
+    }
+
+    this.press(code);
+
+    this.keysDownThisFrameQueue.add(code);
+    this.keysDown.add(code);
   }
 
   /** Returns `true` if `key` is currently pressed. */
@@ -94,24 +126,35 @@ export class InputHandler implements System {
     return this.keysDown.has(key);
   }
 
+  /**
+   * Returns `true` if `key` was pressed down in the current frame.
+   *
+   * Note: Because of limitations some key-presses from the last frame are counted for
+   *  this one as well.
+   */
+  public isKeyDownThisFrame(key: KeyCode): boolean {
+    return this.keysDownThisFrame.has(key) || this.keysDownThisFrameQueue.has(key);
+  }
+
   /** Returns the last known position of the mouse. */
   public getMousePos(): Vec2 {
     return this.mousePos;
   }
 
-  private mousePosAxis = vec2(0, 0);
+  /** @inheritDoc */
+  public update(): void {
+    // Copy all keys that were pressed halfway through the last frame and copy them to
+    // the current one. This is needed to circumvent the fact that the input handler
+    // usually runs very early in the update loop and would therefore clear that info
+    // before any other system had time to access it. This introduces a small side effect
+    // were some key-presses from the last frame are counted for this frame as well.
+    this.keysDownThisFrame.clear();
 
-  public getMousePosAxis(origin: Vec2, out = vec2(0, 0)): Vec2 {
-    out.x = this.mousePos.x - origin.x;
-    out.y = this.mousePos.y - origin.y;
+    for (const value of this.keysDownThisFrameQueue.values()) {
+      this.keysDownThisFrame.add(value);
+    }
 
-    return out;
+    this.keysDownThisFrameQueue.clear();
   }
-
-  public setOrigin() {
-
-  }
-
-  public update(): void {}
 
 }

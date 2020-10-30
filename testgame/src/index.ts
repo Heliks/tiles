@@ -9,8 +9,10 @@ import { InputHandler } from './input';
 import { PawnController, spawnPawn } from './pawn';
 import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
-import { lookupEntity } from './utils';
+import { loadSpriteSheet, lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
+import { spawnJosh } from './spawners/josh';
+import { CombatSystem } from './combat';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -61,9 +63,9 @@ function getDomTarget(): HTMLElement {
 
 window.onload = () => {
   const game = new GameBuilder()
-    .system(InputHandler)
     .system(TransformSystem)
-    .module(new AssetsModule())
+    .system(InputHandler)
+    .module(new AssetsModule('assets'))
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
     .module(
       new PixiModule({
@@ -73,7 +75,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(PhysicsDebugDraw)
+        // .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -81,13 +83,13 @@ window.onload = () => {
     .system(DebugDeathReporter)
     .module(new TilemapModule())
     .module(new TmxModule())
+    .system(CombatSystem)
     .system(PawnController)
     .build();
 
   setupDebugGlobals(game);
 
   // Configure asset directory and add renderer to DOM.
-  game.world.get(AssetLoader).setBaseUrl('assets');
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
@@ -115,12 +117,12 @@ window.onload = () => {
       spawnPawn(game.world, pawnSpriteSheet, x, y, layer.node);
 
       // Spawn Josh in a random location near the player
-      // spawnJosh(
-      //   game.world,
-      //   loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
-      //   x + rand(-3, 3),
-      //   y + rand(-3, 3)
-      // );
+      spawnJosh(
+        game.world,
+        loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
+        25,
+        27
+      );
     });
   });
 };

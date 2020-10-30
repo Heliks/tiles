@@ -42,23 +42,22 @@ export class AddProvider implements Task {
   /** @inheritDoc */
   public exec(game: Game): void {
     const container = game.container;
-    const provider = this.provider;
 
     // Class provider.
-    if (typeof provider === 'function') {
-      container.make(provider, [], true);
+    if (typeof this.provider === 'function') {
+      container.make(this.provider, [], true);
     }
     // Factory provider.
-    else if (isFactoryProvider(provider)) {
+    else if (isFactoryProvider(this.provider)) {
       // If the singleton flag is set it will also be bound to the service
       // container as such.
-      provider.singleton
-        ? container.singleton(provider.token, provider.factory)
-        : container.factory(provider.token, provider.factory);
+      this.provider.singleton
+        ? container.singleton(this.provider.token, this.provider.factory)
+        : container.factory(this.provider.token, this.provider.factory);
     }
     // Value provider.
     else {
-      container.bind(provider.token, provider.value);
+      container.bind(this.provider.token, this.provider.value);
     }
   }
 

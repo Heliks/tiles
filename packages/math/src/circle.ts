@@ -21,8 +21,8 @@ export function deg2rad(value: number): number {
 }
 
 /**
- * Returns the angle (in radians) from the x axis to a point. Unlike `Math.atan2` the
- * radian starting position is 12 o'clock instead of 3.
+ * Returns the angle (in radians) from the x axis to a point. Unlike `Math.atan2` this
+ * assumes a grid where the y axis points down instead of up.
  */
 export function atan2(y: number, x: number): number {
   return Math.atan2(y, x) + DEG90_RAD;
