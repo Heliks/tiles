@@ -6,14 +6,14 @@ import { CollisionGroups } from '../../const';
 import { Arrow } from '../../arrow';
 import { ShapeDisplay, ShapeKind } from '@heliks/tiles-pixi';
 import { Combat } from '../../combat';
-
-const COMBO_TIME_LIMIT = 300;
+import { Dodge, isDodging } from './dodge';
 
 /** Force that is applied to the entity that performs the melee swing. */
 const MELEE_ATTACK_SWING_FORCE = 3;
+const MELEE_ATTACK_SWING_TIME = 300;
 
-
-export function isAttacking(pawn: PawnBlackboard) {
+/** */
+export function isAttacking(pawn: PawnBlackboard): boolean {
   return pawn.input.isKeyDownThisFrame(KeyCode.MouseLeft);
 }
 
@@ -23,7 +23,6 @@ function playAnimation(pawn: PawnBlackboard, combo: number): void {
 
   switch (combo) {
     case 0:
-    case 2:
       pawn.animation.play('sword_down1', false);
       break;
     case 1:
@@ -60,6 +59,9 @@ export function spawnHurtBox(
 
 export class MeleeAttack implements State<PawnBlackboard> {
 
+  /** @internal */
+  private isHitBoxSpawned = false;
+
   /** @inheritDoc */
   public onStart(state: StateMachine<PawnBlackboard>): void {
     const { entity, transform, world } = state.data;
@@ -74,8 +76,7 @@ export class MeleeAttack implements State<PawnBlackboard> {
 
     playAnimation(state.data, combat.meleeAttackComboCounter);
 
-    combat.meleeAttackComboCounter++;
-    combat.meleeAttackComboRemainingTime = -1;
+    combat.meleeAttackSwingTimer = MELEE_ATTACK_SWING_TIME;
 
     // Simulate a forwards motion caused by the entity swinging its weapon with force
     // instead of awkwardly waving it around while fixed in place.
@@ -83,36 +84,45 @@ export class MeleeAttack implements State<PawnBlackboard> {
       Math.sin(transform.rotation) * MELEE_ATTACK_SWING_FORCE,
       -Math.cos(transform.rotation) * MELEE_ATTACK_SWING_FORCE
     );
-
-    // Reset combo if this was the last attack in it.
-    if (combat.meleeAttackComboCounter > 2) {
-      combat.meleeAttackSwingTimer += 600;
-      combat.meleeAttackComboCounter = 0;
-    }
-
-    spawnHurtBox(
-      state.data.world,
-      state.data.transform,
-      new Arrow(state.data.entity, vec2(5, 10))
-    );
   }
 
   /** @inheritDoc */
-  public update(state: StateMachine<PawnBlackboard>): void {
-    if (state.data.animation.isComplete()) {
-      state.data.world
-        .storage(Combat)
-        .get(state.data.entity)
-        .meleeAttackComboRemainingTime = COMBO_TIME_LIMIT;
+  public update(state: StateMachine<PawnBlackboard>): unknown {
+    const { animation, entity, world } = state.data;
+    const combat = world.storage(Combat).get(entity);
 
-      // If we are still attacking restart the state to chain attacks without downtime,
-      // otherwise exit back to previous state.
-      if (isAttacking(state.data)) {
-        this.onStart(state);
-      }
-      else {
-        state.pop();
-      }
+    if (combat.meleeAttackSwingTimer > 0) {
+      return;
+    }
+
+    // After the weapon swing is complete we can spawn the actual hit-box that damages
+    // that damages enemies.
+    if (!this.isHitBoxSpawned) {
+      spawnHurtBox(world, state.data.transform, new Arrow(entity, vec2(5, 10)));
+
+      this.isHitBoxSpawned = true;
+    }
+
+    // Chain next attack in the combo.
+    if (isAttacking(state.data)) {
+      combat.increaseComboCounter();
+
+      // Allow hitbox to be spawned again.
+      this.isHitBoxSpawned = false;
+
+      return this.onStart(state);
+    }
+
+    // Allow canceling the attack animation early by dodging.
+    if (isDodging(state)) {
+      return state.switch(new Dodge());
+    }
+
+    // Exit the state if animation is complete.
+    if (animation.isComplete()) {
+      combat.meleeAttackComboCounter = 0;
+
+      return state.pop();
     }
   }
 
