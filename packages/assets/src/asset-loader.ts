@@ -6,10 +6,9 @@ import { Format, LoadType } from './formats';
 export class AssetLoader {
 
   /**
-   * The baseURL that is added in front of to every file path that this loader
-   * attempts to load.
+   * @param baseUrl Directory from which the loader is attempting to load assets.
    */
-  protected baseUrl = '';
+  constructor(private baseUrl: string) {}
 
   /** Combines the given `path` with the loaders [[baseUrl]]. */
   public getPath(path: string): string {
