@@ -6,7 +6,7 @@
     "@heliks/tiles-pixi": "^0.0.0",
     "@heliks/tiles-tilemap": "^0.0.0"
   },
-  "description": "TMX loader for the Tiled tilemap module.",
+  "description": "Tiled loader",
   "devDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
@@ -27,7 +27,8 @@
   "name": "@heliks/tiles-tmx",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
   "version": "0.0.0"

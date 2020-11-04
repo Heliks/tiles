@@ -1,3 +1,5 @@
+import { hasFlag, parseGID, TmxGIDFlag } from "./gid";
+
 export interface TmxObjectData {
   gid: number;
   height: number;
@@ -19,6 +21,12 @@ export class Tile {
   /** Position on Y axis in px. */
   public y = 0;
 
+  /** If `true` the object will be flipped on the x axis. */
+  public flipX = false;
+
+  /** If `true` the object will be flipped on the y axis. */
+  public flipY = false;
+
   /**
    * @param id
    * @param tileId
@@ -32,26 +40,17 @@ export class Tile {
 
 /** Creates a `Tile` from object `data`. */
 export function tmxParseObject(data: TmxObjectData): Tile {
-  const tile = new Tile(data.id, data.gid);
+  const tile = new Tile(data.id, parseGID(data.gid));
 
   tile.x = data.x + (data.width / 2);
   tile.y = data.y - (data.height / 2);
 
+  tile.flipX = hasFlag(data.gid, TmxGIDFlag.FlipX);
+  tile.flipY = hasFlag(data.gid, TmxGIDFlag.FlipY);
+
   return tile;
 }
 
-/*
-export function tmxConvertObjectToShape(data: TmxObject): Shape {
-  const shape = new Shape();
-
-  // Free drawn shapes are anchored on their top-left corner. Normalize by
-  // converting it to center.
-  tile.x = data.x + (data.width / 2);
-  tile.y = data.x + (data.height / 2);
-
-  return shape;
-}
- */
 
 
 
