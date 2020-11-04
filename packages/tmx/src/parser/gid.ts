@@ -17,7 +17,7 @@ const TMX_GID_MASK =
 /**
  * Extracts a global ID from a Tiled "gid". This is required because in Tiled a GID can
  * have Bitflags for transformations attached which would result in an invalid global
- * ID if used correctly.
+ * ID if used directly.
  */
 export function parseGID(gid: number): number {
   return gid & ~TMX_GID_MASK;
