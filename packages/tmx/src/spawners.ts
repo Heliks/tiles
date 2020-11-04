@@ -64,15 +64,20 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
     const tileset = map.tileset(obj.tileId);
     const tileId = tileset.toLocal(obj.tileId) - 1;
 
+    const sprite = new SpriteDisplay(
+      tileset.spritesheet,
+      tileId,
+      node
+    );
+
+    // Flip sprite accordingly.
+    sprite.flip(obj.flipX, obj.flipY);
+
     const entity = world
       .builder()
       // Convert pixel position to world coordinates.
       .use(new Transform(obj.x / us, obj.y / us))
-      .use(new SpriteDisplay(
-        tileset.spritesheet,
-        tileId,
-        node
-      ));
+      .use(sprite);
 
     const properties = tileset.properties.get(tileId);
 
