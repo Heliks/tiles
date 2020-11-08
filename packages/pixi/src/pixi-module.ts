@@ -1,12 +1,11 @@
 import { ClassType, GameBuilder, Module, Provider } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { parseConfig, RENDERER_CONFIG_TOKEN, RENDERER_PLUGINS_TOKEN, RendererConfig } from './config';
+import { parseConfig, RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';
-import { RendererSystem } from './renderer-system';
+import { RENDERER_PLUGINS_TOKEN, RendererPlugin, RendererSystem } from './renderer-system';
 import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
 import { Stage } from './stage';
 import { ShapeDisplaySystem } from './shape-display';
-import { RendererPlugin } from './types';
 import { Camera } from './camera';
 import { ScreenDimensions } from './screen-dimensions';
 import { DebugDraw } from './debug-draw';
@@ -72,10 +71,9 @@ export class PixiModule implements Module {
       .provide(DebugDraw)
       .provide(Stage)
       .provide(Renderer)
-      // .provide(Camera)
       .provide(this.getPluginProvider())
-      // Should run before the SpriteDisplaySystem so that sprites are updated on the same
-      // frame where the animation possibly transformed them.
+      // Should run before the SpriteDisplaySystem so that sprites are updated on the
+      // same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
       .system(SpriteDisplaySystem)
       .system(ShapeDisplaySystem)

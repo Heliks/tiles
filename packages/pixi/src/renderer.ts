@@ -199,8 +199,6 @@ export class Renderer {
       dim.offset.y = this.camera.screen.y
     );
 
-    this.stage.updateNodes();
-
     // Render the final image.
     this.renderer.render(this.root);
   }
