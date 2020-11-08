@@ -7,9 +7,10 @@ export type Shape = Circle | Rectangle;
 export interface ColliderData {
   /**
    * Density of the collider measured in kilograms per square meter. A higher density
-   * means a heavier collider and therefore a heavier rigid body. For example a
-   * rectangular collider with a size 2x2m and a density of `80` will have a total weight
-   * of 160kg.
+   * means a heavier collider and therefore a heavier rigid body. For example a collider
+   * with a size 2x2m and a density of `80` will have a total weight of 160kg. Be aware
+   * that in top-down games where there is usually no gravity the object might still
+   * behave lighter than anticipated.
    */
   density: number;
   /**
