@@ -1,12 +1,15 @@
 import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
-import { NodeHandle } from '../../stage';
+import { Entity } from '@heliks/tiles-engine';
 
 /**
  * Component used to render a sprite.
  */
-export class SpriteDisplay extends Sprite {
+export class SpriteDisplay {
+
+  /** The PIXI.JS internal sprite. This is only for internal use. */
+  public readonly _sprite = new Sprite();
 
   /** Indicates if the sprite needs to be re-rendered.*/
   public dirty = true;
@@ -21,19 +24,17 @@ export class SpriteDisplay extends Sprite {
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
-   * @param node (optional) Reference to the node to which this sprite display should
-   *  be attached to as opposed to the stage root.
+   * @param node (optional) An entity with a `RenderNode` component that acts as a
+   *  parent node in the renderer graph.
    */
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
-    public node?: NodeHandle
+    public node?: Entity
   ) {
-    super();
-
     // The engine uses center aligned positions instead of top-left. This will save us
     // a calculation in the renderer `update()`.
-    this.anchor.set(0.5);
+    this._sprite.anchor.set(0.5);
   }
 
   /**

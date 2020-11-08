@@ -1,5 +1,4 @@
 import { token } from '@heliks/tiles-engine';
-import { RendererPlugin } from './types';
 
 /** Configuration for the renderer module. */
 export interface RendererConfig {
@@ -42,7 +41,6 @@ export interface RendererConfig {
 
 // Injector tokens.
 export const RENDERER_CONFIG_TOKEN = token<RendererConfig>();
-export const RENDERER_PLUGINS_TOKEN = token<RendererPlugin[]>();
 
 /** Parses a `Partial<RendererConfig>` and fills missing keys with fallback values. */
 export function parseConfig(config: Partial<RendererConfig>): RendererConfig {
