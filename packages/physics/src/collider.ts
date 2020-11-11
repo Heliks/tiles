@@ -10,7 +10,7 @@ export interface ColliderData {
    * The id of the material or `MaterialData` that should be used for the physical
    * properties of this collider. If not set a default material will be used.
    */
-  material?: MaterialData | MaterialId;
+  material?: MaterialId;
   /**
    * If set to `true` the collider will act as a sensor. Sensors will detect collisions
    * but won't produce any responses and can only collide when one of the colliding
@@ -27,7 +27,7 @@ export interface ColliderData {
 export class Collider implements ColliderData {
 
   /** @inheritDoc */
-  public material?: MaterialData | MaterialId;
+  public material?: MaterialId;
 
   /** @inheritDoc */
   public sensor = false;

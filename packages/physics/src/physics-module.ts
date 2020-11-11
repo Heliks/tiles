@@ -4,7 +4,7 @@ import { ContactEvents } from './events';
 import { Box2dWorld } from './box2d';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
-import { PhysicsSystem } from './physics-system';
+import { UpdateWorld } from './update-world';
 import { Physics } from './physics';
 
 export class PhysicsModule implements Module {
@@ -29,7 +29,7 @@ export class PhysicsModule implements Module {
         value: config
       })
       .provide(ContactEvents)
-      .system(PhysicsSystem)
+      .system(UpdateWorld)
       .system(SyncWorlds)
       .system(SyncBodies)
   }

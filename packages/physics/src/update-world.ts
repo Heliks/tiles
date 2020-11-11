@@ -1,9 +1,9 @@
 import { Injectable, System, Ticker, World } from '@heliks/tiles-engine';
 import { Physics } from './physics';
 
-/** Synchronizes `RigidBody` components with their counterpart in the physics world. */
+/** Moves the physics world forwards in time based on the tickers delta time. */
 @Injectable()
-export class PhysicsSystem implements System {
+export class UpdateWorld implements System {
 
   /**
    * @param adapter The physics adapter.
