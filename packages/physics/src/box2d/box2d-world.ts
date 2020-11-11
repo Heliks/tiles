@@ -64,11 +64,9 @@ export class Box2dWorld extends Physics {
       def.isSensor = true;
     }
 
-    // Assign material
-    if (collider.material) {
-      const material = typeof collider.material !== 'object'
-        ? this.getMaterial(collider.material)
-        : collider.material;
+    // Assign material. Hard check here because the number 0 is a valid material id.
+    if (collider.material !== undefined) {
+      const material = this.getMaterial(collider.material);
 
       def.density = material.density;
       def.friction = material.friction;

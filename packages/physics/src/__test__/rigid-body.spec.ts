@@ -1,5 +1,5 @@
 import { Rectangle } from '@heliks/tiles-math';
-import { RigidBody } from './rigid-body';
+import { RigidBody } from '../rigid-body';
 
 describe('RigidBody', () => {
   it('should attach colliders', () => {
