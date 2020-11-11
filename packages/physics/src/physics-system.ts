@@ -1,5 +1,5 @@
-import { Inject, Injectable, System, Ticker, World } from '@heliks/tiles-engine';
-import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
+import { Injectable, System, Ticker, World } from '@heliks/tiles-engine';
+import { Physics } from './physics';
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */
 @Injectable()
@@ -10,8 +10,7 @@ export class PhysicsSystem implements System {
    * @param ticker [[Ticker]].
    */
   constructor(
-    @Inject(ADAPTER_TK)
-    private readonly adapter: PhysicsAdapter,
+    private readonly adapter: Physics,
     private readonly ticker: Ticker
   ) {}
 

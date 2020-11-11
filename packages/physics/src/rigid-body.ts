@@ -63,12 +63,6 @@ export class RigidBody {
    */
   public mask = COLLIDE_ALL_MASK;
 
-  /**
-   * Value between 0 and 1 that determines how "bouncy" each collider should be, closer
-   * to 0 is less bouncy, closer to 1 more.
-   */
-  public restitution = 0;
-
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
 

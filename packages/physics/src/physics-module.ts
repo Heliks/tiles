@@ -1,7 +1,6 @@
 import { GameBuilder, Module, vec2 } from '@heliks/tiles-engine';
 import { parseConfig, PhysicsConfig, TK_PHYSICS_CONFIG } from './config';
 import { ContactEvents } from './events';
-import { ADAPTER_TK } from './physics-adapter';
 import { Box2dWorld } from './box2d';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
@@ -22,14 +21,13 @@ export class PhysicsModule implements Module {
     builder
       // Todo: Make this configurable
       .provide({
-        token: ADAPTER_TK,
+        token: Physics,
         value: new Box2dWorld(vec2(0, 0))
       })
       .provide({
         token: TK_PHYSICS_CONFIG,
         value: config
       })
-      .provide(Physics)
       .provide(ContactEvents)
       .system(PhysicsSystem)
       .system(SyncWorlds)

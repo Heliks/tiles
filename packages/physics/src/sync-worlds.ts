@@ -1,6 +1,6 @@
-import { ComponentEventType, Inject, Injectable, Subscriber, System, Transform, World } from '@heliks/tiles-engine';
+import { ComponentEventType, Injectable, Subscriber, System, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from './rigid-body';
-import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
+import { Physics } from './physics';
 
 /**
  * Synchronizes the entity world with the physics world. E.g. it spawns a body when a
@@ -13,9 +13,9 @@ export class SyncWorlds implements System {
   private body$!: Subscriber;
 
   /**
-   * @param adapter The physics adapter.
+   * @param physics The physics adapter.
    */
-  constructor(@Inject(ADAPTER_TK) private readonly adapter: PhysicsAdapter) {}
+  constructor(private readonly physics: Physics) {}
 
   /** @inheritDoc */
   public boot(world: World): void {
@@ -31,14 +31,14 @@ export class SyncWorlds implements System {
     for (const event of bodies.events().read(this.body$)) {
       switch (event.type) {
         case ComponentEventType.Added:
-          this.adapter.createBody(
+          this.physics.createBody(
             event.entity,
             bodies.get(event.entity),
             transforms.get(event.entity)
           );
           break;
         case ComponentEventType.Removed:
-          this.adapter.destroyBody(event.entity);
+          this.physics.destroyBody(event.entity);
           break;
       }
     }
