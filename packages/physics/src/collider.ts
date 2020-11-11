@@ -1,5 +1,5 @@
 import { Circle, Rectangle } from '@heliks/tiles-math';
-import { MaterialData, MaterialId } from './material';
+import { MaterialId } from './material';
 
 /** A shape that can be attached to a collider to give it its physical form. */
 export type Shape = Circle | Rectangle;
@@ -7,8 +7,8 @@ export type Shape = Circle | Rectangle;
 /** Collider config. */
 export interface ColliderData {
   /**
-   * The id of the material or `MaterialData` that should be used for the physical
-   * properties of this collider. If not set a default material will be used.
+   * The id of the material that should be used for the physical properties of this
+   * collider. If not set a default material will be used.
    */
   material?: MaterialId;
   /**
