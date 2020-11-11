@@ -1,16 +1,16 @@
-import { b2Body, b2FixtureDef, b2World } from '@flyover/box2d';
+/* eslint-disable new-cap */
+import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
 import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Renderer } from '@heliks/tiles-pixi';
 import { ContactEvents } from '../events';
-import { PhysicsAdapter } from '../physics-adapter';
 import { RigidBody } from '../rigid-body';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { Box2dDebugDraw } from './box2d-debug-draw';
-import { parseBody, parseCollider } from './utils';
+import { b2ParseBodyType, b2ParseShape } from './utils';
+import { Physics } from '../physics';
+import { Collider } from '../collider';
 
-// Needs to be disabled for Box2D.
-/* eslint-disable new-cap */
-export class Box2dWorld implements PhysicsAdapter {
+export class Box2dWorld extends Physics {
 
   /**
    * How many iterations are allowed for the physics velocity calculation phase. Less
@@ -31,6 +31,8 @@ export class Box2dWorld implements PhysicsAdapter {
   private readonly world: b2World;
 
   constructor(gravity: Vec2) {
+    super();
+
     // noinspection JSPotentiallyInvalidConstructorUsage
     this.world = new b2World(gravity);
   }
@@ -50,14 +52,51 @@ export class Box2dWorld implements PhysicsAdapter {
     this.world.Step(delta, this.velocityIterations, this.positionIterations);
   }
 
+  /**
+   * Parses a `collider` and assigns the parsed data to `def`. This is used internally
+   * to convert from `Collider` -> `b2FixtureDef` -> `b2Fixture`.
+   */
+  private parseCollider(body: RigidBody, collider: Collider, def: b2FixtureDef): void {
+    // Attach the shape to the fixture.
+    def.shape = b2ParseShape(collider.shape);
+
+    if (collider.sensor) {
+      def.isSensor = true;
+    }
+
+    // Assign material
+    if (collider.material) {
+      const material = typeof collider.material !== 'object'
+        ? this.getMaterial(collider.material)
+        : collider.material;
+
+      def.density = material.density;
+      def.friction = material.friction;
+      def.restitution = material.restitution;
+    }
+
+    // Collision groups are inherited by the rigid body itself.
+    def.filter.categoryBits = body.group;
+    def.filter.maskBits = body.mask;
+  }
+
   /** @inheritDoc */
   public createBody(entity: Entity, body: RigidBody, transform: Transform): void {
-    const bBody = this.world.CreateBody(parseBody(body, transform.world));
+    const def = new b2BodyDef();
+
+    def.fixedRotation = !body.rotate;
+    def.type = b2ParseBodyType(body.type);
+
+    // Set position and velocity.
+    def.position.Set(transform.world.x, transform.world.y);
+    def.linearVelocity.Set(body.velocity.x, body.velocity.y);
+
+    const bBody = this.world.CreateBody(def);
     const bFixtureDef = new b2FixtureDef();
 
     // Add colliders as fixtures.
     for (const collider of body.colliders) {
-      parseCollider(body, bFixtureDef, collider);
+      this.parseCollider(body, collider, bFixtureDef);
 
       bBody.CreateFixture(bFixtureDef);
     }

@@ -1,6 +1,6 @@
-import { contains, Inject, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
-import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
+import { contains, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from './rigid-body';
+import { Physics } from './physics';
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */
 @Injectable()
@@ -9,7 +9,7 @@ export class SyncBodies extends ProcessingSystem {
   /**
    * @param adapter The physics adapter.
    */
-  constructor(@Inject(ADAPTER_TK) private readonly adapter: PhysicsAdapter) {
+  constructor(private readonly adapter: Physics) {
     super(contains(RigidBody, Transform));
   }
 

@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@heliks/tiles-engine';
+import { Injectable } from '@heliks/tiles-engine';
 import { Renderer, RendererPlugin } from '@heliks/tiles-pixi';
-import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
+import { Physics } from './physics';
 
 /**
  * A `RendererPlugin` that can be used to draw rigid body debug information to the
@@ -10,20 +10,19 @@ import { ADAPTER_TK, PhysicsAdapter } from './physics-adapter';
 export class PhysicsDebugDraw implements RendererPlugin {
 
   /**
-   * @param adapter The physics adapter.
+   * @param physics The physics adapter.
    * @param renderer [[Renderer]]
    */
   constructor(
-    @Inject(ADAPTER_TK)
-    private readonly adapter: PhysicsAdapter,
+    private readonly physics: Physics,
     private readonly renderer: Renderer
   ) {
-    adapter.setupDebugDraw(renderer);
+    physics.setupDebugDraw(renderer);
   }
 
   /** Updates the debug draw. Should be called once on each frame. */
   public update(): void {
-    this.adapter.drawDebugData();
+    this.physics.drawDebugData();
   }
 
 }
