@@ -16,7 +16,7 @@ export interface TmxProperties {
 
 /** Extracts the custom properties from any TMX formatted data. */
 export function tmxParseProperties(target: HasTmxPropertyData): TmxProperties {
-  const data: TmxProperties= {};
+  const data: TmxProperties = {};
 
   if (target.properties) {
     for (const item of target.properties) {

@@ -1,3 +1,5 @@
+WIP
+
 # Tiled (TMX) Module
 
 Module for loading and handling tiled (TMX) maps. 
@@ -35,8 +37,16 @@ the `animation` property to a tile using its own index (in this case
 Colliders can be added to tiles via the Tiled collision editor. To be 
 recognized as such by the engine you must give the shape the type `collision`.
 
+### Rigid bodies
+
+If an object has at least one collider a `RigidBody` will be created. Options
+for the rigid body must be set on the Tiled object that defines the colliders. 
+
 ### Ellipses
 
 The physics engine does not support ellipses hence why all elliptic shapes
 will be converted to circles instead. For the circle radius the larger of 
-the two sides (width or height) of the ellipsis will be used. 
+the two sides (width or height) of the ellipsis will be used.
+
+
+

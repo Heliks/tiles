@@ -1,8 +1,9 @@
 import { Circle, Rectangle } from '@heliks/tiles-math';
-import { Shape as PhysicsShape } from '@heliks/tiles-physics';
+import { Material, Shape as PhysicsShape } from '@heliks/tiles-physics';
+import { HasTmxPropertyData, tmxParseProperties } from './properties';
 
 /** TMX JSON format for shapes. */
-export interface TmxShape {
+export interface TmxShape extends HasTmxPropertyData {
   ellipse?: boolean;
   height: number;
   id: number;
@@ -15,6 +16,15 @@ export interface TmxShape {
   y: number;
 }
 
+/** Properties that can possible occur on a shape. */
+export interface ShapeProperties {
+  /**
+   * If the shape is a collider that is part of a rigid-body this will be assigned
+   * as it's `Material`
+   */
+  physicsMaterial?: Material;
+}
+
 /**
  * A basic shape. Most commonly used inside the Tiled collision editor to create colliders
  * for certain objects but can also appear as freely placed shape on an object layer.
@@ -25,10 +35,12 @@ export class Shape {
    * @param data Any physics shape that can be converted into a collider.
    * @param type The type of shape, or rather what the shape should be. Use this to
    *  determine how to treat this shape in-game.
+   * @param properties Additional shape properties.
    */
   constructor(
     public readonly data: PhysicsShape,
-    public readonly type?: string
+    public readonly type: string,
+    public readonly properties: ShapeProperties
   ) {}
 
 }
@@ -37,20 +49,20 @@ export class Shape {
 export function tmxParseShape(data: TmxShape, tileWidth: number, tileHeight: number): Shape {
   let shape;
 
-  // Convert object anchor to center. If the shape was placed with the Tiled collision
-  // editor we also need to re-position it based on the center of the tile on which it
-  // was placed on.
+  // Convert object anchor to center. We also need to re-position the object because
+  // the position *can* be relative to a tile if the shape was defined via the
+  // collision editor.
   const x = data.x + (data.width / 2) - (tileWidth / 2);
   const y = data.y + (data.height / 2) - (tileHeight / 2);
 
   if (data.ellipse) {
-    // The engine only supports circles so we need to convert ellipses. We use the larger
-    // of the two sides and calculate a radius from it.
+    // The engine only supports circles so we need to convert ellipses. We use the
+    // larger of the two sides and calculate a radius from it.
     shape = new Circle(Math.max(data.width, data.height) / 2, x, y);
   }
   else {
     shape = new Rectangle(data.width, data.height, x, y);
   }
 
-  return new Shape(shape, data.type);
+  return new Shape(shape, data.type, tmxParseProperties(data));
 }
