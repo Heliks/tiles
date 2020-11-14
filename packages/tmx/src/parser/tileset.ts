@@ -4,6 +4,7 @@ import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
 import { HasTmxPropertyData, tmxParseProperties } from './properties';
 import { tmxParseShape, Shape, TmxShape } from './shape';
+import { RigidBodyType } from "@heliks/tiles-physics";
 
 interface TileData extends HasTmxPropertyData {
   animation?: {
@@ -47,6 +48,17 @@ export interface TileProperties {
    * started automatically when the tile is spawned into the world.
    */
   animation?: string;
+  /**
+   * Manually specifies the objects rigid body type. If not set this will default to
+   * a static rigid body.
+   * Note: Only for objects that have a rigid body.
+   */
+  physicsBodyType?: RigidBodyType;
+  /**
+   * Linear damping applied to the objects rigid body.
+   * Note: Only for objects that have a rigid body.
+   */
+  physicsDamping?: number;
 }
 
 /** Wrapper around the default tileset for tiled specific features. */
@@ -54,8 +66,6 @@ export class Tileset extends BaseTileset {
 
   /** Custom tile properties mapped to the ID of the tile to which they belong */
   public readonly properties = new Map<TileId, TileProperties>();
-
-
   public readonly shapes = new Map<TileId, Shape[]>();
 
 }
@@ -94,8 +104,8 @@ export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
       for (const tileData of data.tiles) {
         // Handle animations.
         if (tileData.animation && tileData.animation.length > 0) {
-          // Individual durations for frames are not supported by the SpriteRenderer so we
-          // grab the duration from the first frame and re-use it for all other frames.
+          // Individual durations are not supported by the SpriteRenderer so we grab
+          // the duration from the first frame and re-use it for all other frames.
           const frameDuration = tileData.animation[0].duration;
 
           // Use the ID of the tile as name for the animation.

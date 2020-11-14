@@ -1,25 +1,31 @@
-import { Container, ScreenDimensions, SortNode, SpriteDisplay, Stage } from '@heliks/tiles-pixi';
+import { RenderNode, ScreenDimensions, SpriteDisplay } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { GameMapLayer } from './game-map';
-import { Circle, Transform, World } from '@heliks/tiles-engine';
-import { LayerType, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
+import { Circle, Entity, Transform, World } from '@heliks/tiles-engine';
+import { LayerType, TileProperties, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
 import { RigidBody, Shape as PhysicsShape } from '@heliks/tiles-physics';
 import { Shape } from './parser/shape';
+import { RigidBodyType } from "@heliks/tiles-physics/lib/src";
 
 /** @internal */
-function spawnTileLayer(world: World, stage: Stage, map: TmxMap, layer: TmxTileLayer): GameMapLayer {
-  const node = stage.registerNode(new Container());
+function spawnTileLayer(world: World, map: TmxMap, layer: TmxTileLayer, parentNode: Entity): GameMapLayer {
+  const tt = new Tilemap(
+    map.grid,
+    map.tilesets,
+    layer.data,
+    parentNode
+  );
+
+  (tt as any).$$NAME = layer.name;
+
+  console.log(layer.name)
+
   const entity = world
     .builder()
-    .use(new Tilemap(
-      map.grid,
-      map.tilesets,
-      layer.data,
-      node
-    ))
+    .use(tt)
     .build();
 
-  return new GameMapLayer(node, [
+  return new GameMapLayer([
     entity
   ]);
 }
@@ -55,54 +61,68 @@ function spawnBodyFromShape(world: World, us: number, shape: Shape): void {
 }
 
 /** @internal */
-function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObjectLayer): GameMapLayer {
+function createObjectRigidBody(
+  unitSize: number,
+  shapes: Shape[],
+  properties: TileProperties
+): RigidBody {
+  const body = new RigidBody(properties.physicsBodyType);
+
+  // Only apply linear damping if it was manually set, otherwise use the physics
+  // module defaults.
+  if (properties.physicsDamping) {
+    body.damping = properties.physicsDamping;
+  }
+
+  for (const item of shapes) {
+    const shape = item.data.copy();
+
+    applyUnitSizeToShape(shape, unitSize);
+
+    body.attach(shape, {
+      material: item.properties.physicsMaterial
+    });
+  }
+
+  return body;
+}
+
+/** @internal */
+export function spawnObjectLayer(
+  world: World,
+  map: TmxMap,
+  layer: TmxObjectLayer,
+  parentNode: Entity
+): GameMapLayer {
   const entities = [];
-  const node = stage.registerNode(new SortNode());
-  const us = world.get(ScreenDimensions).unitSize;
+  const unitSize = world.get(ScreenDimensions).unitSize;
 
   for (const obj of layer.data) {
     const tileset = map.tileset(obj.tileId);
     const tileId = tileset.toLocal(obj.tileId) - 1;
 
-    const sprite = new SpriteDisplay(
-      tileset.spritesheet,
-      tileId,
-      node
-    );
-
-    // Flip sprite accordingly.
-    sprite.flip(obj.flipX, obj.flipY);
-
     const entity = world
       .builder()
-      // Convert pixel position to world coordinates.
-      .use(new Transform(obj.x / us, obj.y / us))
-      .use(sprite);
+      .use(new Transform(obj.x / unitSize, obj.y / unitSize))
+      .use(new SpriteDisplay(tileset.spritesheet, tileId, parentNode).flip(
+        obj.flipX,
+        obj.flipY
+      ));
 
-    const properties = tileset.properties.get(tileId);
-
-    // Add animation component if the properties specify an animation name.
-    if (properties?.animation) {
-      entity.use(tileset.spritesheet.createAnimation(properties.animation));
-    }
-
+    const properties = tileset.properties.get(tileId) ?? {};
     const shapes = tileset.shapes.get(tileId);
 
+    // Add animation component if the properties specify an animation name.
+    if (properties.animation) {
+      entity.use(tileset.spritesheet.createAnimation(properties.animation));
+    }
     if (shapes) {
       const colliders = shapes.filter(shape => shape.type === 'collision');
 
+      // If we have any shapes with "collision" type we'll add rigid body will all of
+      // those shapes attached as colliders.
       if (colliders.length > 0) {
-        const body = new RigidBody();
-
-        for (const collider of colliders) {
-          const shape = collider.data.copy();
-
-          applyUnitSizeToShape(shape, us);
-
-          body.attach(shape);
-        }
-
-        entity.use(body);
+        entity.use(createObjectRigidBody(unitSize, colliders, properties));
       }
     }
 
@@ -112,25 +132,23 @@ function spawnObjectLayer(world: World, stage: Stage, map: TmxMap, layer: TmxObj
   // Spawn free-floating collision shapes.
   for (const shape of layer.shapes) {
     if (shape.type === 'collision') {
-      spawnBodyFromShape(world, us, shape);
+      spawnBodyFromShape(world, unitSize, shape);
     }
   }
 
   return new GameMapLayer(
-    node,
     entities,
-    layer.properties.isPawnLayer
+    layer.properties.isPawnLayer,
+    parentNode
   );
 }
 
-export function spawnLayer(world: World, map: TmxMap, layer: TmxLayer): GameMapLayer {
-  const stage = world.get(Stage);
-
+export function spawnLayer(world: World, map: TmxMap, layer: TmxLayer, parentNode: Entity): GameMapLayer {
   switch (layer.type) {
     case LayerType.Tiles:
-      return spawnTileLayer(world, stage, map, layer);
+      return spawnTileLayer(world, map, layer, parentNode);
     case LayerType.Objects:
-      return spawnObjectLayer(world, stage, map, layer);
+      return spawnObjectLayer(world, map, layer, parentNode);
     default:
       throw new Error('Unable to spawn layer');
   }

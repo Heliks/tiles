@@ -1,4 +1,3 @@
-import { NodeHandle } from '@heliks/tiles-pixi';
 import { Entity } from '@heliks/tiles-engine';
 
 /**
@@ -7,16 +6,16 @@ import { Entity } from '@heliks/tiles-engine';
 export class GameMapLayer {
 
   /**
-   * @param node The handle referencing the `StageNode` where this layer is
-   *  rendered. Can be used to render other stuff on the same level as this layer.
    * @param entities All entities that belong to this layer.
-   * @param isPawnLayer Indicates if pawns (e.g. player controlled characters) are
-   *  allowed to be spawned on the same stage [[node]] as this layer.
+   * @param isPawnLayer (optional) Indicates if pawns (e.g. player controlled
+   *  characters) are allowed to be spawned on the same stage [[node]] as this layer.
+   * @param entity (optional) The "parent" entity to which this layer is attached. In
+   *  all cases this will be an entity with a `RenderNode` component.
    */
   constructor(
-    public readonly node: NodeHandle,
     public readonly entities: Entity[],
-    public isPawnLayer = false
+    public readonly isPawnLayer = false,
+    public readonly entity?: Entity
   ) {}
 
 }
