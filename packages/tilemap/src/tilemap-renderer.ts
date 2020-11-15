@@ -1,7 +1,7 @@
 import { contains, Injectable, ReactiveSystem, World } from '@heliks/tiles-engine';
 import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { Tilemap } from './tilemap';
-import { Container, Stage } from '@heliks/tiles-pixi';
+import { Container, RenderNode, Stage } from '@heliks/tiles-pixi';
 import { Entity } from '@heliks/ecs';
 
 @Injectable()
@@ -40,7 +40,12 @@ export class TilemapRenderer extends ReactiveSystem {
       container.addChild(sprite);
     }
 
-    this.stage.add(container, tilemap.node);
+    if (tilemap.parent !== undefined) {
+      world.storage(RenderNode).get(tilemap.parent).add(container);
+    }
+    else {
+      this.stage.add(container);
+    }
 
     // container.setPivot(0.5);
 
