@@ -17,5 +17,3 @@ export function rtrim(value: string, char: string): string {
 export function containsAll<T = unknown>(target: T[], items: T[]): boolean {
   return items.every(i => target.includes(i));
 }
-
-

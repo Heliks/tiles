@@ -14,6 +14,8 @@ export interface Stack<T> {
 
 }
 
+
+
 /**
  * A state that can be attached to a state machine.
  *
@@ -23,16 +25,16 @@ export interface Stack<T> {
 export interface State<T> {
 
   /** Called when added to a stack. */
-  onStart?(stack: Stack<this>, data: T): unknown;
+  onStart?(data: T): unknown;
 
   /** Called when removed from a stack. */
-  onStop?(stack: Stack<this>, data: T): unknown;
+  onStop?(data: T): unknown;
 
   /** Called when a different `State<T>` is pushed over this one. */
-  onPause?(stack: Stack<this>, data: T): unknown;
+  onPause?(data: T): unknown;
 
   /** Called when this state becomes active after having been inactive once. */
-  onResume?(stack: Stack<this>, data: T): unknown;
+  onResume?(data: T): unknown;
 
   /**
    * Called when the state machine is updated and this state is currently on
@@ -84,11 +86,11 @@ export class StateMachine<T> implements Stack<State<T>>  {
 
       // Pause the state that is currently active as we'll be pushing
       // a new state over it.
-      active?.onPause?.(this, this.data);
+      active?.onPause?.(this.data);
 
       this.stack.push(state);
 
-      state.onStart?.(this, this.data);
+      state.onStart?.(this.data);
     }
 
     return this;
@@ -104,14 +106,14 @@ export class StateMachine<T> implements Stack<State<T>>  {
 
       // If we got a state from the top of the stack stop it before starting
       // the next one.
-      state?.onStop?.(this, this.data);
+      state?.onStop?.(this.data);
 
       // Get the next active state. If there is we'll resume it, otherwise
       // the state machine will be exited.
       state = this.active;
 
       if (state) {
-        state.onResume?.(this, this.data);
+        state.onResume?.(this.data);
       }
       else {
         // Shutdown state machine.
@@ -128,11 +130,11 @@ export class StateMachine<T> implements Stack<State<T>>  {
       const top = this.stack.pop();
 
       // Stop the state we got from the top of the stack
-      top?.onStop?.(this, this.data);
+      top?.onStop?.(this.data);
 
       // Push the given state to the top of the stack and start it if possible.
       this.stack.push(state);
-      state.onStart?.(this, this.data);
+      state.onStart?.(this.data);
     }
 
     return this;
@@ -156,7 +158,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
     }
 
     // Start the initial state.
-    state.onStart?.(this, this.data);
+    state.onStart?.(this.data);
 
     this.running = true;
 
@@ -169,7 +171,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
 
     // noinspection JSAssignmentUsedAsCondition
     while (state = this.stack.pop()) {
-      state.onStop?.(this, this.data);
+      state.onStop?.(this.data);
     }
 
     this.running = false;
