@@ -57,7 +57,7 @@ export class Dodge implements State<PawnBlackboard> {
   /** Remaining amount of the of the entity acceleration. */
   private acceleration = ACCELERATION_TIME_MS;
 
-  public onStart(_: unknown, data: PawnBlackboard): void {
+  public onStart(data: PawnBlackboard): void {
     // Play dodge animation that fits the direction in which the entity is dodging.
     playAnimation(data);
 

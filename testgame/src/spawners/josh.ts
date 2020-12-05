@@ -1,14 +1,24 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Transform, World } from '@heliks/tiles-engine';
+import { Entity, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health, Inventory } from '../components';
-import { Rectangle } from '@heliks/tiles-math';
-import { CollisionGroups } from '../const';
 import { Circle } from '@heliks/tiles-math';
+import { CollisionGroups, MaterialType } from '../const';
+import { Behavior, MonoBehavior } from '../behavior';
+
+export class TortoiseBehavior implements MonoBehavior {
+  update(entity: Entity, behavior: Behavior, world: World) {}
+}
 
 /** Spawns a josh into the world. */
-export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y: number): void {
+export function spawnJosh(
+  world: World,
+  sheet: Handle<SpriteSheet>,
+  x: number,
+  y: number,
+  parent?: Entity
+): void {
   const inventory = new Inventory();
 
   inventory.add({
@@ -19,7 +29,7 @@ export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y
   });
 
   const body = RigidBody.dynamic().attach(new Circle(0.2), {
-    density: 20
+    material: MaterialType.ORGANIC
   });
 
   body.damping = 10;
@@ -29,7 +39,8 @@ export function spawnJosh(world: World, sheet: Handle<SpriteSheet>, x: number, y
     .builder()
     .use(new Transform(x, y))
     .use(new Health(200, 200))
-    .use(new SpriteDisplay(sheet, 0))
+    .use(new SpriteDisplay(sheet, 0, parent))
+    .use(new Behavior('tortoise'))
     .use(body)
     .use(inventory)
     .build();

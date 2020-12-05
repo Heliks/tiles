@@ -14,7 +14,7 @@ const MELEE_ATTACK_SWING_TIME = 300;
 
 /** */
 export function isAttacking(pawn: PawnBlackboard): boolean {
-  return pawn.input.isKeyDownThisFrame(KeyCode.MouseLeft);
+  return pawn.input.isKeyDown(KeyCode.MouseLeft);
 }
 
 /** @internal */
@@ -63,24 +63,24 @@ export class MeleeAttack implements State<PawnBlackboard> {
   private isHitBoxSpawned = false;
 
   /** @inheritDoc */
-  public onStart(state: StateMachine<PawnBlackboard>): void {
-    const { entity, transform, world } = state.data;
+  public onStart(data: PawnBlackboard): void {
+    const { entity, transform, world } = data;
 
     const combat = world.storage(Combat).get(entity);
 
     if (combat.meleeAttackSwingTimer > 0) {
-      state.pop();
+      // state.pop();
 
       return;
     }
 
-    playAnimation(state.data, combat.meleeAttackComboCounter);
+    playAnimation(data, combat.meleeAttackComboCounter);
 
     combat.meleeAttackSwingTimer = MELEE_ATTACK_SWING_TIME;
 
     // Simulate a forwards motion caused by the entity swinging its weapon with force
     // instead of awkwardly waving it around while fixed in place.
-    state.data.body.setVelocity(
+    data.body.setVelocity(
       Math.sin(transform.rotation) * MELEE_ATTACK_SWING_FORCE,
       -Math.cos(transform.rotation) * MELEE_ATTACK_SWING_FORCE
     );
@@ -110,7 +110,7 @@ export class MeleeAttack implements State<PawnBlackboard> {
       // Allow hitbox to be spawned again.
       this.isHitBoxSpawned = false;
 
-      return this.onStart(state);
+      return this.onStart(state.data);
     }
 
     // Allow canceling the attack animation early by dodging.

@@ -19,9 +19,7 @@ import { Rectangle } from '@heliks/tiles-math';
 
 /** @internal */
 function dropItem(world: World, item: Item, x: number, y: number) {
-  const body = new RigidBody().attach(new Rectangle(0.1, 0.1), {
-    density: 1
-  });
+  const body = new RigidBody().attach(new Rectangle(0.1, 0.1));
 
   const handle = world
     .get(AssetLoader)
