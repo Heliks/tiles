@@ -1,0 +1,24 @@
+name: Verify code integrity
+on: push
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  verify-integrity:
+    name: Verify code integrity
+    runs-on: ubuntu-latest
+    steps:
+      # Install dependencies required by node-canvas
+      - name: Install node-canvas dependencies
+        run: sudo apt-get update && sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      # Checkout code and setup NodeJS
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+      # Run tasks to verify code.
+      - run: yarn install
+      - run: yarn build
+      - run: yarn test
+      - run: yarn lint
