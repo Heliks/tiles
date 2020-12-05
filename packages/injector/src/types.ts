@@ -1,8 +1,17 @@
 export const METADATA_KEY = Symbol();
 
+/**
+ * Class constructor type.
+ * Fixme: This does not work for abstract classes.
+ *
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ClassType<T = any> = Function & { prototype: T };
-export type InjectorToken<T = unknown> = string | symbol | ClassType<T>;
+export type ClassType<T = any> = new (...params: any[]) => T;
+
+/** Types that can be used as an injector token. */
+export type InjectorToken<T = unknown> = symbol | string | number | ClassType<T> | Function;
+
+/** Factory of a binding that produces a value. */
 export type BindingFactory<T> = (container: Container) => T;
 
 export interface ImmutableContainer {

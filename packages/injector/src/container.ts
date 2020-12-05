@@ -119,7 +119,7 @@ export class Container implements Base {
 
       values = tokens.map(
         (token, index) => this.resolveParam(token, index, meta.paramOverrides)
-      );
+      )
 
       // Add custom params.
       values.push(...params);
