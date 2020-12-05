@@ -35,20 +35,15 @@ export class ShootArrow implements State<PawnBlackboard> {
   protected casting = true;
 
   /** @inheritDoc */
-  public onStart(state: StateMachine<PawnBlackboard>): void {
-    const { animation, pawn } = state.data;
+  public onStart(data: PawnBlackboard): void {
+    const { animation, pawn } = data;
 
     // Add a cool-down so the pawn can't shoot the arrow again right away.
     // Todo: Should be handled via a status system or smth.
     pawn.cooldown = 500;
 
     // Play animation.
-    playAnimation(state.data);
-  }
-
-  /** @inheritDoc */
-  public onResume(state: StateMachine<PawnBlackboard>): void {
-    state.pop();
+    playAnimation(data);
   }
 
   /** @inheritDoc */

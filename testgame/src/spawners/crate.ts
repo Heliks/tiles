@@ -3,7 +3,7 @@ import { Transform, World } from '@heliks/tiles-engine';
 import { RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health } from '../components';
-import { CollisionGroups } from '../const';
+import { CollisionGroups, MaterialType } from '../const';
 import { Rectangle } from '@heliks/tiles-math';
 
 function spawnCrate(
@@ -16,7 +16,7 @@ function spawnCrate(
 ): void {
   const body = new RigidBody(type)
     .attach(new Rectangle(0.75, 0.75), {
-      density: 20
+      material: MaterialType.WOOD
     });
 
   body.damping = 5;

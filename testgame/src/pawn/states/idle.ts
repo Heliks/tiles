@@ -30,13 +30,13 @@ function playAnimation(pawn: PawnBlackboard): void {
 export class Idle implements State<PawnBlackboard> {
 
   /** @inheritDoc */
-  public onStart(state: StateMachine<PawnBlackboard>): void {
-    playAnimation(state.data);
+  public onStart(data: PawnBlackboard): void {
+    playAnimation(data);
   }
 
   /** @inheritDoc */
-  public onResume(state: StateMachine<PawnBlackboard>): void {
-    playAnimation(state.data);
+  public onResume(data: PawnBlackboard): void {
+    playAnimation(data);
   }
 
   /** @inheritDoc */

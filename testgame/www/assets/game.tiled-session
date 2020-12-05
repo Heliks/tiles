@@ -3,8 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "/home/felix/Pictures/gamedev/map_wald/untitled.json",
     "expandedProjectPaths": [
+        "objects",
+        "maps",
+        "objects/containers",
+        "tilesets",
         "."
     ],
     "exportAsImage.useCurrentScale": false,
@@ -32,6 +36,25 @@
             "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
+        "/home/felix/Pictures/gamedev/map_wald/untitled.json": {
+            "scale": 1,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 732,
+                "y": 565.5
+            }
+        },
+        "/home/felix/Pictures/gamedev/map_wald/untitled2.json": {
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": -8,
+                "y": 8.5
+            }
+        },
+        "/home/felix/Pictures/gamedev/map_wald/water.json": {
+            "scaleInDock": 1
+        },
         "/srv/http/tiles/packages/test/www/assets/tilemaps/test01.json": {
             "scale": 1.5,
             "selectedLayer": 6,
@@ -58,16 +81,45 @@
         "/srv/http/tiles/packages/test/www/assets/tilesets/village01.json": {
             "scaleInDock": 1
         },
-        "maps/test.json": {
-            "scale": 3,
-            "selectedLayer": 6,
+        "maps/bushes.json": {
+            "scaleInDock": 1
+        },
+        "maps/city.json": {
+            "scale": 5.5,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 283.3333333333333,
-                "y": 391.5
+                "x": 888,
+                "y": 765.8181818181818
+            }
+        },
+        "maps/flowers-small.json": {
+            "scaleInDock": 1
+        },
+        "maps/leaf-trees.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "maps/test-2.json": {
+            "scale": 2.1374999999999997,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 80.00000000000003,
+                "y": 80.23391812865499
+            }
+        },
+        "maps/test.json": {
+            "scale": 8,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 160,
+                "y": 159.9375
             }
         },
         "maps/tileset.json": {
             "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "maps/village02.json": {
             "scaleInDock": 1
         },
         "objects/brazier-common01.json": {
@@ -75,6 +127,7 @@
             "scaleInDock": 1
         },
         "objects/containers/wood-barrels.json": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -83,6 +136,7 @@
             "scaleInEditor": 1
         },
         "objects/flora/bushes/bushes.json": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -96,10 +150,21 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "objects/flora/trees/pines.json": {
+            "scaleInDock": 1
+        },
         "objects/furnite-outdoors/brazier-common01.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "objects/furnite-outdoors/wood-benches.json": {
+            "scaleInDock": 1
+        },
+        "objects/rocks.json": {
             "scaleInDock": 1
         },
         "objects/trees01.json": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 2
         },
@@ -213,6 +278,10 @@
             "scaleInDock": 0.75,
             "scaleInEditor": 2
         },
+        "tilesets/village02.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/walls.json": {
             "dynamicWrapping": false,
             "scaleInDock": 1
@@ -222,38 +291,45 @@
     "loadedWorlds": [
         "/srv/http/tiles/testgame/www/assets/tilemaps/world01.world"
     ],
-    "map.fixedSize": true,
-    "map.height": 25,
+    "map.fixedSize": false,
+    "map.height": 100,
     "map.lastUsedFormat": "json",
     "map.orientation": 1,
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 25,
+    "map.width": 100,
     "openFiles": [
+        "maps/test.json",
+        "objects/containers/wood-barrels.json",
+        "maps/test-2.json",
+        "tilesets/village02.json",
+        "maps/city.json",
+        "/home/felix/Pictures/gamedev/map_wald/untitled.json"
     ],
     "project": "game.tiled-project",
-    "property.type": "bool",
+    "property.type": "int",
     "recentFiles": [
         "maps/test.json",
+        "objects/containers/wood-barrels.json",
+        "maps/test-2.json",
+        "tilesets/village02.json",
+        "maps/city.json",
+        "/home/felix/Pictures/gamedev/map_wald/untitled.json",
+        "/home/felix/Pictures/gamedev/map_wald/untitled2.json",
         "tilesets/village01.json",
         "tilemaps/test01.json",
         "tilemaps/village02.json",
         "tilemaps/test03.json",
-        "test/tilemap.json",
-        "objects/flora/trees/leaf-trees.json",
-        "objects/containers/wood-barrels.json",
-        "objects/flora/flowers/flowers-small.json",
-        "objects/flora/bushes/bushes.json",
-        "objects/wood-benches.json",
-        "objects/floora/bushes/bushes.json"
+        "test/tilemap.json"
     ],
+    "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,
     "tileset.lastUsedFormat": "json",
     "tileset.margin": 0,
     "tileset.spacing": 0,
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 32,
+        "width": 32
     },
     "tileset.transparentColor": "#ff00ff",
     "tileset.type": 0,

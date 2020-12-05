@@ -16,7 +16,7 @@ import {
 import { RigidBody } from '@heliks/tiles-physics';
 import {
   Camera,
-  NodeHandle,
+  RenderNode,
   ScreenDimensions,
   SPRITE_SHEET_STORAGE,
   SpriteAnimation,
@@ -29,7 +29,7 @@ import { Idle } from './states';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { CardinalDirection, Direction } from '../components';
 import { GroupEvent } from '@heliks/ecs';
-import { CollisionGroups } from '../const';
+import { CollisionGroups, MATERIAL_ORGANIC, MaterialType } from '../const';
 import { PawnBlackboard } from './pawn-blackboard';
 import { Combat } from '../combat';
 
@@ -77,10 +77,10 @@ export function spawnPawn(
   spritesheet: Handle<SpriteSheet>,
   x: number,
   y: number,
-  node?: NodeHandle
+  node?: Entity
 ): void {
   const body = RigidBody.dynamic().attach(new Circle(0.2, 0, 0.1), {
-    density: 120,
+    material: MaterialType.ORGANIC
   });
 
   body.damping = 10;

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, TransformSystem, World } from '@heliks/tiles-engine';
-import { PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
+import { Entity, Game, GameBuilder, rand, TransformSystem, World } from '@heliks/tiles-engine';
+import { Physics, PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { GameMapHandler, TmxModule, TmxTilemapFormat } from '@heliks/tiles-tmx';
@@ -11,8 +11,10 @@ import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
 import { loadSpriteSheet, lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
-import { spawnJosh } from './spawners/josh';
+import { spawnJosh, TortoiseBehavior } from './spawners/josh';
 import { CombatSystem } from './combat';
+import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
+import { BehaviorManager, BehaviorModule } from './behavior';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -75,7 +77,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        // .plugin(PhysicsDebugDraw)
+        .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -85,6 +87,7 @@ window.onload = () => {
     .module(new TmxModule())
     .system(CombatSystem)
     .system(PawnController)
+    .module(new BehaviorModule())
     .build();
 
   setupDebugGlobals(game);
@@ -93,10 +96,20 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 25;
-  const y = 25;
+  const x = 10;
+  const y = 10;
 
   const mapFile = 'maps/test.json';
+
+  // Register entity behaviors.
+  game.world
+    .get(BehaviorManager)
+    .set('tortoise', new TortoiseBehavior());
+
+  // Register physics materials.
+  game.world.get(Physics)
+    .setMaterial(MaterialType.ORGANIC, MATERIAL_ORGANIC)
+    .setMaterial(MaterialType.WOOD, MATERIAL_WOOD);
 
   initPawn(game.world).then(pawnSpriteSheet => {
     // Start the ticker.
@@ -114,14 +127,15 @@ window.onload = () => {
       const layer = map.getPawnLayers()[0];
 
       // Spawn player character.
-      spawnPawn(game.world, pawnSpriteSheet, x, y, layer.node);
+      spawnPawn(game.world, pawnSpriteSheet, x, y, layer.entity);
 
       // Spawn Josh in a random location near the player
       spawnJosh(
         game.world,
         loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
-        25,
-        27
+        x + rand(-2, 2),
+        y + rand(-2, 2),
+        layer.entity
       );
     });
   });

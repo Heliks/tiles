@@ -1,569 +1,507 @@
-{ "frames": [
-   {
-    "filename": "pawn 0.aseprite",
-    "frame": { "x": 220, "y": 190, "w": 44, "h": 38 },
+{ "frames": {
+   "pawn 0.aseprite": {
+    "frame": { "x": 230, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 1.aseprite",
-    "frame": { "x": 308, "y": 114, "w": 44, "h": 38 },
+   "pawn 1.aseprite": {
+    "frame": { "x": 322, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 2.aseprite",
-    "frame": { "x": 0, "y": 152, "w": 44, "h": 38 },
+   "pawn 2.aseprite": {
+    "frame": { "x": 0, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 3.aseprite",
-    "frame": { "x": 44, "y": 152, "w": 44, "h": 38 },
+   "pawn 3.aseprite": {
+    "frame": { "x": 46, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 4.aseprite",
-    "frame": { "x": 88, "y": 152, "w": 44, "h": 38 },
+   "pawn 4.aseprite": {
+    "frame": { "x": 92, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 5.aseprite",
-    "frame": { "x": 132, "y": 152, "w": 44, "h": 38 },
+   "pawn 5.aseprite": {
+    "frame": { "x": 138, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 6.aseprite",
-    "frame": { "x": 176, "y": 152, "w": 44, "h": 38 },
+   "pawn 6.aseprite": {
+    "frame": { "x": 184, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 7.aseprite",
-    "frame": { "x": 88, "y": 152, "w": 44, "h": 38 },
+   "pawn 7.aseprite": {
+    "frame": { "x": 92, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 8.aseprite",
-    "frame": { "x": 220, "y": 152, "w": 44, "h": 38 },
+   "pawn 8.aseprite": {
+    "frame": { "x": 230, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 9.aseprite",
-    "frame": { "x": 264, "y": 152, "w": 44, "h": 38 },
+   "pawn 9.aseprite": {
+    "frame": { "x": 276, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 10.aseprite",
-    "frame": { "x": 308, "y": 152, "w": 44, "h": 38 },
+   "pawn 10.aseprite": {
+    "frame": { "x": 322, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 11.aseprite",
-    "frame": { "x": 0, "y": 190, "w": 44, "h": 38 },
+   "pawn 11.aseprite": {
+    "frame": { "x": 0, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 12.aseprite",
-    "frame": { "x": 44, "y": 190, "w": 44, "h": 38 },
+   "pawn 12.aseprite": {
+    "frame": { "x": 46, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 13.aseprite",
-    "frame": { "x": 308, "y": 152, "w": 44, "h": 38 },
+   "pawn 13.aseprite": {
+    "frame": { "x": 322, "y": 144, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 14.aseprite",
-    "frame": { "x": 88, "y": 190, "w": 44, "h": 38 },
+   "pawn 14.aseprite": {
+    "frame": { "x": 92, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 15.aseprite",
-    "frame": { "x": 132, "y": 190, "w": 44, "h": 38 },
+   "pawn 15.aseprite": {
+    "frame": { "x": 138, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 16.aseprite",
-    "frame": { "x": 176, "y": 190, "w": 44, "h": 38 },
+   "pawn 16.aseprite": {
+    "frame": { "x": 184, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 17.aseprite",
-    "frame": { "x": 264, "y": 114, "w": 44, "h": 38 },
+   "pawn 17.aseprite": {
+    "frame": { "x": 276, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 18.aseprite",
-    "frame": { "x": 264, "y": 190, "w": 44, "h": 38 },
+   "pawn 18.aseprite": {
+    "frame": { "x": 276, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 19.aseprite",
-    "frame": { "x": 308, "y": 190, "w": 44, "h": 38 },
+   "pawn 19.aseprite": {
+    "frame": { "x": 322, "y": 180, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 20.aseprite",
-    "frame": { "x": 0, "y": 228, "w": 44, "h": 38 },
+   "pawn 20.aseprite": {
+    "frame": { "x": 0, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 21.aseprite",
-    "frame": { "x": 44, "y": 228, "w": 44, "h": 38 },
+   "pawn 21.aseprite": {
+    "frame": { "x": 46, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 22.aseprite",
-    "frame": { "x": 88, "y": 228, "w": 44, "h": 38 },
+   "pawn 22.aseprite": {
+    "frame": { "x": 92, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 23.aseprite",
-    "frame": { "x": 132, "y": 228, "w": 44, "h": 38 },
+   "pawn 23.aseprite": {
+    "frame": { "x": 138, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 24.aseprite",
-    "frame": { "x": 176, "y": 228, "w": 44, "h": 38 },
+   "pawn 24.aseprite": {
+    "frame": { "x": 184, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 25.aseprite",
-    "frame": { "x": 220, "y": 228, "w": 44, "h": 38 },
+   "pawn 25.aseprite": {
+    "frame": { "x": 230, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 26.aseprite",
-    "frame": { "x": 264, "y": 228, "w": 44, "h": 38 },
+   "pawn 26.aseprite": {
+    "frame": { "x": 276, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 27.aseprite",
-    "frame": { "x": 308, "y": 228, "w": 44, "h": 38 },
+   "pawn 27.aseprite": {
+    "frame": { "x": 322, "y": 216, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 28.aseprite",
-    "frame": { "x": 0, "y": 266, "w": 44, "h": 38 },
+   "pawn 28.aseprite": {
+    "frame": { "x": 0, "y": 252, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 29.aseprite",
-    "frame": { "x": 44, "y": 266, "w": 44, "h": 38 },
+   "pawn 29.aseprite": {
+    "frame": { "x": 46, "y": 252, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 30.aseprite",
-    "frame": { "x": 88, "y": 266, "w": 44, "h": 38 },
+   "pawn 30.aseprite": {
+    "frame": { "x": 92, "y": 252, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 31.aseprite",
-    "frame": { "x": 308, "y": 38, "w": 44, "h": 38 },
+   "pawn 31.aseprite": {
+    "frame": { "x": 138, "y": 252, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 32.aseprite",
-    "frame": { "x": 44, "y": 0, "w": 44, "h": 38 },
+   "pawn 32.aseprite": {
+    "frame": { "x": 322, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 33.aseprite",
-    "frame": { "x": 88, "y": 0, "w": 44, "h": 38 },
+   "pawn 33.aseprite": {
+    "frame": { "x": 46, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 34.aseprite",
-    "frame": { "x": 132, "y": 0, "w": 44, "h": 38 },
+   "pawn 34.aseprite": {
+    "frame": { "x": 92, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 35.aseprite",
-    "frame": { "x": 176, "y": 0, "w": 44, "h": 38 },
+   "pawn 35.aseprite": {
+    "frame": { "x": 138, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 36.aseprite",
-    "frame": { "x": 220, "y": 0, "w": 44, "h": 38 },
+   "pawn 36.aseprite": {
+    "frame": { "x": 184, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 37.aseprite",
-    "frame": { "x": 264, "y": 0, "w": 44, "h": 38 },
+   "pawn 37.aseprite": {
+    "frame": { "x": 230, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 38.aseprite",
-    "frame": { "x": 308, "y": 0, "w": 44, "h": 38 },
+   "pawn 38.aseprite": {
+    "frame": { "x": 276, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 39.aseprite",
-    "frame": { "x": 0, "y": 38, "w": 44, "h": 38 },
+   "pawn 39.aseprite": {
+    "frame": { "x": 322, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 40.aseprite",
-    "frame": { "x": 44, "y": 38, "w": 44, "h": 38 },
+   "pawn 40.aseprite": {
+    "frame": { "x": 0, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 41.aseprite",
-    "frame": { "x": 88, "y": 38, "w": 44, "h": 38 },
+   "pawn 41.aseprite": {
+    "frame": { "x": 46, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 42.aseprite",
-    "frame": { "x": 132, "y": 38, "w": 44, "h": 38 },
+   "pawn 42.aseprite": {
+    "frame": { "x": 92, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 43.aseprite",
-    "frame": { "x": 176, "y": 38, "w": 44, "h": 38 },
+   "pawn 43.aseprite": {
+    "frame": { "x": 138, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 44.aseprite",
-    "frame": { "x": 220, "y": 38, "w": 44, "h": 38 },
+   "pawn 44.aseprite": {
+    "frame": { "x": 184, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 45.aseprite",
-    "frame": { "x": 264, "y": 38, "w": 44, "h": 38 },
+   "pawn 45.aseprite": {
+    "frame": { "x": 230, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 46.aseprite",
-    "frame": { "x": 0, "y": 0, "w": 44, "h": 38 },
+   "pawn 46.aseprite": {
+    "frame": { "x": 276, "y": 36, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 47.aseprite",
-    "frame": { "x": 0, "y": 76, "w": 44, "h": 38 },
+   "pawn 47.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 48.aseprite",
-    "frame": { "x": 44, "y": 76, "w": 44, "h": 38 },
+   "pawn 48.aseprite": {
+    "frame": { "x": 0, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 49.aseprite",
-    "frame": { "x": 88, "y": 76, "w": 44, "h": 38 },
+   "pawn 49.aseprite": {
+    "frame": { "x": 46, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 50.aseprite",
-    "frame": { "x": 132, "y": 76, "w": 44, "h": 38 },
+   "pawn 50.aseprite": {
+    "frame": { "x": 92, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 51.aseprite",
-    "frame": { "x": 176, "y": 76, "w": 44, "h": 38 },
+   "pawn 51.aseprite": {
+    "frame": { "x": 138, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 52.aseprite",
-    "frame": { "x": 176, "y": 76, "w": 44, "h": 38 },
+   "pawn 52.aseprite": {
+    "frame": { "x": 184, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 53.aseprite",
-    "frame": { "x": 220, "y": 76, "w": 44, "h": 38 },
+   "pawn 53.aseprite": {
+    "frame": { "x": 230, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 54.aseprite",
-    "frame": { "x": 264, "y": 76, "w": 44, "h": 38 },
+   "pawn 54.aseprite": {
+    "frame": { "x": 276, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 55.aseprite",
-    "frame": { "x": 308, "y": 76, "w": 44, "h": 38 },
+   "pawn 55.aseprite": {
+    "frame": { "x": 322, "y": 72, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 56.aseprite",
-    "frame": { "x": 0, "y": 114, "w": 44, "h": 38 },
+   "pawn 56.aseprite": {
+    "frame": { "x": 0, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 57.aseprite",
-    "frame": { "x": 44, "y": 114, "w": 44, "h": 38 },
+   "pawn 57.aseprite": {
+    "frame": { "x": 46, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 58.aseprite",
-    "frame": { "x": 88, "y": 114, "w": 44, "h": 38 },
+   "pawn 58.aseprite": {
+    "frame": { "x": 92, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 59.aseprite",
-    "frame": { "x": 132, "y": 114, "w": 44, "h": 38 },
+   "pawn 59.aseprite": {
+    "frame": { "x": 138, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 60.aseprite",
-    "frame": { "x": 176, "y": 114, "w": 44, "h": 38 },
+   "pawn 60.aseprite": {
+    "frame": { "x": 184, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   {
-    "filename": "pawn 61.aseprite",
-    "frame": { "x": 220, "y": 114, "w": 44, "h": 38 },
+   "pawn 61.aseprite": {
+    "frame": { "x": 230, "y": 108, "w": 46, "h": 36 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 10, "y": 15, "w": 44, "h": 38 },
+    "spriteSourceSize": { "x": 9, "y": 16, "w": 46, "h": 36 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    }
- ],
+ },
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.25-x64",
   "image": "pawn.png",
   "format": "RGBA8888",
-  "size": { "w": 352, "h": 304 },
+  "size": { "w": 368, "h": 288 },
   "scale": "1",
   "frameTags": [
    { "name": "idle-down", "from": 0, "to": 0, "direction": "forward" },
@@ -577,8 +515,8 @@
    { "name": "bow-up", "from": 33, "to": 38, "direction": "forward" },
    { "name": "roll-right", "from": 39, "to": 44, "direction": "forward" },
    { "name": "roll-up", "from": 45, "to": 50, "direction": "forward" },
-   { "name": "sword_down1", "from": 51, "to": 57, "direction": "forward" },
-   { "name": "sword_down2", "from": 58, "to": 61, "direction": "forward" }
+   { "name": "sword_down1", "from": 51, "to": 56, "direction": "forward" },
+   { "name": "sword_down2", "from": 57, "to": 61, "direction": "forward" }
   ],
   "layers": [
    { "name": "Layer 2", "opacity": 255, "blendMode": "normal" },
