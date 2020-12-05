@@ -1,5 +1,5 @@
 import { Circle, Rectangle } from '@heliks/tiles-math';
-import { Material, Shape as PhysicsShape } from '@heliks/tiles-physics';
+import { MaterialId, Shape as PhysicsShape } from '@heliks/tiles-physics';
 import { HasTmxPropertyData, tmxParseProperties } from './properties';
 
 /** TMX JSON format for shapes. */
@@ -22,7 +22,7 @@ export interface ShapeProperties {
    * If the shape is a collider that is part of a rigid-body this will be assigned
    * as it's `Material`
    */
-  physicsMaterial?: Material;
+  physicsMaterial?: MaterialId;
 }
 
 /**

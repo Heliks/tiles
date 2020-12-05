@@ -1,11 +1,10 @@
-import { RenderNode, ScreenDimensions, SpriteDisplay } from '@heliks/tiles-pixi';
+import { ScreenDimensions, SpriteDisplay } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { GameMapLayer } from './game-map';
 import { Circle, Entity, Transform, World } from '@heliks/tiles-engine';
 import { LayerType, TileProperties, TmxLayer, TmxMap, TmxObjectLayer, TmxTileLayer } from './parser';
 import { RigidBody, Shape as PhysicsShape } from '@heliks/tiles-physics';
 import { Shape } from './parser/shape';
-import { RigidBodyType } from "@heliks/tiles-physics/lib/src";
 
 /** @internal */
 function spawnTileLayer(world: World, map: TmxMap, layer: TmxTileLayer, parentNode: Entity): GameMapLayer {
