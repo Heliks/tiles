@@ -67,9 +67,9 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       }
 
       // Calculate the next frame index based on the effective frame duration.
-      const nextFrame = (
+      const nextFrame = Math.trunc((
         animation.elapsedTime / (animation.frameDuration / animation.speed)
-      ) % animation.frames.length | 0;
+      ) % animation.frames.length);
 
       // Check if looping is disabled and if the next frame would start a new animation
       // cycle.

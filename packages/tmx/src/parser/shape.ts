@@ -47,22 +47,15 @@ export class Shape {
 
 /** Parses TMX shape data. */
 export function tmxParseShape(data: TmxShape, tileWidth: number, tileHeight: number): Shape {
-  let shape;
-
   // Convert object anchor to center. We also need to re-position the object because
   // the position *can* be relative to a tile if the shape was defined via the
   // collision editor.
   const x = data.x + (data.width / 2) - (tileWidth / 2);
   const y = data.y + (data.height / 2) - (tileHeight / 2);
 
-  if (data.ellipse) {
-    // The engine only supports circles so we need to convert ellipses. We use the
-    // larger of the two sides and calculate a radius from it.
-    shape = new Circle(Math.max(data.width, data.height) / 2, x, y);
-  }
-  else {
-    shape = new Rectangle(data.width, data.height, x, y);
-  }
+  const shape = data.ellipse
+    ? new Circle(Math.max(data.width, data.height) / 2, x, y)
+    : new Rectangle(data.width, data.height, x, y);
 
   return new Shape(shape, data.type, tmxParseProperties(data));
 }

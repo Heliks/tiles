@@ -1,0 +1,14 @@
+{ "columns":1,
+ "image":"pines.png",
+ "imageheight":112,
+ "imagewidth":48,
+ "margin":0,
+ "name":"pines",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.4.2",
+ "tileheight":112,
+ "tilewidth":48,
+ "type":"tileset",
+ "version":1.4
+}

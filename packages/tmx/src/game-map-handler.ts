@@ -1,11 +1,11 @@
 import { spawnLayer, spawnObjectLayer } from './spawners';
 import { GameMap } from './game-map';
-import { World } from '@heliks/tiles-engine';
+import { Entity, World } from '@heliks/tiles-engine';
 import { LayerType, TmxMap } from './parser';
 import { RenderNode } from "@heliks/tiles-pixi";
 
 /** @internal */
-function createNode(world: World, sortable = false) {
+function createNode(world: World, sortable = false): Entity {
   return world.create([
     new RenderNode(sortable)
   ]);

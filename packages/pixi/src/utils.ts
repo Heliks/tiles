@@ -21,7 +21,7 @@ export function cropTexture(
  * values are assumed to be normalized between `0` and `1`
  */
 export function rgb2hex(r: number, g: number, b: number): number {
-  return ((r * 255) << 16) + ((g * 255) << 8) + (b * 255 | 0);
+  return ((r * 255) << 16) + ((g * 255) << 8) + (Math.trunc(b * 255));
 }
 
 /**
