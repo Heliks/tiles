@@ -1,4 +1,4 @@
-import { Injectable, ltrim, rtrim } from '@heliks/tiles-engine';
+import { Injectable, ltrim } from '@heliks/tiles-engine';
 import { AssetStorage, Handle } from './asset';
 import { Format, LoadType } from './formats';
 
@@ -8,24 +8,11 @@ export class AssetLoader {
   /**
    * @param baseUrl Directory from which the loader is attempting to load assets.
    */
-  constructor(private baseUrl: string) {}
+  constructor(public baseUrl: string) {}
 
   /** Combines the given `path` with the loaders [[baseUrl]]. */
   public getPath(path: string): string {
     return `${this.baseUrl}/${ltrim(path, '/')}`;
-  }
-
-  /** Sets the [[baseUrl]]. */
-  public setBaseUrl(baseUrl: string): this {
-    // Normalize base URL by removing trailing slashes.
-    this.baseUrl = rtrim(baseUrl, '/');
-
-    return this;
-  }
-
-  /** Returns the loaders [[baseUrl]]. */
-  public getBaseUrl(): string {
-    return this.baseUrl;
   }
 
   /** Called internally to complete a download. */
