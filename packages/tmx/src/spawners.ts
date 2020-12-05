@@ -15,9 +15,8 @@ function spawnTileLayer(world: World, map: TmxMap, layer: TmxTileLayer, parentNo
     parentNode
   );
 
-  (tt as any).$$NAME = layer.name;
-
-  console.log(layer.name)
+  // (tt as any).$$NAME = layer.name;
+  // console.log(layer.name)
 
   const entity = world
     .builder()
