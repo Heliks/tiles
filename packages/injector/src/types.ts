@@ -1,7 +1,7 @@
 export const METADATA_KEY = Symbol();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ClassType<T = any> = new (...params: any[]) => T;
+export type ClassType<T = any> = Function & { prototype: T };
 export type InjectorToken<T = unknown> = string | symbol | ClassType<T>;
 export type BindingFactory<T> = (container: Container) => T;
 
