@@ -8,7 +8,7 @@ export class AssetLoader {
   /**
    * @param baseUrl Directory from which the loader is attempting to load assets.
    */
-  constructor(public baseUrl: string) {}
+  constructor(public baseUrl = '') {}
 
   /** Combines the given `path` with the loaders [[baseUrl]]. */
   public getPath(path: string): string {
