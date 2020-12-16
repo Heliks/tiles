@@ -6,10 +6,7 @@ import { Health, Inventory } from '../components';
 import { Circle } from '@heliks/tiles-math';
 import { CollisionGroups, MaterialType } from '../const';
 import { Behavior, MonoBehavior } from '../behavior';
-
-export class TortoiseBehavior implements MonoBehavior {
-  update(entity: Entity, behavior: Behavior, world: World) {}
-}
+import { Movement } from '../movement-system';
 
 /** Spawns a josh into the world. */
 export function spawnJosh(
@@ -41,6 +38,7 @@ export function spawnJosh(
     .use(new Health(200, 200))
     .use(new SpriteDisplay(sheet, 0, parent))
     .use(new Behavior('tortoise'))
+    .use(new Movement(0.2))
     .use(body)
     .use(inventory)
     .build();

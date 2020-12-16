@@ -1,4 +1,12 @@
 { "columns":10,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
  "image":"walls.png",
  "imageheight":160,
  "imagewidth":160,
@@ -7,71 +15,63 @@
  "spacing":0,
  "terrains":[
         {
-         "name":"New Terrain",
-         "tile":55
+         "name":"Walls",
+         "tile":11
         }],
  "tilecount":100,
- "tiledversion":"1.4.2",
+ "tiledversion":"1.4.3",
  "tileheight":16,
  "tiles":[
         {
-         "id":11,
+         "id":0,
          "terrain":[-1, -1, -1, 0]
         }, 
         {
-         "id":12,
+         "id":1,
          "terrain":[-1, -1, 0, 0]
         }, 
         {
-         "id":13,
-         "terrain":[-1, -1, 0, 0]
-        }, 
-        {
-         "id":14,
+         "id":2,
          "terrain":[-1, -1, 0, -1]
         }, 
         {
-         "id":16,
-         "terrain":[-1, -1, -1, 0]
+         "id":3,
+         "terrain":[0, 0, -1, 0]
         }, 
         {
-         "id":17,
-         "terrain":[-1, -1, 0, -1]
+         "id":4,
+         "terrain":[0, 0, 0, -1]
         }, 
         {
-         "id":21,
+         "id":10,
          "terrain":[-1, 0, -1, 0]
         }, 
         {
-         "id":22,
+         "id":11,
          "terrain":[0, 0, 0, 0]
         }, 
         {
-         "id":24,
+         "id":12,
          "terrain":[0, -1, 0, -1]
         }, 
         {
-         "id":26,
+         "id":13,
+         "terrain":[-1, 0, 0, 0]
+        }, 
+        {
+         "id":14,
+         "terrain":[0, -1, 0, 0]
+        }, 
+        {
+         "id":20,
          "terrain":[-1, 0, -1, -1]
         }, 
         {
-         "id":27,
-         "terrain":[0, -1, -1, -1]
-        }, 
-        {
-         "id":31,
-         "terrain":[-1, 0, -1, -1]
-        }, 
-        {
-         "id":32,
+         "id":21,
          "terrain":[0, 0, -1, -1]
         }, 
         {
-         "id":33,
-         "terrain":[0, 0, -1, -1]
-        }, 
-        {
-         "id":34,
+         "id":22,
          "terrain":[0, -1, -1, -1]
         }],
  "tilewidth":16,

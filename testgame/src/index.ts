@@ -11,10 +11,12 @@ import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
 import { loadSpriteSheet, lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
-import { spawnJosh, TortoiseBehavior } from './spawners/josh';
+import { spawnJosh } from './spawners/josh';
 import { CombatSystem } from './combat';
 import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
 import { BehaviorManager, BehaviorModule } from './behavior';
+import { TortoiseBehavior } from './behaviors/tortoise-behavior';
+import { MovementSystem } from './movement-system';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -77,7 +79,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(PhysicsDebugDraw)
+        // .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -88,6 +90,7 @@ window.onload = () => {
     .system(CombatSystem)
     .system(PawnController)
     .module(new BehaviorModule())
+    .system(MovementSystem)
     .build();
 
   setupDebugGlobals(game);
