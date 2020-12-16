@@ -19,7 +19,7 @@
     "eslint-plugin-unicorn": "^23.0.0",
     "lerna": "^3.20.2",
     "rimraf": "^3.0.2",
-    "typescript": "4.1.2"
+    "typescript": "^4.1.2"
   },
   "scripts": {
     "lint": "eslint 'packages/**/*.ts' --config .eslintrc.json",

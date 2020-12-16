@@ -4,7 +4,8 @@
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-tilemap": "^0.0.0"
+    "@heliks/tiles-tilemap": "^0.0.0",
+    "@heliks/tiles-physics": "^0.0.0"
   },
   "description": "Tiled loader",
   "devDependencies": {
@@ -12,11 +13,12 @@
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
     "@heliks/tiles-tilemap": "^0.0.0",
+    "@heliks/tiles-physics": "^0.0.0",
     "@types/jest": "^25.1.2",
     "jest": "^26.6.3",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.0.2"
+    "typescript": "^4.1.2"
   },
   "files": [
     "lib/*"
