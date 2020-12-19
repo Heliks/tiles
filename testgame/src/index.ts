@@ -135,13 +135,14 @@ window.onload = () => {
       // Spawn Josh in a random location near the player
       spawnJosh(
         game.world,
-        loadSpriteSheet(game.world, 'spritesheets/josh.png', 1, 1),
-        x + rand(-2, 2),
-        y + rand(-2, 2),
+        AsepriteFormat.load(game.world, 'spritesheets/josh.json'),
+        x + rand(-5, 5),
+        y + rand(-5, 5),
         layer.entity
       );
     });
   });
+
 };
 
 

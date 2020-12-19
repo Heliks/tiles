@@ -7,12 +7,12 @@ import { Behavior } from './behavior';
  * Note: Entities that share the same behavior will use the same instance of a
  * `MonoBehavior`, so it is not recommended to add any state specific data here.
  */
-export interface MonoBehavior {
+export interface MonoBehavior<T> {
 
   /**
    * Used to implement the script logic. Called once on each frame for every `entity`
    * that implements this behavior.
    */
-  update(entity: Entity, behavior: Behavior, world: World): unknown;
+  update(entity: Entity, behavior: Behavior<T>, world: World): unknown;
 
 }

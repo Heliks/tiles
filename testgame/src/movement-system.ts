@@ -3,9 +3,19 @@ import { contains, ProcessingSystem, Vec2, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 
 export class Movement {
-  public target?: Vec2;
 
-  constructor(public speed = 1) {
+  public target?: Vec2;
+  public isCanceled = false;
+
+  constructor(public speed = 1) {}
+
+  /** Cancels the movement. */
+  public cancel(): this {
+    this.isCanceled = true;
+
+    this.target = undefined;
+
+    return this;
   }
 
 }
@@ -26,6 +36,16 @@ export class MovementSystem extends ProcessingSystem {
       const body = bodies.get(entity);
       const movement = movements.get(entity);
       const transform = transforms.get(entity);
+
+      if (movement.isCanceled) {
+        body.setVelocity(0, 0);
+
+        // Remove target if movement is canceled.
+        movement.target = undefined;
+        movement.isCanceled = false;
+
+        continue;
+      }
 
       if (movement.target) {
         if (
