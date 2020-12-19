@@ -1,6 +1,7 @@
-import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteCollection, Texture, TextureFormat } from '@heliks/tiles-pixi';
+import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
+import { SPRITE_SHEET_STORAGE, SpriteCollection, SpriteSheet, Texture, TextureFormat } from '@heliks/tiles-pixi';
 import { AsepriteData, AsepriteFrameData, AsepriteFramesMap } from './json';
+import { World } from '@heliks/tiles-engine';
 
 /** @internal */
 function parseFramesMap(sprites: SpriteCollection, frames: AsepriteFramesMap): void {
@@ -50,6 +51,13 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
 
   /** @inheritDoc */
   public readonly type = LoadType.Json;
+
+  /** Utility method that uses the `AssetLoader` to load a `SpriteSheet` from `path`. */
+  public static load(world: World, path: string): Handle<SpriteSheet> {
+    return world
+      .get(AssetLoader)
+      .load(path, new AsepriteFormat(), world.get(SPRITE_SHEET_STORAGE));
+  }
 
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
