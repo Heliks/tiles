@@ -98,8 +98,6 @@ export class SpriteAnimation {
     if (this.playing !== name) {
       this.loop = loop;
       this.transform = name;
-
-
     }
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort
