@@ -56,8 +56,6 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     const animations = world.storage(SpriteAnimation);
     const displays = world.storage(SpriteDisplay);
 
-    this.r++;
-
     for (const entity of this.group.entities) {
       const animation = animations.get(entity);
       const display = displays.get(entity);
@@ -82,16 +80,6 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       // eslint-disable-next-line unicorn/prefer-math-trunc
       const nextFrame = (animation.elapsedTime / (animation.frameDuration / animation.speed))
         % animation.frames.length | 0;
-
-      // Check if looping is disabled and if the next frame would start a new animation
-      // cycle.
-      // if (!animation.loop && animation.frame > 0 && nextFrame === 0) {
-      //   console.log(this.r, 'BRAK', animation.frame, nextFrame);
-
-      // continue;
-      // }
-
-      // console.log(this.r, 'HALLO', animation.frame, nextFrame)
 
       // Update the sprite display with the next frame if necessary.
       if (nextFrame != animation.frame) {
