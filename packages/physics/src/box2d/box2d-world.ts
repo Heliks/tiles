@@ -60,6 +60,8 @@ export class Box2dWorld extends Physics {
     // Attach the shape to the fixture.
     def.shape = b2ParseShape(collider.shape);
 
+    console.log(collider.sensor);
+
     if (collider.sensor) {
       def.isSensor = true;
     }
@@ -96,23 +98,21 @@ export class Box2dWorld extends Physics {
     for (const collider of body.colliders) {
       this.parseCollider(body, collider, bFixtureDef);
 
-      bBody.CreateFixture(bFixtureDef);
+      // Assign "Collider" to created fixture for later backtracking.
+      bBody.CreateFixture(bFixtureDef).SetUserData(collider);
     }
 
-    // Assign the entity to which the body belongs as user data to the Box2D body so that
-    // we can backtrack it later on.
-    bBody.SetUserData(entity);
     bBody.SetLinearDamping(body.damping);
-
     bBody.SetAngle(transform.rotation);
+
+    // Assign entity to the Box2D body for later back-tracking.
+    bBody.SetUserData(entity);
 
     // Enables continuous collision detection on the body which prevents small fixtures
     // (like bullets) from passing through thin fixtures.
-    if (body.isBullet) {
-      bBody.SetBullet(true);
-    }
+    bBody.SetBullet(body.isBullet);
 
-    // Save Box2D body for the entity.
+    // Assign body to entity.
     this.bodies.set(entity, bBody);
   }
 
