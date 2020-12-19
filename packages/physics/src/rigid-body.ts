@@ -87,14 +87,10 @@ export class RigidBody {
     return new RigidBody(RigidBodyType.Kinematic);
   }
 
-  /**
-   * Attaches a `Collider` with the given `shape` to this body.
-   *
-   * @param shape The colliders shape.
-   * @param data The colliders initial data.
-   */
+  /** Attaches a `Collider` with the given `shape` to this body. */
   public attach(shape: Shape, data?: Partial<ColliderData>): this {
-    const collider = new Collider(shape);
+    // Fixme: This is prone to id collisions, but for now this works.
+    const collider = new Collider(this.colliders.length, shape);
 
     if (data) {
       Object.assign(collider, data);

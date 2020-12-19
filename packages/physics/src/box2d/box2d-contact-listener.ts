@@ -42,16 +42,34 @@ export class Box2dContactListener extends b2ContactListener {
 
   /** @inheritDoc */
   public BeginContact(contact: b2Contact): void {
-    const entityA = contact.GetFixtureA().GetBody().GetUserData();
-    const entityB = contact.GetFixtureB().GetBody().GetUserData();
+    const fixtureA = contact.GetFixtureA();
+    const fixtureB = contact.GetFixtureB();
+
+    const colliderA = fixtureA.GetUserData();
+    const colliderB = fixtureB.GetUserData();
+
+    const entityA = fixtureA.GetBody().GetUserData();
+    const entityB = fixtureB.GetBody().GetUserData();
+
+    colliderA.addContact(entityB, colliderB.id);
+    colliderB.addContact(entityA, colliderA.id);
 
     this.push(entityA, entityB, ContactEvent.Begin);
   }
 
   /** @inheritDoc */
   public EndContact(contact: b2Contact): void {
-    const entityA = contact.GetFixtureA().GetBody().GetUserData();
-    const entityB = contact.GetFixtureB().GetBody().GetUserData();
+    const fixtureA = contact.GetFixtureA();
+    const fixtureB = contact.GetFixtureB();
+
+    const colliderA = fixtureA.GetUserData();
+    const colliderB = fixtureB.GetUserData();
+
+    const entityA = fixtureA.GetBody().GetUserData();
+    const entityB = fixtureB.GetBody().GetUserData();
+
+    colliderA.removeContact(entityB, colliderB.id);
+    colliderB.removeContact(entityA, colliderA.id);
 
     // Todo: This is a race-condition with the entity world that already cleaned up the
     //  rigid bodies. This should be fixed because as of right now there is no
