@@ -1,6 +1,7 @@
 import { Entity, entityId, entityVersion, World } from '@heliks/tiles-engine';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { SPRITE_SHEET_STORAGE, SpriteSheet, SpriteSheetFromTexture } from '@heliks/tiles-pixi';
+import { AsepriteFormat } from '@heliks/tiles-aseprite';
 
 /** @internal */
 export function lookupEntity(world: World, entity: Entity): void {

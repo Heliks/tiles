@@ -4,4 +4,4 @@ import { MonoBehavior } from './mono-behavior';
 
 /** Manager to register `MonoBehavior` instances. */
 @Injectable()
-export class BehaviorManager extends Map<BehaviorId, MonoBehavior> {}
+export class BehaviorManager extends Map<BehaviorId, MonoBehavior<unknown>> {}
