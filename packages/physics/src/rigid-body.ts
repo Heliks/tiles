@@ -1,5 +1,5 @@
 import { vec2 } from '@heliks/tiles-engine';
-import { Collider, ColliderData, Shape } from './collider';
+import { Collider, ColliderData, ColliderShape } from './collider';
 
 export enum RigidBodyType {
   /**
@@ -88,7 +88,7 @@ export class RigidBody {
   }
 
   /** Attaches a `Collider` with the given `shape` to this body. */
-  public attach(shape: Shape, data?: Partial<ColliderData>): this {
+  public attach(shape: ColliderShape, data?: Partial<ColliderData>): this {
     // Fixme: This is prone to id collisions, but for now this works.
     const collider = new Collider(this.colliders.length, shape);
 
