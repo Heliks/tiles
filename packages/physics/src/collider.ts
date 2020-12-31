@@ -3,7 +3,7 @@ import { Circle, Rectangle } from '@heliks/tiles-math';
 import { MaterialId } from './material';
 
 /** A shape that can be attached to a collider to give it its physical form. */
-export type Shape = Circle | Rectangle;
+export type ColliderShape = Circle | Rectangle;
 
 /** Collider config. */
 export interface ColliderData {
@@ -56,7 +56,7 @@ export class Collider implements ColliderData {
    * @param id Id that is unique to the body to which this collider is attached to.
    * @param shape Physical shape of the collider.
    */
-  constructor(public readonly id: number, public shape: Shape) {}
+  constructor(public readonly id: number, public shape: ColliderShape) {}
 
   /** Registers a new contact with the collider of another entity. */
   public addContact(entity: Entity, colliderId: number): this {
