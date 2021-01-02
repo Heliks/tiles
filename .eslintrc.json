@@ -3,9 +3,17 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["plugin:@typescript-eslint/recommended", "plugin:unicorn/recommended"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:unicorn/recommended"
+  ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "unicorn"],
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "unicorn"
+  ],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": [
       "warn",
@@ -82,6 +90,7 @@
     "unicorn/no-fn-reference-in-iterator": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-abusive-eslint-disable": "off",
-    "@typescript-eslint/ban-types": "off"
+    "@typescript-eslint/ban-types": "off",
+    "import/no-unresolved": "off"
   }
 }
