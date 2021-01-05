@@ -37,12 +37,26 @@ export interface ValueProvider {
   value: unknown;
 }
 
-/** */
-export type Provider = ClassProvider | FactoryProvider | ValueProvider;
+/** Provides a class instance to the service container via `Container.instance`. */
+export interface InstanceProvider {
+  instance: object;
+}
 
-/** Returns true if `target` is a `FactoryProvider`. */
-export function isFactoryProvider(target: Partial<FactoryProvider>): target is FactoryProvider {
-  return typeof target.factory === 'function';
+/** */
+export type Provider =
+  ClassProvider |
+  InstanceProvider |
+  FactoryProvider |
+  ValueProvider;
+
+/** Checks if `target` is a `InstanceProvider` */
+export function isInstanceProvider(target: Provider): target is InstanceProvider {
+  return typeof (target as InstanceProvider).instance === 'object';
+}
+
+/** Checks if `target` is a `FactoryProvider` */
+export function isFactoryProvider(target: Provider): target is FactoryProvider {
+  return typeof (target as FactoryProvider).factory === 'function';
 }
 
 
