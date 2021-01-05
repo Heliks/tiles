@@ -1,9 +1,10 @@
 import {
-  ComponentEventType,
   contains,
+  Entity,
   Inject,
   Injectable,
-  ProcessingSystem,
+  Parent,
+  ReactiveSystem,
   Subscriber,
   Transform,
   World
@@ -14,10 +15,28 @@ import { SpriteDisplay } from '../components';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { ScreenDimensions } from '../../screen-dimensions';
-import { RenderNode } from "../../renderer-node";
+import { RenderNode } from '../../renderer-node';
+
+/**
+ * Returns the `RenderNode` component of the parent entity of `entity`. If `entity` has
+ * no `Parent` component or if the parent entity has no `RenderNode`, `undefined` is
+ * returned instead.
+ */
+function getParentNode(world: World, entity: Entity): RenderNode | undefined {
+  const parents = world.storage(Parent);
+
+  if (parents.has(entity)) {
+    const nodes = world.storage(RenderNode);
+    const parent = parents.get(entity).entity;
+
+    if (nodes.has(parent)) {
+      return nodes.get(parent);
+    }
+  }
+}
 
 @Injectable()
-export class SpriteDisplaySystem extends ProcessingSystem {
+export class SpriteDisplaySystem extends ReactiveSystem {
 
   /** Subscription for modifications in the [[SpriteDisplay]] storage. */
   protected subscriber!: Subscriber;
@@ -33,40 +52,28 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public boot(world: World): void {
-    super.boot(world);
+  public onEntityAdded(world: World, entity: Entity): void {
+    const parent = getParentNode(world, entity);
+    const sprite = world.storage(SpriteDisplay).get(entity)._sprite;
 
-    // Subscribe to modifications on the SpriteDisplay storage.
-    this.subscriber = world.storage(SpriteDisplay).events().subscribe();
+    parent ? parent.add(sprite) : this.stage.add(sprite);
+  }
+
+  /** @inheritDoc */
+  public onEntityRemoved(world: World, entity: Entity): void {
+    const parent = getParentNode(world, entity);
+    const sprite = world.storage(SpriteDisplay).get(entity)._sprite;
+
+    parent ? parent.remove(sprite) : this.stage.remove(sprite);
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    const displays = world.storage(SpriteDisplay);
-    const nodes = world.storage(RenderNode);
-    const transforms = world.storage(Transform);
+    // Update events from reactive system.
+    super.update(world);
 
-    // Handle added / removed entities.
-    for (const event of displays.events().read(this.subscriber)) {
-      switch (event.type) {
-        case ComponentEventType.Added:
-          if (event.component.node !== undefined) {
-            nodes.get(event.component.node).add(event.component._sprite);
-          }
-          else {
-            this.stage.add(event.component._sprite);
-          }
-          break;
-        case ComponentEventType.Removed:
-          if (event.component.node !== undefined) {
-            nodes.get(event.component.node).remove(event.component._sprite);
-          }
-          else {
-            this.stage.remove(event.component._sprite);
-          }
-          break;
-      }
-    }
+    const displays = world.storage(SpriteDisplay);
+    const transforms = world.storage(Transform);
 
     // Update sprites.
     for (const entity of this.group.entities) {
@@ -99,3 +106,4 @@ export class SpriteDisplaySystem extends ProcessingSystem {
   }
 
 }
+

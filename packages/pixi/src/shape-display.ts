@@ -128,7 +128,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
   /** @inheritDoc */
   public boot(world: World): void {
     // Subscribe to modifications in the ShapeDisplay storage.
-    this.onDisplayModify$ = world.storage(ShapeDisplay).events().subscribe();
+    this.onDisplayModify$ = world.storage(ShapeDisplay).subscribe();
 
     return super.boot(world);
   }
@@ -143,7 +143,7 @@ export class ShapeDisplaySystem extends ProcessingSystem implements System {
     const _trans = world.storage(Transform);
 
     // Handle newly added entities.
-    for (const event of _display.events().read(this.onDisplayModify$)) {
+    for (const event of _display.events(this.onDisplayModify$)) {
       let canvas;
 
       switch (event.type) {
