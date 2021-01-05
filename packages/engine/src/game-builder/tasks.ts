@@ -1,7 +1,7 @@
 import { ClassType } from '../types';
 import { System } from '@heliks/ecs';
 import { Game } from '../game';
-import { isFactoryProvider, Provider } from './provider';
+import { isFactoryProvider, isInstanceProvider, Provider } from './provider';
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -42,22 +42,28 @@ export class AddProvider implements Task {
   /** @inheritDoc */
   public exec(game: Game): void {
     const container = game.container;
+    const provider = this.provider;
 
     // Class provider.
-    if (typeof this.provider === 'function') {
-      container.make(this.provider, [], true);
+    if (typeof provider === 'function') {
+      container.make(provider, [], true);
     }
-    // Factory provider.
-    else if (isFactoryProvider(this.provider)) {
+    else if (isInstanceProvider(provider)) {
+      container.instance(provider);
+    }
+    else if (isFactoryProvider(provider)) {
       // If the singleton flag is set it will also be bound to the service
       // container as such.
-      this.provider.singleton
-        ? container.singleton(this.provider.token, this.provider.factory)
-        : container.factory(this.provider.token, this.provider.factory);
+      if (provider.singleton) {
+        container.singleton(provider.token, provider.factory);
+      }
+      else {
+        container.factory(provider.token, provider.factory);
+      }
     }
     // Value provider.
     else {
-      container.bind(this.provider.token, this.provider.value);
+      container.bind(provider.token, provider.value);
     }
   }
 
