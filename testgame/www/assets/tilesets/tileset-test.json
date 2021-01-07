@@ -27,7 +27,7 @@
          "tile":48
         }],
  "tilecount":168,
- "tiledversion":"1.4.2",
+ "tiledversion":"1.4.3",
  "tileheight":16,
  "tiles":[
         {
@@ -228,6 +228,7 @@
         }, 
         {
          "id":48,
+         "probability":2,
          "terrain":[2, 2, 2, 2]
         }, 
         {

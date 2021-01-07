@@ -86,16 +86,21 @@ export function spawnPawn(
   body.damping = 10;
   body.group = CollisionGroups.Player;
 
-  world
+  const builder = world
     .builder()
     .use(body)
     .use(new Combat())
     .use(new Direction())
     .use(new Pawn())
     .use(new Transform(x, y))
-    .use(new SpriteDisplay(spritesheet, 1, node))
-    .use(new SpriteAnimation([]))
-    .build();
+    .use(new SpriteDisplay(spritesheet, 1))
+    .use(new SpriteAnimation([]));
+
+  if (node) {
+    builder.use(new Parent(node));
+  }
+
+  builder.build();
 }
 
 @Injectable()

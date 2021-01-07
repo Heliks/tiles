@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, rand, TransformSystem, World } from '@heliks/tiles-engine';
+import { Entity, Game, GameBuilder, rand, TransformModule, World } from '@heliks/tiles-engine';
 import { Physics, PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
@@ -9,7 +9,7 @@ import { InputHandler } from './input';
 import { PawnController, spawnPawn } from './pawn';
 import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
-import { loadSpriteSheet, lookupEntity } from './utils';
+import { lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
 import { spawnJosh } from './spawners/josh';
 import { CombatSystem } from './combat';
@@ -67,8 +67,8 @@ function getDomTarget(): HTMLElement {
 
 window.onload = () => {
   const game = new GameBuilder()
-    .system(TransformSystem)
     .system(InputHandler)
+    .module(new TransformModule())
     .module(new AssetsModule('assets'))
     .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
     .module(
@@ -79,7 +79,7 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        // .plugin(PhysicsDebugDraw)
+        .plugin(PhysicsDebugDraw)
         // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
@@ -99,8 +99,8 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 10;
-  const y = 10;
+  const x = 15;
+  const y = 19;
 
   const mapFile = 'maps/test.json';
 
@@ -120,17 +120,15 @@ window.onload = () => {
 
     const mapHandler = game.world.get(GameMapHandler);
 
-    // spawnMap
     fetchMap(game.world, mapFile).then(mapData => {
-      const map = mapHandler.spawn(game.world, mapData);
+      // Spawn the map.
+      mapHandler.spawn(game.world, mapData);
 
-      // Get the layer where our pawn is allowed to be spawned
-      // Todo: Handle maps that don't have a single pawn layer
-      // Todo: Currently only one player floor is allowed.
-      const layer = map.getPawnLayers()[0];
+      // Get floor where we can spawn our entities.
+      const floor = mapHandler.getFloor(0);
 
       // Spawn player character.
-      spawnPawn(game.world, pawnSpriteSheet, x, y, layer.entity);
+      spawnPawn(game.world, pawnSpriteSheet, x, y, floor.layer2);
 
       // Spawn Josh in a random location near the player
       spawnJosh(
@@ -138,7 +136,7 @@ window.onload = () => {
         AsepriteFormat.load(game.world, 'spritesheets/josh.json'),
         x + rand(-5, 5),
         y + rand(-5, 5),
-        layer.entity
+        floor.layer2
       );
     });
   });

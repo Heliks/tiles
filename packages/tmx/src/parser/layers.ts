@@ -1,6 +1,7 @@
 import { Tile, TmxObjectData, tmxParseObject } from './objects';
 import { HasTmxPropertyData, tmxParseProperties, TmxProperties } from './properties';
 import { Shape, tmxParseShape } from './shape';
+import { MaterialId } from '@heliks/tiles-physics';
 
 export enum LayerTypeData {
   Objects = 'objectgroup',
@@ -62,10 +63,19 @@ export interface ObjectLayerProperties {
   isPawnLayer?: boolean;
 }
 
+
+export interface FloorTriggerShapeProperties {
+  level: number;
+}
+
+
+
+
+
 /** A layer containing free-positioned objects. */
 export interface TmxObjectLayer extends BaseLayer<ObjectLayerProperties> {
   data: Tile[];
-  shapes: Shape[];
+  shapes: Shape<unknown, unknown>[];
   type: LayerType.Objects;
 }
 
@@ -97,7 +107,7 @@ function parseObjectLayer(data: TmxObjectLayerData): TmxObjectLayer {
     data: objects,
     name: data.name,
     properties: tmxParseProperties(data),
-    shapes,
+    shapes: shapes as any,
     type: LayerType.Objects
   };
 }
