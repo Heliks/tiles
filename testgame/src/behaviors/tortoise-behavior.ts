@@ -75,7 +75,6 @@ export class TortoiseBehavior implements MonoBehavior<TortoiseBlackboard> {
         .play('block', false);
     }
 
-    // movement.cancel();
     switch (behavior.data.state) {
       // Idle.
       case TortoiseState.IDLE:

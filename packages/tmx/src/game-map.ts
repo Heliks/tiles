@@ -6,31 +6,22 @@ import { Entity } from '@heliks/tiles-engine';
 export class GameMapLayer {
 
   /**
-   * @param entities All entities that belong to this layer.
-   * @param isPawnLayer (optional) Indicates if pawns (e.g. player controlled
-   *  characters) are allowed to be spawned on the same stage [[node]] as this layer.
-   * @param entity (optional) The "parent" entity to which this layer is attached. In
-   *  all cases this will be an entity with a `RenderNode` component.
+   * @param root The root entity of which the entities on this layer are children of.
+   * @param entities All entities that are contained on this layer.
+   * @param isFloor (optional) If set to `true` this layer is considered a floor, which
+   *  means that entities such as the player character should be spawned here.
    */
   constructor(
+    public readonly root: Entity,
     public readonly entities: Entity[],
-    public readonly isPawnLayer = false,
-    public readonly entity?: Entity
+    public readonly isFloor = false
   ) {}
 
 }
 
-/** A game map that is currently spawned in the world. */
+/** An active game map. */
 export class GameMap {
 
   constructor(public readonly layers: GameMapLayer[]) {}
-
-  /**
-   * Returns all layers where pawns (e.g. player controlled characters) are
-   * allowed to be spawned.
-   */
-  public getPawnLayers(): GameMapLayer[] {
-    return this.layers.filter(item => item.isPawnLayer);
-  }
 
 }

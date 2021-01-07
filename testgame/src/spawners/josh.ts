@@ -1,5 +1,5 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Entity, Transform, World } from '@heliks/tiles-engine';
+import { Entity, Parent, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import { SpriteAnimation, SpriteDisplay, SpriteSheet } from '@heliks/tiles-pixi';
 import { Health, Inventory } from '../components';
@@ -19,7 +19,7 @@ export function spawnJosh(
   sheet: Handle<SpriteSheet>,
   x: number,
   y: number,
-  parent?: Entity
+  parent: Entity
 ): void {
   const inventory = new Inventory();
 
@@ -46,10 +46,11 @@ export function spawnJosh(
     .builder()
     .use(new Transform(x, y))
     .use(new Health(200, 200))
-    .use(new SpriteDisplay(sheet, 0, parent))
+    .use(new SpriteDisplay(sheet, 0))
     .use(new SpriteAnimation().play('idle'))
     .use(new Behavior('tortoise', new TortoiseBlackboard()))
     .use(new Movement(0.2))
+    .use(new Parent(parent))
     .use(body)
     .use(inventory)
     .build();

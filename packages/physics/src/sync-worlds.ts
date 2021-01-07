@@ -20,7 +20,7 @@ export class SyncWorlds implements System {
   /** @inheritDoc */
   public boot(world: World): void {
     // Subscribe to changes in the rigid body storage.
-    this.body$ = world.storage(RigidBody).events().subscribe();
+    this.body$ = world.storage(RigidBody).subscribe();
   }
 
   /** @inheritDoc */
@@ -28,7 +28,7 @@ export class SyncWorlds implements System {
     const bodies = world.storage(RigidBody);
     const transforms = world.storage(Transform);
 
-    for (const event of bodies.events().read(this.body$)) {
+    for (const event of bodies.events(this.body$)) {
       switch (event.type) {
         case ComponentEventType.Added:
           this.physics.createBody(

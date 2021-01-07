@@ -60,8 +60,6 @@ export class Box2dWorld extends Physics {
     // Attach the shape to the fixture.
     def.shape = b2ParseShape(collider.shape);
 
-    console.log(collider.sensor);
-
     if (collider.sensor) {
       def.isSensor = true;
     }

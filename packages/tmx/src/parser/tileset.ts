@@ -3,7 +3,7 @@ import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
 import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
 import { HasTmxPropertyData, tmxParseProperties } from './properties';
-import { tmxParseShape, Shape, TmxShape } from './shape';
+import { tmxParseShape, Shape, TmxShapeData } from './shape';
 import { RigidBodyType } from "@heliks/tiles-physics";
 
 interface TileData extends HasTmxPropertyData {
@@ -13,7 +13,7 @@ interface TileData extends HasTmxPropertyData {
   }[];
   id: number;
   objectgroup?: {
-    objects: TmxShape[]
+    objects: TmxShapeData[]
   }
 }
 
