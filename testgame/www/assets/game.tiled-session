@@ -88,7 +88,7 @@
             "scale": 5.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 888,
+                "x": 887.909090909091,
                 "y": 765.8181818181818
             }
         },
@@ -96,11 +96,11 @@
             "scaleInDock": 1
         },
         "maps/forest1_1.json": {
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 312,
-                "y": 312.5
+                "x": 234.625,
+                "y": 257.625
             }
         },
         "maps/forest1_2.json": {
@@ -119,7 +119,7 @@
             "scale": 2.1374999999999997,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 80.00000000000003,
+                "x": 80.23391812865498,
                 "y": 80.23391812865499
             }
         },
@@ -127,8 +127,8 @@
             "scale": 2,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 156,
-                "y": 152.25
+                "x": 156.25,
+                "y": 223.75
             }
         },
         "maps/tileset.json": {
@@ -324,14 +324,14 @@
         "/home/felix/Pictures/gamedev/map_wald/untitled.json"
     ],
     "project": "game.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
-        "maps/forest1_2.json",
         "maps/test.json",
-        "objects/containers/wood-barrels.json",
-        "maps/test-2.json",
-        "tilesets/village02.json",
         "maps/city.json",
+        "maps/test-2.json",
+        "maps/forest1_2.json",
+        "objects/containers/wood-barrels.json",
+        "tilesets/village02.json",
         "/home/felix/Pictures/gamedev/map_wald/untitled.json",
         "/home/felix/Pictures/gamedev/map_wald/untitled2.json",
         "tilesets/village01.json",

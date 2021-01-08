@@ -54,23 +54,15 @@ export interface TmxObjectLayerData extends BaseLayerData {
   type: LayerTypeData.Objects;
 }
 
-/** Custom properties for object layers. */
+/** Properties for object layers. */
 export interface ObjectLayerProperties {
   /**
-   * Indicates if pawns (e.g. player controlled characters, entities etc.) should be
-   * placed on the same level as this layer.
+   * If set to `true` the layer will be considered a floor. Floors are special layers
+   * for pawns and other movable entities as they are placed into a depth-sorted
+   * render node.
    */
-  isPawnLayer?: boolean;
+  isFloor?: boolean;
 }
-
-
-export interface FloorTriggerShapeProperties {
-  level: number;
-}
-
-
-
-
 
 /** A layer containing free-positioned objects. */
 export interface TmxObjectLayer extends BaseLayer<ObjectLayerProperties> {

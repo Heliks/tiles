@@ -31,11 +31,11 @@ export class Grid {
   ) {}
 
   /** Returns the top-left aligned position of the sprite at the given `index`. */
-  public pos(index: number): Vec2 {
-    return vec2(
-      index % this.cols * this.cellWidth,
-      Math.floor(index / this.cols) * this.cellHeight
-    );
+  public pos(index: number, out = vec2(0, 0)): Vec2 {
+    out.x = index % this.cols * this.cellWidth;
+    out.y = Math.floor(index / this.cols) * this.cellHeight;
+
+    return out;
   }
 
   /**

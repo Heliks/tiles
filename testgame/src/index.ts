@@ -102,7 +102,7 @@ window.onload = () => {
   const x = 15;
   const y = 19;
 
-  const mapFile = 'maps/test.json';
+  const mapFile = 'maps/forest1_1.json';
 
   // Register entity behaviors.
   game.world
