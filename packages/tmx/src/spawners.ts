@@ -5,13 +5,15 @@ import { Circle, Entity, Transform, World } from '@heliks/tiles-engine';
 import {
   LayerType,
   TileProperties,
+  Tileset,
   TmxLayer,
   TmxMap,
   TmxObjectLayer,
   TmxTileLayer
 } from './parser';
-import { ColliderShape, MaterialId, RigidBody } from '@heliks/tiles-physics';
+import { ColliderShape, MaterialId, RigidBody, RigidBodyType } from '@heliks/tiles-physics';
 import { Shape } from './parser/shape';
+import { vec2, Vec2 } from '@heliks/tiles-math';
 
 /**
  * Internal shape types that are recognized by the loader. Shapes with other types will
@@ -31,24 +33,105 @@ export interface CollisionShapeProperties {
   physicsMaterial?: MaterialId;
 }
 
+/** Tile iterator node. */
+class TileNode implements Vec2 {
+
+  /** @inheritDoc */
+  public x = 0;
+
+  /** @inheritDoc */
+  public y = 0;
+
+  /** Contains all shapes of the tile. */
+  public get shapes(): Shape[] | undefined {
+    return this.tileset.shapes.get(this.tileIdx);
+  }
+
+  constructor(
+    public tileIdx: number,
+    public tileset: Tileset
+  ) {}
+
+}
+
+/** Utility class to iterate over all tiles in a tile layer. */
+export class TileLayerIterator {
+
+  /**
+   * @param map The map asset that holds [[layer]].
+   * @param layer The layer over which should be iterated.
+   */
+  constructor(private map: TmxMap, private layer: TmxTileLayer) {}
+
+  /** Returns an iterator over all tiles on the active layer. */
+  public *tiles(): IterableIterator<TileNode> {
+    // We instantiate this with empty properties to re-use the same instance when
+    // iterating over tiles.
+    const node = new TileNode(0, undefined as unknown as Tileset);
+
+    for (let i = 0, l = this.layer.data.length; i < l; i++) {
+      const gid = this.layer.data[i];
+
+      // Tiles with an id of 0 are empty and can be skipped.
+      if (!gid) {
+        continue;
+      }
+
+      // Get tileset and calculate local tile index from global id.
+      node.tileset = this.map.tileset(gid);
+      node.tileIdx = node.tileset.toLocal(gid) - 1;
+
+      // Update tile position.
+      this.map.grid.toCenter(this.map.grid.pos(i, node));
+
+      yield node;
+    }
+  }
+
+}
+
 /** @internal */
-function spawnTileLayer(world: World, map: TmxMap, layer: TmxTileLayer, parentNode: Entity): GameMapLayer {
-  const tt = new Tilemap(
+function spawnTileLayer(world: World, map: TmxMap, layer: TmxTileLayer, parent: Entity): GameMapLayer {
+  const tilemap = new Tilemap(
     map.grid,
     map.tilesets,
     layer.data,
-    parentNode
+    parent
   );
 
-  // (tt as any).$$NAME = layer.name;
-  // console.log(layer.name)
+  const iterator = new TileLayerIterator(map, layer);
+  const unitSize = world.get(ScreenDimensions).unitSize;
+
+  for (const tile of iterator.tiles()) {
+    const properties = tile.tileset.properties.get(tile.tileIdx) ?? {};
+
+    if (tile.shapes) {
+      const colliders = tile.shapes.filter(shape => shape.type === ShapeType.COLLISION);
+
+      if (colliders.length > 0) {
+        world
+          .builder()
+          .use(new Transform(
+            tile.x / unitSize,
+            tile.y / unitSize
+          ))
+          .use(createObjectRigidBody(
+            unitSize,
+            colliders,
+            properties?.physicsBodyType,
+            properties?.physicsDamping
+          ))
+          .build();
+      }
+    }
+  }
 
   const entity = world
     .builder()
-    .use(tt)
+    .use(tilemap)
     .build();
 
-  return new GameMapLayer(parentNode, [ entity ]);
+  return new GameMapLayer(parent, [ entity ]);
 }
 
 /** @internal */
@@ -86,14 +169,14 @@ function convertShape(shape: Shape<unknown>, us: number): ColliderShape {
 function createObjectRigidBody(
   unitSize: number,
   shapes: Shape<CollisionShapeProperties>[],
-  properties: TileProperties
+  type = RigidBodyType.Static,
+  damping?: number
 ): RigidBody {
-  const body = new RigidBody(properties.physicsBodyType);
+  const body = new RigidBody(type);
 
-  // Only apply linear damping if it was manually set, otherwise use the physics
-  // module defaults.
-  if (properties.physicsDamping) {
-    body.damping = properties.physicsDamping;
+  // Apply linear damping if it was set, otherwise use the physics module defaults.
+  if (damping) {
+    body.damping = damping;
   }
 
   for (const item of shapes) {
@@ -143,7 +226,12 @@ export function spawnObjectLayer(
       // If we have any shapes with "collision" type we'll add rigid body will all of
       // those shapes attached as colliders.
       if (colliders.length > 0) {
-        entity.use(createObjectRigidBody(unitSize, colliders, properties));
+        entity.use(createObjectRigidBody(
+          unitSize,
+          colliders,
+          properties?.physicsBodyType,
+          properties?.physicsDamping
+        ));
       }
     }
 
@@ -167,7 +255,7 @@ export function spawnObjectLayer(
   return new GameMapLayer(
     parentNode,
     entities,
-    layer.properties.isPawnLayer
+    layer.properties.isFloor
   );
 }
 

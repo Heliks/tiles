@@ -7,7 +7,7 @@ import { Floor } from './floor';
 
 /** @internal */
 function getFloorCount(map: TmxMap): number {
-  return map.layers.filter(layer => layer.properties.isPawnLayer).length;
+  return map.layers.filter(layer => layer.properties.isFloor).length;
 }
 
 /**
@@ -62,32 +62,36 @@ export class GameMapHandler {
     // layer that is flagged as floor.
     let floor = this.getFloor(0);
 
+    // Flag to decide if a layer should be placed in the foreground or the background.
+    let fg = false;
+
     const layers = [];
 
     for (let i = 0, l = asset.layers.length, f = 0; i < l; i++) {
       const data = asset.layers[i];
-      const isLastFloor = f === (floors - 1);
 
       let layer;
 
-      if (data.properties.isPawnLayer) {
+      if (data.properties.isFloor) {
         layer = spawnLayer(world, asset, data, floor.layer2);
 
-        // Move to next floor.
-        if (!isLastFloor) {
+        // If we are not on the last floor everything above layer2 will be placed on
+        // layer1 of the next floor. If we are on the last floor however we place
+        // everything after this floor layer in the foreground.
+        if (f < (floors - 1)) {
           f++;
           floor = this.getFloor(f);
         }
+        else {
+          fg = true;
+        }
       }
       else {
-        // If we are not on the last floor everything above layer2 will be placed on
-        // layer1 of the next floor. If we are on the last floor however we place
-        // everything in the foreground layer.
         layer = spawnLayer(
           world,
           asset,
           data,
-          isLastFloor ? floor.layer3 : floor.layer1
+          fg ? floor.layer3 : floor.layer1
         );
       }
 

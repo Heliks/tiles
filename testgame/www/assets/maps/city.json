@@ -423,7 +423,7 @@
          "opacity":1,
          "properties":[
                 {
-                 "name":"isPawnLayer",
+                 "name":"isFloor",
                  "type":"bool",
                  "value":true
                 }],
@@ -472,7 +472,7 @@
  "orientation":"orthogonal",
  "properties":[
         {
-         "name":"isPawnLayer",
+         "name":"isFloor",
          "type":"bool",
          "value":true
         }],
