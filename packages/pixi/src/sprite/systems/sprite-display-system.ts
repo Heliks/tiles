@@ -42,11 +42,11 @@ export class SpriteDisplaySystem extends ReactiveSystem {
   protected subscriber!: Subscriber;
 
   constructor(
+    @Inject(SPRITE_SHEET_STORAGE)
+    private readonly storage: AssetStorage<SpriteSheet>,
     private readonly dimensions: ScreenDimensions,
     private readonly renderer: Renderer,
-    private readonly stage: Stage,
-    @Inject(SPRITE_SHEET_STORAGE)
-    private readonly storage: AssetStorage<SpriteSheet>
+    private readonly stage: Stage
   ) {
     super(contains(SpriteDisplay, Transform));
   }
@@ -91,8 +91,8 @@ export class SpriteDisplaySystem extends ReactiveSystem {
         sprite.texture = sheet.texture(display.spriteIndex);
 
         // Flip sprite.
-        sprite.scale.x = display.flipX ? -1 : 1;
-        sprite.scale.y = display.flipY ? -1 : 1;
+        sprite.scale.x = display.flipX ? -display.scale.x : display.scale.x;
+        sprite.scale.y = display.flipY ? -display.scale.y : display.scale.y;
       }
 
       // Update the sprites position.
