@@ -29,8 +29,9 @@ export class ScreenDimensions {
    * @param h Initial height of the screen in px.
    * @param rw Resolution width in px.
    * @param rh Resolution height in px.
-   * @param unitSize Value by which positions that are fed into the rendering module must
-   *  be multiplied to translate those values into pixel positions.
+   * @param unitSize Amount of pixels that are equivalent to 1 unit in the game
+   *  world. This unit size is applied to most values that are fed into the renderer to
+   *  translate in-game values like position or size to their correct screen values.
    */
   constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
     this.size = vec2(w, h);

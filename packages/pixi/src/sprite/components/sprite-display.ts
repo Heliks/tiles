@@ -1,7 +1,7 @@
 import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
-import { Entity } from '@heliks/tiles-engine';
+import { vec2 } from '@heliks/tiles-math';
 
 /**
  * Component used to render a sprite.
@@ -20,17 +20,17 @@ export class SpriteDisplay {
   /** If set to `true` the sprite will be flipped on the y axis. */
   public flipY = false;
 
+  /** Scale factor of the sprite. */
+  public scale = vec2(1, 1);
+
   /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
-   * @param node (optional) An entity with a `RenderNode` component that acts as a
-   *  parent node in the renderer graph.
    */
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
-    public spriteIndex: number,
-    public node?: Entity
+    public spriteIndex: number
   ) {
     // The engine uses center aligned positions instead of top-left. This will save us
     // a calculation in the renderer `update()`.
