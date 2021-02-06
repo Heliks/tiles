@@ -1,21 +1,39 @@
 import { Grid } from './grid';
 
 describe('Grid', () => {
-  const cases = [
-    // First row in the grid.
+  it.each([
+    // First row of the grid.
     [0, 0, 0],
     [1, 16, 0],
-    // Second row in the grid.
+    // Second row of the grid.
     [5, 0, 16],
     [6, 16, 16]
-  ];
-
-  it.each(cases)('should calculate the position of cell index %s', (index, x, y) => {
+  ])('should return the position of the cell at index %s', (index, x, y) => {
     const grid = new Grid(5, 5, 16, 16);
+
+    // Get x and y position from cell idnex.
     const pos = grid.pos(index);
 
-    expect(pos.x).toBe(x);
-    expect(pos.y).toBe(y);
+    expect(pos).toMatchObject({
+      x,
+      y
+    });
+  });
+
+  it.each([
+    // First row of the grid.
+    [16, 10, 1],
+    [13, 13, 0],
+    // Second row of the grid.
+    [16, 16, 6],
+    [19, 21, 6]
+  ])('should return the index of the cell at position x:%s y:%s', (x, y, index) => {
+    const grid = new Grid(5, 5, 16, 16);
+
+    // Get the index from the given x and y positions.
+    const idx = grid.index(x, y);
+
+    expect(idx).toBe(index);
   });
 
   it('should have a size equal to its amount of total cells', () => {

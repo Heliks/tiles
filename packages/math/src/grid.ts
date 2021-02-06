@@ -38,6 +38,14 @@ export class Grid {
     return out;
   }
 
+  /** Returns the index of the cell on which the position `x` and `y` is located. */
+  public index(x: number, y: number): number {
+    const col = Math.floor(x / this.cellWidth);
+    const row = Math.floor(y / this.cellHeight);
+
+    return (row * this.cols) + col;
+  }
+
   /**
    * Converts a top-left aligned `pos` vector of a cell and converts its values to be
    * center aligned.
