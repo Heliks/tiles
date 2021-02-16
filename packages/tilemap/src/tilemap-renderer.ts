@@ -1,8 +1,9 @@
-import { contains, Injectable, ReactiveSystem, World } from '@heliks/tiles-engine';
+import { contains, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { Tilemap } from './tilemap';
-import { Container, RenderNode, Stage } from '@heliks/tiles-pixi';
+import { Container, RenderNode, ScreenDimensions, Stage } from '@heliks/tiles-pixi';
 import { Entity } from '@heliks/ecs';
+import { vec2 } from '@heliks/tiles-math';
 
 @Injectable()
 export class TilemapRenderer extends ReactiveSystem {
@@ -10,19 +11,28 @@ export class TilemapRenderer extends ReactiveSystem {
   /** Asset storage for tilemaps. */
   public readonly cache: AssetStorage<Tilemap> = new Map();
 
+  /** @internal */
+  private readonly containers = new Map<Entity, Container>();
+
   constructor(
     protected readonly loader: AssetLoader,
     protected readonly stage: Stage
 
   ) {
-    super(contains(Tilemap));
+    super(contains(Tilemap, Transform));
   }
 
+  /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
     const container = new Container();
 
-    container.setPivot(0.5);
+    // Set the fixed size of the container to the size of the chunk and make sure it
+    // is anchored to it's center and not the top-left corner.
+    container.setPivot(0.5).setFixedSize(vec2(
+      tilemap.grid.width,
+      tilemap.grid.height
+    ));
 
     for (let i = 0, l = tilemap.data.length; i < l; i++) {
       const gId = tilemap.data[i];
@@ -47,14 +57,31 @@ export class TilemapRenderer extends ReactiveSystem {
       this.stage.add(container);
     }
 
-    // container.setPivot(0.5);
-
-    container.x = 0;
-    container.y = 0;
+    this.containers.set(entity, container);
   }
 
+  /** @inheritDoc */
   public onEntityRemoved(): void {
+    // Todo
+
     return;
+  }
+
+  /** @inheritDoc */
+  public update(world: World): void {
+    const us = world.get(ScreenDimensions).unitSize;
+
+    super.update(world);
+
+    for (const entity of this.group.entities) {
+      const transform = world.storage(Transform).get(entity);
+      const container = this.containers.get(entity);
+
+      if (container) {
+        container.x = transform.world.x * us;
+        container.y = transform.world.y * us;
+      }
+    }
   }
 
 }
