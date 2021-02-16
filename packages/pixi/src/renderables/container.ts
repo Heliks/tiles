@@ -1,5 +1,6 @@
 import { Container as BaseContainer } from 'pixi.js';
 import { Renderable } from './renderable';
+import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /**
  * A container that can contain many for other renderable objects. The container itself
@@ -12,28 +13,72 @@ export class Container<T extends Renderable = Renderable> extends BaseContainer 
   /** @inheritDoc */
   public readonly children: T[] = [];
 
+  /** @internal */
+  private _pivot = 0;
+
+  /**
+   * If this is set operations that take the containers size into account will pretend
+   * that the container is the size matching this value instead of determining it at
+   * runtime by calculating the containers bounds (this is default behavior).
+   *
+   * Note: This is a workaround for PIXI automatically applying shit like scaling when
+   *  attempting to set `width` or `height`. We also can't override this behavior without
+   *  nasty hacks because accessors for both are declared as normal properties in their
+   *  declarations file.
+   */
+  private fixedSize?: Vec2;
+
   /**
    * Transforms the pivot by a percentage `value`. E.g. the value `0.5` will set the
    * pivot to the center of the container. This also updates the [[x]] and [[y]]
    * position according to the new pivot.
    */
   public setPivot(value: number): this {
-    const hw = this.width * value;
-    const hh = this.height * value;
+    const size = this.getFixedSize();
+    
+    const hw = size.x * value;
+    const hh = size.y * value;
 
     // Update position values to retain original position.
     this.x += hw;
     this.y += hh;
 
+    this._pivot = value;
     this.pivot.set(hw, hh);
 
     return this;
   }
 
   /**
-   * Shrinks the container down to its lowest possible size. The x and y position will be
-   * adjusted to take the new size into account so that the container retains its original
-   * position from before it was shrunk.
+   * Sets a fixed size for the container. This does not modify the containers visual
+   * representation but merely changes how the container calculates stuff.
+   *
+   * Note: Calling this method will re-calculate the containers pivot.
+   */
+  public setFixedSize(size: Vec2): this {
+    this.fixedSize = size;
+
+    // Re-calculate the pivot.
+    this.setPivot(this._pivot);
+
+    return this;
+  }
+
+  /**
+   * Returns the size of a container.
+   *
+   * This is not *necessarily* the containers real, physical size, but rather the size
+   * that the container is supposed to be. If the container has a fixed size the fixed
+   * size is returned, otherwise the size is calculated based on the containers bounds.
+   */
+  public getFixedSize(): Vec2 {
+    return this.fixedSize ? this.fixedSize : vec2(this.width, this.height);
+  }
+
+  /**
+   * Shrinks the container down to its lowest possible size. The x and y position will
+   * be adjusted to take the new size into account so that the container retains its
+   * original position from before it was shrunk.
    */
   public shrink(): this {
     const children = this.children;
