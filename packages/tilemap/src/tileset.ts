@@ -13,10 +13,14 @@ export class Tileset {
   /**
    * @param spritesheet Spritesheet for rendering individual sprites.
    * @param firstId First ID in the global ID range of the map that this tileset occupies.
+   * @param tileWidth Tile width in px.
+   * @param tileHeight Tile height in px.
    */
   constructor(
     public readonly spritesheet: SpriteSheet,
-    public readonly firstId: number
+    public readonly firstId: number,
+    public readonly tileWidth: number,
+    public readonly tileHeight: number
   ) {}
 
   /**
