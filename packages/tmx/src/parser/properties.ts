@@ -10,13 +10,25 @@ export interface HasTmxPropertyData {
 }
 
 /** Custom properties. */
-export interface TmxProperties {
+export interface Properties {
   [property: string]: unknown;
 }
 
-/** Extracts the custom properties from any TMX formatted data. */
-export function tmxParseProperties(target: HasTmxPropertyData): TmxProperties {
-  const data: TmxProperties = {};
+/** Helper type that indicates a structure carries parsed TMX properties. */
+export interface HasProperties<T extends Properties = Properties> {
+
+  /** Custom properties. */
+  readonly properties: Partial<T>;
+
+}
+
+/**
+ * Extracts the custom properties from any TMX formatted data. This is always a
+ * `Partial` of the original type `T`, as we currently can not guarantee that all the
+ * required properties really exist.
+ */
+export function tmxExtractProperties<T extends Properties>(target: HasTmxPropertyData): Partial<T> {
+  const data: Properties = {};
 
   if (target.properties) {
     for (const item of target.properties) {
@@ -24,5 +36,5 @@ export function tmxParseProperties(target: HasTmxPropertyData): TmxProperties {
     }
   }
 
-  return data;
+  return data as T;
 }

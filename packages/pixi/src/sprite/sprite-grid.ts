@@ -26,7 +26,7 @@ export class SpriteGrid extends SpriteSheet {
   public texture(index: number): Texture {
     return cropTexture(
       this._texture,
-      this.grid.pos(index),
+      this.grid.position(index),
       this.getSpriteSize()
     );
   }

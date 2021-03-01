@@ -2,7 +2,7 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
 import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
-import { HasTmxPropertyData, tmxParseProperties } from './properties';
+import { HasTmxPropertyData, tmxExtractProperties } from './properties';
 import { tmxParseShape, Shape, TmxShapeData } from './shape';
 import { RigidBodyType } from "@heliks/tiles-physics";
 
@@ -68,6 +68,10 @@ export class Tileset extends BaseTileset {
   public readonly properties = new Map<TileId, TileProperties>();
   public readonly shapes = new Map<TileId, Shape[]>();
 
+  public getTileShapes(tileId: number): Shape[] | undefined {
+    return this.shapes.get(tileId);
+  }
+
 }
 
 /** Asset loader format for TMX tilesets. */
@@ -98,7 +102,13 @@ export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
     // Load the texture and create a SpriteGrid from it.
     const texture = await loader.fetch(source, new TextureFormat());
     const spritesheet = new SpriteGrid(grid, texture);
-    const tileset = new Tileset(spritesheet, this.firstId);
+
+    const tileset = new Tileset(
+      spritesheet,
+      this.firstId,
+      data.tilewidth,
+      data.tileheight
+    );
 
     if (data.tiles) {
       for (const tileData of data.tiles) {
@@ -117,7 +127,7 @@ export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
 
         // Parse properties.
         if (tileData.properties) {
-          tileset.properties.set(tileData.id, tmxParseProperties(tileData));
+          tileset.properties.set(tileData.id, tmxExtractProperties(tileData));
         }
 
         // Parse object shapes.

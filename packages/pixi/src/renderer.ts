@@ -195,8 +195,8 @@ export class Renderer {
     // Update stage position according to the camera position and update the offset
     // in ScreenDimensions accordingly.
     this.stage.setPosition(
-      dim.offset.x = this.camera.screen.x,
-      dim.offset.y = this.camera.screen.y
+      (dim.offset.x = this.camera.screen.x),
+      (dim.offset.y = this.camera.screen.y)
     );
 
     // Render the final image.

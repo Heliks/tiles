@@ -18,8 +18,8 @@ export class Camera {
     this.local.x = x;
     this.local.y = y;
 
-    this.screen.x = (x * this.dimensions.unitSize) + (this.dimensions.resolution.x / 2);
-    this.screen.y = (y * this.dimensions.unitSize) + (this.dimensions.resolution.y / 2);
+    this.screen.x = (-x * this.dimensions.unitSize) + (this.dimensions.resolution.x / 2);
+    this.screen.y = (-y * this.dimensions.unitSize) + (this.dimensions.resolution.y / 2);
 
     return this;
   }

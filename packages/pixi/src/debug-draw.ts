@@ -113,4 +113,14 @@ export class DebugDraw {
     return this;
   }
 
+  /**
+   * Draws a `text` message at the given `x` and `y` position.
+   */
+  public text(text: string, x: number, y: number): void {
+    this.ctx.font = '4px Arial';
+
+    this.ctx.fillStyle = "red";
+    this.ctx.fillText(text, x, y);
+  }
+
 }
