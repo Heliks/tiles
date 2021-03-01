@@ -1,22 +1,18 @@
 import { Grid } from './grid';
-import { Vec2 } from './vec2';
 
 describe('Grid', () => {
   it.each([
-    // Row 1:
+    // First row of the grid.
     [0, 0, 0],
     [1, 16, 0],
-    // Row 2:
+    // Second row in the grid.
     [5, 0, 16],
-    [6, 16, 16],
-    // Negative numbers:
-    [-1, -16, 0],
-    [-6, -16, -16]
+    [6, 16, 16]
   ])('should return the position of the cell at index %s', (index, x, y) => {
     const grid = new Grid(5, 5, 16, 16);
 
     // Get x and y position from cell idnex.
-    const pos = grid.pos(index);
+    const pos = grid.position(index);
 
     expect(pos).toMatchObject({
       x,
@@ -25,15 +21,12 @@ describe('Grid', () => {
   });
 
   it.each([
-    // Row 1:
+    // First row of the grid.
     [16, 10, 1],
     [13, 13, 0],
-    // Row 2:
+    // Second row of the grid.
     [16, 16, 6],
-    [19, 21, 6],
-    // Negative numbers:
-    [-13, -13, 0],
-    [-19, -21, -6]
+    [19, 21, 6]
   ])('should return the index of the cell at position x:%s y:%s', (x, y, index) => {
     const grid = new Grid(5, 5, 16, 16);
 
@@ -47,15 +40,20 @@ describe('Grid', () => {
     expect(new Grid(10, 10, 16, 16).size).toBe(100);
   });
 
-  it.each([
-    [{ x: 16, y: 16 }, 24, 24],
-    [{ x: -16, y: -16 }, -24, -24]
-  ])('should convert top-left aligned position %s to center-aligned', (pos: Vec2, x, y) => {
+  /*
+  it('should convert top-left aligned positions to center-aligned', () => {
     const grid = new Grid(5, 5, 16, 16);
 
-    grid.toCenter(pos);
+    // Probe first (0) and second (6) row.
+    const pos1 = grid.toCenter(grid.position(0));
+    const pos2 = grid.toCenter(grid.position(6));
 
-    expect(pos.x).toBe(x);
-    expect(pos.y).toBe(y);
+    expect(pos1.x).toBe(8);
+    expect(pos1.y).toBe(8);
+
+    expect(pos2.x).toBe(24);
+    expect(pos2.y).toBe(24);
   });
+   */
 });
+

@@ -1,7 +1,7 @@
 import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
-import { vec2 } from '@heliks/tiles-math';
+import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /**
  * Component used to render a sprite.
@@ -24,6 +24,12 @@ export class SpriteDisplay {
   public scale = vec2(1, 1);
 
   /**
+   * Origin position of the sprite. Do not update this directly, and use the `setAnchor()`
+   * method instead.
+   */
+  public anchor = vec2(0, 0);
+
+  /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
@@ -34,7 +40,7 @@ export class SpriteDisplay {
   ) {
     // The engine uses center aligned positions instead of top-left. This will save us
     // a calculation in the renderer `update()`.
-    this._sprite.anchor.set(0.5);
+    this.setAnchor(0.5, 0.5);
   }
 
   /**
@@ -52,6 +58,16 @@ export class SpriteDisplay {
   public flip(x = false, y = false): this {
     this.flipX = x;
     this.flipY = y;
+
+    return this;
+  }
+
+  /** Updates the position where the sprite is anchored relative to its position. */
+  public setAnchor(x: number, y: number): this {
+    this._sprite.anchor.set(x, y);
+
+    this.anchor.x = this._sprite.anchor.x;
+    this.anchor.y = this._sprite.anchor.y;
 
     return this;
   }

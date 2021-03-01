@@ -15,7 +15,7 @@ import {
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
-  Camera,
+  Camera, DebugDraw,
   RenderNode,
   ScreenDimensions,
   SPRITE_SHEET_STORAGE,
@@ -79,7 +79,7 @@ export function spawnPawn(
   y: number,
   node?: Entity
 ): void {
-  const body = RigidBody.dynamic().attach(new Circle(0.2, 0, 0.1), {
+  const body = RigidBody.dynamic().attach(new Circle(0.2, 0, 0.5), {
     material: MaterialType.ORGANIC
   });
 
@@ -201,9 +201,11 @@ export class PawnController extends ProcessingSystem {
 
       // Todo: Do this correctly
       world.get(Camera).transform(
-        -transform.world.x,
-        -transform.world.y
+        transform.world.x,
+        transform.world.y
       );
+
+      world.get(DebugDraw).text(`x: ${transform.world.x} / y: ${transform.world.y}`, 5, 5);
     }
   }
 

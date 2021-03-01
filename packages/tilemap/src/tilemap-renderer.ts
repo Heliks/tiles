@@ -41,7 +41,7 @@ export class TilemapRenderer extends ReactiveSystem {
         continue;
       }
 
-      const pos = tilemap.grid.pos(i);
+      const pos = tilemap.grid.position(i);
       const sprite = tilemap.tileset(gId).sprite(gId);
 
       sprite.x = pos.x;

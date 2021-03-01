@@ -2,30 +2,32 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { TilesetBag } from '@heliks/tiles-tilemap';
 import { Tileset, TmxTilesetData as TilesetBaseData, TmxTilesetFormat } from './tileset';
 import { Grid } from '@heliks/tiles-engine';
-import { TmxLayer, TmxLayerData, tmxParseLayer } from './layers';
+import { Layer, TmxLayerData, TmxLayerType, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
 import { HasTmxPropertyData } from './properties';
+import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /** An external tileset that must be loaded manually. */
-interface ExternalTileset extends TilesetBaseData {
+interface TmxEternalTilesetData extends TilesetBaseData {
   firstgid: number;
   source: string;
 }
 
 /** Tileset that is directly embedded into the map data. */
-interface InternalTileset extends TilesetBaseData {
+interface TmxEmbeddedTilesetData extends TilesetBaseData {
   firstgid: number;
   source: undefined;
 }
 
-type TilemapTilesetData = ExternalTileset | InternalTileset;
+/** @internal */
+type TilesetData = TmxEternalTilesetData | TmxEmbeddedTilesetData;
 
 /** @internal */
-function isExternalTileset(data: TilemapTilesetData): data is ExternalTileset {
+function isExternalTileset(data: TilesetData): data is TmxEternalTilesetData {
   return data.source !== undefined;
 }
 
 /** @internal */
-async function processTileset(loader: AssetLoader, basePath: string, data: TilemapTilesetData): Promise<Tileset> {
+async function processTileset(loader: AssetLoader, basePath: string, data: TilesetData): Promise<Tileset> {
   const format = new TmxTilesetFormat(data.firstgid);
 
   // If the given data is an external tileset we load it using the loader. Otherwise
@@ -35,9 +37,17 @@ async function processTileset(loader: AssetLoader, basePath: string, data: Tilem
     : format.process(data, '', loader);
 }
 
+interface TmxEditorSettings {
+  chunksize?: {
+    height: number;
+    width: number;
+  }
+}
+
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#map */
-export interface TmxMapData extends HasTmxPropertyData {
+export interface TmxTilemapData extends HasTmxPropertyData {
   backgroundcolor: string;
+  editorsettings?: TmxEditorSettings;
   height: number;
   hexsidelength: number;
   infinite: boolean;
@@ -47,39 +57,78 @@ export interface TmxMapData extends HasTmxPropertyData {
   orientation: 'orthogonal' | 'isometric' | 'staggered' | 'hexagonal';
   tiledversion: string;
   tileheight: number;
-  tilesets: TilemapTilesetData[];
+  tilesets: TilesetData[];
   tilewidth: number;
   type: 'map';
   width: number;
 }
 
+
+class MapChunksGrid extends Grid {
+
+  /*
+  public position(index: number, out?: Vec2): Vec2 {
+    const position = super.position(index, out);
+
+    position.x -= (this.width >> 1) - (this.cellWidth >> 1);
+    position.y -= (this.height >> 1) - (this.cellHeight >> 1);
+
+    return position;
+  }
+   */
+
+}
+
 export class TmxMap extends TilesetBag<Tileset> {
 
   constructor(
-    public readonly grid: Grid,
+    public readonly chunks: Grid,
     public readonly tilesets: Tileset[],
-    public readonly layers: TmxLayer[]
+    public readonly layers: Layer[],
+    public readonly tileWidth: number,
+    public readonly tileHeight: number
   ) {
     super(tilesets);
   }
 
+
+
+}
+
+/**
+ * Default value for the amount of tiles that a chunk occupies. Will be used as a
+ * fallback if editor-settings are not available in the provided format.
+ */
+const TMX_DEFAULT_CHUNK_SIZE = 16;
+
+/** @internal */
+function createMapChunksGrid(data: TmxTilemapData): Grid {
+  let cw = TMX_DEFAULT_CHUNK_SIZE;
+  let ch = TMX_DEFAULT_CHUNK_SIZE;
+
+  if (data.editorsettings?.chunksize) {
+    cw = data.editorsettings.chunksize.width;
+    ch = data.editorsettings.chunksize.height;
+  }
+
+  return new MapChunksGrid(
+    data.width / cw,
+    data.height / ch,
+    cw,
+    ch
+  );
 }
 
 /** @internal */
-function verify(data: TmxMapData): void {
+function verify(data: TmxTilemapData): void {
   // Check if we've got the right TMX format.
   if (data.type !== 'map') {
     throw new Error('Data is not a TMX tilemap.');
   }
-
-  // Infinite maps are not supported as of now.
-  if (data.infinite) {
-    throw new Error('Infinite maps are not supported.');
-  }
 }
 
 /** Asset loader format for loading TMX tilemaps. */
-export class TmxTilemapFormat implements Format<TmxMapData, TmxMap> {
+export class TmxTilemapFormat implements Format<TmxTilemapData, TmxMap> {
 
   /** @inheritDoc */
   public readonly name = 'tmx-tilemap';
@@ -92,7 +141,7 @@ export class TmxTilemapFormat implements Format<TmxMapData, TmxMap> {
    *
    * Todo: Infinite maps
    */
-  public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<TmxMap> {
+  public async process(data: TmxTilemapData, file: string, loader: AssetLoader): Promise<TmxMap> {
     // Make sure that the map data we've got is not corrupted.
     verify(data);
 
@@ -101,20 +150,49 @@ export class TmxTilemapFormat implements Format<TmxMapData, TmxMap> {
       item => processTileset(loader, getDirectory(file), item)
     ));
 
-    const grid = new Grid(
-      data.width,
-      data.height,
+    const tileSize = vec2(data.tilewidth, data.tileheight);
+    const tileGrid = new Grid(data.width, data.height, data.tilewidth, data.tileheight);
+
+    // Grid for aligning chunks. This is not layer but map specific because we manually
+    // chunk layers without native tiled chunking support.
+    const mapChunksGrid = createMapChunksGrid(data);
+
+    // Grid for placing tiles tiles withing a chunk. This will be used for all chunks
+    // that exist on this map.
+    const chunkTileGrid = new Grid(
+      mapChunksGrid.cellWidth,
+      mapChunksGrid.cellHeight,
       data.tilewidth,
       data.tileheight
     );
 
-    const layers: TmxLayer[] = [];
+    console.log(mapChunksGrid);
+    console.log(chunkTileGrid);
+
+    const layers: Layer[] = [];
 
     for (const item of data.layers) {
-      tmxParseLayer(item, layers);
+      switch (item.type) {
+        case TmxLayerType.Tiles:
+          layers.push(tmxParseTileLayer(item, tileSize, mapChunksGrid, chunkTileGrid));
+          break;
+        case TmxLayerType.Objects:
+          layers.push(tmxParseObjectLayer(item, tileSize, mapChunksGrid, chunkTileGrid));
+          break;
+      }
+
+      /*
+      if (item.type === TmxLayerType.Tiles) {
+        layers.push(tmxParseTileLayer(item, tileSize, chunkTileGrid));
+      }
+      else  {
+        layers.push(tmxParseObjectLayer(item, tileSize, mapChunksGrid));
+      }
+       */
+      // tmxParseLayer(item, layers);
     }
 
-    return new TmxMap(grid, tilesets, layers);
+    return new TmxMap(mapChunksGrid, tilesets, layers, data.tilewidth, data.tileheight);
   }
 
 }

@@ -17,6 +17,8 @@ import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
 import { BehaviorManager, BehaviorModule } from './behavior';
 import { TortoiseBehavior } from './behaviors/tortoise-behavior';
 import { MovementSystem } from './movement-system';
+// import { TriggerSpawner } from './world/trigger-spawner';
+import { DrawGridSystem } from './systems/draw-grid-system';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -80,13 +82,16 @@ window.onload = () => {
         unitSize: UNIT_SIZE
       })
         .plugin(PhysicsDebugDraw)
-        // .plugin(DrawGridSystem)
+        .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
     .module(new DeathBundle())
     .system(DebugDeathReporter)
     .module(new TilemapModule())
-    .module(new TmxModule())
+    .module(
+      new TmxModule()
+        // .registerObjectSpawner(new TriggerSpawner())
+    )
     .system(CombatSystem)
     .system(PawnController)
     .module(new BehaviorModule())
@@ -99,10 +104,10 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 15;
-  const y = 19;
+  const x = 0;
+  const y = 0;
 
-  const mapFile = 'maps/forest1_1.json';
+  const mapFile = 'maps/infinite-test.json';
 
   // Register entity behaviors.
   game.world
@@ -125,19 +130,20 @@ window.onload = () => {
       mapHandler.spawn(game.world, mapData);
 
       // Get floor where we can spawn our entities.
-      const floor = mapHandler.getFloor(0);
+      // const floor = mapHandler.getFloor(0);
 
       // Spawn player character.
-      spawnPawn(game.world, pawnSpriteSheet, x, y, floor.layer2);
+      spawnPawn(game.world, pawnSpriteSheet, x, y/*, floor.layer2*/);
+
 
       // Spawn Josh in a random location near the player
-      spawnJosh(
-        game.world,
-        AsepriteFormat.load(game.world, 'spritesheets/josh.json'),
-        x + rand(-5, 5),
-        y + rand(-5, 5),
-        floor.layer2
-      );
+      // spawnJosh(
+      //   game.world,
+      // AsepriteFormat.load(game.world, 'spritesheets/josh.json'),
+      // x + rand(-5, 5),
+      // y + rand(-5, 5),
+      // floor.layer2
+      // );
     });
   });
 

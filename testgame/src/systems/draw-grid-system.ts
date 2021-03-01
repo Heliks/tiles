@@ -1,9 +1,7 @@
 import { Injectable, vec2 } from '@heliks/tiles-engine';
-import { DebugDraw, Renderer, RendererPlugin } from '@heliks/tiles-pixi';
+import { Camera, DebugDraw, Renderer, RendererPlugin, ScreenDimensions } from '@heliks/tiles-pixi';
 
-/**
- * System that draws a grid on top of the stage for debugging purposes.
- */
+/** System that draws grids. */
 @Injectable()
 export class DrawGridSystem implements RendererPlugin {
 
@@ -16,14 +14,11 @@ export class DrawGridSystem implements RendererPlugin {
   /** The context on which we draw the grid. */
   protected readonly ctx: CanvasRenderingContext2D;
 
-  /**
-   * @param debugDraw [[DebugDraw]]
-   * @param renderer [[Renderer]]
-   */
   constructor(
-    protected readonly debugDraw: DebugDraw,
-    protected readonly renderer: Renderer
-
+    private readonly camera: Camera,
+    private readonly debugDraw: DebugDraw,
+    private readonly dim: ScreenDimensions,
+    private readonly renderer: Renderer
   ) {
     this.ctx = renderer.debugDraw.ctx;
   }
@@ -35,25 +30,32 @@ export class DrawGridSystem implements RendererPlugin {
       .setLineStyle(0.5, this.color, this.opacity)
       .translate(0, 0);
 
-    const us = this.renderer.dimensions.unitSize;
+    const us1 = this.dim.unitSize;
+    const us2 = this.dim.unitSize / 2;
 
     const width = this.renderer.dimensions.size.x;
     const height = this.renderer.dimensions.size.y;
 
     // Calculate the amount of columns and rows to draw.
-    const cols = Math.floor(width / us);
-    const rows = Math.floor(height / us);
+    const cols = Math.floor(this.dim.size.x / us1);
+    const rows = Math.floor(height / us1);
 
     // Convenience to not allocate unnecessary new arrays.
     const from = vec2(0, 0);
     const dest = vec2(0, 0);
 
+    // Calculate minimum positions where we need to start drawing depending on the
+    // current camera position. We leave a small buffer at the edges to make sure that
+    // we really did draw over the whole screen.
+    const minX = this.camera.screen.x - (this.camera.screen.x % us1) + us1 + us2;
+    const minY = this.camera.screen.y - (this.camera.screen.y % us1) + us1 + us2;
+
     // Draw columns.
     for (let i = 0; i < cols; i++) {
-      const x = i * us;
+      const x = ((i * us1) - minX) + us2;
 
       from.x = x;
-      from.y = 0;
+      from.y = -minY;
 
       dest.x = x;
       dest.y = height;
@@ -63,9 +65,9 @@ export class DrawGridSystem implements RendererPlugin {
 
     // Draw rows
     for (let i = 0; i < rows; i++) {
-      const y = i * us;
+      const y = (i * us1) - minY + us2;
 
-      from.x = 0;
+      from.x = -minX;
       from.y = y;
 
       dest.x = width;
