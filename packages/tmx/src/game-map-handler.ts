@@ -185,13 +185,14 @@ export class GameMapHandler implements System {
   }
 
   public deSpawnChunk(world: World, index: number) {
-    const chunk = this.getActiveMap().getLoadedChunk(index);
+    const map = this.getActiveMap();
+    const chunk = map.getLoadedChunk(index);
 
     for (const entity of chunk.entities) {
-      console.log(entity);
-
       world.destroy(entity);
     }
+
+    map.chunks.delete(index);
   }
 
   public spawnChunk(world: World, index: number): LoadedChunk {
@@ -242,7 +243,7 @@ export class GameMapHandler implements System {
           loadedChunk.entities.push(tilemap);
           break;
         case LayerType.Objects:
-          // this.spawnObjectChunk(world, chunk, loadedChunk, position);
+          this.spawnObjectChunk(world, chunk, loadedChunk, position);
           break;
       }
     }
