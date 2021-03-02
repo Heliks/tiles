@@ -16,6 +16,7 @@ import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { ScreenDimensions } from '../../screen-dimensions';
 import { RenderNode } from '../../renderer-node';
+import { Sprite } from 'pixi.js';
 
 /**
  * Returns the `RenderNode` component of the parent entity of `entity`. If `entity` has
@@ -39,7 +40,14 @@ function getParentNode(world: World, entity: Entity): RenderNode | undefined {
 export class SpriteDisplaySystem extends ReactiveSystem {
 
   /** Subscription for modifications in the [[SpriteDisplay]] storage. */
-  protected subscriber!: Subscriber;
+  private subscriber!: Subscriber;
+
+  /**
+   * Maps sprites to their respective entities. This reverse mapping is to work around
+   * the fact that an entity might not be alive when it is removed which makes it
+   * impossible to access the sprite via the `SpriteRender` component.
+   */
+  private sprites = new Map<Entity, Sprite>();
 
   constructor(
     @Inject(SPRITE_SHEET_STORAGE)
@@ -56,15 +64,20 @@ export class SpriteDisplaySystem extends ReactiveSystem {
     const parent = getParentNode(world, entity);
     const sprite = world.storage(SpriteDisplay).get(entity)._sprite;
 
+    this.sprites.set(entity, sprite);
+
     parent ? parent.add(sprite) : this.stage.add(sprite);
   }
 
   /** @inheritDoc */
   public onEntityRemoved(world: World, entity: Entity): void {
-    const parent = getParentNode(world, entity);
-    const sprite = world.storage(SpriteDisplay).get(entity)._sprite;
+    const sprite = this.sprites.get(entity);
 
-    parent ? parent.remove(sprite) : this.stage.remove(sprite);
+    if (sprite) {
+      const parent = getParentNode(world, entity);
+
+      parent ? parent.remove(sprite) : this.stage.remove(sprite);
+    }
   }
 
   /** @inheritDoc */
