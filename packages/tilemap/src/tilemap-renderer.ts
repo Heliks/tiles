@@ -61,10 +61,13 @@ export class TilemapRenderer extends ReactiveSystem {
   }
 
   /** @inheritDoc */
-  public onEntityRemoved(): void {
-    // Todo
+  public onEntityRemoved(world: World, entity: Entity): void {
+    const container = this.containers.get(entity);
 
-    return;
+    if (container) {
+      this.containers.delete(entity);
+      this.stage.remove(container);
+    }
   }
 
   /** @inheritDoc */
