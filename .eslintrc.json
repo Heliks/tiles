@@ -90,6 +90,7 @@
     "unicorn/no-fn-reference-in-iterator": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/prefer-math-trunc": "off",
     "@typescript-eslint/ban-types": "off",
     "import/no-unresolved": "off"
   }

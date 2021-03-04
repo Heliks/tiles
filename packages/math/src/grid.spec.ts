@@ -40,6 +40,22 @@ describe('Grid', () => {
     expect(new Grid(10, 10, 16, 16).size).toBe(100);
   });
 
+
+  it.each([
+    // Top left corner. Should exclude neighbours that are not within the boundaries.
+    [0,  [1, 5, 6]],
+    // Somewhere in the middle. Should include the most possible amount of neighbours
+    // as none are outside the grids boundaries.
+    [12, [6, 7, 8, 11, 13, 16, 17, 18]],
+    // Bottom right corner. Should exclude neighbours that are not within the boundaries.
+    [24, [18, 19, 23]]
+  ])('should return the indexes of all cells that are a neighbour to %s', (index, expected) => {
+    const grid = new Grid(5, 5, 16, 16);
+    const neighbours = grid.getNeighbourIndexes(index);
+
+    expect(neighbours).toEqual(expected);
+  });
+
   /*
   it('should convert top-left aligned positions to center-aligned', () => {
     const grid = new Grid(5, 5, 16, 16);
