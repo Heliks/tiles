@@ -47,8 +47,60 @@ export class Grid {
   }
 
   /**
+   * Returns an array that contains all cell indexes that are neighbours to `index`.
    *
+   * ### Example
    *
+   * Given the following 5x5 grid:
+   *
+   * ```
+   * +--------------+
+   * | 0| 1| 2| 3| 4|
+   * | 5| 6| 7| 8| 9|
+   * |10|11|12|13|14|
+   * |15|16|17|18|19|
+   * |20|21|22|23|24|
+   * +--------------+
+   * ```
+   *
+   * We get the following indexes as neighbours:
+   *
+   * ```ts
+   * const grid = new Grid(5, 5, 0, 0);
+   *
+   * // [1, 5, 6]
+   * console.log(grid.getNeighbourIndexes(0));
+   *
+   * // [6, 7, 8, 11, 13, 16, 17, 18]
+   * console.log(grid.getNeighbourIndexes(12));
+   * ```
+   * */
+  public getNeighbourIndexes(index: number, out: number[] = []): number[] {
+    const col = index % this.cols;
+    const row = (index / this.rows) | 0;
+
+    // Calculate start / end positions to iterate over.
+    const sx = Math.max(col - 1, 0);
+    const ex = Math.min(col + 1, this.size - 1);
+
+    const sy = Math.max(row - 1, 0);
+    const ey = Math.min(row + 1, this.size - 1);
+
+    for (let y = sy; y <= ey; y++) {
+      for (let x = sx; x <= ex; x++) {
+        // If we are not out of bounds convert the x and y position back to an index
+        // and push it to the output. Also ignore the index for which we were looking
+        // for itself as it is not a neighbour.
+        if (!(x === col && y === row) && x < this.cols && y < this.rows) {
+          out.push(y * this.cols + x);
+        }
+      }
+    }
+
+    return out;
+  }
+
+  /**
    * Converts a top-left aligned `pos` vector of a cell and converts its values to be
    * center aligned.
    */
