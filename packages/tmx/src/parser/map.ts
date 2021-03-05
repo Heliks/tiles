@@ -101,6 +101,32 @@ export class TmxMap extends TilesetBag<Tileset> {
  */
 const TMX_DEFAULT_CHUNK_SIZE = 16;
 
+/**
+ * Returns the size of the given tmx map `data` (amount of columns on x axis and
+ * amount of columns on y axis). This also returns the size of "infinite maps" which
+ * according to the tiled format would have a width and height of `0`.
+ */
+export function tmxGetMapSize(data: TmxTilemapData): Vec2 {
+  const size = vec2(data.width, data.height);
+
+  if (!data.infinite) {
+    return size;
+  }
+
+  // Determine size of infinite maps by finding the largest layer.
+  for (const layer of data.layers) {
+    if (layer.width > size.x) {
+      size.x = layer.width;
+    }
+
+    if (layer.height > size.y) {
+      size.y = layer.height;
+    }
+  }
+
+  return size;
+}
+
 /** @internal */
 function createMapChunksGrid(data: TmxTilemapData): Grid {
   let cw = TMX_DEFAULT_CHUNK_SIZE;
@@ -111,9 +137,11 @@ function createMapChunksGrid(data: TmxTilemapData): Grid {
     ch = data.editorsettings.chunksize.height;
   }
 
+  const size = tmxGetMapSize(data);
+
   return new MapChunksGrid(
-    data.width / cw,
-    data.height / ch,
+    size.x / cw,
+    size.y / ch,
     cw,
     ch
   );
@@ -136,6 +164,8 @@ export class TmxTilemapFormat implements Format<TmxTilemapData, TmxMap> {
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
+
+
   /**
    * Creates a `Tilemap` from `data`.
    *
@@ -150,8 +180,9 @@ export class TmxTilemapFormat implements Format<TmxTilemapData, TmxMap> {
       item => processTileset(loader, getDirectory(file), item)
     ));
 
+
     const tileSize = vec2(data.tilewidth, data.tileheight);
-    const tileGrid = new Grid(data.width, data.height, data.tilewidth, data.tileheight);
+    // const tileGrid = new Grid(size.x, size.y, data.tilewidth, data.tileheight);
 
     // Grid for aligning chunks. This is not layer but map specific because we manually
     // chunk layers without native tiled chunking support.
