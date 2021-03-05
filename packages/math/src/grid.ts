@@ -30,7 +30,7 @@ export class Grid {
     public readonly cellHeight: number
   ) {}
 
-  /** Returns the top-left aligned position of the cell at the given `index`. */
+  /** Returns the top-left aligned position of the cell that occupies the given `index`. */
   public position(index: number, out = vec2(0, 0)): Vec2 {
     out.x = index % this.cols * this.cellWidth;
     out.y = Math.floor(index / this.cols) * this.cellHeight;

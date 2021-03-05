@@ -107,7 +107,7 @@ window.onload = () => {
   const x = 0;
   const y = 0;
 
-  const mapFile = 'maps/infinite-test.json';
+  const mapFile = 'maps/forest1_1.json';
 
   // Register entity behaviors.
   game.world

@@ -259,11 +259,11 @@
             }
         },
         "maps/infinite-test.json": {
-            "scale": 4,
-            "selectedLayer": 2,
+            "scale": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 128,
-                "y": 127.875
+                "x": 148,
+                "y": 136.75
             }
         },
         "maps/leaf-trees.json": {
@@ -501,8 +501,8 @@
     "project": "game.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "objects/flora/trees/spruce01.json",
         "maps/infinite-test.json",
+        "objects/flora/trees/spruce01.json",
         "/srv/http/flare-game/tiled/empyrean_campaign/halls_of_infinity.tmx",
         "objects/containers/wood-barrels.json",
         "tilesets/village02.json",

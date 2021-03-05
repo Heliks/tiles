@@ -1,7 +1,6 @@
-import { GameObject, Tile, TmxObjectData, tmxParseObject } from './objects';
-import { HasTmxPropertyData, tmxExtractProperties, Properties, HasProperties } from './properties';
-import { Shape, tmxParseShape } from './shape';
-import { MaterialId } from '@heliks/tiles-physics';
+import { GameObject, TmxObjectData, tmxParseObject } from './objects';
+import { HasProperties, HasTmxPropertyData, Properties, tmxExtractProperties } from './properties';
+import { Shape } from './shape';
 import { Grid, Vec2 } from '@heliks/tiles-math';
 
 export enum TmxLayerType {
@@ -65,7 +64,6 @@ export class Chunk<D> {
 abstract class BaseLayer<D, P extends Properties = Properties> implements HasProperties<P> {
 
   // public readonly chunks: Chunks<D>;
-  public abstract readonly type: LayerType;
   private readonly chunks = new Map<number, Chunk<D>>();
 
   constructor(
@@ -95,7 +93,7 @@ abstract class BaseLayer<D, P extends Properties = Properties> implements HasPro
 }
 
 export class TileLayer extends BaseLayer<number[]> {
-  public readonly type =  LayerType.Tiles;
+  public readonly type = LayerType.Tiles;
 }
 
 /**
