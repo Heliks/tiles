@@ -33,10 +33,12 @@ export class SpriteDisplay {
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
+   * @param layer (optional) Index of the layer where this sprite should be placed.
    */
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
-    public spriteIndex: number
+    public spriteIndex: number,
+    public layer = 0
   ) {
     // The engine uses center aligned positions instead of top-left. This will save us
     // a calculation in the renderer `update()`.

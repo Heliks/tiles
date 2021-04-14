@@ -15,8 +15,8 @@ import {
 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import {
-  Camera, DebugDraw,
-  RenderNode,
+  Camera,
+  DebugDraw,
   ScreenDimensions,
   SPRITE_SHEET_STORAGE,
   SpriteAnimation,
@@ -24,14 +24,15 @@ import {
   SpriteSheet,
   SpriteSheetFromTexture
 } from '@heliks/tiles-pixi';
-import { InputHandler, KeyCode } from '../input';
+import { InputHandler } from '../input';
 import { Idle } from './states';
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { CardinalDirection, Direction } from '../components';
 import { GroupEvent } from '@heliks/ecs';
-import { CollisionGroups, MATERIAL_ORGANIC, MaterialType } from '../const';
+import { CollisionGroups, MaterialType } from '../const';
 import { PawnBlackboard } from './pawn-blackboard';
 import { Combat } from '../combat';
+import { GameMapManager } from '../world/game-map-manager';
 
 export class Pawn {
 
@@ -72,13 +73,7 @@ function updateDirectionIndicator(
 }
 
 /** Spawns a pawn into the `world`. */
-export function spawnPawn(
-  world: World,
-  spritesheet: Handle<SpriteSheet>,
-  x: number,
-  y: number,
-  node?: Entity
-): void {
+export function spawnPawn(world: World, sheet: Handle<SpriteSheet>, x: number, y: number, layer = 0): void {
   const body = RigidBody.dynamic().attach(new Circle(0.2, 0, 0.5), {
     material: MaterialType.ORGANIC
   });
@@ -93,12 +88,8 @@ export function spawnPawn(
     .use(new Direction())
     .use(new Pawn())
     .use(new Transform(x, y))
-    .use(new SpriteDisplay(spritesheet, 1))
+    .use(new SpriteDisplay(sheet, 1, layer))
     .use(new SpriteAnimation([]));
-
-  if (node) {
-    builder.use(new Parent(node));
-  }
 
   builder.build();
 }
@@ -204,6 +195,8 @@ export class PawnController extends ProcessingSystem {
         transform.world.x,
         transform.world.y
       );
+
+      world.get(GameMapManager).update(world, transform.world.x, transform.world.y);
 
       world.get(DebugDraw).text(`x: ${transform.world.x} / y: ${transform.world.y}`, 5, 5);
     }

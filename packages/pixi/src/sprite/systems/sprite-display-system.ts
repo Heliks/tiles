@@ -15,26 +15,7 @@ import { SpriteDisplay } from '../components';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { ScreenDimensions } from '../../screen-dimensions';
-import { RenderNode } from '../../renderer-node';
 import { Sprite } from 'pixi.js';
-
-/**
- * Returns the `RenderNode` component of the parent entity of `entity`. If `entity` has
- * no `Parent` component or if the parent entity has no `RenderNode`, `undefined` is
- * returned instead.
- */
-function getParentNode(world: World, entity: Entity): RenderNode | undefined {
-  const parents = world.storage(Parent);
-
-  if (parents.has(entity)) {
-    const nodes = world.storage(RenderNode);
-    const parent = parents.get(entity).entity;
-
-    if (nodes.has(parent)) {
-      return nodes.get(parent);
-    }
-  }
-}
 
 @Injectable()
 export class SpriteDisplaySystem extends ReactiveSystem {
@@ -61,12 +42,10 @@ export class SpriteDisplaySystem extends ReactiveSystem {
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
-    const parent = getParentNode(world, entity);
-    const sprite = world.storage(SpriteDisplay).get(entity)._sprite;
+    const { _sprite, layer } = world.storage(SpriteDisplay).get(entity);
 
-    this.sprites.set(entity, sprite);
-
-    parent ? parent.add(sprite) : this.stage.add(sprite);
+    this.sprites.set(entity, _sprite);
+    this.stage.add(_sprite, layer);
   }
 
   /** @inheritDoc */
@@ -74,9 +53,7 @@ export class SpriteDisplaySystem extends ReactiveSystem {
     const sprite = this.sprites.get(entity);
 
     if (sprite) {
-      const parent = getParentNode(world, entity);
-
-      parent ? parent.remove(sprite) : this.stage.remove(sprite);
+      this.stage.remove(sprite);
     }
   }
 

@@ -66,7 +66,7 @@ export function tmxParseObject(data: TmxObjectData): GameObject {
   const rect = new Rectangle(
     data.width,
     data.height,
-    data.x + (data.width / 2),
+    data.x,
     data.y
   );
 

@@ -4,7 +4,6 @@ export * from './texture-format';
 export * from './pixi-module';
 export * from './renderables';
 export * from './renderer';
-export * from './renderer-node';
 export * from './renderer-system';
 export * from './screen-dimensions';
 export * from './shape-display';

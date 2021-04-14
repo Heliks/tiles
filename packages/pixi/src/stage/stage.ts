@@ -1,18 +1,27 @@
 import { Injectable } from '@heliks/tiles-engine';
-import { Container, Renderable } from './renderables';
+import { Container, Renderable } from '../renderables';
+import { Layer } from './layer';
+import { Layers } from './layers';
 
 @Injectable()
 export class Stage {
 
   /** Contains everything that the stage displays. */
-  public readonly view = new Container();
+  public readonly view = new Container<Layer>();
+
+  /** Stage layers. */
+  public readonly layers: Layers;
+
+  constructor() {
+    this.layers = new Layers(this.view);
+  }
 
   /**
    * Adds a `renderable`. If a `node` is provided it will be added as a child of that
    * node instead of the stage root. Throws when the given node is invalid.
    */
-  public add(renderable: Renderable): this {
-    this.view.addChild(renderable);
+  public add(renderable: Renderable, layer = 0): this {
+    this.layers.get(layer).add(renderable);
 
     return this;
   }
