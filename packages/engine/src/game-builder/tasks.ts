@@ -2,6 +2,7 @@ import { ClassType } from '../types';
 import { System } from '@heliks/ecs';
 import { Game } from '../game';
 import { isFactoryProvider, isInstanceProvider, Provider } from './provider';
+import { World } from '../entity-system';
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -69,3 +70,16 @@ export class AddProvider implements Task {
 
 }
 
+/** */
+export type BootScript = (world: World) => unknown;
+
+export class AddBootScript implements Task {
+
+  constructor(private readonly script: BootScript) {}
+
+  /** @inheritDoc */
+  public exec(game: Game): void {
+    this.script(game.world);
+  }
+
+}

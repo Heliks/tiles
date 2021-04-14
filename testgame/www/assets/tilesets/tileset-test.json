@@ -12,6 +12,7 @@
  "imagewidth":128,
  "margin":0,
  "name":"tileset-test",
+ "objectalignment":"bottom",
  "spacing":0,
  "terrains":[
         {
@@ -51,15 +52,18 @@
         }, 
         {
          "id":5,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":6,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":7,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":8,
@@ -82,15 +86,18 @@
         }, 
         {
          "id":13,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":14,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":15,
-         "probability":0.25
+         "probability":0.100000001490116,
+         "terrain":[0, 0, 0, 0]
         }, 
         {
          "id":16,
@@ -481,7 +488,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -511,15 +517,43 @@
              "name":"",
              "objects":[
                     {
-                     "height":3.9375,
+                     "ellipse":true,
+                     "height":8,
+                     "id":3,
+                     "name":"",
+                     "rotation":0,
+                     "type":"collision",
+                     "visible":true,
+                     "width":8,
+                     "x":4,
+                     "y":8
+                    }],
+             "opacity":1,
+             "type":"objectgroup",
+             "visible":true,
+             "x":0,
+             "y":0
+            }
+        }, 
+        {
+         "id":126,
+         "objectgroup":
+            {
+             "draworder":"index",
+             "id":2,
+             "name":"",
+             "objects":[
+                    {
+                     "ellipse":true,
+                     "height":8,
                      "id":1,
                      "name":"",
                      "rotation":0,
                      "type":"collision",
                      "visible":true,
-                     "width":9.1875,
-                     "x":2.90625,
-                     "y":9.96875
+                     "width":8,
+                     "x":4,
+                     "y":8
                     }],
              "opacity":1,
              "type":"objectgroup",

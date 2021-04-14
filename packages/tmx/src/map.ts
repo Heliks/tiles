@@ -2,9 +2,9 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { TilesetBag } from '@heliks/tiles-tilemap';
 import { Tileset, TmxTilesetData as TilesetBaseData, TmxTilesetFormat } from './tileset';
 import { Grid } from '@heliks/tiles-engine';
-import { Layer, TmxLayerData, TmxLayerType, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
 import { HasTmxPropertyData } from './properties';
 import { Vec2, vec2 } from '@heliks/tiles-math';
+import { Layer, TmxLayerData, TmxLayerDataType, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
 
 /** An external tileset that must be loaded manually. */
 interface TmxEternalTilesetData extends TilesetBaseData {
@@ -82,7 +82,7 @@ class MapChunksGrid extends Grid {
 export class TmxMap extends TilesetBag<Tileset> {
 
   constructor(
-    public readonly chunks: Grid,
+    public readonly grid: Grid,
     public readonly tilesets: Tileset[],
     public readonly layers: Layer[],
     public readonly tileWidth: number,
@@ -90,8 +90,6 @@ export class TmxMap extends TilesetBag<Tileset> {
   ) {
     super(tilesets);
   }
-
-
 
 }
 
@@ -139,9 +137,9 @@ function createMapChunksGrid(data: TmxTilemapData): Grid {
 
   const size = tmxGetMapSize(data);
 
-  return new MapChunksGrid(
-    size.x / cw,
-    size.y / ch,
+  return new Grid(
+    Math.ceil(size.x / cw),
+    Math.ceil(size.y / ch),
     cw,
     ch
   );
@@ -164,8 +162,6 @@ export class TmxTilemapFormat implements Format<TmxTilemapData, TmxMap> {
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-
-
   /**
    * Creates a `Tilemap` from `data`.
    *
@@ -180,50 +176,31 @@ export class TmxTilemapFormat implements Format<TmxTilemapData, TmxMap> {
       item => processTileset(loader, getDirectory(file), item)
     ));
 
+    const layers: Layer[] = [];
 
-    const tileSize = vec2(data.tilewidth, data.tileheight);
-    // const tileGrid = new Grid(size.x, size.y, data.tilewidth, data.tileheight);
+    for (const layerData of data.layers) {
+      switch (layerData.type) {
+        case TmxLayerDataType.Tiles:
+          layers.push(tmxParseTileLayer(layerData));
+          break;
+        case TmxLayerDataType.Objects:
+          layers.push(tmxParseObjectLayer(layerData));
+          break;
+      }
+    }
 
-    // Grid for aligning chunks. This is not layer but map specific because we manually
-    // chunk layers without native tiled chunking support.
-    const mapChunksGrid = createMapChunksGrid(data);
-
-    // Grid for placing tiles tiles withing a chunk. This will be used for all chunks
-    // that exist on this map.
-    const chunkTileGrid = new Grid(
-      mapChunksGrid.cellWidth,
-      mapChunksGrid.cellHeight,
+    return new TmxMap(
+      new Grid(
+        data.width,
+        data.height,
+        data.tilewidth,
+        data.tileheight
+      ),
+      tilesets,
+      layers,
       data.tilewidth,
       data.tileheight
     );
-
-    console.log(mapChunksGrid);
-    console.log(chunkTileGrid);
-
-    const layers: Layer[] = [];
-
-    for (const item of data.layers) {
-      switch (item.type) {
-        case TmxLayerType.Tiles:
-          layers.push(tmxParseTileLayer(item, tileSize, mapChunksGrid, chunkTileGrid));
-          break;
-        case TmxLayerType.Objects:
-          layers.push(tmxParseObjectLayer(item, tileSize, mapChunksGrid, chunkTileGrid));
-          break;
-      }
-
-      /*
-      if (item.type === TmxLayerType.Tiles) {
-        layers.push(tmxParseTileLayer(item, tileSize, chunkTileGrid));
-      }
-      else  {
-        layers.push(tmxParseObjectLayer(item, tileSize, mapChunksGrid));
-      }
-       */
-      // tmxParseLayer(item, layers);
-    }
-
-    return new TmxMap(mapChunksGrid, tilesets, layers, data.tilewidth, data.tileheight);
   }
 
 }

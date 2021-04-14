@@ -1,24 +1,26 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
-import { Entity, Game, GameBuilder, rand, TransformModule, World } from '@heliks/tiles-engine';
+import { Entity, Game, GameBuilder, TransformModule, World } from '@heliks/tiles-engine';
 import { Physics, PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
-import { GameMapHandler, TmxModule, TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { InputHandler } from './input';
 import { PawnController, spawnPawn } from './pawn';
 import { ArrowSystem } from './arrow';
 import { DeathBundle, DebugDeathReporter } from './death';
 import { lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
-import { spawnJosh } from './spawners/josh';
 import { CombatSystem } from './combat';
 import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
 import { BehaviorManager, BehaviorModule } from './behavior';
 import { TortoiseBehavior } from './behaviors/tortoise-behavior';
 import { MovementSystem } from './movement-system';
-// import { TriggerSpawner } from './world/trigger-spawner';
 import { DrawGridSystem } from './systems/draw-grid-system';
+import { TmxTilemapFormat } from '@heliks/tiles-tmx';
+import { ParseWorld } from './world/parse-world';
+import { GameMapManager } from './world/game-map-manager';
+import { WorldModule } from './world/world.module';
+import { MapHierarchy } from './world/map-hierarchy';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -72,7 +74,9 @@ window.onload = () => {
     .system(InputHandler)
     .module(new TransformModule())
     .module(new AssetsModule('assets'))
-    .module(new PhysicsModule({ unitSize: UNIT_SIZE }))
+    .module(new PhysicsModule({
+      unitSize: UNIT_SIZE
+    }))
     .module(
       new PixiModule({
         antiAlias: false,
@@ -88,11 +92,8 @@ window.onload = () => {
     .module(new DeathBundle())
     .system(DebugDeathReporter)
     .module(new TilemapModule())
-    .module(
-      new TmxModule()
-        // .registerObjectSpawner(new TriggerSpawner())
-    )
     .system(CombatSystem)
+    .module(new WorldModule())
     .system(PawnController)
     .module(new BehaviorModule())
     .system(MovementSystem)
@@ -100,14 +101,11 @@ window.onload = () => {
 
   setupDebugGlobals(game);
 
-  // Configure asset directory and add renderer to DOM.
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
   const x = 0;
   const y = 0;
-
-  const mapFile = 'maps/forest1_1.json';
 
   // Register entity behaviors.
   game.world
@@ -119,21 +117,41 @@ window.onload = () => {
     .setMaterial(MaterialType.ORGANIC, MATERIAL_ORGANIC)
     .setMaterial(MaterialType.WOOD, MATERIAL_WOOD);
 
+  // Start the game loop.
+  game.start();
+
   initPawn(game.world).then(pawnSpriteSheet => {
-    // Start the ticker.
-    game.start();
+    game.world
+      .get(AssetLoader)
+      .fetch('maps/world', new ParseWorld(UNIT_SIZE))
+      .then(world => {
+        const maps = game.world.get(GameMapManager);
+        const hierarchy = game.world.get(MapHierarchy);
 
-    const mapHandler = game.world.get(GameMapHandler);
+        maps.setWorld(world);
 
-    fetchMap(game.world, mapFile).then(mapData => {
+        spawnPawn(game.world, pawnSpriteSheet, x, y, hierarchy.layer2);
+    });
+
+
+
+    // fetchMap(game.world, mapFile).then(mapData => {
+    //   game.world.get(GameMapHandler).spawn(game.world, mapData, 0, 0);
+
+    // spawnPawn(game.world, pawnSpriteSheet, 0, 0/*, floor.layer2*/);
+    // });
+
+    //const mapHandler = game.world.get(GameMapHandler);
+
+    //fetchMap(game.world, mapFile).then(mapData => {
       // Spawn the map.
-      mapHandler.spawn(game.world, mapData);
+      //mapHandler.spawn(game.world, mapData);
 
       // Get floor where we can spawn our entities.
       // const floor = mapHandler.getFloor(0);
 
       // Spawn player character.
-      spawnPawn(game.world, pawnSpriteSheet, x, y/*, floor.layer2*/);
+      //spawnPawn(game.world, pawnSpriteSheet, x, y/*, floor.layer2*/);
 
 
       // Spawn Josh in a random location near the player
@@ -144,7 +162,7 @@ window.onload = () => {
       // y + rand(-5, 5),
       // floor.layer2
       // );
-    });
+    // });
   });
 
 };

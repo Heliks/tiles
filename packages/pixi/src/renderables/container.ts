@@ -3,8 +3,7 @@ import { Renderable } from './renderable';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /**
- * A container that can contain many for other renderable objects. The container itself
- * is a `Renderable` also.
+ * A container that can contain many other renderable objects.
  *
  * @typeparam T Kind of `Renderable` contained in this container.
  */
@@ -27,6 +26,13 @@ export class Container<T extends Renderable = Renderable> extends BaseContainer 
    *  declarations file.
    */
   private fixedSize?: Vec2;
+
+  /** Adds a `renderable` to the container. */
+  public add(renderable: T): this {
+    this.addChild(renderable);
+
+    return this;
+  }
 
   /**
    * Transforms the pivot by a percentage `value`. E.g. the value `0.5` will set the
