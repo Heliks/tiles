@@ -4,28 +4,31 @@ import { GameMap } from './game-map';
 import { World } from '@heliks/tiles-engine';
 import { MapSpawner } from './map-spawner';
 
-export enum WorldChunkState {
+export enum ChunkState {
   /** No data is loaded and no data is being loaded right now. */
   Pending,
   /** Data is loading. */
   Loading,
   /** Data is loaded. Chunk can be spawned into the world. */
   Loaded,
-  /** Data is loaded and chunk is currently spawned into the world. */
+  /** Data is loaded and chunk is currently spawned as a map into the world. */
   Active
 }
 
 /**
- * A chunk in the game world. Each chunk is an individual map that occupies a certain
- * position in the world space.
+ * A chunk of the game world. Each chunk contains a map (or the part of a complete map)
+ * and the information where it is located in the world.
  */
-export class WorldChunk {
+export class Chunk {
+
+  /** Contains the spawned game map if the chunk is active. */
+  private map?: GameMap;
 
   /** @internal */
-  private _state = WorldChunkState.Pending;
+  private _state = ChunkState.Pending;
 
   /** Current state. */
-  public get state(): WorldChunkState {
+  public get state(): ChunkState {
     return this._state;
   }
 
@@ -49,6 +52,16 @@ export class WorldChunk {
     public readonly y = 0
   ) {}
 
+  /** Returns `true` if the chunk is pending. */
+  public isPending(): boolean {
+    return this._state === ChunkState.Pending;
+  }
+
+  /** Returns `true` if the chunk is currently loading. */
+  public isLoading(): boolean {
+    return this._state === ChunkState.Loading;
+  }
+
   /** If a map asset for this chunk was loaded into `storage`, it will be returned. */
   public getAsset(storage: AssetStorage<TmxMap>): Asset<TmxMap> | undefined {
     // We can avoid the extra if statement here because if the handle itself is
@@ -68,30 +81,16 @@ export class WorldChunk {
       return this.handle;
     }
 
-    this._state = WorldChunkState.Loading;
+    this._state = ChunkState.Loading;
 
     return this.handle = loader.load(this.file, new TmxTilemapFormat(), storage);
   }
 
-  public isPending(): boolean {
-    return this._state === WorldChunkState.Pending;
-  }
-
-  public isLoading(): boolean {
-    return this._state === WorldChunkState.Loading;
-  }
-
   /**
-   * Marks the chunk as loaded.
+   * Spawns the chunk into the world. This automatically sets the chunk state
+   * to `Active`. This assumes that the asset for this chunk is already loaded. Not
+   * checking this before calling this method can lead to undefined behavior.
    */
-  public complete(): this {
-    this._state = WorldChunkState.Loaded;
-
-    return this;
-  }
-
-  private map?: GameMap;
-
   public spawn(world: World, storage: AssetStorage<TmxMap>, spawner: MapSpawner): void {
     this.map = spawner.spawn(
       world,
@@ -100,9 +99,10 @@ export class WorldChunk {
       this.y
     );
 
-    this._state = WorldChunkState.Active;
+    this._state = ChunkState.Active;
   }
 
+  /** De-spawns the chunk from the world. */
   public despawn(world: World): boolean {
     if (this.map) {
       for (const entity of this.map.entities) {
@@ -113,9 +113,9 @@ export class WorldChunk {
       this.map.entities.length = 0;
       this.map = undefined;
 
-      // Map is no longer active but is still ready to be spawned again, so we can
-      // revert the state back to loaded.
-      this._state = WorldChunkState.Loaded;
+      // Chunk map is no longer active but is still ready to be spawned again, so we
+      // can revert the state back to loaded.
+      this._state = ChunkState.Loaded;
 
       return true;
     }

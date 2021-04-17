@@ -17,10 +17,7 @@ import { TortoiseBehavior } from './behaviors/tortoise-behavior';
 import { MovementSystem } from './movement-system';
 import { DrawGridSystem } from './systems/draw-grid-system';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
-import { ParseWorld } from './world/parse-world';
-import { GameMapManager } from './world/game-map-manager';
-import { WorldModule } from './world/world.module';
-import { MapHierarchy } from './world/map-hierarchy';
+import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './world';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -125,10 +122,11 @@ window.onload = () => {
       .get(AssetLoader)
       .fetch('maps/world', new ParseWorld(UNIT_SIZE))
       .then(world => {
-        const maps = game.world.get(GameMapManager);
         const hierarchy = game.world.get(MapHierarchy);
 
-        maps.setWorld(world);
+        // Set the loaded map as active. The map manager will automatically load
+        // individual world chunks on demand.
+        game.world.get(MapManager).setWorld(world);
 
         spawnPawn(game.world, pawnSpriteSheet, x, y, hierarchy.layer2);
     });

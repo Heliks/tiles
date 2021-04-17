@@ -1,6 +1,6 @@
 import { getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Format } from '@heliks/tiles-assets';
-import { GameWorld } from './game-world';
+import { World } from './world';
 
 interface TmxWorldMapAsset {
   fileName: string;
@@ -15,7 +15,7 @@ export interface TmxWorldData {
 }
 
 /** Asset loader format for loading TMX tilemaps. */
-export class ParseWorld implements Format<TmxWorldData, GameWorld> {
+export class ParseWorld implements Format<TmxWorldData, World> {
 
   /** @inheritDoc */
   public readonly name = 'tmx-world';
@@ -26,8 +26,8 @@ export class ParseWorld implements Format<TmxWorldData, GameWorld> {
   constructor(private readonly unitSize = 1) {}
 
   /** Parses `TmxWorldData` and converts it to a `GameWorld` */
-  public process(data: TmxWorldData, file: string): GameWorld {
-    const world = new GameWorld();
+  public process(data: TmxWorldData, file: string): World {
+    const world = new World();
 
     for (const map of data.maps) {
       world.setChunk(
