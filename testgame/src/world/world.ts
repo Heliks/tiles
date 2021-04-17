@@ -1,13 +1,14 @@
-import { WorldChunk } from './world-chunk';
+import { Chunk } from './chunk';
 
-export class GameWorld {
+/** A collection of individual chunks where each chunk contains a map. */
+export class World {
 
   /**
    * All chunks that make up the world. Each chunk is by default unloaded and can be
    * loaded on demand. Chunks can overlap each other, so it is possible that two chunks
    * occupy the same world space.
    */
-  public readonly chunks: WorldChunk[] = [];
+  public readonly chunks: Chunk[] = [];
 
   /** @internal */
   private _nextChunkId = 0;
@@ -21,8 +22,8 @@ export class GameWorld {
    * @param x Position on x axis where the chunk should spawn its map.
    * @param y Position on y axis where the chunk should spawn its map.
    */
-  public setChunk(file: string, width: number, height: number, x = 0, y = 0): WorldChunk {
-    const chunk = new WorldChunk(
+  public setChunk(file: string, width: number, height: number, x = 0, y = 0): Chunk {
+    const chunk = new Chunk(
       ++this._nextChunkId,
       file,
       width,
@@ -41,7 +42,7 @@ export class GameWorld {
    * is projected in all directions which means that a `range` of `5` will effectively
    * have a horizontal and vertical range of `10`.
    */
-  public getChunksInRange(x: number, y: number, range = 5, out: WorldChunk[] = []): WorldChunk[] {
+  public getChunksInRange(x: number, y: number, range = 5, out: Chunk[] = []): Chunk[] {
     const rx = x - range;
     const ry = y - range;
 

@@ -10,7 +10,7 @@ export class MapSpawner {
 
   constructor(private readonly hierarchy: MapHierarchy) {}
 
-  public spawn(world: World, map: TmxMap, x = 0, y = 0) {
+  public spawn(world: World, map: TmxMap, x = 0, y = 0): GameMap {
     // Collection of all entities that were spawned on the map.
     const _map = new GameMap();
 
