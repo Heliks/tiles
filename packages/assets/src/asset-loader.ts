@@ -29,34 +29,12 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Similarly to [[load()]] this function will return a file handle,
-   * but only after the asset has finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
-   */
-  public async<D, R>(
-    path: string,
-    format: Format<D, R, AssetLoader>,
-    storage: AssetStorage<R>
-  ): Promise<Handle<R>> {
-    return this.fetch(path, format).then(data => {
-      const handle = Symbol();
-
-      this.complete(handle, data, format.name, storage);
-
-      return handle;
-    });
-  }
-
-  /**
    * Loads `data` into the given `storage` and returns a file handle that can be used
-   * to access it.
+   * to access it in that same storage.
    *
-   * @param data The data that should be loaded into `storage`.
-   * @param storage The storage where the loaded asset should be stored.
-   * @typeparam D the data that should be stored as an asset.
+   * @param data Data that should be loaded into `storage`.
+   * @param storage Location where asset should be stored.
+   * @typeparam D Kind of data that should be stored as an asset.
    */
   public data<D>(data: D, storage: AssetStorage<D>): Handle<D> {
     const handle = Symbol();
@@ -123,6 +101,28 @@ export class AssetLoader {
     );
 
     return handle;
+  }
+
+  /**
+   * Loads a file. Similarly to [[load()]] this function will return a file handle,
+   * but only after the asset has finished loading.
+   *
+   * @param path Path to the file that should be loaded.
+   * @param format The format that should be used to parse the files raw data.
+   * @param storage The storage where the loaded asset should be stored.
+   */
+  public async<D, R>(
+    path: string,
+    format: Format<D, R, AssetLoader>,
+    storage: AssetStorage<R>
+  ): Promise<Handle<R>> {
+    return this.fetch(path, format).then(data => {
+      const handle = Symbol();
+
+      this.complete(handle, data, format.name, storage);
+
+      return handle;
+    });
   }
 
 }

@@ -30,4 +30,3 @@ export interface AssetStorage<T> {
   /** Stores `asset` under `handle`. */
   set(handle: Handle<T>, asset: Asset<T>): this;
 }
-
