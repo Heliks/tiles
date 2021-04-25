@@ -3,11 +3,11 @@ import { RigidBody } from '@heliks/tiles-physics';
 import { Health, Inventory } from '../components';
 import { Circle } from '@heliks/tiles-math';
 import { CollisionGroups, MaterialType } from '../const';
-import { Behavior } from '../behavior';
+import { Behavior } from '../modules/behavior';
 import { Movement } from '../movement-system';
 import { TortoiseBlackboard } from '../behaviors/tortoise-behavior';
 import { VISION_COLLIDER_TYPE } from '../vision';
-import { Blueprint } from '../spawner';
+import { Blueprint } from '../modules/spawner';
 
 export const FACTION_ID_CARNIVORE = 'WL_CARNIVORE';
 export const FACTION_ID_HERBIVORE = 'WL_HERBIVORE';
