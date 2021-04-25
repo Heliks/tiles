@@ -2,6 +2,7 @@
 // the benefit that other packages won't have to include the entity-system as a peer
 // dependency.
 export {
+  Builder as EntityBuilder,
   ComponentEvent,
   ComponentEventType,
   Entity,
