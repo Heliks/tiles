@@ -1,5 +1,4 @@
 import { HasTmxPropertyData } from '../properties';
-import { TmxObjectData } from '../objects';
 
 export enum TmxLayerDataType {
   Objects = 'objectgroup',
@@ -46,9 +45,23 @@ export type TmxTileLayerData =
   TmxFixedSizeTileLayerData |
   TmxInfiniteTileLayerData;
 
+
+export interface TmxObject extends HasTmxPropertyData {
+  gid?: number;
+  height: number;
+  id: number;
+  name: string;
+  rotation: number;
+  type: string;
+  visible: boolean;
+  width: number;
+  x: number;
+  y: number;
+}
+
 /** JSON format for object layers. */
 export interface TmxObjectLayerData extends TmxBaseLayerData {
-  objects: TmxObjectData[];
+  objects: TmxObject[];
   type: TmxLayerDataType.Objects;
 }
 
