@@ -32,7 +32,7 @@ import { GroupEvent } from '@heliks/ecs';
 import { CollisionGroups, MaterialType } from '../const';
 import { PawnBlackboard } from './pawn-blackboard';
 import { Combat } from '../combat';
-import { MapManager } from '../world/map-manager';
+import { MapManager } from '../modules/world/map-manager';
 
 export class Pawn {
 

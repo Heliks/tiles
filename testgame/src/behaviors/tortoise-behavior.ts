@@ -1,4 +1,4 @@
-import { Behavior, MonoBehavior } from '../behavior';
+import { Behavior, MonoBehavior } from '../modules/behavior';
 import { Entity, Transform, World, Vec2, Ticker } from '@heliks/tiles-engine';
 import { rand } from '@heliks/tiles-engine';
 import { Movement } from '../movement-system';

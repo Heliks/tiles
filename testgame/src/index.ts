@@ -12,12 +12,12 @@ import { lookupEntity } from './utils';
 import { AsepriteFormat } from '@heliks/tiles-aseprite';
 import { CombatSystem } from './combat';
 import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
-import { BehaviorManager, BehaviorModule } from './behavior';
+import { BehaviorManager, BehaviorModule } from './modules/behavior';
 import { TortoiseBehavior } from './behaviors/tortoise-behavior';
 import { MovementSystem } from './movement-system';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
-import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './world';
-import { SpawnerManager, SpawnerModule } from './spawner';
+import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './modules/world';
+import { SpawnerManager, SpawnerModule } from './modules/spawner';
 import { TortoiseBlueprint } from './spawners/tortoise-blueprint';
 
 // Meter to pixel ratio.
