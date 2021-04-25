@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { AssetLoader, AssetsModule, Handle } from '@heliks/tiles-assets';
 import { Entity, Game, GameBuilder, TransformModule, World } from '@heliks/tiles-engine';
-import { Physics, PhysicsDebugDraw, PhysicsModule } from '@heliks/tiles-physics';
+import { Physics, PhysicsModule } from '@heliks/tiles-physics';
 import { PixiModule, Renderer, SPRITE_SHEET_STORAGE, SpriteSheet } from '@heliks/tiles-pixi';
 import { TilemapModule } from '@heliks/tiles-tilemap';
 import { InputHandler } from './input';
@@ -15,11 +15,9 @@ import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
 import { BehaviorManager, BehaviorModule } from './behavior';
 import { TortoiseBehavior } from './behaviors/tortoise-behavior';
 import { MovementSystem } from './movement-system';
-import { DrawGridSystem } from './systems/draw-grid-system';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './world';
-import { SpawnerObject } from './world-objects/spawner-object';
-import { SpawnerManager, SpawnerModule } from './world-objects';
+import { SpawnerManager, SpawnerModule } from './spawner';
 import { TortoiseBlueprint } from './spawners/tortoise-blueprint';
 
 // Meter to pixel ratio.

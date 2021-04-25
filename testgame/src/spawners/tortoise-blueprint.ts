@@ -7,7 +7,7 @@ import { Behavior } from '../behavior';
 import { Movement } from '../movement-system';
 import { TortoiseBlackboard } from '../behaviors/tortoise-behavior';
 import { VISION_COLLIDER_TYPE } from '../vision';
-import { Blueprint } from '../world-objects';
+import { Blueprint } from '../spawner';
 
 export const FACTION_ID_CARNIVORE = 'WL_CARNIVORE';
 export const FACTION_ID_HERBIVORE = 'WL_HERBIVORE';
