@@ -32,7 +32,7 @@ import { GroupEvent } from '@heliks/ecs';
 import { CollisionGroups, MaterialType } from '../const';
 import { PawnBlackboard } from './pawn-blackboard';
 import { Combat } from '../combat';
-import { GameMapManager } from '../world/game-map-manager';
+import { MapManager } from '../world/map-manager';
 
 export class Pawn {
 
@@ -196,7 +196,7 @@ export class PawnController extends ProcessingSystem {
         transform.world.y
       );
 
-      world.get(GameMapManager).update(world, transform.world.x, transform.world.y);
+      world.get(MapManager).update(world, transform.world.x, transform.world.y);
 
       world.get(DebugDraw).text(`x: ${transform.world.x} / y: ${transform.world.y}`, 5, 5);
     }

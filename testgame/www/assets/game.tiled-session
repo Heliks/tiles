@@ -932,11 +932,11 @@
             }
         },
         "maps/forest1_1.json": {
-            "scale": 2,
+            "scale": 0.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 564,
-                "y": 992.75
+                "x": 536,
+                "y": 1073
             }
         },
         "maps/forest1_2.json": {
@@ -1045,7 +1045,7 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 120.75,
+                "x": 121,
                 "y": 126.75
             }
         },
@@ -1071,6 +1071,22 @@
             "viewCenter": {
                 "x": 203.75,
                 "y": 78.75
+            }
+        },
+        "maps/world-test/test1.json": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -94.33333333333334,
+                "y": 21.16666666666667
+            }
+        },
+        "maps/world-test/test2.json": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 87.25,
+                "y": 85.375
             }
         },
         "objects/brazier-common01.json": {
@@ -1258,8 +1274,10 @@
         }
     },
     "frame.defaultDuration": 100,
+    "last.worldFilePath": "/srv/http/tiles/testgame/www/assets/maps/world-test",
     "loadedWorlds": [
-        "/srv/http/tiles/testgame/www/assets/maps/world"
+        "/srv/http/tiles/testgame/www/assets/maps/world",
+        "/srv/http/tiles/testgame/www/assets/maps/world-test/testworld"
     ],
     "map.fixedSize": true,
     "map.height": 100,
@@ -1277,7 +1295,7 @@
         "objects/flora/trees/saplings01.json"
     ],
     "project": "game.tiled-project",
-    "property.type": "string",
+    "property.type": "int",
     "recentFiles": [
         "objects/containers/wood-barrels.json",
         "tilesets/village02.json",

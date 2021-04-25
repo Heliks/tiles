@@ -1,12 +1,4 @@
 { "columns":4,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"",
-         "target":"."
-        }
-    },
  "image":"bushes.png",
  "imageheight":64,
  "imagewidth":128,
@@ -15,9 +7,9 @@
  "objectalignment":"bottom",
  "spacing":0,
  "tilecount":8,
- "tiledversion":"1.4.3",
+ "tiledversion":"1.5.0",
  "tileheight":32,
  "tilewidth":32,
  "type":"tileset",
- "version":1.4
+ "version":1.5
 }

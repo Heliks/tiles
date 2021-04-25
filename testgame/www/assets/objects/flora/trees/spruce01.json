@@ -4,9 +4,10 @@
  "imagewidth":64,
  "margin":0,
  "name":"spruce01",
+ "objectalignment":"bottom",
  "spacing":0,
  "tilecount":1,
- "tiledversion":"1.4.3",
+ "tiledversion":"1.5.0",
  "tileheight":160,
  "tiles":[
         {
@@ -14,7 +15,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -38,5 +38,5 @@
         }],
  "tilewidth":60,
  "type":"tileset",
- "version":1.4
+ "version":1.5
 }

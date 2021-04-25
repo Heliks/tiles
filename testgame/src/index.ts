@@ -18,6 +18,9 @@ import { MovementSystem } from './movement-system';
 import { DrawGridSystem } from './systems/draw-grid-system';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './world';
+import { SpawnerObject } from './world-objects/spawner-object';
+import { SpawnerManager, SpawnerModule } from './world-objects';
+import { TortoiseBlueprint } from './spawners/tortoise-blueprint';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -82,8 +85,8 @@ window.onload = () => {
         resolution: [320, 180],
         unitSize: UNIT_SIZE
       })
-        .plugin(PhysicsDebugDraw)
-        .plugin(DrawGridSystem)
+        // .plugin(PhysicsDebugDraw)
+        // .plugin(DrawGridSystem)
     )
     .system(ArrowSystem)
     .module(new DeathBundle())
@@ -91,6 +94,7 @@ window.onload = () => {
     .module(new TilemapModule())
     .system(CombatSystem)
     .module(new WorldModule())
+    .module(new SpawnerModule())
     .system(PawnController)
     .module(new BehaviorModule())
     .system(MovementSystem)
@@ -101,8 +105,8 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = 0;
-  const y = 0;
+  const x = -0;
+  const y = -0;
 
   // Register entity behaviors.
   game.world
@@ -114,13 +118,16 @@ window.onload = () => {
     .setMaterial(MaterialType.ORGANIC, MATERIAL_ORGANIC)
     .setMaterial(MaterialType.WOOD, MATERIAL_WOOD);
 
+  game.world.get(SpawnerManager)
+    .register('CRITTER_TORTOISE', new TortoiseBlueprint())
+
   // Start the game loop.
   game.start();
 
   initPawn(game.world).then(pawnSpriteSheet => {
     game.world
       .get(AssetLoader)
-      .fetch('maps/world', new ParseWorld(UNIT_SIZE))
+      .fetch('maps/world-test/testworld', new ParseWorld(UNIT_SIZE))
       .then(world => {
         const hierarchy = game.world.get(MapHierarchy);
 
