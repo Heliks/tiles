@@ -15,10 +15,10 @@ export interface Properties {
 }
 
 /** Helper type that indicates a structure carries parsed TMX properties. */
-export interface HasProperties<T extends Properties = Properties> {
+export interface HasProperties<T = Properties> {
 
   /** Custom properties. */
-  readonly properties: Partial<T>;
+  readonly properties: T;
 
 }
 

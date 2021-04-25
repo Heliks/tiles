@@ -2,7 +2,7 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
 import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Grid } from '@heliks/tiles-engine';
-import { HasTmxPropertyData, tmxExtractProperties } from './properties';
+import { HasTmxPropertyData, Properties, tmxExtractProperties } from './properties';
 import { tmxParseShape, Shape, TmxShapeData } from './shape';
 import { RigidBodyType } from "@heliks/tiles-physics";
 
@@ -68,8 +68,8 @@ export class Tileset extends BaseTileset {
   public readonly properties = new Map<TileId, TileProperties>();
   public readonly shapes = new Map<TileId, Shape[]>();
 
-  public getTileShapes(tileId: number): Shape[] | undefined {
-    return this.shapes.get(tileId);
+  public getTileShapesByType<P extends object = object>(tileId: number, type: string): Shape<P>[] | undefined {
+    return this.shapes.get(tileId)?.filter(item => item.type === type) as Shape<P>[];
   }
 
 }
