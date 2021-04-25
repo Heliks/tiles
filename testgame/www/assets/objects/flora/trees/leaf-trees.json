@@ -1,20 +1,13 @@
 { "columns":3,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"",
-         "target":"."
-        }
-    },
  "image":"leaf-trees.png",
  "imageheight":140,
  "imagewidth":288,
  "margin":0,
  "name":"leaf-trees",
+ "objectalignment":"bottom",
  "spacing":0,
  "tilecount":3,
- "tiledversion":"1.4.2",
+ "tiledversion":"1.5.0",
  "tileheight":140,
  "tiles":[
         {
@@ -100,5 +93,5 @@
         }],
  "tilewidth":96,
  "type":"tileset",
- "version":1.4
+ "version":1.5
 }

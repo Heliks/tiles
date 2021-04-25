@@ -13,20 +13,68 @@
          "width":10,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_TORTOISE"
+                        }, 
+                        {
+                         "name":"range",
+                         "type":"int",
+                         "value":5
+                        }],
+                 "rotation":0,
+                 "type":"spawner",
+                 "visible":true,
+                 "width":0,
+                 "x":8,
+                 "y":10
+                }],
+         "opacity":1,
+         "properties":[
+                {
+                 "name":"isFloor",
+                 "type":"bool",
+                 "value":true
+                }],
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":3,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.5.0",
  "tileheight":16,
  "tilesets":[
         {
          "firstgid":1,
-         "source":"../..\/tilesets\/tileset-test.json"
+         "source":"..\/..\/tilesets\/tileset-test.json"
+        }, 
+        {
+         "firstgid":169,
+         "source":"..\/..\/objects\/containers\/wood-barrels.json"
+        }, 
+        {
+         "firstgid":171,
+         "source":"..\/..\/objects\/rocks.json"
         }],
  "tilewidth":16,
  "type":"map",
- "version":1.4,
+ "version":1.5,
  "width":10
 }
