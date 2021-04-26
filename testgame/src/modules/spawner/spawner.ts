@@ -1,21 +1,19 @@
 import { Entity, Transform } from "@heliks/tiles-engine";
 import { rand, Vec2, vec2 } from '@heliks/tiles-math';
+import { SpawnerOptions } from "./spawner-object";
 
-export class Spawner {
+export class Spawner implements Required<SpawnerOptions> {
 
   /** Contains the spawned entity. */
   public entity?: Entity;
 
-  /** Remaining amount of time that it takes until the next entity is spawned. */
+  /** Remaining time (in seconds) until the next entity is spawned. */
   public cooldown = 0;
 
   /**
-   * @param id ID of the blueprint that is used to spawn the entity.
-   * @param respawnTime The time it takes for the entity to be re-spawned after it
-   *  has been killed. A time of `0` means it is re-spawned instantly.
-   * @param range The range around the spawner where entities can be spawned. The exact
-   *  spawning location is a random position in that range. A range of `0` means the
-   *  entity is spawned on top of the spawner.
+   * @param id @inheritDoc
+   * @param respawnTime @inheritDoc
+   * @param range @inheritDoc
    */
   constructor(public id: string, public respawnTime = 0, public range = 0) {}
 

@@ -58,6 +58,8 @@ export class SpawnerSystem extends ProcessingSystem {
       }
       else {
         if (spawner.cooldown <= 0) {
+          console.log('SPAWN', spawner.cooldown, spawner.respawnTime)
+
           const trans = world.storage(Transform).get(entity);
 
           // Get a spawn location within the spawners acceptable range.
@@ -72,7 +74,7 @@ export class SpawnerSystem extends ProcessingSystem {
           );
         }
         else {
-          spawner.cooldown -= world.get(Ticker).delta;
+          spawner.cooldown -= world.get(Ticker).getDeltaSeconds();
         }
       }
     }

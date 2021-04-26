@@ -17,8 +17,8 @@ export interface SpawnerOptions {
   range?: number;
 
   /**
-   * The time it takes for the entity to be re-spawned after it has been killed. A time
-   * of `0` means it is re-spawned instantly.
+   * The time it takes in seconds for the entity to be re-spawned after it has been
+   * killed. A time of `0` means it is re-spawned instantly.
    */
   respawnTime?: number;
 
