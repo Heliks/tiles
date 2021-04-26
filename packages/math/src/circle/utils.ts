@@ -1,3 +1,6 @@
+import { rand } from '../utils';
+import { Vec2 } from '../vec2';
+
 /** Conversion factor for degrees to radians. */
 export const DEG2RAD_FACTOR = Math.PI / 180;
 
@@ -28,19 +31,19 @@ export function atan2(y: number, x: number): number {
   return Math.atan2(y, x) + DEG90_RAD;
 }
 
-/** A circle shape. */
-export class Circle {
+/**
+ * Returns a random position that fits inside of a circle. The center of the circle
+ * is always 0/0.
+ *
+ * @param minRadius Position must be this radius away from the circles center.
+ * @param maxRadius Position must be inside of this radius away from the circles center.
+ */
+export function getRandomPointInCircle(minRadius: number, maxRadius: number): Vec2 {
+  const r = rand(minRadius, maxRadius);
+  const t = rand(1, 360);
 
-  /**
-   * @param radius The radius of the circle.
-   * @param x (optional) Position on x axis.
-   * @param y (optional) Position on y axis.
-   */
-  constructor(public radius: number, public x = 0, public y = 0) {}
-
-  /** Creates a new `Rectangle` from this one. */
-  public copy(): Circle {
-    return new Circle(this.radius, this.x, this.y);
-  }
-
+  return {
+    x: Math.sqrt(r) * Math.cos(t),
+    y: Math.sqrt(r) * Math.sin(t)
+  };
 }

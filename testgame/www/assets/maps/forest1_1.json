@@ -5088,6 +5088,12 @@
                  "id":305,
                  "name":"Butterfly Spawner",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_BUTTERFLY"
+                        }],
                  "rotation":0,
                  "type":"spawner",
                  "visible":true,
@@ -5100,6 +5106,12 @@
                  "id":308,
                  "name":"Butterfly Spawner",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_BUTTERFLY"
+                        }],
                  "rotation":0,
                  "type":"spawner",
                  "visible":true,
@@ -5112,6 +5124,12 @@
                  "id":309,
                  "name":"Butterfly Spawner",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_BUTTERFLY"
+                        }],
                  "rotation":0,
                  "type":"spawner",
                  "visible":true,
@@ -5124,6 +5142,12 @@
                  "id":310,
                  "name":"Butterfly Spawner",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_BUTTERFLY"
+                        }],
                  "rotation":0,
                  "type":"spawner",
                  "visible":true,
@@ -5136,12 +5160,18 @@
                  "id":476,
                  "name":"Tortoise Spawner",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"CRITTER_TORTOISE"
+                        }],
                  "rotation":0,
                  "type":"spawner",
                  "visible":true,
                  "width":0,
                  "x":415,
-                 "y":432
+                 "y":433
                 }],
          "opacity":1,
          "type":"objectgroup",

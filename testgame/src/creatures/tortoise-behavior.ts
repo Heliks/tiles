@@ -1,34 +1,24 @@
 import { Behavior, MonoBehavior } from '../modules/behavior';
-import { Entity, Transform, World, Vec2, Ticker } from '@heliks/tiles-engine';
-import { rand } from '@heliks/tiles-engine';
+import { Entity, getRandomPointInCircle, Ticker, Transform, World } from '@heliks/tiles-engine';
 import { Movement } from '../movement-system';
 import { RigidBody } from '@heliks/tiles-physics';
 import { VISION_COLLIDER_TYPE } from '../vision';
 import { SpriteAnimation } from '@heliks/tiles-pixi';
 
-function getRandomPointInCircle(minRadius: number, maxRadius: number): Vec2 {
-  const r = rand(minRadius, maxRadius);
-  const t = rand(1, 360);
-
-  console.log(r, t)
-
-  return {
-    x: Math.sqrt(r) * Math.cos(t),
-    y: Math.sqrt(r) * Math.sin(t)
-  };
-}
-
+/** @internal */
 const enum TortoiseState {
   IDLE,
   WANDERING,
   BLOCK
 }
 
+/** Behavior blackboard for tortoises :). */
 export class TortoiseBlackboard {
   public state = TortoiseState.IDLE;
   public idleTimer = 0;
 }
 
+// Todo: Should filter non-hostile entities.
 function getVisibleEntities(body: RigidBody): Set<Entity> {
   const entities = new Set<Entity>();
 
@@ -43,17 +33,10 @@ function getVisibleEntities(body: RigidBody): Set<Entity> {
   return entities;
 }
 
-/**
- *
- */
 export class TortoiseBehavior implements MonoBehavior<TortoiseBlackboard> {
 
   /** @inheritDoc */
-  public update(
-    entity: Entity,
-    behavior: Behavior<TortoiseBlackboard>,
-    world: World
-  ): void {
+  public update(entity: Entity, behavior: Behavior<TortoiseBlackboard>, world: World): void {
 
     const transform = world.storage(Transform).get(entity);
     const movement = world.storage(Movement).get(entity);

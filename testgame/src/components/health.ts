@@ -29,12 +29,17 @@ export class Health {
   /** Contains a history of events that changed the health in the past. */
   public readonly history: DamageEvent[] = [];
 
+  /** Current amount of health. If this falls below `0` the entity is considered "dead". */
+  public current = 0;
+
   /**
    * @param total The maximum amount of health that this entity can possibly have.
-   * @param current The current amount of health that this entity has. The maximum value
-   *  of this is capped by [[total]].
+   * @param current (optional) Current amount of health. By default the entity will
+   *  start with it's maximum health `total`.
    */
-  constructor(public total = 0, public current = 0) {}
+  constructor(public total = 0, current?: number) {
+    this.current = current ? current : total;
+  }
 
   /** Sets the current health to `value`. If it exceeds [[total]] it will be clamped. */
   public set(value: number): this {
