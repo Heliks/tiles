@@ -3,14 +3,14 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/forest1_1.json",
+    "activeFile": "maps/world-test/test2.json",
     "expandedProjectPaths": [
-        "maps",
-        "objects",
+        "objects/containers",
         ".",
         "objects/flora",
         "objects/flora/trees",
-        "objects/containers"
+        "maps",
+        "maps/world-test"
     ],
     "exportAsImage.useCurrentScale": false,
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -932,11 +932,11 @@
             }
         },
         "maps/forest1_1.json": {
-            "scale": 0.5,
-            "selectedLayer": 6,
+            "scale": 1.5,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 536,
-                "y": 1073
+                "x": 592,
+                "y": 600
             }
         },
         "maps/forest1_2.json": {
@@ -1077,16 +1077,16 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -94.33333333333334,
-                "y": 21.16666666666667
+                "x": 80,
+                "y": 80.16666666666667
             }
         },
         "maps/world-test/test2.json": {
-            "scale": 4,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 87.25,
-                "y": 85.375
+                "x": 65.66666666666666,
+                "y": 21.16666666666667
             }
         },
         "objects/brazier-common01.json": {
@@ -1274,6 +1274,8 @@
         }
     },
     "frame.defaultDuration": 100,
+    "last.exportedFilePath": "/srv/http/tiles/testgame/www/assets/maps/world-test",
+    "last.objectTypesPath": "/srv/http/tiles/testgame/www/assets/objecttypes.xml",
     "last.worldFilePath": "/srv/http/tiles/testgame/www/assets/maps/world-test",
     "loadedWorlds": [
         "/srv/http/tiles/testgame/www/assets/maps/world",
@@ -1281,6 +1283,7 @@
     ],
     "map.fixedSize": true,
     "map.height": 100,
+    "map.lastUsedExportFilter": "JSON map files (*.json)",
     "map.lastUsedFormat": "json",
     "map.orientation": 1,
     "map.tileHeight": 16,
@@ -1292,7 +1295,9 @@
         "maps/city.json",
         "/home/felix/Pictures/gamedev/map_wald/untitled.json",
         "maps/forest1_1.json",
-        "objects/flora/trees/saplings01.json"
+        "objects/flora/trees/saplings01.json",
+        "maps/world-test/test1.json",
+        "maps/world-test/test2.json"
     ],
     "project": "game.tiled-project",
     "property.type": "int",
@@ -1301,14 +1306,14 @@
         "tilesets/village02.json",
         "maps/city.json",
         "/home/felix/Pictures/gamedev/map_wald/untitled.json",
-        "objects/flora/trees/saplings01.json",
         "maps/forest1_1.json",
+        "objects/flora/trees/saplings01.json",
+        "maps/world-test/test1.json",
+        "maps/world-test/test2.json",
         "maps/forest-village.json",
         "objects/flora/trees/spruce02.json",
         "objects/flora/trees/spruce01.json",
-        "maps/infinite-test.json",
-        "maps/forrest-village.json",
-        "objects/tent01.json"
+        "maps/infinite-test.json"
     ],
     "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,
