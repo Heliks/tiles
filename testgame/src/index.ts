@@ -13,12 +13,14 @@ import { AsepriteFormat } from '@heliks/tiles-aseprite';
 import { CombatSystem } from './combat';
 import { MATERIAL_ORGANIC, MATERIAL_WOOD, MaterialType } from './const';
 import { BehaviorManager, BehaviorModule } from './modules/behavior';
-import { TortoiseBehavior } from './behaviors/tortoise-behavior';
+import { TortoiseBehavior } from './creatures/tortoise-behavior';
 import { MovementSystem } from './movement-system';
 import { TmxTilemapFormat } from '@heliks/tiles-tmx';
 import { MapHierarchy, MapManager, ParseWorld, WorldModule } from './modules/world';
 import { SpawnerManager, SpawnerModule } from './modules/spawner';
-import { TortoiseBlueprint } from './spawners/tortoise-blueprint';
+import { TortoiseBlueprint } from './creatures/tortoise-blueprint';
+import { ButterflyBlueprint } from './creatures/butterfly-blueprint';
+import { CritterBehavior } from './creatures/critter-behavior';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -103,12 +105,13 @@ window.onload = () => {
   game.world.get(Renderer).appendTo(getDomTarget());
 
   // Initial player position.
-  const x = -0;
-  const y = -0;
+  const x = 15;
+  const y = 15;
 
   // Register entity behaviors.
   game.world
     .get(BehaviorManager)
+    .set('critter', new CritterBehavior())
     .set('tortoise', new TortoiseBehavior());
 
   // Register physics materials.
@@ -117,6 +120,7 @@ window.onload = () => {
     .setMaterial(MaterialType.WOOD, MATERIAL_WOOD);
 
   game.world.get(SpawnerManager)
+    .register('CRITTER_BUTTERFLY', new ButterflyBlueprint())
     .register('CRITTER_TORTOISE', new TortoiseBlueprint())
 
   // Start the game loop.
@@ -125,7 +129,7 @@ window.onload = () => {
   initPawn(game.world).then(pawnSpriteSheet => {
     game.world
       .get(AssetLoader)
-      .fetch('maps/world-test/testworld', new ParseWorld(UNIT_SIZE))
+      .fetch('maps/world', new ParseWorld(UNIT_SIZE))
       .then(world => {
         const hierarchy = game.world.get(MapHierarchy);
 

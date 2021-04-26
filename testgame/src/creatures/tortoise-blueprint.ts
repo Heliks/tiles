@@ -5,7 +5,7 @@ import { Circle } from '@heliks/tiles-math';
 import { CollisionGroups, MaterialType } from '../const';
 import { Behavior } from '../modules/behavior';
 import { Movement } from '../movement-system';
-import { TortoiseBlackboard } from '../behaviors/tortoise-behavior';
+import { TortoiseBlackboard } from './tortoise-behavior';
 import { VISION_COLLIDER_TYPE } from '../vision';
 import { Blueprint } from '../modules/spawner';
 
@@ -15,9 +15,10 @@ export const FACTION_ID_HERBIVORE = 'WL_HERBIVORE';
 export class TortoiseBlueprint extends Blueprint {
 
   constructor() {
-    super('spritesheets/josh.json');
+    super('creatures/josh.json');
   }
 
+  /** @inheritDoc */
   public create(entity: EntityBuilder): void {
     const inventory = new Inventory();
 
