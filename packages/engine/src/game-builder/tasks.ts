@@ -45,7 +45,6 @@ export class AddProvider implements Task {
     const container = game.container;
     const provider = this.provider;
 
-    // Class provider.
     if (typeof provider === 'function') {
       container.make(provider, [], true);
     }
@@ -53,8 +52,6 @@ export class AddProvider implements Task {
       container.instance(provider);
     }
     else if (isFactoryProvider(provider)) {
-      // If the singleton flag is set it will also be bound to the service
-      // container as such.
       if (provider.singleton) {
         container.singleton(provider.token, provider.factory);
       }
@@ -62,9 +59,14 @@ export class AddProvider implements Task {
         container.factory(provider.token, provider.factory);
       }
     }
-    // Value provider.
     else {
-      container.bind(provider.token, provider.value);
+      let value = provider.value;
+
+      if (provider.instantiate) {
+        value = container.make(provider.value as ClassType);
+      }
+
+      container.bind(provider.token, value);
     }
   }
 
