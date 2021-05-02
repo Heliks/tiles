@@ -31,10 +31,23 @@ export interface FactoryProvider {
 
 /** Provides a value to the service container. */
 export interface ValueProvider {
-  /** The token that can be used to inject [[value]]. */
+
+  /**
+   * If this is set to true the [[value]] of this provider is instantiated with the
+   * service container first.
+   */
+  instantiate?: boolean;
+
+  /**
+   * Token that can be used to inject [[value]].
+   */
   token: InjectorToken;
-  /** The value that should be bound via [[token]]. */
+
+  /**
+   * Value that should be bound via [[token]].
+   */
   value: unknown;
+
 }
 
 /** Provides a class instance to the service container via `Container.instance`. */

@@ -21,6 +21,7 @@ import { SpawnerManager, SpawnerModule } from './modules/spawner';
 import { TortoiseBlueprint } from './creatures/tortoise-blueprint';
 import { ButterflyBlueprint } from './creatures/butterfly-blueprint';
 import { CritterBehavior } from './creatures/critter-behavior';
+import { ObjectSpawner } from './object-spawner';
 
 // Meter to pixel ratio.
 export const UNIT_SIZE = 16;
@@ -93,7 +94,7 @@ window.onload = () => {
     .system(DebugDeathReporter)
     .module(new TilemapModule())
     .system(CombatSystem)
-    .module(new WorldModule())
+    .module(new WorldModule().setObjectSpawner(ObjectSpawner))
     .module(new SpawnerModule())
     .system(PawnController)
     .module(new BehaviorModule())

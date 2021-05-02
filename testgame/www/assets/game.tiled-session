@@ -5,12 +5,12 @@
     },
     "activeFile": "maps/world-test/test2.json",
     "expandedProjectPaths": [
-        "objects/containers",
-        ".",
-        "objects/flora",
         "objects/flora/trees",
-        "maps",
-        "maps/world-test"
+        ".",
+        "maps/world-test",
+        "objects/containers",
+        "objects/flora",
+        "maps"
     ],
     "exportAsImage.useCurrentScale": false,
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -542,11 +542,69 @@
         "/srv/http/flare-game/tiled/alpha_demo/mineshaft_longsword.tmx#tiled_collision": {
             "scaleInDock": 1
         },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 744,
+                "y": 228.5
+            }
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#collision": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#door_left": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#door_right": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#dungeon": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#set_rules": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#stairs": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx#tiled_dungeon_2x2": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 3192,
+                "y": 1599.5
+            }
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#door_left.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#door_right.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#set_rules.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#stairs.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#tiled_collision.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#tiled_dungeon.png": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx#tiled_dungeon_2x2.png": {
+            "scaleInDock": 1
+        },
         "/srv/http/flare-game/tiled/devlab/lab_welcome.tmx": {
             "scale": 0.9911989795918366,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 392.4539956247588,
+                "x": 371.2675331360186,
                 "y": 124.59657701711495
             }
         },
@@ -575,7 +633,7 @@
             "scale": 3,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 373.16666666666663,
+                "x": 373,
                 "y": 757.1666666666666
             }
         },
@@ -603,12 +661,41 @@
         "/srv/http/flare-game/tiled/dungeon/dungeon_template.tmx#tiled_dungeon_2x2": {
             "scaleInDock": 1
         },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx": {
+            "scale": 0.15348437499999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 3212.0533441922025,
+                "y": 1560.4194238012828
+            }
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#collision": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#door_left": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#door_right": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#dungeon": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#set_rules": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#stairs": {
+            "scaleInDock": 1
+        },
+        "/srv/http/flare-game/tiled/dungeon/dungeon_test.tmx#tiled_dungeon_2x2": {
+            "scaleInDock": 1
+        },
         "/srv/http/flare-game/tiled/dungeon/lab_chapters.tmx": {
-            "scale": 1.5,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 691,
-                "y": 255.66666666666669
+                "x": 529.3333333333333,
+                "y": 332.6666666666667
             }
         },
         "/srv/http/flare-game/tiled/dungeon/lab_chapters.tmx#collision": {
@@ -665,7 +752,7 @@
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 303.5,
+                "x": 304,
                 "y": 807.5
             }
         },
@@ -723,11 +810,11 @@
             "scaleInDock": 1
         },
         "/srv/http/tmwa-client-data/maps/001-1.tmx": {
-            "scale": 0.33,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": -5607.575757575758,
-                "y": 4877.272727272727
+                "x": -6246,
+                "y": 3473.5
             }
         },
         "/srv/http/tmwa-client-data/maps/002-1.tmx": {
@@ -750,11 +837,11 @@
             }
         },
         "/srv/http/tmwa-client-data/maps/010-1.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 3,
+            "scale": 0.125,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": -5839,
-                "y": 4113
+                "x": 2920,
+                "y": 1244
             }
         },
         "/srv/http/tmwa-client-data/maps/014-1.tmx": {
@@ -932,7 +1019,7 @@
             }
         },
         "maps/forest1_1.json": {
-            "scale": 1.5,
+            "scale": 0.25,
             "selectedLayer": 9,
             "viewCenter": {
                 "x": 592,
@@ -1077,16 +1164,24 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 80,
-                "y": 80.16666666666667
+                "x": -257,
+                "y": 289.5
             }
         },
         "maps/world-test/test2.json": {
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 65.66666666666666,
-                "y": 21.16666666666667
+                "x": 127.5,
+                "y": 139.75
+            }
+        },
+        "maps/world-test/test3.json": {
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 219.33333333333331,
+                "y": 87
             }
         },
         "objects/brazier-common01.json": {
@@ -1275,11 +1370,13 @@
     },
     "frame.defaultDuration": 100,
     "last.exportedFilePath": "/srv/http/tiles/testgame/www/assets/maps/world-test",
+    "last.imagePath": "/srv/http/tiles/testgame/www/assets/tilesets",
     "last.objectTypesPath": "/srv/http/tiles/testgame/www/assets/objecttypes.xml",
     "last.worldFilePath": "/srv/http/tiles/testgame/www/assets/maps/world-test",
     "loadedWorlds": [
         "/srv/http/tiles/testgame/www/assets/maps/world",
-        "/srv/http/tiles/testgame/www/assets/maps/world-test/testworld"
+        "/srv/http/tiles/testgame/www/assets/maps/world-test/testworld",
+        "/srv/http/tmwa-client-data/maps/1.world"
     ],
     "map.fixedSize": true,
     "map.height": 100,
@@ -1297,10 +1394,16 @@
         "maps/forest1_1.json",
         "objects/flora/trees/saplings01.json",
         "maps/world-test/test1.json",
-        "maps/world-test/test2.json"
+        "maps/world-test/test2.json",
+        "/srv/http/tmwa-client-data/maps/001-1.tmx",
+        "/srv/http/flare-game/tiled/grassland/grassland_template.tmx",
+        "/srv/http/flare-game/tiled/dungeon/dungeon_template.tmx",
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx",
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx",
+        "/srv/http/flare-game/tiled/devlab/lab_welcome.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "int",
+    "property.type": "string",
     "recentFiles": [
         "objects/containers/wood-barrels.json",
         "tilesets/village02.json",
@@ -1309,11 +1412,11 @@
         "maps/forest1_1.json",
         "objects/flora/trees/saplings01.json",
         "maps/world-test/test1.json",
-        "maps/world-test/test2.json",
-        "maps/forest-village.json",
-        "objects/flora/trees/spruce02.json",
-        "objects/flora/trees/spruce01.json",
-        "maps/infinite-test.json"
+        "/srv/http/flare-game/tiled/devlab/lab_welcome.tmx",
+        "/srv/http/flare-game/tiled/devlab/lab_mapping.tmx",
+        "/srv/http/flare-game/tiled/devlab/lab_basic.tmx",
+        "/srv/http/flare-game/tiled/dungeon/dungeon_template.tmx",
+        "/srv/http/flare-game/tiled/grassland/grassland_template.tmx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,
@@ -1321,8 +1424,8 @@
     "tileset.margin": 0,
     "tileset.spacing": 0,
     "tileset.tileSize": {
-        "height": 51,
-        "width": 60
+        "height": 16,
+        "width": 16
     },
     "tileset.transparentColor": "#ff00ff",
     "tileset.type": 0,

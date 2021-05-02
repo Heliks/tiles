@@ -9,8 +9,6 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Spawner } from './spawner';
-import { ObjectTypes } from '../world/object-types';
-import { SpawnerObject } from './spawner-object';
 import { SpawnerManager } from './spawner-manager';
 
 @Injectable()
@@ -26,10 +24,6 @@ export class SpawnerSystem extends ProcessingSystem {
   /** @inheritDoc */
   public boot(world: World): void {
     this.subscriber = world.storage(Spawner).subscribe();
-
-    // Register the spawner as a world object type to automatically load them with
-    // the map loader.
-    world.get(ObjectTypes).set('spawner', new SpawnerObject());
 
     // Boot parent system to setup entity groups.
     super.boot(world);
