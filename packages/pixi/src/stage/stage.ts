@@ -2,6 +2,7 @@ import { Injectable } from '@heliks/tiles-engine';
 import { Container, Renderable } from '../renderables';
 import { Layer } from './layer';
 import { Layers } from './layers';
+import { Filter } from 'pixi.js';
 
 @Injectable()
 export class Stage {
@@ -12,7 +13,14 @@ export class Stage {
   /** Stage layers. */
   public readonly layers: Layers;
 
+  /** Returns all filters on the stage.*/
+  public get filters(): Filter[] {
+    return this.view.filters;
+  }
+
   constructor() {
+    // By default PIXI.JS has set this to `null`.
+    this.view.filters = [];
     this.layers = new Layers(this.view);
   }
 
