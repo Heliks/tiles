@@ -134,9 +134,23 @@ export class Box2dWorld extends Physics {
     const position = bBody.GetPosition();
     const velocity = bBody.GetLinearVelocity();
 
-    trans.world.x = position.x;
-    trans.world.y = position.y;
-    trans.rotation = bBody.GetAngle();
+    if (body._isPositionDirty) {
+      position.Set(trans.world.x, trans.world.y);
+
+      // Clear flag to indicate that we've updated the position.
+      body._isPositionDirty = false;
+    }
+    else {
+      trans.world.x = position.x;
+      trans.world.y = position.y;
+    }
+
+    if (body.rotate) {
+      trans.rotation = bBody.GetAngle();
+    }
+    else {
+      bBody.SetAngle(trans.rotation);
+    }
 
     // Update velocity on the rigid body if it was transformed.
     if (body.isVelocityDirty) {

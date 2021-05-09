@@ -1,4 +1,4 @@
-import { vec2 } from '@heliks/tiles-engine';
+import { Transform, vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 
 export enum RigidBodyType {
@@ -71,6 +71,25 @@ export class RigidBody {
 
   /** Transform flag indicating that the velocity was updated. */
   public isVelocityDirty = false;
+
+  /**
+   * If this value is `true` the position of the rigid body should be updated according
+   * to the entities `Transform` values (instead of `Transform` being updated with the
+   * body position). This will automatically be set during the body synchronization
+   * before it is passed to the physics adapter. It must be cleared manually however.
+   * @internal
+   */
+  public _isPositionDirty = false;
+
+  /**
+   * Keeps track of the last known position of the entity to determine when the entities
+   * position was changed outside of the physics engine. If a changed position is found
+   * the [[isPositionDirty]] flag will be set to `true` so that the physics engine can
+   * update the body position.
+   * @internal
+   */
+  public _position = vec2(0, 0);
+
 
   /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).
