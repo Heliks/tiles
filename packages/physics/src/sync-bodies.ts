@@ -20,11 +20,17 @@ export class SyncBodies extends ProcessingSystem {
 
     // Update entities with rigid bodies.
     for (const entity of this.group.entities) {
-      this.adapter.updateEntityBody(
-        entity,
-        bodies.get(entity),
-        transforms.get(entity)
-      );
+      const body = bodies.get(entity);
+      const transform = transforms.get(entity);
+
+      body._isPositionDirty =
+        body._position.x !== transform.world.x ||
+        body._position.y !== transform.world.y
+
+      this.adapter.updateEntityBody(entity, body, transform);
+
+      body._position.x = transform.world.x;
+      body._position.y = transform.world.y;
     }
   }
 
