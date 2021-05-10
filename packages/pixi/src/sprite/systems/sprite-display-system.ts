@@ -20,9 +20,6 @@ import { Sprite } from 'pixi.js';
 @Injectable()
 export class SpriteDisplaySystem extends ReactiveSystem {
 
-  /** Subscription for modifications in the [[SpriteDisplay]] storage. */
-  private subscriber!: Subscriber;
-
   /**
    * Maps sprites to their respective entities. This reverse mapping is to work around
    * the fact that an entity might not be alive when it is removed which makes it

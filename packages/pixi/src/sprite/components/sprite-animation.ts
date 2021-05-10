@@ -55,9 +55,6 @@ export class SpriteAnimation {
     this.elapsedTime = -1;
     this.speed = 1;
 
-    this.flipX = false;
-    this.flipY = false;
-
     return this;
   }
 
@@ -98,6 +95,9 @@ export class SpriteAnimation {
     if (this.playing !== name) {
       this.loop = loop;
       this.transform = name;
+
+      this.flipX = false;
+      this.flipY = false;
     }
     else if (this.transform && this.transform !== name) {
       // If requested animation is already playing but flagged for transform we can abort

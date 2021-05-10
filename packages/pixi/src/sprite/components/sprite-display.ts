@@ -40,8 +40,8 @@ export class SpriteDisplay {
     public spriteIndex: number,
     public layer = 0
   ) {
-    // The engine uses center aligned positions instead of top-left. This will save us
-    // a calculation in the renderer `update()`.
+    // Using the middle position instead of the top-left position will save us a lot
+    // of extra calculations during the renderer update.
     this.setAnchor(0.5, 0.5);
   }
 
