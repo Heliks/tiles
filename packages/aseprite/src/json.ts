@@ -1,6 +1,9 @@
-export interface AsepriteRectangleData {
+export interface AsepriteSize {
   h: number;
   w: number;
+}
+
+export interface AsepriteRectangleData extends AsepriteSize {
   x: number;
   y: number;
 }
@@ -14,6 +17,8 @@ export interface AsepriteFrameTagData {
 export interface AsepriteFrameData {
   duration: number;
   frame: AsepriteRectangleData;
+  spriteSourceSize: AsepriteRectangleData;
+  sourceSize: AsepriteSize;
 }
 
 export interface AsepriteMetaData {

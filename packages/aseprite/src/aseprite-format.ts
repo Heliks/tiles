@@ -1,42 +1,24 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { SPRITE_SHEET_STORAGE, SpriteCollection, SpriteSheet, Texture, TextureFormat } from '@heliks/tiles-pixi';
-import { AsepriteData, AsepriteFrameData, AsepriteFramesMap } from './json';
+import { Frame, SPRITE_SHEET_STORAGE, SpriteCollection, SpriteSheet, Texture, TextureFormat } from '@heliks/tiles-pixi';
+import { AsepriteData, AsepriteFrameData } from './json';
 import { World } from '@heliks/tiles-engine';
 
 /** @internal */
-function parseFramesMap(sprites: SpriteCollection, frames: AsepriteFramesMap): void {
-  let i = 0;
+function createFrame(data: AsepriteFrameData): Frame {
+  const frame = new Frame(
+    data.frame.x,
+    data.frame.y,
+    data.frame.w,
+    data.frame.h
+  );
 
-  for (const name in frames) {
-    if (frames.hasOwnProperty(name)) {
-      const frameData = frames[name];
+  frame.source.x = data.spriteSourceSize.x;
+  frame.source.y = data.spriteSourceSize.y;
 
-      sprites.setFrame(
-        i,
-        frameData.frame.x,
-        frameData.frame.y,
-        frameData.frame.w,
-        frameData.frame.h
-      );
+  frame.source.height = data.sourceSize.h;
+  frame.source.width = data.sourceSize.w;
 
-      i++;
-    }
-  }
-}
-
-/** @internal */
-function parseFramesArray(sprites: SpriteCollection, frames: AsepriteFrameData[]): void {
-  for (let i = 0, l = frames.length; i < l; i++) {
-    const frameData = frames[i];
-
-    sprites.setFrame(
-      i,
-      frameData.frame.x,
-      frameData.frame.y,
-      frameData.frame.w,
-      frameData.frame.h
-    );
-  }
+  return frame;
 }
 
 /**
@@ -69,11 +51,21 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
     const texture = await this.getTexture(file, loader, data.meta.image);
     const collection = new SpriteCollection(texture);
 
+    let i = 0;
+
     if (Array.isArray(data.frames)) {
-      parseFramesArray(collection, data.frames);
+      for (let l = data.frames.length; i < l; i++) {
+        collection.setFrame(i, createFrame(data.frames[i]));
+      }
     }
     else {
-      parseFramesMap(collection, data.frames);
+      for (const name in data.frames) {
+        if (data.frames.hasOwnProperty(name)) {
+          collection.setFrame(i, createFrame(data.frames[name]));
+
+          i++;
+        }
+      }
     }
 
     // Convert frame tags to animations.
