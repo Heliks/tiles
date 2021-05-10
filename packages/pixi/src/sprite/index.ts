@@ -1,5 +1,6 @@
 export * from './components';
 export * from './formats';
+export * from './frame';
 export * from './sprite-collection';
 export * from './sprite-grid';
 export * from './sprite-sheet';
