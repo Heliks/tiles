@@ -6,13 +6,8 @@
     "registry": "http://193.31.26.163:4873/"
   },
   "workspaces": {
-    "nohoist": [
-      "**/@angular",
-      "**/@angular/**"
-    ],
     "packages": [
-      "packages/*",
-      "testgame"
+      "packages/*"
     ]
   },
   "devDependencies": {
