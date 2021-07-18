@@ -38,8 +38,8 @@ function initPixi(config: RendererConfig): PIXI.Renderer {
   }
   else {
     // Prevent sub-pixel smoothing when anti aliasing is disabled.
-    // Fixme: figure out if this can be somehow set on the renderer as it currently forces
-    //  two games running on the same page to use the same scale mode.
+    // Fixme: figure out if this can be somehow set on the renderer as it currently
+    //  forces two games running on the same page to use the same scale mode.
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     _config.antialias = false;
@@ -122,14 +122,26 @@ export class Renderer {
   }
 
   /**
-   * Resizes the renderer to fit the width and height of the
-   * the DOM element in which it is contained.
+   * Resizes the renderers canvas to fit the DOM element in which it is contained. This
+   * can fail if either no parent element can be resolved, or if the parent element has
+   * dimensions smaller than 1x1px.
    */
   public resizeToParent(): this {
     const parent = this.renderer.view.parentElement;
 
     if (parent) {
-      this.dimensions.resize(parent.clientWidth, parent.clientHeight);
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+
+      // Only allow resizing if parent element is at least 1x1px big, because PIXI (or
+      // rather WebGL) can not deal with smaller dimensions properly.
+      if (w > 0 || h > 0) {
+        this.dimensions.resize(w, h);
+      }
+      else {
+        console.warn('Cannot resize. Parent must be at least 1x1px.');
+        console.warn(`Parent dimensions: w: ${w} h: ${h}`);
+      }
     }
 
     return this;
