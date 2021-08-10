@@ -1,7 +1,7 @@
 import { AssetLoader } from '@heliks/tiles-assets';
 import { AsepriteFormat } from '../aseprite-format';
 import { SpriteSheet, Texture } from '@heliks/tiles-pixi';
-import { AsepriteData } from '../json';
+import { AsepriteData } from '../file-format';
 
 class AsepriteFormatMock extends AsepriteFormat {
 

@@ -4,23 +4,16 @@ just a 2d game engine playground
 $ yarn install
 ```
 
-Build all packages with (required before testgame can be started):
+Build all packages:
 
 ```bash
 $ yarn build
 ```
 
-Build the complete engine and watch for file changes: 
-Note: This also starts the testgame.
+Watch for file changes: 
 
 ```bash
 $ yarn build:watch
-```
-
-Start testgame in browser (localhost:9000): 
-
-```bash
-$ yarn workspace @heliks/testgame build:watch
 ```
 
 # Testing
