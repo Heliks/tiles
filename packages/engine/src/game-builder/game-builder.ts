@@ -22,7 +22,7 @@ export class GameBuilder implements Builder {
   }
 
   /** @inheritDoc */
-  public system(system: ClassType<System>): this {
+  public system(system: ClassType<System> | System): this {
     this.tasks.push(new AddSystem(system));
 
     return this;

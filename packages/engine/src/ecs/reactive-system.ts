@@ -1,7 +1,14 @@
-import { Entity, GroupEvent, Subscriber, World } from '@heliks/ecs';
+import { Entity, EntityGroupEvent, Subscriber, World } from '@heliks/ecs';
 import { ProcessingSystem } from './processing-system';
 
-/** A system that reacts to changes in an entity group. */
+/**
+ * A system that pools entities and reacts to changes in that pool.
+ *
+ * If you need to implement logic into a reactive system, you must call the parents
+ * update via `super.update(world)` or else changes in the entity pool will not be
+ * processed properly. This can also cause memory leaks, as the event queue that
+ * contains the updates will never be consumed.
+ */
 export abstract class ReactiveSystem extends ProcessingSystem {
 
   /** @internal */
@@ -26,7 +33,7 @@ export abstract class ReactiveSystem extends ProcessingSystem {
   /** @inheritDoc */
   public update(world: World): void {
     for (const event of this.group.events(this._subscriber)) {
-      if (event.type === GroupEvent.Added) {
+      if (event.type === EntityGroupEvent.Added) {
         this.onEntityAdded(world, event.entity);
       }
       else {

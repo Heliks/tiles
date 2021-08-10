@@ -9,7 +9,7 @@ export {
   EntityGroup,
   entityId,
   entityVersion,
-  Query as EntityQuery,
+  EntityQuery,
   Storage,
   System
 } from '@heliks/ecs';

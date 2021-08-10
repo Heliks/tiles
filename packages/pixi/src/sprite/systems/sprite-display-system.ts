@@ -14,7 +14,7 @@ import { Stage } from '../../stage';
 import { SpriteDisplay } from '../components';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { ScreenDimensions } from '../../screen-dimensions';
+import { Screen } from '../../screen';
 import { Sprite } from 'pixi.js';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class SpriteDisplaySystem extends ReactiveSystem {
   constructor(
     @Inject(SPRITE_SHEET_STORAGE)
     private readonly storage: AssetStorage<SpriteSheet>,
-    private readonly dimensions: ScreenDimensions,
+    private readonly dimensions: Screen,
     private readonly renderer: Renderer,
     private readonly stage: Stage
   ) {
@@ -39,10 +39,10 @@ export class SpriteDisplaySystem extends ReactiveSystem {
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
-    const { _sprite, layer } = world.storage(SpriteDisplay).get(entity);
+    const { _sprite } = world.storage(SpriteDisplay).get(entity);
 
     this.sprites.set(entity, _sprite);
-    this.stage.add(_sprite, layer);
+    this.stage.add(_sprite);
   }
 
   /** @inheritDoc */
