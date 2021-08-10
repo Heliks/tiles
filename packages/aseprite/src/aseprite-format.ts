@@ -1,6 +1,6 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
 import { Frame, SPRITE_SHEET_STORAGE, SpriteCollection, SpriteSheet, Texture, TextureFormat } from '@heliks/tiles-pixi';
-import { AsepriteData, AsepriteFrameData } from './json';
+import { AsepriteData, AsepriteFrameData } from './file-format';
 import { World } from '@heliks/tiles-engine';
 
 /** @internal */
@@ -22,8 +22,7 @@ function createFrame(data: AsepriteFrameData): Frame {
 }
 
 /**
- * A format to load sprite sheets exported with Aseprite.
- *
+ * Asset loader format that loads sprite-sheets exported from Aseprite.
  * Supports both "Hash" and "Array" outputs.
  */
 export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
