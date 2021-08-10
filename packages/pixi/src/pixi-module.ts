@@ -2,13 +2,13 @@ import { ClassType, GameBuilder, Module, Provider } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { parseConfig, RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';
-import { RENDERER_PLUGINS_TOKEN, RendererPlugin, RendererSystem } from './renderer-system';
+import { RendererSystem } from './renderer-system';
 import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
 import { Stage } from './stage';
-import { ShapeDisplaySystem } from './shape-display';
 import { Camera } from './camera';
-import { ScreenDimensions } from './screen-dimensions';
+import { Screen } from './screen';
 import { DebugDraw } from './debug-draw';
+import { RendererPlugin, RendererPlugins } from './renderer-plugins';
 
 /**
  * Module that provides a WebGL drawing context.
@@ -20,22 +20,28 @@ import { DebugDraw } from './debug-draw';
 export class PixiModule implements Module {
 
   /** Plugins added to the renderer. */
-  protected plugins: ClassType<RendererPlugin>[] = [];
+  private readonly plugins: ClassType<RendererPlugin>[] = [];
 
   /**
    * @param config Renderer configuration.
    */
   constructor(public readonly config: Partial<RendererConfig> = {}) {}
 
-  /** Returns the `Provider` for all plugins that were added to the module. */
+  /** @internal */
   private getPluginProvider(): Provider {
     return {
+      factory: container => {
+        const plugins = new RendererPlugins();
+
+        // Instantiate each registered plugin using the service container.
+        for (const item of this.plugins) {
+          plugins.add(container.make(item));
+        }
+
+        return plugins;
+      },
       singleton: true,
-      token: RENDERER_PLUGINS_TOKEN,
-      // Instantiate each plugin via service container.
-      factory: container => this.plugins.map(
-        plugin => container.make(plugin)
-      )
+      token: RendererPlugins
     };
   }
 
@@ -54,8 +60,8 @@ export class PixiModule implements Module {
 
     builder
       .provide({
-        token: ScreenDimensions,
-        value: new ScreenDimensions(
+        token: Screen,
+        value: new Screen(
           config.resolution[0],
           config.resolution[1],
           config.resolution[0],
@@ -67,16 +73,15 @@ export class PixiModule implements Module {
         token: SPRITE_SHEET_STORAGE,
         value: new Map()
       })
+      .provide(this.getPluginProvider())
       .provide(Camera)
       .provide(DebugDraw)
       .provide(Stage)
       .provide(Renderer)
-      .provide(this.getPluginProvider())
       // Should run before the SpriteDisplaySystem so that sprites are updated on the
       // same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
       .system(SpriteDisplaySystem)
-      .system(ShapeDisplaySystem)
       .system(RendererSystem);
   }
 

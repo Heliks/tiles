@@ -26,7 +26,7 @@
     "test": "lerna run test --no-prefix --stream",
     "build": "yarn build:clean && lerna run --stream --sort build",
     "build:clean": "rimraf packages/**/*/lib",
-    "build:watch": "lerna run build:watch --parallel",
+    "build:watch": "lerna run build:watch --parallel --stream",
     "clean": "yarn build:clean && lerna clean && rm -rf node_modules"
   }
 }

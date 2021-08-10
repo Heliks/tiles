@@ -2,7 +2,7 @@ import { ClassType } from '../types';
 import { System } from '@heliks/ecs';
 import { Game } from '../game';
 import { isFactoryProvider, isInstanceProvider, Provider } from './provider';
-import { World } from '../entity-system';
+import { World } from '../ecs';
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -13,17 +13,22 @@ export interface Task {
 }
 
 
-/** Task that instantiates and registers a game system on the system dispatcher. */
+
+/**
+ * Registers systems. If the provided system is a system type it will be instantiated
+ * by the engines service container first.
+ */
 export class AddSystem implements Task {
 
   /**
-   * @param system The constructor of a game system.
+   * @param system Instance or type of a system.
    */
-  constructor(protected readonly system: ClassType<System>) {}
+  constructor(protected readonly system: ClassType<System> | System) {}
 
   /** @inheritDoc */
   public exec(game: Game): void {
-    const system = game.container.make(this.system);
+    // Instantiate the system first using the service container if necessary.
+    const system = typeof this.system === 'function' ? game.container.make(this.system) : this.system;
 
     game.container.instance(system);
     game.dispatcher.add(system);

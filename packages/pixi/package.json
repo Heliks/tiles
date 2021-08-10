@@ -1,8 +1,5 @@
 {
   "author": "Felix Wolf",
-  "dependencies": {
-    "pixi.js": "^5.3.3"
-  },
   "description": "Tiles PIXI.JS module",
   "devDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
@@ -11,7 +8,8 @@
     "canvas": "^2.6.1",
     "jest": "^26.6.3",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.2",
+    "pixi.js": "^5.3.3"
   },
   "files": [
     "lib/*"
@@ -22,7 +20,8 @@
   "name": "@heliks/tiles-pixi",
   "peerDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0"
+    "@heliks/tiles-engine": "^0.0.0",
+    "pixi.js": "^5.3.3"
   },
   "scripts": {
     "build": "tsc",

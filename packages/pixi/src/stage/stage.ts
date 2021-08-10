@@ -8,10 +8,7 @@ import { Filter } from 'pixi.js';
 export class Stage {
 
   /** Contains everything that the stage displays. */
-  public readonly view = new Container<Layer>();
-
-  /** Stage layers. */
-  public readonly layers: Layers;
+  public readonly view = new Container();
 
   /** Returns all filters on the stage.*/
   public get filters(): Filter[] {
@@ -21,24 +18,18 @@ export class Stage {
   constructor() {
     // By default PIXI.JS has set this to `null`.
     this.view.filters = [];
-    this.layers = new Layers(this.view);
   }
 
-  /**
-   * Adds a `renderable`. If a `node` is provided it will be added as a child of that
-   * node instead of the stage root. Throws when the given node is invalid.
-   */
-  public add(renderable: Renderable, layer = 0): this {
-    this.layers.get(layer).add(renderable);
+  /** Adds a `renderable` object. */
+  public add(renderable: Renderable): this {
+    this.view.add(renderable);
 
     return this;
   }
 
-  /** Removes a `renderable` from the stage. */
+  /** Removes a `renderable`. */
   public remove(renderable: Renderable): this {
-    // Disable the false-positive unicorn rule.
-    // eslint-disable-next-line unicorn/prefer-node-remove
-    renderable.parent.removeChild(renderable);
+    this.view.removeChild(renderable);
 
     return this;
   }

@@ -29,10 +29,12 @@ export class TilemapRenderer extends ReactiveSystem {
 
     // Set the fixed size of the container to the size of the chunk and make sure it
     // is anchored to it's center and not the top-left corner.
-    container.setPivot(0.5).setFixedSize(vec2(
-      tilemap.grid.width,
-      tilemap.grid.height
-    ));
+    container
+      .setPivot(0.5)
+      .setFixedSize(vec2(
+        tilemap.grid.width,
+        tilemap.grid.height
+      ));
 
     for (let i = 0, l = tilemap.data.length; i < l; i++) {
       const gId = tilemap.data[i];

@@ -1,5 +1,6 @@
 import { token } from '@heliks/tiles-engine';
 
+
 /** Configuration for the renderer module. */
 export interface RendererConfig {
 

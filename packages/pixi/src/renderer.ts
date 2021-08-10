@@ -4,7 +4,7 @@ import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';
 import { Camera } from './camera';
-import { ScreenDimensions } from './screen-dimensions';
+import { Screen } from './screen';
 import { Container } from './renderables';
 import * as PIXI from 'pixi.js'
 
@@ -95,7 +95,7 @@ export class Renderer {
     @Inject(RENDERER_CONFIG_TOKEN)
     public readonly config: RendererConfig,
     public readonly debugDraw: DebugDraw,
-    public readonly dimensions: ScreenDimensions,
+    public readonly dimensions: Screen,
     public readonly stage: Stage
   ) {
     // Listen to browser resize events.
@@ -167,7 +167,7 @@ export class Renderer {
     }
   }
 
-  /** Appends the renderer as <canvas> element to the given target. */
+  /** Appends the renderer as <canvas> element to `target`. */
   public appendTo(target: HTMLElement): this {
     target.append(this.renderer.view);
 
@@ -204,12 +204,10 @@ export class Renderer {
       dim.dirty = false;
     }
 
-    // Update stage position according to the camera position and update the offset
-    // in ScreenDimensions accordingly.
-    this.stage.setPosition(
-      (dim.offset.x = this.camera.screen.x),
-      (dim.offset.y = this.camera.screen.y)
-    );
+    // Set stage to screen position.
+    // const pos = dim.toScreen(dim);
+
+    this.stage.setPosition(this.camera.world.x, this.camera.world.y);
 
     // Render the final image.
     this.renderer.render(this.root);

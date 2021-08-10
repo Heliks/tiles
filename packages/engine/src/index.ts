@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-export * from './entity-system';
+export * from './ecs';
 export * from './game';
 export * from './game-builder';
 export * from './state'

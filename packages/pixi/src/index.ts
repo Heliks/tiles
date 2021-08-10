@@ -5,8 +5,8 @@ export * from './pixi-module';
 export * from './renderables';
 export * from './renderer';
 export * from './renderer-system';
-export * from './screen-dimensions';
-export * from './shape-display';
+export * from './renderer-plugins';
+export * from './screen';
 export * from './sprite';
 export * from './stage';
 

@@ -1,6 +1,6 @@
 import { Container } from '@heliks/tiles-injector';
 import { Ticker } from './ticker';
-import { World } from './entity-system';
+import { World } from './ecs';
 import { SystemDispatcher } from '@heliks/ecs';
 
 export class Game {
