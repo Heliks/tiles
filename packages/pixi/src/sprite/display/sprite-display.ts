@@ -1,10 +1,13 @@
-import { SpriteSheet } from '../sprite-sheet';
+import { SpriteSheet } from '../sprite-sheet/sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
-import { Vec2, vec2 } from '@heliks/tiles-math';
+import { vec2 } from '@heliks/tiles-math';
 
 /**
  * Component used to render a sprite.
+ *
+ * By default the center position is the middle of the sprite. This can be changed by
+ * updating the anchor with `setAnchor()`.
  */
 export class SpriteDisplay {
 
@@ -40,8 +43,8 @@ export class SpriteDisplay {
     public spriteIndex: number,
     public layer = 0
   ) {
-    // Using the middle position instead of the top-left position will save us a lot
-    // of extra calculations during the renderer update.
+    // Using the middle position instead of the top-left position will save us extra
+    // calculations during the renderer update.
     this.setAnchor(0.5, 0.5);
   }
 

@@ -1,7 +1,8 @@
 import { contains, Inject, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
-import { SpriteAnimation, SpriteDisplay } from '../components';
+import { SpriteDisplay } from '../display';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
+import { SpriteAnimation } from './sprite-animation';
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
@@ -11,9 +12,11 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * @param ticker [[Ticker]]
    */
   constructor(
+
+    private readonly ticker: Ticker,
     @Inject(SPRITE_SHEET_STORAGE)
     private readonly storage: AssetStorage<SpriteSheet>,
-    private readonly ticker: Ticker
+
   ) {
     super(contains(SpriteAnimation, SpriteDisplay));
   }

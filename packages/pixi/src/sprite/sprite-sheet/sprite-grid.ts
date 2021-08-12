@@ -1,6 +1,6 @@
 import { Grid, Vec2, vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
-import { cropTexture } from '../utils';
+import { cropTexture } from '../../utils';
 import { SpriteSheet } from './sprite-sheet';
 
 /** A sprite-sheet that sorts individuals sprites on a grid. */

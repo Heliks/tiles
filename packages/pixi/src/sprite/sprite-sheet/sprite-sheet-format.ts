@@ -1,7 +1,7 @@
 import { Grid, Struct } from '@heliks/tiles-engine';
-import { SpriteAnimationData, SpriteSheet } from '../sprite-sheet';
+import { SpriteAnimationData, SpriteSheet } from './sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteGrid } from '../sprite-grid';
+import { SpriteGrid } from './sprite-grid';
 import { TextureFormat } from '../../texture-format';
 
 /** The raw data of a sprite sheet loaded from JSON. */

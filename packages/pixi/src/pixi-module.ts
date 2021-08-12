@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { parseConfig, RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
+import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem, SpriteEventSystem } from './sprite';
 import { Stage } from './stage';
 import { Camera } from './camera';
 import { Screen } from './screen';

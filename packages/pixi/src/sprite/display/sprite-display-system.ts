@@ -1,17 +1,7 @@
-import {
-  contains,
-  Entity,
-  Inject,
-  Injectable,
-  Parent,
-  ReactiveSystem,
-  Subscriber,
-  Transform,
-  World
-} from '@heliks/tiles-engine';
+import { contains, Entity, Inject, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Renderer } from '../../renderer';
 import { Stage } from '../../stage';
-import { SpriteDisplay } from '../components';
+import { SpriteDisplay } from './index';
 import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Screen } from '../../screen';

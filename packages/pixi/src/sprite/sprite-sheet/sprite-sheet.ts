@@ -1,13 +1,13 @@
 import { Sprite, Texture } from 'pixi.js';
 import { token } from '@heliks/tiles-engine';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { SpriteAnimation } from './components';
+import { SpriteAnimation } from '../animation';
 
 /**
  * The token that is used to provide the `AssetStorage` for sprite sheets to the
  * service container.
  */
-export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>();
+export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>('Foobar');
 
 export interface SpriteAnimationData {
   /** Contains the indexes of all sprites of which the animation consists. */
