@@ -7,7 +7,7 @@ import { SpriteAnimation } from '../animation';
  * The token that is used to provide the `AssetStorage` for sprite sheets to the
  * service container.
  */
-export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>('Foobar');
+export const SPRITE_SHEET_STORAGE = token<AssetStorage<SpriteSheet>>();
 
 export interface SpriteAnimationData {
   /** Contains the indexes of all sprites of which the animation consists. */

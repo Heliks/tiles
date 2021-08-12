@@ -8,6 +8,12 @@ export class Camera {
   /** Local position in the world. */
   public readonly world = vec2(0, 0);
 
+  /**
+   * Enables or disables the camera. The position of the camera can still be updated
+   * while it is disabled, but it will not move the screen until it is enabled again.
+   */
+  public enabled = true;
+
   public x = 0;
   public y = 0;
 

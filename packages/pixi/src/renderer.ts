@@ -204,10 +204,14 @@ export class Renderer {
       dim.dirty = false;
     }
 
-    // Set stage to screen position.
-    // const pos = dim.toScreen(dim);
-
-    this.stage.setPosition(this.camera.world.x, this.camera.world.y);
+    if (this.camera.enabled) {
+      // Convert camera position to pixels, and treat that position as it if were
+      // relative to the screen center.
+      this.stage.setPosition(
+        -(this.camera.world.x * dim.unitSize) + (dim.resolution.x / 2),
+        -(this.camera.world.y * dim.unitSize) + (dim.resolution.y / 2)
+      );
+    }
 
     // Render the final image.
     this.renderer.render(this.root);
