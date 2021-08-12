@@ -1,4 +1,3 @@
-export const METADATA_KEY = Symbol();
 
 /**
  * Class constructor type.
@@ -177,9 +176,4 @@ export interface ParamInjection {
   key: string | symbol;
 }
 
-export interface InjectionMetaData {
-  /** Overrides injections of `params`. */
-  paramOverrides?: ParamInjection[];
-  /** The tokens that should be resolved for constructor parameters. */
-  params?: InjectorToken[];
-}
+

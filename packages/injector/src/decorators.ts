@@ -1,5 +1,5 @@
 import { InjectorToken } from './types';
-import { getMetadata, setMetadata } from './utils';
+import { getMetadata, setMetadata } from './meta';
 
 /**
  * Decorator to make a class "injectible".
@@ -77,10 +77,7 @@ export function Injectable(): ClassDecorator {
  * console.log(foo.text);
  * ```
  */
-export function Inject(
-  token: InjectorToken,
-  optional = false
-): ParameterDecorator {
+export function Inject(token: InjectorToken, optional = false): ParameterDecorator {
   return (target: object, key: string | symbol, index: number) => {
     const metaData = getMetadata(target);
 

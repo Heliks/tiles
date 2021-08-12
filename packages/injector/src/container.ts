@@ -1,7 +1,8 @@
 import { SingletonBinding } from './singleton-binding';
 import { Binding, BindingFactory, ClassType, Container as Base, InjectorToken, ParamInjection } from './types';
-import { getMetadata, stringifyToken } from './utils';
+import { stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
+import { getMetadata } from './meta';
 
 export class Container implements Base {
 
@@ -72,54 +73,57 @@ export class Container implements Base {
     return binding.resolve(this);
   }
 
-  /**
-   * Resolves the given `token`. If an array of `overrides` is passed containing
-   * an injection at the given `index` it will be resolved instead.
-   */
-  protected resolveParam(
-    token: InjectorToken,
-    index: number,
-    overrides?: ParamInjection[]
-  ): unknown {
-    // Check if the index was manually overridden.
-    if (overrides) {
-      const override = overrides.find(item => item.index === index);
+  /** @internal */
+  private resolveTokenList(tokens: InjectorToken[], overrides?: ParamInjection[]): unknown[] {
+    const result = [];
 
-      if (override) {
-        // Optional dependencies that don't exist resolve to undefined.
-        if (override.optional && !this.bindings.has(override.token)) {
-          return;
+    for (let i = 0, l = tokens.length; i < l; i++) {
+      let token = tokens[i];
+
+      // Check if the index was manually overridden.
+      if (overrides) {
+        const override = overrides.find(item => item.index === i);
+
+        if (override) {
+          // Optional dependencies that don't exist resolve to undefined.
+          if (override.optional && !this.bindings.has(override.token)) {
+            result.push(undefined);
+
+            continue;
+          }
+
+          token = override.token;
         }
-
-        return this.get(override.token);
       }
+
+      // Resolve binding from token.
+      const binding = this.bindings.get(token);
+
+      if (!binding) {
+        throw new Error(`Unknown token ${token.toString()} at index ${i}`);
+      }
+
+      result.push(binding.resolve(this));
     }
 
-    return this.get(token);
+    return result;
   }
 
   /** @inheritDoc */
-  public make<T>(
-    target: ClassType<T>,
-    params: unknown[] = [],
-    bind = false
-  ): T {
+  public make<T>(target: ClassType<T>, params: unknown[] = [], bind = false): T {
     const meta = getMetadata(target);
 
     let values = params;
 
-    // Only try to inject something if the target was tagged with @Injectable()
-    // and therefore has metadata. Otherwise we just continue to inject the
-    // given `params`.
+    // Inject if the target was decorated with @Injectable() and therefore has meta-
+    // data. Otherwise just inject the given params.
     if (meta.params) {
       const tokens = [ ...meta.params ];
 
       // Make room on the right side to allow us to append the params array.
       tokens.splice(tokens.length - params.length);
 
-      values = tokens.map(
-        (token, index) => this.resolveParam(token, index, meta.paramOverrides)
-      )
+      values = this.resolveTokenList(tokens, meta.paramOverrides);
 
       // Add custom params.
       values.push(...params);

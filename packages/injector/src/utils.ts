@@ -1,12 +1,6 @@
-import { InjectionMetaData, InjectorToken, METADATA_KEY } from './types';
+import { InjectorToken } from './types';
 
-export function getMetadata(target: object): InjectionMetaData {
-  return Reflect.getMetadata(METADATA_KEY, target) || {};
-}
 
-export function setMetadata(target: object, data: InjectionMetaData): void {
-  Reflect.defineMetadata(METADATA_KEY, data, target);
-}
 
 export function stringifyToken(token: InjectorToken): string {
   // Convert the token to a string.
