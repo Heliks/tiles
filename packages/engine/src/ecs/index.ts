@@ -14,8 +14,10 @@ export {
   System
 } from '@heliks/ecs';
 
+// Export hierarchy system..
 export * from '@heliks/ecs-hierarchy';
 
+export * from './storage';
 export * from './processing-system';
 export * from './reactive-system';
 export * from './world';

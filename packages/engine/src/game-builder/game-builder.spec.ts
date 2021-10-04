@@ -1,12 +1,14 @@
 import { GameBuilder } from './game-builder';
 import { Game } from '../game';
+import { getStorageInjectorToken } from '../ecs';
+import { Storage } from '@heliks/ecs';
 
 describe('GameBuilder', () => {
   it('should build a game', () => {
     expect(new GameBuilder().build()).toBeInstanceOf(Game);
   });
 
-  it('should add class providers', () => {
+  it('should bind class providers to the service container', () => {
     class Provider1 {}
     class Provider2 {}
 
@@ -20,7 +22,7 @@ describe('GameBuilder', () => {
     expect(container.get(Provider2)).toBeInstanceOf(Provider2);
   });
 
-  it('should add value providers', () => {
+  it('should bind value providers to the service container', () => {
     const container = new GameBuilder()
       .provide({ token: '1', value: 'foo' })
       .provide({ token: '2', value: 'bar' })
@@ -29,6 +31,21 @@ describe('GameBuilder', () => {
 
     expect(container.get('1')).toBe('foo');
     expect(container.get('2')).toBe('bar');
+  });
+
+  it('should bind component storages to the service container', () => {
+    // Test component.
+    class Foo {}
+
+    const container = new GameBuilder()
+      .component(Foo)
+      .build()
+      .container;
+
+    // Try to resolve storage from service container.
+    const storage = container.get<Storage<Foo>>(getStorageInjectorToken(Foo));
+
+    expect(storage.type).toBe(Foo);
   });
 
   // Factory providers.
@@ -45,7 +62,7 @@ describe('GameBuilder', () => {
       return ++counter;
     }
 
-    it('should be added as factories', () => {
+    it('should be bound as factories', () => {
       const game = new GameBuilder()
         .provide({
           factory,
@@ -57,7 +74,7 @@ describe('GameBuilder', () => {
       expect(game.container.get('counter')).toBe(2);
     });
 
-    it('should be added as singletons', () => {
+    it('should be bound as singletons', () => {
       const game = new GameBuilder()
         .provide({
           factory,
@@ -71,7 +88,7 @@ describe('GameBuilder', () => {
     });
   });
 
-  it('should add systems', () => {
+  it('should register game systems', () => {
     const update = jest.fn();
 
     // Test game system.

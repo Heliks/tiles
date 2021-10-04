@@ -183,34 +183,40 @@ export class Renderer {
    * [[RendererSystem]].
    */
   public update(): void {
-    const dim = this.dimensions;
+    const screen = this.dimensions;
 
     // Update the dimensions of the screen.
-    if (dim.dirty) {
+    if (screen.dirty) {
       // Resize the renderer and adjust the stage scale to fit into that new dimension.
-      this.renderer.resize(dim.size.x, dim.size.y);
-      this.stage.scale(dim.scale.x, dim.scale.y);
+      this.renderer.resize(screen.size.x, screen.size.y);
+
+      // this.stage.scale(
+      // dim.scale.x,
+      // dim.scale.y
+      // );
 
       // Also update the debug draw accordingly.
-      this.debugDraw.resize(dim.size.x, dim.size.y).scale(dim.scale.x, dim.scale.y);
+      this.debugDraw.resize(screen.size.x, screen.size.y).scale(screen.scale.x, screen.scale.y);
 
       this.onResize.push({
-        height: dim.size.y,
-        width: dim.size.x,
-        ratio: dim.scale.y,
+        height: screen.size.y,
+        width: screen.size.x,
+        ratio: screen.scale.y,
         type: 'resize'
       });
 
-      dim.dirty = false;
+      screen.dirty = false;
     }
 
     if (this.camera.enabled) {
       // Convert camera position to pixels, and treat that position as it if were
       // relative to the screen center.
-      this.stage.setPosition(
-        -(this.camera.world.x * dim.unitSize) + (dim.resolution.x / 2),
-        -(this.camera.world.y * dim.unitSize) + (dim.resolution.y / 2)
-      );
+      // Todo: Should probably do this in the camera itself.
+      this.stage.view.x = -(this.camera.world.x * this.stage.view.scale.x * screen.unitSize) + (screen.size.x / 2);
+      this.stage.view.y = -(this.camera.world.y * this.stage.view.scale.y * screen.unitSize) + (screen.size.y / 2);
+
+      // Scale stage according to camera.
+      this.stage.scale(this.camera.zoom);
     }
 
     // Render the final image.

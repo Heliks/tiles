@@ -1,8 +1,9 @@
 import { ClassType } from '../types';
-import { System } from '@heliks/ecs';
+import { ComponentType, System } from '@heliks/ecs';
 import { Game } from '../game';
 import { isFactoryProvider, isInstanceProvider, Provider } from './provider';
 import { World } from '../ecs';
+import { getStorageInjectorToken } from '../ecs/storage';
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -11,7 +12,6 @@ import { World } from '../ecs';
 export interface Task {
   exec(game: Game): unknown;
 }
-
 
 
 /**
@@ -35,6 +35,7 @@ export class AddSystem implements Task {
   }
 
 }
+
 
 /** Task that registers a new [[Provider]] on the games service container. */
 export class AddProvider implements Task {
@@ -76,6 +77,29 @@ export class AddProvider implements Task {
   }
 
 }
+
+
+/**
+ * Registers a component type and binds its component storage to the service
+ * container.
+ */
+export class RegisterComponent implements Task {
+
+  /**
+   * @param component Component type that should be registered.
+   */
+  constructor(private readonly component: ComponentType) {}
+
+  /** @inheritDoc */
+  public exec(game: Game): void {
+    const store = game.world.storage(this.component);
+    const token = getStorageInjectorToken(this.component);
+
+    game.world.container.bind(token, store);
+  }
+
+}
+
 
 /** */
 export type BootScript = (world: World) => unknown;

@@ -1,7 +1,7 @@
-import { System } from '@heliks/ecs';
+import { ComponentType, System } from '@heliks/ecs';
 import { Game } from '../game';
 import { ClassType } from '../types';
-import { AddProvider, AddSystem, Task } from './tasks';
+import { AddProvider, AddSystem, RegisterComponent, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
 
@@ -24,6 +24,13 @@ export class GameBuilder implements Builder {
   /** @inheritDoc */
   public system(system: ClassType<System> | System): this {
     this.tasks.push(new AddSystem(system));
+
+    return this;
+  }
+
+  /** @inheritDoc */
+  public component(component: ComponentType): this {
+    this.tasks.push(new RegisterComponent(component));
 
     return this;
   }
