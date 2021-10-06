@@ -1,3 +1,5 @@
 export * from './game-builder';
-export { Provider } from './provider';
+export * from './tasks';
+export * from './provider';
 export { Module } from './types';
+

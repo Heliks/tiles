@@ -1,9 +1,17 @@
 import { ClassType } from '../types';
 import { ComponentType, System } from '@heliks/ecs';
 import { Game } from '../game';
-import { isFactoryProvider, isInstanceProvider, Provider } from './provider';
+import {
+  ClassProvider,
+  FactoryProvider, InstanceProvider,
+  isFactoryProvider,
+  isInstanceProvider,
+  Provider,
+  ValueProvider
+} from './provider';
 import { World } from '../ecs';
 import { getStorageInjectorToken } from '../ecs/storage';
+import { Container } from '@heliks/tiles-injector';
 
 /**
  * A builder task. Will be executed when the `build()` method
@@ -37,7 +45,7 @@ export class AddSystem implements Task {
 }
 
 
-/** Task that registers a new [[Provider]] on the games service container. */
+/** Registers a provider on the games service container. */
 export class AddProvider implements Task {
 
   /**
@@ -46,33 +54,55 @@ export class AddProvider implements Task {
    */
   constructor(protected readonly provider: Provider) {}
 
+  /** Called when this task attempts to register a `ClassProvider`. */
+  public class<T>(container: Container, provider: ClassProvider<T>): void {
+    container.make(provider, [], true);
+  }
+
+  /** Called when this task attempts to register a `FactoryProvider`. */
+  public factory(container: Container, provider: FactoryProvider): void {
+    if (provider.singleton) {
+      container.singleton(provider.token, provider.factory);
+    }
+    else {
+      container.factory(provider.token, provider.factory);
+    }
+  }
+
+  /** Called when this task attempts to register a `ValueProvider`. */
+  public value(container: Container, provider: ValueProvider): void {
+    let value = provider.value;
+
+    if (provider.instantiate) {
+      value = container.make(provider.value as ClassType);
+    }
+
+    container.bind(provider.token, value);
+  }
+
+  /** Called when this task attempts to register an `InstanceProvider`. */
+  public instance(container: Container, provider: InstanceProvider): void {
+    container.instance(provider.instance);
+  }
+
   /** @inheritDoc */
   public exec(game: Game): void {
     const container = game.container;
     const provider = this.provider;
 
     if (typeof provider === 'function') {
-      container.make(provider, [], true);
+      // Class Provider
+      this.class(container, provider);
     }
     else if (isInstanceProvider(provider)) {
-      container.instance(provider);
+      this.instance(container, provider);
     }
     else if (isFactoryProvider(provider)) {
-      if (provider.singleton) {
-        container.singleton(provider.token, provider.factory);
-      }
-      else {
-        container.factory(provider.token, provider.factory);
-      }
+      this.factory(container, provider);
     }
     else {
-      let value = provider.value;
-
-      if (provider.instantiate) {
-        value = container.make(provider.value as ClassType);
-      }
-
-      container.bind(provider.token, value);
+      // Value provider
+      this.value(container, provider);
     }
   }
 

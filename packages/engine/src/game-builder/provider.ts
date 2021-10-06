@@ -5,7 +5,7 @@ import { ClassType } from '../types';
  * Provides a class that will be instantiated with the service container when the
  * app is started.
  */
-export type ClassProvider = ClassType<unknown>;
+export type ClassProvider<T = unknown> = ClassType<T>;
 
 /** Provides a factory to the service container. */
 export interface FactoryProvider {
