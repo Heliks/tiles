@@ -39,17 +39,33 @@ export interface Task {
  */
 export class AddSystem implements Task {
 
+  /** @internal */
+  private created?: System;
+
   /**
    * @param system Instance or type of a system.
    */
   constructor(protected readonly system: ClassType<System> | System) {}
 
+  /** @internal */
+  private createSystemInstance(container: Container): System {
+    return typeof this.system === 'function' ? container.make(this.system) : this.system;
+  }
+
   /** @inheritDoc */
   public exec(game: Game): void {
-    // Instantiate the system first using the service container if necessary.
-    const system = typeof this.system === 'function' ? game.container.make(this.system) : this.system;
-    game.container.instance(system);
-    game.dispatcher.add(system);
+    this.created = this.createSystemInstance(game.container);
+
+    // Bind system to the service container and add it to the system dispatcher.
+    game.container.instance(this.created);
+    game.dispatcher.add(this.created);
+  }
+
+  /** @inheritDoc */
+  public init(world: World): void {
+    if (this.created && hasOnInit(this.created)) {
+      this.created.onInit(world);
+    }
   }
 
 }

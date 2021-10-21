@@ -10,10 +10,8 @@ import { Container } from '@heliks/tiles-injector';
 export class GameBuilder implements Builder {
 
   /**
-   *
-   *
    * Contains all tasks that this builder has queued. They will all be invoked
-   * in the same order as they were added during `build()`.
+   * in the same order as they were added.
    */
   protected readonly tasks: Task[] = [];
 

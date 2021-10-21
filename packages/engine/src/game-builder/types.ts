@@ -23,6 +23,8 @@ export interface GameBuilder {
   /**
    * Registers a game system and adds it to the system dispatcher. If a system type
    * is given it will be created using the service container.
+   *
+   * Systems can implement lifecycle events.
    */
   system(system: ClassType<System> | System): this;
 
@@ -38,7 +40,7 @@ export interface GameBuilder {
 /**
  * A module that bundles multiple systems or providers together.
  *
- * Modules can implement the `OnInit` lifecycle.
+ * Modules can implement lifecycle events.
  */
 export interface Module {
   build(builder: GameBuilder): unknown;

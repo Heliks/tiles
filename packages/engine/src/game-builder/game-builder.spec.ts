@@ -1,6 +1,6 @@
 import { GameBuilder } from './game-builder';
 import { Game } from '../game';
-import { getStorageInjectorToken } from '../ecs';
+import { getStorageInjectorToken, System } from '../ecs';
 import { Storage } from '@heliks/ecs';
 
 
@@ -9,19 +9,7 @@ describe('GameBuilder', () => {
     expect(new GameBuilder().build()).toBeInstanceOf(Game);
   });
 
-  it('should add game systems to the system dispatcher', () => {
-    const update = jest.fn();
-    const game = new GameBuilder()
-      .system({ update })
-      .build();
 
-    // Update all systems.
-    game.dispatcher.update();
-
-    // If the system was added correctly the dispatcher should've
-    // also called update() on the test system.
-    expect(update).toHaveBeenCalledTimes(1);
-  });
 
   it('should bind component storages to the service container', () => {
     // Test component.
@@ -34,6 +22,34 @@ describe('GameBuilder', () => {
       .container.get<Storage<Foo>>(getStorageInjectorToken(Foo));
 
     expect(storage.type).toBe(Foo);
+  });
+
+  describe('systems', () => {
+    it('should add game systems to the system dispatcher', () => {
+      const system = {
+        update: jest.fn()
+      };
+
+      const game = new GameBuilder().system(system).build();
+
+      // Update all systems.
+      game.dispatcher.update();
+
+      // If the system was added correctly the dispatcher should've
+      // also called update() on the test system.
+      expect(system.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call OnInit lifecycle hook', () => {
+      const system = {
+        update: () => void 0,
+        onInit: jest.fn()
+      };
+
+      const game = new GameBuilder().system(system).build();
+
+      expect(system.onInit).toHaveBeenCalledWith(game.world);
+    });
   });
 
   describe('providers', () => {
@@ -109,7 +125,7 @@ describe('GameBuilder', () => {
 
       const game = new GameBuilder()
         .module({
-          build: builder => builder.provide(TestService)
+          build: builder => void builder.provide(TestService)
         })
         .build();
 
@@ -117,11 +133,11 @@ describe('GameBuilder', () => {
       expect(game.container.get(TestService)).toBeInstanceOf(TestService);
     });
 
-    it('should call OnInit lifecycle', () => {
+    it('should call OnInit lifecycle hook', () => {
       const init = jest.fn();
       const game = new GameBuilder()
         .module({
-          build: () => 0,
+          build: () => void 0,
           onInit: init
         })
         .build();
