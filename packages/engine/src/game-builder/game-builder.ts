@@ -1,18 +1,27 @@
 import { ComponentType, System } from '@heliks/ecs';
 import { Game } from '../game';
 import { ClassType } from '../types';
-import { AddProvider, AddSystem, RegisterComponent, Task } from './tasks';
+import { AddProvider, AddSystem, RegisterComponent, RegisterModule, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
+import { Container } from '@heliks/tiles-injector';
 
 /** Game builder. */
 export class GameBuilder implements Builder {
 
   /**
+   *
+   *
    * Contains all tasks that this builder has queued. They will all be invoked
    * in the same order as they were added during `build()`.
    */
   protected readonly tasks: Task[] = [];
+
+  /**
+   * @param container (optional) Global service container to which game systems will
+   *  be bound to.
+   */
+  constructor(private readonly container: Container = new Container()) {}
 
   /** @inheritDoc */
   public provide(provider: Provider): this {
@@ -39,30 +48,39 @@ export class GameBuilder implements Builder {
    * Adds a `module` and immediately invokes the `build()` function to queue
    * additional tasks from inside the module.
    */
-  public module(module: Module): this {
-    // Modules will just add additional tasks to the task list,
-    // so there is no reason to create an extra task for it.
-    module.build(this);
+  public module<M extends Module>(module: M): this {
+    this.tasks.push(new RegisterModule(module, new GameBuilder(this.container)));
 
     return this;
   }
 
-  /** Builds the game. */
-  public build(): Game {
-    const game = new Game();
-
+  /** @inheritDoc */
+  public exec(game: Game): void {
     for (const task of this.tasks) {
       try {
         task.exec(game);
       }
       catch (error) {
-        // Error details.
-        console.error(error);
-        console.error('Task:', task);
+        console.error(`Failed to run task ${task}`);
 
-        throw new Error('Task failed.');
+        throw error;
       }
     }
+  }
+
+  /** @internal */
+  private boot(game: Game): void {
+    for (const task of this.tasks) {
+      task.init?.(game.world);
+    }
+  }
+
+  /** Builds the game. */
+  public build(): Game {
+    const game = new Game(this.container);
+
+    this.exec(game);
+    this.boot(game);
 
     return game;
   }

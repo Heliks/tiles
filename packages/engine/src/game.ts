@@ -3,29 +3,23 @@ import { Ticker } from './ticker';
 import { World } from './ecs';
 import { SystemDispatcher } from '@heliks/ecs';
 
+
 export class Game {
 
-  /**
-   * The global service container. All modules and services will have
-   * access to this.
-   */
-  public readonly container = new Container();
-
-  /**
-   * The entity world. This is also the main "API" with which other
-   * systems will be working with.
-   */
-  public readonly world: World;
-
-  /**
-   * The ticker used to run the games update loop. Will only start
-   * after the game is started.
-   */
+  /** @see Ticker */
   public readonly ticker = new Ticker();
 
+  /** @see World */
+  public readonly world: World;
+
+  /** @see SystemDispatcher */
   public readonly dispatcher: SystemDispatcher;
 
-  constructor() {
+  /**
+   * @param container Global service container. All modules and services will have
+   *  access to this.
+   */
+  constructor(public readonly container: Container = new Container()) {
     // Initialize entity system.
     this.world = new World(this.container);
     this.dispatcher = new SystemDispatcher(this.world);

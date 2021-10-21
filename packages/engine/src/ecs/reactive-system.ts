@@ -1,6 +1,7 @@
 import { Entity, EntityGroupEvent, Subscriber, World } from '@heliks/ecs';
 import { ProcessingSystem } from './processing-system';
 
+
 /**
  * A system that pools entities and reacts to changes in that pool.
  *

@@ -10,15 +10,26 @@ import {
   ValueProvider
 } from './provider';
 import { World } from '../ecs';
-import { getStorageInjectorToken } from '../ecs/storage';
+import { getStorageInjectorToken } from '../ecs';
 import { Container } from '@heliks/tiles-injector';
+import { GameBuilder, Module } from './types';
+import { hasOnInit } from './lifecycle';
 
-/**
- * A builder task. Will be executed when the `build()` method
- * is called on the builder.
- */
+
+/** Build task. */
 export interface Task {
+
+  /**
+   * Executes the build tasks.
+   */
   exec(game: Game): unknown;
+
+  /**
+   * Optionally does initialization logic. A.E., after we've added a module during
+   * the `exec()` stage, we might want to call the `OnInit` lifecycle on that module.
+   */
+  init?(world: World): unknown;
+
 }
 
 
@@ -37,7 +48,6 @@ export class AddSystem implements Task {
   public exec(game: Game): void {
     // Instantiate the system first using the service container if necessary.
     const system = typeof this.system === 'function' ? game.container.make(this.system) : this.system;
-
     game.container.instance(system);
     game.dispatcher.add(system);
   }
@@ -126,6 +136,23 @@ export class RegisterComponent implements Task {
     const token = getStorageInjectorToken(this.component);
 
     game.world.container.bind(token, store);
+  }
+
+}
+
+export class RegisterModule implements Task {
+
+  constructor(private readonly module: Module, private readonly builder: GameBuilder) {}
+
+  public exec(game: Game): void {
+    this.module.build(this.builder);
+    this.builder.exec(game);
+  }
+
+  public init(world: World): void {
+    if (hasOnInit(this.module)) {
+      this.module.onInit(world);
+    }
   }
 
 }
