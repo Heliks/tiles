@@ -1,12 +1,12 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { EventQueue, Inject, Injectable, Struct } from '@heliks/tiles-engine';
-import { RENDERER_CONFIG_TOKEN, RendererConfig } from './config';
+import { EventQueue, Injectable } from '@heliks/tiles-engine';
 import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';
 import { Camera } from './camera';
 import { Screen } from './screen';
 import { Container } from './renderables';
 import * as PIXI from 'pixi.js'
+
 
 export interface OnResizeEvent {
   /** New width of the renderer. */
@@ -18,41 +18,6 @@ export interface OnResizeEvent {
   /** The ratio by which the game stage was upscaled. */
   ratio: number;
 }
-
-/** Initializes a PIXI renderer from the `config`. */
-function initPixi(config: RendererConfig): PIXI.Renderer {
-  const _config: Struct = {
-    transparent: config.transparent ?? true
-  };
-
-  if (config.transparent) {
-    _config.transparent = true;
-  }
-  else {
-    // By default render the background as black.
-    _config.backgroundColor = config.background ?? 0x0;
-  }
-
-  if (config.antiAlias) {
-    _config.antialias = true;
-  }
-  else {
-    // Prevent sub-pixel smoothing when anti aliasing is disabled.
-    // Fixme: figure out if this can be somehow set on the renderer as it currently
-    //  forces two games running on the same page to use the same scale mode.
-    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-
-    _config.antialias = false;
-  }
-
-  const renderer = new PIXI.Renderer(_config);
-
-  // Disable context menu on the renderers <canvas> DOM element.
-  renderer.view.addEventListener('contextmenu', e => e.preventDefault());
-
-  return renderer;
-}
-
 
 @Injectable()
 export class Renderer {
@@ -70,7 +35,6 @@ export class Renderer {
   protected autoResize = false;
 
   /** PIXI.JS renderer. */
-  protected readonly renderer: PIXI.Renderer;
   protected readonly root = new Container();
 
   /** Contains the renderers height in px. */
@@ -83,28 +47,16 @@ export class Renderer {
     return this.renderer.view.width;
   }
 
-  /**
-   * @param camera [[Camera]].
-   * @param config The renderers config.
-   * @param debugDraw Can be used to draw debug information on the screen.
-   * @param stage The stage where everything is drawn.
-   * @param dimensions
-   */
+
   constructor(
     public readonly camera: Camera,
-    @Inject(RENDERER_CONFIG_TOKEN)
-    public readonly config: RendererConfig,
     public readonly debugDraw: DebugDraw,
     public readonly dimensions: Screen,
-    public readonly stage: Stage
+    public readonly stage: Stage,
+    public readonly renderer: PIXI.Renderer
   ) {
     // Listen to browser resize events.
     window.addEventListener('resize', this.onWindowResize.bind(this));
-
-    // Initialize PIXI.JS
-    this.renderer = initPixi(config);
-
-    this.setAutoResize(config.autoResize)
 
     this.root.addChild(stage.view, this.debugDraw.view);
   }
@@ -168,7 +120,7 @@ export class Renderer {
   }
 
   /** Appends the renderer as <canvas> element to `target`. */
-  public appendTo(target: HTMLElement): this {
+  public appendTo(target: Element): this {
     target.append(this.renderer.view);
 
     if (this.autoResize) {
@@ -208,16 +160,56 @@ export class Renderer {
       screen.dirty = false;
     }
 
+    /*
+    function zoom(s,x,y){
+
+      s = s > 0 ? 2 : 0.5;
+      document.getElementById("oldScale").innerHTML = stage.scale.x.toFixed(4);
+      document.getElementById("oldXY").innerHTML = '('+stage.x.toFixed(4)+','+stage.y.toFixed(4)+')';
+      var worldPos = {x: (x - stage.x) / stage.scale.x, y: (y - stage.y)/stage.scale.y};
+      var newScale = {x: stage.scale.x * s, y: stage.scale.y * s};
+
+      var newScreenPos = {x: (worldPos.x ) * newScale.x + stage.x, y: (worldPos.y) * newScale.y + stage.y};
+
+      stage.x -= (newScreenPos.x-x) ;
+      stage.y -= (newScreenPos.y-y) ;
+      stage.scale.x = newScale.x;
+      stage.scale.y = newScale.y;
+      document.getElementById("scale").innerHTML = newScale.x.toFixed(4);
+      document.getElementById("xy").innerHTML = '('+stage.x.toFixed(4)+','+stage.y.toFixed(4)+')';
+
+      document.getElementById("c").innerHTML=c;
+    };
+     */
+
     if (this.camera.enabled) {
+      // this.camera.zoom = 1.04;
+
+      const cx = this.root.scale.x;
+      const cy = this.root.scale.y;
+
+      const f = 1 / this.camera.zoom;
+
+
+      const x = (this.camera.world.x * screen.unitSize) * this.camera.zoom;
+      const y = (this.camera.world.y * screen.unitSize) * this.camera.zoom;
+
+      const sx = (screen.size.x / 2);
+      const sy = (screen.size.y / 2);
+
+      // this.root.scale.set(this.camera.zoom);
+      this.stage.scale(this.camera.zoom)
+      this.root.pivot.set(x - sx, y - sy);
+
+      // Scale stage according to camera.
+      // this.stage.scale(this.camera.zoom);
       // Convert camera position to pixels, and treat that position as it if were
       // relative to the screen center.
       // Todo: Should probably do this in the camera itself.
-      this.stage.view.x = -(this.camera.world.x * this.stage.view.scale.x * screen.unitSize) + (screen.size.x / 2);
-      this.stage.view.y = -(this.camera.world.y * this.stage.view.scale.y * screen.unitSize) + (screen.size.y / 2);
-
-      // Scale stage according to camera.
-      this.stage.scale(this.camera.zoom);
+      // this.stage.view.x = -(this.camera.world.x * this.stage.view.scale.x * screen.unitSize) + (screen.size.x / 2);
+      // this.stage.view.y = -(this.camera.world.y * this.stage.view.scale.y * screen.unitSize) + (screen.size.y / 2);
     }
+
 
     // Render the final image.
     this.renderer.render(this.root);

@@ -1,5 +1,6 @@
 import { World } from "@heliks/tiles-engine";
 
+
 /**
  * A renderer plugin is basically the same as a normal game system, but instead of
  * being executed by the system manager they are directly called by the renderer.

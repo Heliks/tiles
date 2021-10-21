@@ -1,17 +1,13 @@
 import { Injectable, System, World } from '@heliks/tiles-engine';
 import { Renderer } from './renderer';
-import { Stage } from './stage';
 import { RendererPlugins } from './renderer-plugins';
+
 
 /** Rendering system responsible for executing the renderer graph. */
 @Injectable()
 export class RendererSystem implements System {
 
-  constructor(
-    private readonly plugins: RendererPlugins,
-    private readonly renderer: Renderer,
-    private readonly stage: Stage
-  ) {}
+  constructor(private readonly plugins: RendererPlugins, private readonly renderer: Renderer) {}
 
   /** @inheritDoc */
   public update(world: World): void {

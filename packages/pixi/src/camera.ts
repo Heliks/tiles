@@ -2,13 +2,29 @@ import { Injectable } from '@heliks/tiles-engine';
 import { Screen } from './screen';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 
+
 @Injectable()
 export class Camera {
 
   /** Local position in the world. */
   public readonly world = vec2(0, 0);
 
-  public zoom = 1;
+  private _zoom = 1;
+
+  public get zoom() {
+    return this._zoom;
+  }
+
+  public set zoom(value: number) {
+    const d = value - this._zoom;
+    const p = d / this.zoom;
+
+    // this.world.x += this.world.x * p;
+    // this.world.y += this.world.y * p;
+
+    this._zoom = value;
+  }
+
 
   /**
    * Enables or disables the camera. The position of the camera can still be updated
