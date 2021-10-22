@@ -16,12 +16,7 @@ export class AssetLoader {
   }
 
   /** Called internally to complete a download. */
-  protected complete<D>(
-    handle: Handle<D>,
-    data: D,
-    name: string,
-    storage: AssetStorage<D>
-  ): void {
+  protected complete<D>(handle: Handle<D>, data: D, name: string, storage: AssetStorage<D>): void {
     storage.set(handle, {
       name,
       data
@@ -45,10 +40,7 @@ export class AssetLoader {
   }
 
   /** Fetches the contents of `file` using `format.` */
-  public fetch<D, R>(
-    file: string,
-    format: Format<D, R, AssetLoader>
-  ): Promise<R> {
+  public fetch<D, R>(file: string, format: Format<D, R, AssetLoader>): Promise<R> {
     return fetch(this.getPath(file)).then(response => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let stream: Promise<any>;
@@ -88,11 +80,7 @@ export class AssetLoader {
    * @param format The format that should be used to parse the files raw data.
    * @param storage The storage where the loaded asset should be stored.
    */
-  public load<D, R>(
-    path: string,
-    format: Format<D, R, AssetLoader>,
-    storage: AssetStorage<R>
-  ): Handle<R> {
+  public load<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Handle<R> {
     const handle = Symbol();
 
     // Load the file async and save it to storage.
@@ -111,11 +99,7 @@ export class AssetLoader {
    * @param format The format that should be used to parse the files raw data.
    * @param storage The storage where the loaded asset should be stored.
    */
-  public async<D, R>(
-    path: string,
-    format: Format<D, R, AssetLoader>,
-    storage: AssetStorage<R>
-  ): Promise<Handle<R>> {
+  public async<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Promise<Handle<R>> {
     return this.fetch(path, format).then(data => {
       const handle = Symbol();
 

@@ -9,8 +9,6 @@ describe('GameBuilder', () => {
     expect(new GameBuilder().build()).toBeInstanceOf(Game);
   });
 
-
-
   it('should bind component storages to the service container', () => {
     // Test component.
     class Foo {}

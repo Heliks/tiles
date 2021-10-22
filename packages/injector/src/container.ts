@@ -7,7 +7,7 @@ import { getMetadata } from './meta';
 export class Container implements Base {
 
   /** Maps stuff that is bound to other stuff */
-  protected bindings = new Map<InjectorToken, Binding>();
+  private bindings = new Map<InjectorToken, Binding>();
 
   /** @inheritDoc */
   public bind<T = unknown>(token: InjectorToken, value: T): this {
