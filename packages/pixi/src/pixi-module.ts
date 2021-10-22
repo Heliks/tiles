@@ -2,7 +2,7 @@ import { ClassType, GameBuilder, Module, OnInit, Provider, Struct, World } from 
 import * as PIXI from 'pixi.js';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SPRITE_SHEET_STORAGE, SpriteAnimationSystem, SpriteDisplaySystem } from './sprite';
+import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheetStorage } from './sprite';
 import { Stage } from './stage';
 import { Camera } from './camera';
 import { Screen } from './screen';
@@ -158,10 +158,7 @@ export class PixiModule implements Module, OnInit {
           this.config.unitSize
         )
       })
-      .provide({
-        token: SPRITE_SHEET_STORAGE,
-        value: new Map()
-      })
+      .provide(SpriteSheetStorage)
       .provide(this.getPluginProvider())
       .provide(Camera)
       .provide(DebugDraw)

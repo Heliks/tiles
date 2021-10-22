@@ -2,8 +2,8 @@ import { EventQueue } from '@heliks/tiles-engine';
 
 /**
  * Component that when attached to an entity that has a `SpriteDisplay` component, will
- * forward interaction events (a.E. mouse down, mouse up and click) to appropriate
- * event queues that can be subscribed to.
+ * start to listen to events concerning that sprite (e.g. mouse up or mouse down) and
+ * forward them to one of the appropriate event queues.
  */
 export class SpriteEvent {
 

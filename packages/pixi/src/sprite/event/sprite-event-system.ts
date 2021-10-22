@@ -31,17 +31,17 @@ export class SpriteEventSystem extends ReactiveSystem {
 
     sprite.interactive = true;
 
-    const eDown = () => events.down.push(undefined);
-    const eUp = () => events.up.push(undefined);
+    const onDown  = () => events.down.push(undefined);
+    const onUp    = () => events.up.push(undefined);
 
     // PIXI.JS will handle the events internally, we just forward them to our event
     // queues. We do normalize some events however, so that the component works the
     // same for mobile and desktop environments.
     sprite
-      .on('mousedown', eDown)
-      .on('mouseup', eUp)
-      .on('touchstart', eDown)
-      .on('touchend', eUp);
+      .on('mousedown', onDown)
+      .on('mouseup', onUp)
+      .on('touchstart', onDown)
+      .on('touchend', onUp);
   }
 
   /** @inheritDoc */

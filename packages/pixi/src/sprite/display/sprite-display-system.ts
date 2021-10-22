@@ -1,11 +1,11 @@
-import { contains, Entity, Inject, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Renderer } from '../../renderer';
 import { Stage } from '../../stage';
 import { SpriteDisplay } from './index';
-import { SPRITE_SHEET_STORAGE, SpriteSheet } from '../sprite-sheet';
-import { AssetStorage } from '@heliks/tiles-assets';
+import { SpriteSheetStorage } from '../sprite-sheet';
 import { Screen } from '../../screen';
 import { Sprite } from 'pixi.js';
+
 
 @Injectable()
 export class SpriteDisplaySystem extends ReactiveSystem {
@@ -18,11 +18,10 @@ export class SpriteDisplaySystem extends ReactiveSystem {
   private sprites = new Map<Entity, Sprite>();
 
   constructor(
-    @Inject(SPRITE_SHEET_STORAGE)
-    private readonly storage: AssetStorage<SpriteSheet>,
     private readonly dimensions: Screen,
     private readonly renderer: Renderer,
-    private readonly stage: Stage
+    private readonly stage: Stage,
+    private readonly storage: SpriteSheetStorage
   ) {
     super(contains(SpriteDisplay, Transform));
   }
