@@ -2,6 +2,7 @@ import { ComponentType, System } from '@heliks/ecs';
 import { ClassType } from '../types';
 import { Provider } from './provider';
 import { Game } from '../game';
+import { World } from '../ecs';
 
 
 export interface GameBuilder {
@@ -34,6 +35,11 @@ export interface GameBuilder {
    * @internal
    */
   exec(game: Game): void;
+
+  /**
+   * Calls the onInit lifecycle on all registered tasks.
+   */
+  init(game: World): void;
 
 }
 

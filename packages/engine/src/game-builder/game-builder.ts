@@ -1,7 +1,7 @@
-import { ComponentType, System } from '@heliks/ecs';
+import { ComponentType, System, World } from '../ecs';
 import { Game } from '../game';
 import { ClassType } from '../types';
-import { AddProvider, AddSystem, RegisterComponent, RegisterModule, Task } from './tasks';
+import { AddProvider, AddSystem, AddComponent, AddModule, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
 import { Container } from '@heliks/tiles-injector';
@@ -37,7 +37,7 @@ export class GameBuilder implements Builder {
 
   /** @inheritDoc */
   public component(component: ComponentType): this {
-    this.tasks.push(new RegisterComponent(component));
+    this.tasks.push(new AddComponent(component));
 
     return this;
   }
@@ -47,7 +47,7 @@ export class GameBuilder implements Builder {
    * additional tasks from inside the module.
    */
   public module<M extends Module>(module: M): this {
-    this.tasks.push(new RegisterModule(module, new GameBuilder(this.container)));
+    this.tasks.push(new AddModule(module, new GameBuilder(this.container)));
 
     return this;
   }
@@ -66,10 +66,10 @@ export class GameBuilder implements Builder {
     }
   }
 
-  /** @internal */
-  private boot(game: Game): void {
+  /** @inheritDoc */
+  public init(world: World): void {
     for (const task of this.tasks) {
-      task.init?.(game.world);
+      task.init?.(world);
     }
   }
 
@@ -78,7 +78,7 @@ export class GameBuilder implements Builder {
     const game = new Game(this.container);
 
     this.exec(game);
-    this.boot(game);
+    this.init(game.world);
 
     return game;
   }

@@ -142,5 +142,20 @@ describe('GameBuilder', () => {
 
       expect(init).toHaveBeenCalledWith(game.world);
     });
+
+    it('should call OnInit lifecycle hook on system provided by module', () => {
+      const system = {
+        update: () => void 0,
+        onInit: jest.fn()
+      };
+
+      const game = new GameBuilder()
+        .module({
+          build: builder => void builder.system(system)
+        })
+        .build();
+
+      expect(system.onInit).toHaveBeenCalledWith(game.world);
+    })
   });
 });

@@ -5,6 +5,7 @@ export {
   Builder as EntityBuilder,
   ComponentEvent,
   ComponentEventType,
+  ComponentType,
   Entity,
   EntityGroup,
   entityId,

@@ -68,6 +68,18 @@ export class AddSystem implements Task {
     }
   }
 
+  /** @internal */
+  private getSystemClassName(): string {
+    const system = this.system as ClassType;
+
+    return system.name ? system.name : system.constructor.name;
+  }
+
+  /** @internal */
+  public toString(): string {
+    return `AddSystem(${this.getSystemClassName()})`;
+  }
+
 }
 
 
@@ -139,7 +151,7 @@ export class AddProvider implements Task {
  * Registers a component type and binds its component storage to the service
  * container.
  */
-export class RegisterComponent implements Task {
+export class AddComponent implements Task {
 
   /**
    * @param component Component type that should be registered.
@@ -156,19 +168,28 @@ export class RegisterComponent implements Task {
 
 }
 
-export class RegisterModule implements Task {
+export class AddModule implements Task {
 
   constructor(private readonly module: Module, private readonly builder: GameBuilder) {}
 
+  /** @inheritDoc */
   public exec(game: Game): void {
     this.module.build(this.builder);
     this.builder.exec(game);
   }
 
+  /** @inheritDoc */
   public init(world: World): void {
+    this.builder.init(world);
+
     if (hasOnInit(this.module)) {
       this.module.onInit(world);
     }
+  }
+
+  /** @internal */
+  public toString(): string {
+    return `AddModule(${this.module.constructor.name})`;
   }
 
 }
