@@ -9,17 +9,30 @@ describe('GameBuilder', () => {
     expect(new GameBuilder().build()).toBeInstanceOf(Game);
   });
 
-  it('should bind component storages to the service container', () => {
+  describe('components', () => {
     // Test component.
     class Foo {}
+    class Bar {}
 
-    // Try to resolve storage from service container.
-    const storage = new GameBuilder()
-      .component(Foo)
-      .build()
-      .container.get<Storage<Foo>>(getStorageInjectorToken(Foo));
+    it('should register aliased components', () => {
+      const game = new GameBuilder().component(Foo, Bar).build();
+      const store = game.world.storage(Foo);
 
-    expect(storage.type).toBe(Foo);
+      expect(store.type).toBe(Bar);
+    });
+
+    it('should bind storages to the service container', () => {
+      // Test component.
+      class Foo {}
+
+      // Try to resolve storage from service container.
+      const storage = new GameBuilder()
+        .component(Foo)
+        .build()
+        .world.get(getStorageInjectorToken(Foo));
+
+      expect(storage.type).toBe(Foo);
+    });
   });
 
   describe('systems', () => {

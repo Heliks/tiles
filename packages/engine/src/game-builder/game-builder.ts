@@ -6,6 +6,7 @@ import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
 import { Container } from '@heliks/tiles-injector';
 
+
 /** Game builder. */
 export class GameBuilder implements Builder {
 
@@ -36,8 +37,8 @@ export class GameBuilder implements Builder {
   }
 
   /** @inheritDoc */
-  public component(component: ComponentType): this {
-    this.tasks.push(new AddComponent(component));
+  public component<C extends ComponentType, A extends C>(component: C, alias?: A): this {
+    this.tasks.push(new AddComponent(component, alias));
 
     return this;
   }
