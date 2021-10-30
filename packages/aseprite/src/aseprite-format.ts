@@ -1,7 +1,8 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { Frame, SPRITE_SHEET_STORAGE, SpriteCollection, SpriteSheet, Texture, TextureFormat } from '@heliks/tiles-pixi';
+import { Frame, SpriteCollection, SpriteSheet, SpriteSheetStorage, Texture, TextureFormat } from '@heliks/tiles-pixi';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 import { World } from '@heliks/tiles-engine';
+
 
 /** @internal */
 function createFrame(data: AsepriteFrameData): Frame {
@@ -37,7 +38,7 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
   public static load(world: World, path: string): Handle<SpriteSheet> {
     return world
       .get(AssetLoader)
-      .load(path, new AsepriteFormat(), world.get(SPRITE_SHEET_STORAGE));
+      .load(path, new AsepriteFormat(), world.get(SpriteSheetStorage));
   }
 
   /** @internal */
