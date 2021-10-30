@@ -27,8 +27,8 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-tilemap",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc -w"
+    "build": "echo 'WIP'",
+    "build:watch": "yarn build"
   },
   "typings": "./lib/index.d.ts",
   "version": "0.0.0"
