@@ -2,16 +2,19 @@ import { Entity } from '@heliks/tiles-engine';
 import { Circle, Rectangle } from '@heliks/tiles-math';
 import { MaterialId } from './material';
 
+
 /** A shape that can be attached to a collider to give it its physical form. */
 export type ColliderShape = Circle | Rectangle;
 
 /** Collider config. */
 export interface ColliderData {
+
   /**
    * The id of the material that should be used for the physical properties of this
    * collider. If not set a default material will be used.
    */
   material?: MaterialId;
+
   /**
    * If set to `true` the collider will act as a sensor. Sensors will detect collisions
    * but won't produce any responses and can only collide when one of the colliding
@@ -19,12 +22,14 @@ export interface ColliderData {
    * collisions with a static or another kinematic body.
    */
   sensor: boolean;
+
   /**
    * Custom user defined type. This has no impact on the behavior of this collider
    * whatsoever outside of user defined functionality that may operate on this
    * particular type.
    */
   type?: string | number
+
 }
 
 export interface ColliderContact {

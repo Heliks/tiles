@@ -9,7 +9,11 @@ import { Box2dDebugDraw } from './box2d-debug-draw';
 import { b2ParseBodyType, b2ParseShape } from './utils';
 import { Physics } from '../physics';
 import { Collider } from '../collider';
+import { Inject, Injectable } from '@heliks/tiles-engine';
+import { B2_WORLD } from './const';
 
+
+@Injectable()
 export class Box2dWorld extends Physics {
 
   /**
@@ -27,14 +31,11 @@ export class Box2dWorld extends Physics {
   /** Contains Box2D bodies mapped to the entity to which they belong.*/
   private readonly bodies = new Map<Entity, b2Body>();
 
-  /** Contains the Box2D world. */
-  private readonly world: b2World;
-
-  constructor(gravity: Vec2) {
+  /**
+   * @param world Box2D world.
+   */
+  constructor(@Inject(B2_WORLD) private readonly world: b2World) {
     super();
-
-    // noinspection JSPotentiallyInvalidConstructorUsage
-    this.world = new b2World(gravity);
   }
 
   /** @inheritDoc */
@@ -164,12 +165,6 @@ export class Box2dWorld extends Physics {
 
     body.velocity.x = velocity.x;
     body.velocity.y = velocity.y;
-  }
-
-  /** @inheritDoc */
-  public setupDebugDraw(renderer: Renderer): void {
-    // Register the box2d adapter for debug draw callbacks.
-    this.world.SetDebugDraw(new Box2dDebugDraw(renderer));
   }
 
   /** @inheritDoc */

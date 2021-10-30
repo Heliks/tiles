@@ -1,33 +1,46 @@
-import { GameBuilder, Module, vec2 } from '@heliks/tiles-engine';
-import { parseConfig, PhysicsConfig, TK_PHYSICS_CONFIG } from './config';
+import { GameBuilder, Module, Provider } from '@heliks/tiles-engine';
 import { ContactEvents } from './events';
-import { Box2dWorld } from './box2d';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
 import { UpdateWorld } from './update-world';
+import { PhysicsAdapter } from './physics-adapter';
 import { Physics } from './physics';
 
+
+/**
+ * Generic physics module.
+ *
+ * This module comes without built-in physics engine and is mostly agnostic in it's
+ * API, so any kind of 2D physics engine should be compatible as long as there is an
+ * adapter for it.
+ */
 export class PhysicsModule implements Module {
 
   /**
-   * @param config Configuration for physics module.
+   * @param adapter Physics adapter used to run the physics simulation.
    */
-  constructor(public readonly config: Partial<PhysicsConfig>) {}
+  constructor(private readonly adapter: PhysicsAdapter) {}
+
+  /** @internal */
+  private getPhysicsProvider(): Provider {
+    const type = this.adapter.getPhysicsType();
+
+    return {
+      instantiate: typeof type === 'function',
+      token: Physics,
+      value: type
+    };
+  }
 
   /** @inheritDoc */
   public build(builder: GameBuilder): void {
-    const config = parseConfig(this.config);
+    if (! this.adapter) {
+      throw new Error('A physics adapter must be configured.');
+    }
 
     builder
-      // Todo: Make this configurable
-      .provide({
-        token: Physics,
-        value: new Box2dWorld(vec2(0, 0))
-      })
-      .provide({
-        token: TK_PHYSICS_CONFIG,
-        value: config
-      })
+      .module(this.adapter)
+      .provide(this.getPhysicsProvider())
       .provide(ContactEvents)
       .system(UpdateWorld)
       .system(SyncWorlds)

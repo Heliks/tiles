@@ -4,6 +4,7 @@ import { RigidBody } from './rigid-body';
 import { Renderer } from '@heliks/tiles-pixi';
 import { Material, MaterialId } from './material';
 
+
 @Injectable()
 export abstract class Physics {
 
@@ -36,12 +37,6 @@ export abstract class Physics {
    * physics world. The current position of the physics body will be applied to `trans`.
    */
   abstract updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void;
-
-  /**
-   * Called when the `DebugDraw` plugin is set up by the renderer module. Can be used
-   * to initialize the adapters debug draw system.
-   */
-  abstract setupDebugDraw(world: Renderer): void;
 
   /** Draws the adapters debug information to the renderers debug draw. */
   abstract drawDebugData(): void;
