@@ -51,7 +51,7 @@ export class Renderer {
   constructor(
     public readonly camera: Camera,
     public readonly debugDraw: DebugDraw,
-    public readonly dimensions: Screen,
+    public readonly screen: Screen,
     public readonly stage: Stage,
     public readonly renderer: PIXI.Renderer
   ) {
@@ -88,7 +88,7 @@ export class Renderer {
       // Only allow resizing if parent element is at least 1x1px big, because PIXI (or
       // rather WebGL) can not deal with smaller dimensions properly.
       if (w > 0 || h > 0) {
-        this.dimensions.resize(w, h);
+        this.screen.resize(w, h);
       }
       else {
         console.warn('Cannot resize. Parent must be at least 1x1px.');
@@ -135,17 +135,14 @@ export class Renderer {
    * [[RendererSystem]].
    */
   public update(): void {
-    const screen = this.dimensions;
+    const screen = this.screen;
 
     // Update the dimensions of the screen.
     if (screen.dirty) {
       // Resize the renderer and adjust the stage scale to fit into that new dimension.
       this.renderer.resize(screen.size.x, screen.size.y);
 
-      // this.stage.scale(
-      // dim.scale.x,
-      // dim.scale.y
-      // );
+      this.stage.scale(screen.scale.x, screen.scale.y);
 
       // Also update the debug draw accordingly.
       this.debugDraw.resize(screen.size.x, screen.size.y).scale(screen.scale.x, screen.scale.y);
@@ -198,7 +195,7 @@ export class Renderer {
       const sy = (screen.size.y / 2);
 
       // this.root.scale.set(this.camera.zoom);
-      this.stage.scale(this.camera.zoom)
+      // this.stage.scale(this.camera.zoom);
       this.root.pivot.set(x - sx, y - sy);
 
       // Scale stage according to camera.

@@ -1,8 +1,14 @@
-import { ClassType, GameBuilder, Module, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
+import { ClassType, GameBuilder, hasOnInit, Module, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Renderer } from './renderer';
 import { RendererSystem } from './renderer-system';
-import { SpriteAnimationSystem, SpriteDisplaySystem, SpriteSheetStorage } from './sprite';
+import {
+  SpriteAnimation,
+  SpriteAnimationSystem,
+  SpriteDisplay,
+  SpriteDisplaySystem,
+  SpriteSheetStorage
+} from './sprite';
 import { Stage } from './stage';
 import { Camera } from './camera';
 import { Screen } from './screen';
@@ -148,6 +154,8 @@ export class PixiModule implements Module, OnInit {
     });
 
     builder
+      .component(SpriteAnimation)
+      .component(SpriteDisplay)
       .provide({
         token: Screen,
         value: new Screen(
@@ -187,6 +195,13 @@ export class PixiModule implements Module, OnInit {
 
     if (this.config.autoResize) {
       renderer.setAutoResize(true);
+    }
+
+    // Call onInit lifecycle on plugins as well.
+    for (const plugin of world.get(RendererPlugins).items) {
+      if (hasOnInit(plugin)) {
+        plugin.onInit(world);
+      }
     }
   }
 

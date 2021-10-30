@@ -1,5 +1,6 @@
 import { Vec2, vec2 } from '@heliks/tiles-engine';
 
+
 /**
  * Describes how the game "Screen" should look like. For example, how big is the
  * viewport, what resolution, etc. Most changes to the screen do not happen immediately
@@ -22,8 +23,8 @@ export class Screen {
   public readonly resolution: Vec2;
 
   /**
-   * The scale in which everything is rendered. Should not be updated manually because
-   * this is calculated based on resolution and screen size.
+   * Scale in which everything is rendered. Should not be updated manually because
+   * this is calculated at runtime.
    */
   public readonly scale = vec2(1, 1);
 

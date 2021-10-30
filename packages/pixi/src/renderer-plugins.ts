@@ -8,6 +8,8 @@ import { World } from "@heliks/tiles-engine";
  * Additional renderer systems should be added as a renderer plugin to ensure that they
  * all run in the same engine state, which could otherwise lead to inconsistent state
  * between renderer and data.
+ *
+ * Plugins can implement lifecycle hooks.
  */
 export interface RendererPlugin {
 
