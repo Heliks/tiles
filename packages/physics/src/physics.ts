@@ -1,7 +1,6 @@
 import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Injectable } from '@heliks/tiles-injector';
 import { RigidBody } from './rigid-body';
-import { Renderer } from '@heliks/tiles-pixi';
 import { Material, MaterialId } from './material';
 
 

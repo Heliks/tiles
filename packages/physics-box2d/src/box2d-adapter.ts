@@ -1,9 +1,9 @@
 import { ClassType, GameBuilder } from '@heliks/tiles-engine';
 import { Vec2, vec2 } from '@heliks/tiles-math';
-import { b2World } from '@flyover/box2d/Box2D/Box2D';
+import { b2World } from '@flyover/box2d';
 import { B2_WORLD } from './const';
 import { Box2dWorld } from './box2d-world';
-import { PhysicsAdapter } from '../physics-adapter';
+import { PhysicsAdapter } from '@heliks/tiles-physics';
 
 
 export class Box2dAdapter implements PhysicsAdapter {

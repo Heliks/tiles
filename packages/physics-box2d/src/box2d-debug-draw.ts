@@ -1,14 +1,14 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
-import { DebugDraw, Renderer, Screen } from '@heliks/tiles-pixi';
+import { DebugDraw, Renderer, RendererPlugin, Screen } from '@heliks/tiles-pixi';
 import { PI_2 } from '@heliks/tiles-math';
-import { Inject, Injectable, OnInit } from '@heliks/tiles-engine';
+import { Inject, Injectable, OnInit, World } from '@heliks/tiles-engine';
 import { B2_WORLD } from './const';
 
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
 @Injectable()
-export class Box2dDebugDraw extends b2Draw implements OnInit {
+export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {
@@ -37,7 +37,14 @@ export class Box2dDebugDraw extends b2Draw implements OnInit {
 
   /** @inheritDoc */
   public onInit(): void {
+    console.log('DD ONINIT');
     this.world.SetDebugDraw(this);
+  }
+
+  /** @inheritDoc */
+  public update(world: World): void {
+    console.log('DD DRAW');
+    this.world.DrawDebugData();
   }
 
   /** Box2D callback to translate the drawing canvas. */

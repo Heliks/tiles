@@ -1,15 +1,9 @@
 /* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
-import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Renderer } from '@heliks/tiles-pixi';
-import { ContactEvents } from '../events';
-import { RigidBody } from '../rigid-body';
+import { Entity, Inject, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { Collider, ContactEvents, Physics, RigidBody } from '@heliks/tiles-physics';
 import { Box2dContactListener } from './box2d-contact-listener';
-import { Box2dDebugDraw } from './box2d-debug-draw';
 import { b2ParseBodyType, b2ParseShape } from './utils';
-import { Physics } from '../physics';
-import { Collider } from '../collider';
-import { Inject, Injectable } from '@heliks/tiles-engine';
 import { B2_WORLD } from './const';
 
 

@@ -1,7 +1,6 @@
 import { b2Contact, b2ContactListener } from '@flyover/box2d';
-import { ContactEvent, ContactEvents } from '../events';
+import { ContactEvent, ContactEvents, RigidBody } from '@heliks/tiles-physics';
 import { Entity, World } from '@heliks/tiles-engine';
-import { RigidBody } from '../rigid-body';
 
 // Needs to be disabled for Box2D.
 /* eslint-disable new-cap */
