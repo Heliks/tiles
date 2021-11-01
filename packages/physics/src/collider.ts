@@ -10,8 +10,9 @@ export type ColliderShape = Circle | Rectangle;
 export interface ColliderData {
 
   /**
-   * The id of the material that should be used for the physical properties of this
-   * collider. If not set a default material will be used.
+   * Id of a physics material. If this is set the collider will inherit physical
+   * properties of that material such as friction or restitution.
+   * @see Material
    */
   material?: MaterialId;
 

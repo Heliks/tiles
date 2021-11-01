@@ -5,6 +5,7 @@ import { SyncWorlds } from './sync-worlds';
 import { UpdateWorld } from './update-world';
 import { PhysicsAdapter } from './physics-adapter';
 import { Physics } from './physics';
+import { MaterialManager } from './material';
 
 
 /**
@@ -39,6 +40,7 @@ export class PhysicsModule implements Module {
     }
 
     builder
+      .provide(MaterialManager)
       .module(this.adapter)
       .provide(this.getPhysicsProvider())
       .provide(ContactEvents)

@@ -1,14 +1,10 @@
 import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Injectable } from '@heliks/tiles-injector';
 import { RigidBody } from './rigid-body';
-import { Material, MaterialId } from './material';
 
 
 @Injectable()
 export abstract class Physics {
-
-  /** @internal */
-  private readonly materials = new Map<MaterialId, Material>();
 
   /**
    * Called once when the adapter is initialized. This can be used for example to set-up
@@ -42,23 +38,5 @@ export abstract class Physics {
 
   /** Applies a linear impulse at the center of an `entity` using `force`. */
   abstract impulse(entity: Entity, force: Vec2): void;
-
-  /** Sets a material. */
-  public setMaterial(name: MaterialId, material: Material): this {
-    this.materials.set(name, material);
-
-    return this;
-  }
-
-  /** Returns an existing material with name `name`. */
-  public getMaterial(name: MaterialId): Material {
-    const material = this.materials.get(name);
-
-    if (!material) {
-      throw new Error(`No material with name ${name} found.`);
-    }
-
-    return material;
-  }
 
 }
