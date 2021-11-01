@@ -1,12 +1,12 @@
-/* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Collider, ContactEvents, Physics, RigidBody } from '@heliks/tiles-physics';
+import { Collider, ContactEvents, MaterialManager, Physics, RigidBody } from '@heliks/tiles-physics';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { b2ParseBodyType, b2ParseShape } from './utils';
 import { B2_WORLD } from './const';
 
 
+/* eslint-disable new-cap */
 @Injectable()
 export class Box2dWorld extends Physics {
 
@@ -27,8 +27,13 @@ export class Box2dWorld extends Physics {
 
   /**
    * @param world Box2D world.
+   * @param materials {@link MaterialManager}
    */
-  constructor(@Inject(B2_WORLD) private readonly world: b2World) {
+  constructor(
+    @Inject(B2_WORLD)
+    private readonly world: b2World,
+    private readonly materials: MaterialManager
+  ) {
     super();
   }
 
@@ -61,7 +66,7 @@ export class Box2dWorld extends Physics {
 
     // Assign material. Hard check here because the number 0 is a valid material id.
     if (collider.material !== undefined) {
-      const material = this.getMaterial(collider.material);
+      const material = this.materials.get(collider.material);
 
       def.density = material.density;
       def.friction = material.friction;
