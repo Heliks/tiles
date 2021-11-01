@@ -1,28 +1,30 @@
 /**
- * @typeparam T The kind of item that is contained in the stack.
+ * Generic interface of a state machine stack.
+ *
+ * @typeparam T Item that is pushed into the stack. Mostly this will either be a state
+ *  name that the state machine associates with a certain state, or a state directly,
+ *  depending on the implementation of the state machine.
  */
 export interface Stack<T> {
-
   /** Pushes an `item` at the top of the stack. */
   push(item: T): this;
-
   /** Removes the top most item from the stack. */
   pop(): this;
-
   /** Replaces the top-most item of the stack with `item`. */
   switch(item: T): this;
-
 }
 
 
-
 /**
- * A state that can be attached to a state machine.
+ * State that can be used inside of a state machine.
  *
- * @typeparam T The data that is passed down by the state machine
- *  during lifecycle or update events.
+ * @see StateMachine
+ * @see Stack
+ *
+ * @typeparam T Data that is passed down to this state by the state machine.
+ * @typeparam S Stack type.
  */
-export interface State<T> {
+export interface State<T, S extends Stack<unknown>> {
 
   /** Called when added to a stack. */
   onStart?(data: T): unknown;
@@ -40,22 +42,25 @@ export interface State<T> {
    * Called when the state machine is updated and this state is currently on
    * top of the stack, usually once per frame.
    */
-  update(stack: Stack<this>, data: T): unknown;
+  update(stack: S, data: T): unknown;
 
 }
+
+export type StateStack<T> = Stack<State<T, StateStack<T>>>;
+export type StateStackState<T> = State<T, StateStack<T>>;
 
 /**
  * Stack based push-down automation (PDA) state machine.
  *
  * @typeparam T The data that will be passed down to each state.
  */
-export class StateMachine<T> implements Stack<State<T>>  {
+export class StateMachine<T> implements StateStack<T> {
 
   /**
    * Contains the state that is currently on top of the stack or `undefined`
    * if the stack is empty.
    */
-  public get active(): State<T> | undefined {
+  public get active(): StateStackState<T> | undefined {
     return this.stack[this.stack.length - 1];
   }
 
@@ -71,7 +76,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
    * The stack of states. The last state in the list is considered
    * the [[active]] state.
    */
-  protected readonly stack: State<T>[] = [];
+  protected readonly stack: StateStackState<T>[] = [];
 
   /**
    * @param data The state machines data that will be passed down to state when
@@ -80,7 +85,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
   constructor(public data: T) {}
 
   /** Pushes a `state` at the top of the stack. */
-  public push(state: State<T>): this {
+  public push(state: StateStackState<T>): this {
     if (this.running) {
       const active = this.active;
 
@@ -125,7 +130,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
   }
 
   /** Replaces the top-most state of the stack with `state`. */
-  public switch(state: State<T>): this {
+  public switch(state: StateStackState<T>): this {
     if (this.running) {
       const top = this.stack.pop();
 
@@ -145,7 +150,7 @@ export class StateMachine<T> implements Stack<State<T>>  {
    * Throws an error if the state machine is started with an empty stack. This means
    * that the first time it is started, the `state` parameter is mandatory.
    */
-  public start(state?: State<T>): this {
+  public start(state?: StateStackState<T>): this {
     if (state) {
       this.stack.push(state);
     }
