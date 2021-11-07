@@ -2,23 +2,41 @@ import { Sprite, Texture } from 'pixi.js';
 import { Injectable, Vec2 } from '@heliks/tiles-engine';
 import { hex2rgb } from './utils';
 import { Camera } from './camera';
+import { Screen } from './screen';
 
+
+/**
+ * Utility that can be used to draw debug information on the screen. The debug draw
+ * will be cleared automatically on each frame.
+ */
 @Injectable()
 export class DebugDraw {
 
-  /** Drawing context for [[canvas]]. */
+  /**
+   * 2D Drawing context.
+   *
+   * You can draw on this directly to add debug information to your game or can use
+   * one of the utility methods of this class. The context will be cleared automatically
+   * at the beginning of each frame.
+   *
+   * The pivot of this context is always in the middle of the canvas element. So if for
+   * example the canvas has a dimension of 200x200px, the position `x: 0, y: 0` will in
+   * reality be `x: 100px, y: 100px`.
+   */
   public readonly ctx: CanvasRenderingContext2D;
 
   /** Sprite that contains all drawn debug information. */
   public readonly view: Sprite;
 
-  /** The canvas element where the all information will be drawn.*/
-  protected readonly canvas = document.createElement('canvas');
+  /** @internal */
+  private readonly canvas = document.createElement('canvas');
+  private readonly texture: Texture;
 
-  /** WebGL texture that we'll create from the [[canvas]] element. */
-  protected readonly texture: Texture;
-
-  constructor(protected readonly camera: Camera) {
+  /**
+   * @param camera @link camera
+   * @param screen @link screen
+   */
+  constructor(private readonly camera: Camera, private readonly screen: Screen) {
     const ctx = this.canvas.getContext('2d');
 
     if (!ctx) {
@@ -27,11 +45,8 @@ export class DebugDraw {
 
     this.ctx = ctx;
 
-    // Create a WebGL texture for the canvas element.
+    // From the canvas element, create a WebGL Texture and a PIXI sprite.
     this.texture = Texture.from(this.canvas);
-
-    // Create the sprite that can be drawn to the stage and make sure that it
-    // is always rendered on top of everything else.
     this.view = Sprite.from(this.texture);
     this.view.zIndex = 9999;
   }
@@ -42,16 +57,28 @@ export class DebugDraw {
     // accurately reflected on the debug draws view.
     this.texture.update();
 
-    // Clear the canvas so that we can re-draw on the next frame.
+    this.ctx.save();
+
+    // Briefly resets the transformation matrix back to default for clearing.
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.restore();
   }
 
-  /** Resize the debug canvas draw element. */
+  /**
+   * Resizes the debug draw canvas element and re-calculates the pivot based on the
+   * new middle position.
+   */
   public resize(width: number, height: number): this {
     this.canvas.width = width;
     this.canvas.height = height;
 
-    // Needs re-upload because of dimension change.
+    // Sets the pivot of the context to the center.
+    this.ctx.resetTransform();
+    this.ctx.translate(width / 2, height / 2);
+
+    // WebGL textures need a re-upload when their dimension has changed.
     this.texture.update();
 
     return this;
@@ -81,8 +108,8 @@ export class DebugDraw {
   /** Adds a translation transformation on the `x` and `y` axis. */
   public translate(x: number, y: number): this {
     this.ctx.translate(
-      this.camera.world.x + x,
-      this.camera.world.y + y
+      x - (this.camera.world.x * this.screen.unitSize),
+      y - (this.camera.world.y * this.screen.unitSize)
     );
 
     return this;
@@ -121,7 +148,6 @@ export class DebugDraw {
    */
   public text(text: string, x: number, y: number): void {
     this.ctx.font = '4px Arial';
-
     this.ctx.fillStyle = "red";
     this.ctx.fillText(text, x, y);
   }
