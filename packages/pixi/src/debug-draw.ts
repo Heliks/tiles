@@ -4,6 +4,10 @@ import { hex2rgb } from './utils';
 import { Camera } from './camera';
 import { Screen } from './screen';
 
+export enum Align {
+  Center,
+  TopLeft
+}
 
 /**
  * Utility that can be used to draw debug information on the screen. The debug draw
@@ -146,9 +150,15 @@ export class DebugDraw {
   /**
    * Draws a `text` message at the given `x` and `y` position.
    */
-  public text(text: string, x: number, y: number): void {
+  public text(text: string, x: number, y: number, align = Align.Center): void {
     this.ctx.font = '4px Arial';
     this.ctx.fillStyle = "red";
+
+    if (align === Align.TopLeft) {
+      x -= (this.screen.resolution.x / 2);
+      y -= (this.screen.resolution.y / 2);
+    }
+
     this.ctx.fillText(text, x, y);
   }
 
