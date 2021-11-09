@@ -11,7 +11,7 @@ export enum Align {
 
 /**
  * Utility that can be used to draw debug information on the screen. The debug draw
- * will be cleared automatically on each frame.
+ * will be cleared automatically at the beginning of each frame.
  */
 @Injectable()
 export class DebugDraw {
@@ -66,6 +66,7 @@ export class DebugDraw {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.context.restore();
+    this.texture.update();
   }
 
   /**

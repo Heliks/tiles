@@ -2,6 +2,7 @@ import { contains, Injectable, ProcessingSystem, Transform, World } from '@helik
 import { RigidBody } from './rigid-body';
 import { Physics } from './physics';
 
+
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */
 @Injectable()
 export class SyncBodies extends ProcessingSystem {

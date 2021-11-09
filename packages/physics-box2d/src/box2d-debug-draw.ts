@@ -12,7 +12,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {
-    return this.debugDraw.ctx;
+    return this.debugDraw.context;
   }
 
   /**

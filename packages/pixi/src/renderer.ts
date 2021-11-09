@@ -174,6 +174,8 @@ export class Renderer {
       this.updateCamera();
     }
 
+    this.debugDraw.texture.update();
+
     // Render the final image.
     this.renderer.render(this.root);
   }
