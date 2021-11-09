@@ -27,14 +27,16 @@ export class DebugDraw {
    * example the canvas has a dimension of 200x200px, the position `x: 0, y: 0` will in
    * reality be `x: 100px, y: 100px`.
    */
-  public readonly ctx: CanvasRenderingContext2D;
+  public readonly context: CanvasRenderingContext2D;
+
+  /** WebGL texture for the canvas context. */
+  public readonly texture: Texture;
 
   /** Sprite that contains all drawn debug information. */
   public readonly view: Sprite;
 
   /** @internal */
   private readonly canvas = document.createElement('canvas');
-  private readonly texture: Texture;
 
   /**
    * @param camera @link camera
@@ -47,7 +49,7 @@ export class DebugDraw {
       throw new Error('Unable to get 2D drawing context.');
     }
 
-    this.ctx = ctx;
+    this.context = ctx;
 
     // From the canvas element, create a WebGL Texture and a PIXI sprite.
     this.texture = Texture.from(this.canvas);
@@ -57,17 +59,13 @@ export class DebugDraw {
 
   /** Clears the drawing context completely. */
   public clear(): void {
-    // Update the texture so that changes made to the canvas context are
-    // accurately reflected on the debug draws view.
-    this.texture.update();
-
-    this.ctx.save();
+    this.context.save();
 
     // Briefly resets the transformation matrix back to default for clearing.
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.ctx.restore();
+    this.context.restore();
   }
 
   /**
@@ -79,10 +77,9 @@ export class DebugDraw {
     this.canvas.height = height;
 
     // Sets the pivot of the context to the center.
-    this.ctx.resetTransform();
-    this.ctx.translate(width / 2, height / 2);
+    this.context.resetTransform();
+    this.context.translate(width / 2, height / 2);
 
-    // WebGL textures need a re-upload when their dimension has changed.
     this.texture.update();
 
     return this;
@@ -90,28 +87,28 @@ export class DebugDraw {
 
   /** Sets the scale in which the debug draw should be rendered. */
   public scale(x: number, y: number): this {
-    this.ctx.scale(x, y);
+    this.context.scale(x, y);
 
     return this;
   }
 
   /** Stores the current state of the debug draw context. */
   public save(): this {
-    this.ctx.save();
+    this.context.save();
 
     return this;
   }
 
   /** Restores the previous saved state of the debug draw context. */
   public restore(): this {
-    this.ctx.restore();
+    this.context.restore();
 
     return this;
   }
 
   /** Adds a translation transformation on the `x` and `y` axis. */
   public translate(x: number, y: number): this {
-    this.ctx.translate(
+    this.context.translate(
       x - (this.camera.world.x * this.screen.unitSize),
       y - (this.camera.world.y * this.screen.unitSize)
     );
@@ -129,20 +126,20 @@ export class DebugDraw {
   public setLineStyle(width: number, color: number, opacity = 1): this {
     const rgb = hex2rgb(color);
 
-    this.ctx.lineWidth = width;
-    this.ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
+    this.context.lineWidth = width;
+    this.context.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
 
     return this;
   }
 
   /** Draws a line from `start` to `dest`. */
   public drawLine(start: Vec2, dest: Vec2): this {
-    this.ctx.beginPath();
+    this.context.beginPath();
 
-    this.ctx.moveTo(start.x, start.y);
-    this.ctx.lineTo(dest.x, dest.y);
+    this.context.moveTo(start.x, start.y);
+    this.context.lineTo(dest.x, dest.y);
 
-    this.ctx.stroke();
+    this.context.stroke();
 
     return this;
   }
@@ -151,15 +148,15 @@ export class DebugDraw {
    * Draws a `text` message at the given `x` and `y` position.
    */
   public text(text: string, x: number, y: number, align = Align.Center): void {
-    this.ctx.font = '4px Arial';
-    this.ctx.fillStyle = "red";
+    this.context.font = '4px Arial';
+    this.context.fillStyle = "red";
 
     if (align === Align.TopLeft) {
       x -= (this.screen.resolution.x / 2);
       y -= (this.screen.resolution.y / 2);
     }
 
-    this.ctx.fillText(text, x, y);
+    this.context.fillText(text, x, y);
   }
 
 }

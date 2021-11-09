@@ -62,24 +62,4 @@ export class Screen {
     return this;
   }
 
-  /** Converts a `position` on the screen to a position in the game world. */
-  /*
-  public toWorld(position: Vec2, out = vec2(0, 0)): Vec2 {
-    out.x = ((position.x / this.scale.x) - (this.x) ) / this.unitSize;
-    out.y = ((position.y / this.scale.y) - (this.y) ) / this.unitSize;
-
-    return out;
-  }
-   */
-
-  /** Converts a `position` in the world space to a position on the screen. */
-  /*
-  public toScreen(position: Vec2, out = vec2(0, 0)): Vec2 {
-    out.x = (-position.x * this.unitSize) + (this.resolution.x / 2);
-    out.y = (-position.y * this.unitSize) + (this.resolution.y / 2);
-
-    return out;
-  }
-   */
-
 }

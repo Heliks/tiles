@@ -14,6 +14,7 @@ import { Camera } from './camera';
 import { Screen } from './screen';
 import { DebugDraw } from './debug-draw';
 import { RendererPlugin, RendererPlugins } from './renderer-plugins';
+import { DrawText, DrawTextSystem } from './text';
 
 
 /** Configuration for the renderer module. */
@@ -154,6 +155,7 @@ export class PixiModule implements Module, OnInit {
     });
 
     builder
+      .component(DrawText)
       .component(SpriteAnimation)
       .component(SpriteDisplay)
       .provide({
@@ -176,6 +178,7 @@ export class PixiModule implements Module, OnInit {
       // same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
       .system(SpriteDisplaySystem)
+      .system(DrawTextSystem)
       .system(RendererSystem);
   }
 

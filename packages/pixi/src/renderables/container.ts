@@ -1,13 +1,13 @@
 import { Container as BaseContainer } from 'pixi.js';
-import { Renderable } from './renderable';
+import { Drawable } from './drawable';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /**
  * A container that can contain many other renderable objects.
  *
- * @typeparam T Kind of `Renderable` contained in this container.
+ * @typeparam T Kind of `Drawable` contained in this container.
  */
-export class Container<T extends Renderable = Renderable> extends BaseContainer implements Renderable {
+export class Container<T extends Drawable = Drawable> extends BaseContainer implements Drawable {
 
   /** @inheritDoc */
   public readonly children: T[] = [];

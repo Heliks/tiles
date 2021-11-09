@@ -6,7 +6,16 @@ import { Vec2, vec2 } from '@heliks/tiles-math';
 @Injectable()
 export class Camera {
 
-  /** Local position in the world. */
+  /**
+   * Enables or disables the camera. The position of the camera can still be updated
+   * while it is disabled, but it will not update the screen until it is enabled again.
+   */
+  public enabled = true;
+
+  /**
+   * Cameras world position. Do not modify this directly.
+   * @see transform
+   */
   public readonly world = vec2(0, 0);
 
   private _zoom = 1;
@@ -25,13 +34,6 @@ export class Camera {
     this._zoom = value;
   }
 
-
-  /**
-   * Enables or disables the camera. The position of the camera can still be updated
-   * while it is disabled, but it will not move the screen until it is enabled again.
-   */
-  public enabled = true;
-
   constructor(private readonly screen: Screen) {}
 
   /** Transforms the camera position using the given `x` and `y` local position. */
@@ -42,20 +44,20 @@ export class Camera {
     return this;
   }
 
-  /** Converts a `position` on the screen to a position in the game world. */
-  public toWorld(position: Vec2, out = vec2(0, 0)): Vec2 {
-    out.x = ((position.x / this.screen.scale.x) - (this.world.x) ) / this.screen.unitSize;
-    out.y = ((position.y / this.screen.scale.y) - (this.world.y) ) / this.screen.unitSize;
-
-    return out;
+  /**
+   * Converts a screen `position`  to a position in the world space. This modifies the
+   * original input.
+   */
+  public toWorldPosition(position: Vec2): Vec2 {
+    throw new Error('Todo');
   }
 
-  /** Converts a `position` in the world space to a position on the screen. */
-  public toScreen(position: Vec2, out = vec2(0, 0)): Vec2 {
-    out.x = (-position.x * this.screen.unitSize) + (this.screen.resolution.x / 2);
-    out.y = (-position.y * this.screen.unitSize) + (this.screen.resolution.y / 2);
-
-    return out;
+  /**
+   * Converts a world `position` to a position on the screen. This modifies the
+   * original input.
+   */
+  public toScreenPosition(position: Vec2): Vec2 {
+    throw new Error('Todo');
   }
 
 }

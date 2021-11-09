@@ -1,5 +1,5 @@
 import { Injectable } from '@heliks/tiles-engine';
-import { Container, Renderable } from '../renderables';
+import { Container, Drawable } from '../renderables';
 import { Layer } from './layer';
 import { Layers } from './layers';
 import { Filter } from 'pixi.js';
@@ -21,14 +21,14 @@ export class Stage {
   }
 
   /** Adds a `renderable` object. */
-  public add(renderable: Renderable): this {
+  public add(renderable: Drawable): this {
     this.view.add(renderable);
 
     return this;
   }
 
   /** Removes a `renderable`. */
-  public remove(renderable: Renderable): this {
+  public remove(renderable: Drawable): this {
     this.view.removeChild(renderable);
 
     return this;

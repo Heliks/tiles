@@ -3,7 +3,7 @@ import { Renderer } from './renderer';
 import { RendererPlugins } from './renderer-plugins';
 
 
-/** Rendering system responsible for executing the renderer graph. */
+/** System responsible for updating the renderer. */
 @Injectable()
 export class RendererSystem implements System {
 
