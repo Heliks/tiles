@@ -1,5 +1,6 @@
 import { ComponentType, Storage } from "@heliks/ecs";
 import { Inject, InjectorToken } from '@heliks/tiles-injector';
+import { ClassType } from '../types';
 
 
 /** Returns an injector token for the given `component` type. */
@@ -9,7 +10,7 @@ export function getStorageInjectorToken<T extends ComponentType>(component: T): 
 
 /** @internal */
 function injectComponentStorageDecorator(component: ComponentType): Function {
-  return (target: any, key: string, index: number): void => {
+  return (target: ClassType, key: string, index: number): void => {
     Inject(getStorageInjectorToken(component))(target, key, index);
   };
 }

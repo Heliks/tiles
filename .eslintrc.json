@@ -57,7 +57,7 @@
     "id-length": [
       "error",
       {
-        "max": 25,
+        "max": 35,
         "min": 1
       }
     ],
@@ -83,7 +83,7 @@
     "new-cap": [
       "error",
       {
-        "capIsNewExceptions": ["Injectable", "Inject", "Optional", "b2*"]
+        "capIsNewExceptions": ["Injectable", "Inject", "InjectStorage", "Optional", "b2*"]
       }
     ],
     "space-unary-ops": ["off"],
@@ -92,6 +92,7 @@
     "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/prefer-math-trunc": "off",
     "@typescript-eslint/ban-types": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "unicorn/prefer-node-remove": "off"
   }
 }

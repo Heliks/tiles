@@ -87,6 +87,7 @@ export class Container implements Base {
         if (override) {
           // Optional dependencies that don't exist resolve to undefined.
           if (override.optional && !this.bindings.has(override.token)) {
+            // eslint-disable-next-line unicorn/no-useless-undefined
             result.push(undefined);
 
             continue;

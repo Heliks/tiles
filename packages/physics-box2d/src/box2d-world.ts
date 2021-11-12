@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, MaterialManager, Physics, RigidBody } from '@heliks/tiles-physics';
@@ -6,7 +7,6 @@ import { b2ParseBodyType, b2ParseShape } from './utils';
 import { B2_WORLD } from './const';
 
 
-/* eslint-disable new-cap */
 @Injectable()
 export class Box2dWorld extends Physics {
 

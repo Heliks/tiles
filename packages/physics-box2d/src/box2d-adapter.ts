@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import { ClassType, GameBuilder } from '@heliks/tiles-engine';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 import { b2World } from '@flyover/box2d';

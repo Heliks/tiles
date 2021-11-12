@@ -12,7 +12,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    */
   constructor(
     private readonly ticker: Ticker,
-    private readonly storage: SpriteSheetStorage,
+    private readonly storage: SpriteSheetStorage
   ) {
     super(contains(SpriteAnimation, SpriteDisplay));
   }

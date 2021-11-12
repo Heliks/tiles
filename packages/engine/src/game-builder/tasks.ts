@@ -3,14 +3,14 @@ import { ComponentType, System } from '@heliks/ecs';
 import { Game } from '../game';
 import {
   ClassProvider,
-  FactoryProvider, InstanceProvider,
+  FactoryProvider,
+  InstanceProvider,
   isFactoryProvider,
   isInstanceProvider,
   Provider,
   ValueProvider
 } from './provider';
-import { World } from '../ecs';
-import { getStorageInjectorToken } from '../ecs';
+import { getStorageInjectorToken, World } from '../ecs';
 import { Container } from '@heliks/tiles-injector';
 import { GameBuilder, Module } from './types';
 import { hasOnInit } from './lifecycle';

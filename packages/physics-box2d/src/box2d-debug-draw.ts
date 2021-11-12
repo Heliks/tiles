@@ -1,7 +1,6 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
 import { Camera, DebugDraw, Renderer, RendererPlugin, Screen } from '@heliks/tiles-pixi';
-import { PI_2 } from '@heliks/tiles-math';
-import { Inject, Injectable, OnInit, World } from '@heliks/tiles-engine';
+import { Inject, Injectable, OnInit, PI_2 } from '@heliks/tiles-engine';
 import { B2_WORLD } from './const';
 
 
@@ -43,7 +42,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     this.world.DrawDebugData();
   }
 

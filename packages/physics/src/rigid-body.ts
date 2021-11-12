@@ -1,5 +1,6 @@
-import { Transform, vec2 } from '@heliks/tiles-engine';
+import { vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
+
 
 export enum RigidBodyType {
   /**

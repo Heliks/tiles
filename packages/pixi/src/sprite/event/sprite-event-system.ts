@@ -31,8 +31,8 @@ export class SpriteEventSystem extends ReactiveSystem {
 
     sprite.interactive = true;
 
-    const onDown  = () => events.down.push(undefined);
-    const onUp    = () => events.up.push(undefined);
+    const onDown  = () => events.down.push(Symbol());
+    const onUp    = () => events.up.push(Symbol());
 
     // PIXI.JS will handle the events internally, we just forward them to our event
     // queues. We do normalize some events however, so that the component works the

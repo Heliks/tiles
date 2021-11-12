@@ -1,7 +1,7 @@
 import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Renderer } from '../../renderer';
 import { Stage } from '../../stage';
-import { SpriteDisplay } from './index';
+import { SpriteDisplay } from '.';
 import { SpriteSheetStorage } from '../sprite-sheet';
 import { Screen } from '../../screen';
 import { Sprite } from 'pixi.js';
