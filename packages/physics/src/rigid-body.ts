@@ -134,6 +134,11 @@ export class RigidBody {
       }
     }
 
+    // Check for undefined because material ID can be "0".
+    if (collider.material === undefined) {
+      collider.material = this.material;
+    }
+
     this.colliders.push(collider);
 
     return this;

@@ -13,6 +13,17 @@ describe('RigidBody', () => {
       expect(body.colliders[0]).toBe(coll);
     });
 
+    it('should inherit the bodies default material', () => {
+      const materialId = 0;
+      const body = new RigidBody();
+      const coll = Collider.rect(0, 0);
+
+      body.material = materialId;
+      body.attach(coll);
+
+      expect(coll.material).toBe(materialId)
+    });
+
     it('should be attached using shapes', () => {
       const body = new RigidBody();
 
