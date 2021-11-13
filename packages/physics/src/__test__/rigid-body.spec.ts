@@ -1,22 +1,34 @@
 import { Rectangle } from '@heliks/tiles-math';
+import { Collider } from '../collider';
 import { RigidBody } from '../rigid-body';
 
 describe('RigidBody', () => {
-  it('should attach colliders', () => {
-    const body = new RigidBody();
+  describe('Colliders', () => {
+    it('should be attached', () => {
+      const body = new RigidBody();
+      const coll = Collider.rect(100, 100);
 
-    body.attach(new Rectangle(0, 0));
+      body.attach(coll);
 
-    expect(body.colliders).toHaveLength(1);
-  });
-
-  it('should assign data to attached colliders', () => {
-    const body = new RigidBody();
-
-    body.attach(new Rectangle(0, 0), {
-      sensor: true
+      expect(body.colliders[0]).toBe(coll);
     });
 
-    expect(body.colliders[0].sensor).toBeTruthy();
+    it('should be attached using shapes', () => {
+      const body = new RigidBody();
+
+      body.attach(new Rectangle(0, 0));
+
+      expect(body.colliders).toHaveLength(1);
+    });
+
+    it('should have data assigned when they are created from shapes', () => {
+      const body = new RigidBody();
+
+      body.attach(new Rectangle(0, 0), {
+        sensor: true
+      });
+
+      expect(body.colliders[0].sensor).toBeTruthy();
+    });
   });
 });

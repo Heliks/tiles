@@ -5,7 +5,7 @@ const RECT = new Rectangle(0, 0, 0, 0);
 
 describe('Collider', () => {
   it('should add contacts with other colliders', () => {
-    const collider = new Collider(1, RECT);
+    const collider = new Collider(RECT);
 
     collider.addContact(0, 15);
 
@@ -16,7 +16,7 @@ describe('Collider', () => {
   });
 
   it('should remove contacts with other colliders', () => {
-    const collider = new Collider(1, RECT);
+    const collider = new Collider(RECT);
 
     collider.addContact(0, 15);
     collider.removeContact(0, 15);

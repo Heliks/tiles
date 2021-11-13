@@ -1,5 +1,4 @@
-import { Entity } from '@heliks/tiles-engine';
-import { Circle, Rectangle } from '@heliks/tiles-math';
+import { Entity, Circle, Rectangle } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
 
 
@@ -44,7 +43,7 @@ export interface ColliderContact {
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
  */
-export class Collider implements ColliderData {
+export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /***/
   public readonly contacts: ColliderContact[] = [];
@@ -59,10 +58,35 @@ export class Collider implements ColliderData {
   public type?: string | number;
 
   /**
-   * @param id Id that is unique to the body to which this collider is attached to.
    * @param shape Physical shape of the collider.
    */
-  constructor(public readonly id: number, public shape: ColliderShape) {}
+  constructor(public shape: T) {}
+
+  /**
+   * Creates a collider with a `Rectangle` shape.
+   * @see Rectangle
+   */
+  public static rect(width: number, height: number): Collider<Rectangle> {
+    return new Collider(new Rectangle(width, height));
+  }
+
+  /**
+   * Creates a collider with a `Circle` shape.
+   * @see Circle
+   */
+  public static circle(radius: number): Collider<Circle> {
+    return new Collider(new Circle(radius));
+  }
+
+  /**
+   * Converts the collider into a sensor.
+   * @see sensor
+   */
+  public toSensor(): this {
+    this.sensor = true;
+
+    return this;
+  }
 
   /** Registers a new contact with the collider of another entity. */
   public addContact(entity: Entity, colliderId: number): this {

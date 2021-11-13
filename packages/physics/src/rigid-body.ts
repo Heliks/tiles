@@ -1,5 +1,6 @@
 import { vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
+import { MaterialId } from './material';
 
 
 export enum RigidBodyType {
@@ -91,6 +92,11 @@ export class RigidBody {
    */
   public _position = vec2(0, 0);
 
+  /**
+   * Default material for attached colliders that don't specify their own. Updating
+   * this does not affect already attached colliders.
+   */
+  public material?: MaterialId;
 
   /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).
@@ -107,15 +113,27 @@ export class RigidBody {
     return new RigidBody(RigidBodyType.Kinematic);
   }
 
-  /** Attaches a `Collider` with the given `shape` to this body. */
-  public attach(shape: ColliderShape, data?: Partial<ColliderData>): this {
-    // Fixme: This is prone to id collisions, but for now this works.
-    const collider = new Collider(this.colliders.length, shape);
+  /** Attaches a `shape` as a collider using `data`. */
+  public attach(shape: ColliderShape, data?: Partial<Collider>): this;
 
-    if (data) {
-      Object.assign(collider, data);
+  /** Attaches the given `collider`. */
+  public attach(collider: Collider): this;
+
+  /** @internal */
+  public attach(shape: ColliderShape | Collider, data?: Partial<ColliderData>): this {
+    let collider;
+
+    if (shape instanceof Collider) {
+      collider = shape;
     }
-    
+    else {
+      collider = new Collider(shape);
+
+      if (data) {
+        Object.assign(collider, data);
+      }
+    }
+
     this.colliders.push(collider);
 
     return this;
