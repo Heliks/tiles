@@ -34,9 +34,9 @@ export class RigidBody {
 
   /**
    * Linear damping that is applied to the whole body. This determines how much the
-   * velocity of the body degrades over time in relation to the worlds gravity. In top-
-   * down games where the world usually does not have a gravity this needs to be set to
-   * an appropriate value for characters or they will continue to move forever.
+   * velocity of the body deteriorates over time in relation to the worlds gravity. In
+   * top-down games where the world usually does not have a gravity this needs to be
+   * set to an appropriate value or objects will move forever.
    */
   public damping = 0;
 
@@ -93,24 +93,23 @@ export class RigidBody {
   public _position = vec2(0, 0);
 
   /**
-   * Default material for attached colliders that don't specify their own. Updating
-   * this does not affect already attached colliders.
-   */
-  public material?: MaterialId;
-
-  /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).
+   * @param material (optional) Default material for attached colliders that don't
+   *  specify their own. Updating this does not affect already attached colliders.
    */
-  constructor(public readonly type = RigidBodyType.Static) {}
+  constructor(
+    public readonly type = RigidBodyType.Static,
+    public material?: MaterialId
+  ) {}
 
   /** Creates a new dynamic rigid body. */
-  public static dynamic(): RigidBody {
-    return new RigidBody(RigidBodyType.Dynamic);
+  public static dynamic(material?: MaterialId): RigidBody {
+    return new RigidBody(RigidBodyType.Dynamic, material);
   }
 
   /** Creates a new kinematic rigid body. */
-  public static kinematic(): RigidBody {
-    return new RigidBody(RigidBodyType.Kinematic);
+  public static kinematic(material?: MaterialId): RigidBody {
+    return new RigidBody(RigidBodyType.Kinematic, material);
   }
 
   /** Attaches a `shape` as a collider using `data`. */
@@ -150,6 +149,18 @@ export class RigidBody {
     this.velocity.y = y;
 
     this.isVelocityDirty = true;
+
+    return this;
+  }
+
+  /**
+   * Updates the linear damping. This flags the body as dirty.
+   * @see damping
+   * @see dirty
+   */
+  public dampen(value: number): this {
+    this.damping = value;
+    this.dirty = true;
 
     return this;
   }

@@ -66,16 +66,16 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
    * Creates a collider with a `Rectangle` shape.
    * @see Rectangle
    */
-  public static rect(width: number, height: number): Collider<Rectangle> {
-    return new Collider(new Rectangle(width, height));
+  public static rect(width: number, height: number, x?: number, y?: number): Collider<Rectangle> {
+    return new Collider(new Rectangle(width, height, x, y));
   }
 
   /**
    * Creates a collider with a `Circle` shape.
    * @see Circle
    */
-  public static circle(radius: number): Collider<Circle> {
-    return new Collider(new Circle(radius));
+  public static circle(radius: number, x?: number, y?: number): Collider<Circle> {
+    return new Collider(new Circle(radius, x, y));
   }
 
   /**
