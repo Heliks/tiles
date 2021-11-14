@@ -165,22 +165,4 @@ export class RigidBody {
     return this;
   }
 
-  // Todo: The tag system is currently a work around. Will probably be removed when I
-  //  find a better way to do this.
-  // eslint-disable
-  public tags: string[] = [];
-
-  public tag(tag: string): this {
-    if (!~this.tags.indexOf(tag)) {
-      this.tags.push(tag);
-    }
-
-    return this;
-  }
-
-  public hasTag(tag: string): boolean {
-    return this.tags.includes(tag);
-  }
-  // eslint-enable
-
 }

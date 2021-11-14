@@ -23,13 +23,6 @@ export interface ColliderData {
    */
   sensor: boolean;
 
-  /**
-   * Custom user defined type. This has no impact on the behavior of this collider
-   * whatsoever outside of user defined functionality that may operate on this
-   * particular type.
-   */
-  type?: string | number
-
 }
 
 export interface ColliderContact {
@@ -54,8 +47,13 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   /** @inheritDoc */
   public sensor = false;
 
-  /** @inheritDoc */
-  public type?: string | number;
+  /**
+   * Contains all assigned tags.
+   *
+   * Tags can be used to identify the collider. They do not have any immediate effect
+   * on how the physics of the collider behaves.
+   */
+  public readonly tags = new Set<string>();
 
   /**
    * @param shape Physical shape of the collider.
@@ -76,6 +74,32 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
    */
   public static circle(radius: number, x?: number, y?: number): Collider<Circle> {
     return new Collider(new Circle(radius, x, y));
+  }
+
+  /**
+   * Tags the collider with one or more user defined tags.
+   * @see tags
+   */
+  public tag(...tags: string[]): this {
+    for (const tag of tags) {
+      this.tags.add(tag);
+    }
+
+    return this;
+  }
+
+  /**
+   * Returns `true` if the collider is tagged with all given `tags`.
+   * @see tags
+   */
+  public hasTags(...tags: string[]): boolean {
+    for (const tag of tags) {
+      if (! this.tags.has(tag)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
