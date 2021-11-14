@@ -1,4 +1,4 @@
-import { Container } from '../renderables';
+import { Container } from '../drawable';
 
 /** @internal */
 export class Layer extends Container {

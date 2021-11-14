@@ -1,4 +1,4 @@
-import { Container } from '../renderables';
+import { Container } from '../drawable';
 import { depthSort } from './depth';
 import { Layer } from './layer';
 

@@ -2,7 +2,7 @@ export * from './camera';
 export * from './debug-draw';
 export * from './texture-format';
 export * from './pixi-module';
-export * from './renderables';
+export * from './drawable';
 export * from './renderer';
 export * from './renderer-system';
 export * from './renderer-plugins';

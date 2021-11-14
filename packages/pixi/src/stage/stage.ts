@@ -1,5 +1,5 @@
 import { Injectable } from '@heliks/tiles-engine';
-import { Container, Drawable } from '../renderables';
+import { Container, Drawable } from '../drawable';
 import { Layer } from './layer';
 import { Layers } from './layers';
 import { Filter } from 'pixi.js';

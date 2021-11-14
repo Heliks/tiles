@@ -4,7 +4,7 @@ import { Stage } from './stage';
 import { DebugDraw } from './debug-draw';
 import { Camera } from './camera';
 import { Screen } from './screen';
-import { Container } from './renderables';
+import { Container } from './drawable';
 import * as PIXI from 'pixi.js'
 
 /** Event that occurs every time the renderer is resized. */
