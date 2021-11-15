@@ -1,26 +1,32 @@
 import { ComponentType, System, World } from '../ecs';
 import { Game } from '../game';
 import { ClassType } from '../types';
-import { AddProvider, AddSystem, AddComponent, AddModule, Task } from './tasks';
+import { AddComponent, AddModule, AddProvider, AddSystem, Task } from './tasks';
 import { GameBuilder as Builder, Module } from './types';
 import { Provider } from './provider';
 import { Container } from '@heliks/tiles-injector';
 
 
-/** Game builder. */
+/**
+ * Builder responsible for building the game runtime.
+ *
+ * The builder will initialize all dependencies (services, systems etc.) in the same
+ * order as they were added. Meaning that if `ServiceA` is added before `ServiceB`,
+ * only `ServiceB` can access `ServiceA`, but not the other way around. On the same
+ * note a game system `SystemA` will always run before `SystemB`, if `SystemA` was
+ * added to the builder first.
+ *
+ * @see Game
+ */
 export class GameBuilder implements Builder {
 
-  /**
-   * Contains all tasks that this builder has queued. They will all be invoked
-   * in the same order as they were added.
-   */
-  protected readonly tasks: Task[] = [];
+  /** Contains the task queue. */
+  private readonly tasks: Task[] = [];
 
   /**
-   * @param container (optional) Global service container to which game systems will
-   *  be bound to.
+   * @param container Global service container.
    */
-  constructor(private readonly container: Container = new Container()) {}
+  constructor(public readonly container: Container = new Container()) {}
 
   /** @inheritDoc */
   public provide(provider: Provider): this {
