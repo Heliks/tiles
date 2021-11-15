@@ -59,10 +59,7 @@ export class Box2dWorld extends Physics {
   private parseCollider(body: RigidBody, collider: Collider, def: b2FixtureDef): void {
     // Attach the shape to the fixture.
     def.shape = b2ParseShape(collider.shape);
-
-    if (collider.sensor) {
-      def.isSensor = true;
-    }
+    def.isSensor = collider.sensor;
 
     // Assign material. Hard check here because the number 0 is a valid material id.
     if (collider.material !== undefined) {
