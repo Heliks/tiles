@@ -1977,6 +1977,11 @@
   resolved "https://registry.npmjs.org/@types/systemjs/-/systemjs-0.20.7.tgz#73281a628736336f6c645304f31d6fe8669d387d"
   integrity sha512-sCMqKfN5KEacy+cLfNOV66EYAs7a2c4m/Z86Ph81Anzj39/A0Tij8bVjlvAnwRgdC1pOewNhIDFQV0peZ9/K1w==
 
+"@types/uuid@^8.3.1":
+  version "8.3.1"
+  resolved "http://193.31.26.163:4873/@types%2fuuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
+  integrity sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
@@ -9240,6 +9245,11 @@ util-promisify@^2.1.0:
   integrity sha1-PCI2R2xNMsX/PEcAKt18E7moKlM=
   dependencies:
     object.getownpropertydescriptors "^2.0.3"
+
+uuid@8.3.2:
+  version "8.3.2"
+  resolved "http://193.31.26.163:4873/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 uuid@^3.0.1, uuid@^3.3.2:
   version "3.4.0"

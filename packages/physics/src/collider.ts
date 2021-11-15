@@ -1,4 +1,4 @@
-import { Entity, Circle, Rectangle } from '@heliks/tiles-engine';
+import { Entity, Circle, Rectangle, uuid } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
 
 
@@ -37,6 +37,9 @@ export interface ColliderContact {
  * parts) with each other.
  */
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
+
+  /** Unique identifier. */
+  public readonly id = uuid();
 
   /***/
   public readonly contacts: ColliderContact[] = [];

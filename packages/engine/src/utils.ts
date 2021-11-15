@@ -1,3 +1,5 @@
+import { v4 as uuidv4, validate } from 'uuid';
+
 /** Caps `value` to the boundaries `min` and `max`. */
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -16,4 +18,16 @@ export function rtrim(value: string, char: string): string {
 /** Returns `true` if `target` contains all items in `items`. */
 export function containsAll<T = unknown>(target: T[], items: T[]): boolean {
   return items.every(i => target.includes(i));
+}
+
+
+/**
+ * Creates RFC4122 compliant UUID (Universally Unique Identifiers).
+ *
+ * Internally this simply wraps the `uuid` npm package.
+ *
+ * @see https://de.wikipedia.org/wiki/Universally_Unique_Identifier
+ */
+export function uuid(): string {
+  return uuidv4();
 }
