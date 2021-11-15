@@ -16,6 +16,14 @@ export function vec2copy(vec: Vec2): Vec2 {
   return vec2(vec.x, vec.y);
 }
 
+/**
+ * Returns the distance between two points `vecA` and `vecB`. The distance is the
+ * length of a straight line connecting them.
+ */
+export function vec2dist(vecA: Vec2, vecB: Vec2): number {
+  return Math.hypot(vecB.x - vecA.x, vecB.y - vecA.y);
+}
+
 // /** Returns the Dot product of two 2D vectors `vecA` and `vecB`. */
 // export function vec2dot(vecA: Vec2Readonly, vecB: Vec2Readonly): number {
 //   return (vecA[0] * vecB[0]) + (vecA[1] * vecB[1]);
