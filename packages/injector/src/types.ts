@@ -10,8 +10,13 @@ export type ClassType<T = any> = new (...params: any[]) => T;
 /** Types that can be used as an injector token. */
 export type InjectorToken<T = unknown> = symbol | string | number | ClassType<T> | Function;
 
-/** Factory of a binding that produces a value. */
-export type BindingFactory<T> = (container: Container) => T;
+/**
+ * Factory of a binding that produces a value.
+ *
+ * @typeparam T Type of value produced by the factory.
+ * @typeparam C Container type passed down to the factory.
+ */
+export type BindingFactory<T, C = Container> = (container: C) => T;
 
 export interface ImmutableContainer {
 

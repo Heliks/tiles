@@ -1,4 +1,4 @@
-import { BindingFactory, InjectorToken } from '@heliks/tiles-injector';
+import { BindingFactory, Container, InjectorToken } from '@heliks/tiles-injector';
 import { ClassType } from '../types';
 
 /**
@@ -14,7 +14,7 @@ export interface FactoryProvider {
    * The factory that will be used to generate the value of [[token]] when it is
    * injected.
    */
-  factory: BindingFactory<unknown>;
+  factory: BindingFactory<unknown, Container>;
 
   /**
    * If set to `true` the provider will be bound as a singleton, meaning that [[factory]]
