@@ -43,7 +43,7 @@ export class Container implements Base {
   /** @inheritDoc */
   public singleton<T = unknown>(
     token: InjectorToken,
-    resolver: BindingFactory<T>
+    resolver: BindingFactory<T, Container>
   ): this {
     this.bindings.set(token, new SingletonBinding(resolver));
 
@@ -53,7 +53,7 @@ export class Container implements Base {
   /** @inheritDoc */
   public factory<T = unknown>(
     token: InjectorToken,
-    factory: BindingFactory<T>
+    factory: BindingFactory<T, Container>
   ): this {
     this.bindings.set(token, {
       resolve: factory
