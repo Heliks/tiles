@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "uuid": "8.3.2",
-    "@heliks/ecs": "^0.1.0",
-    "@heliks/ecs-hierarchy": "^0.0.5",
-    "@heliks/ecs-transform": "^0.0.7",
+    "@heliks/ecs": "^0.1.2",
+    "@heliks/ecs-hierarchy": "^0.1.2",
+    "@heliks/ecs-transform": "^0.1.2",
     "@heliks/event-queue": "^0.1.1",
     "@heliks/tiles-injector": "^0.0.0",
     "@heliks/tiles-math": "^0.0.0",
