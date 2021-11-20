@@ -10,12 +10,12 @@
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
-    "@types/jest": "^25.1.2",
+    "@types/jest": "^27.0.3",
     "@types/node": "^14.14.2",
-    "jest": "^26.6.3",
+    "jest": "^27.3.1",
     "jest-canvas-mock": "^2.2.0",
     "reflect-metadata": "^0.1.13",
-    "ts-jest": "^26.4.4",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.1.2"
   },
   "files": [
