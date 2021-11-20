@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-
+export {Text} from 'pixi.js';
 
 export class DrawText {
 

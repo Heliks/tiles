@@ -6,6 +6,8 @@ import { Camera } from './camera';
 import { Screen } from './screen';
 import { Container } from './drawable';
 import * as PIXI from 'pixi.js'
+import { vec2 } from '@heliks/tiles-math';
+import { Overlay } from './stage/overlay';
 
 /** Event that occurs every time the renderer is resized. */
 export interface OnResizeEvent {
@@ -27,7 +29,21 @@ export class Renderer {
    */
   private isAutoResizeEnabled = false;
 
-  /** PIXI.JS renderer. */
+  /**
+   * Contains half of the screen size *scaled* to the screen scale. We cache this
+   * here so we don't have to do this calculation on every frame. This is updated
+   * every time when screen is re-scaled.
+   *
+   * @see Screen.size
+   * @see Screen.scale
+   * @see updateCamera
+   */
+  private readonly screenSizeScaled2 = vec2(0, 0);
+
+  /**
+   * Root container that holds all draw-ables that make up the whole game scene.
+   * @see Container
+   */
   protected readonly root = new Container();
 
   /** Contains the renderers height in px. */
@@ -43,14 +59,22 @@ export class Renderer {
   constructor(
     public readonly camera: Camera,
     public readonly debugDraw: DebugDraw,
+    public readonly overlay: Overlay,
     public readonly screen: Screen,
     public readonly stage: Stage,
     public readonly renderer: PIXI.Renderer
   ) {
     window.addEventListener('resize', this.onWindowResize.bind(this));
 
-    // Create hierarchy with debug draw being rendered on top of the stage.
-    this.root.addChild(this.stage.view, this.debugDraw.view);
+    // Create the scenes render hierarchy.
+    // 1. Stage
+    // 2. Overlay
+    // 3. Debug
+    this.root.addChild(
+      this.stage.view,
+      this.overlay,
+      this.debugDraw.view
+    );
   }
 
   /**
@@ -126,7 +150,10 @@ export class Renderer {
   }
 
   /** Applies `screen` dimensions to the renderer. */
-  private setRendererDimensions(screen: Screen): void {
+  private updateRendererDimensions(screen: Screen): void {
+    this.screenSizeScaled2.x = (this.screen.size.x / this.screen.scale.x) >> 1;
+    this.screenSizeScaled2.y = (this.screen.size.y / this.screen.scale.y) >> 1;
+
     this.renderer.resize(screen.size.x, screen.size.y);
 
     // Note: Because of an issue in PIXi.JS stage and debug draw are resized directly
@@ -137,20 +164,18 @@ export class Renderer {
     this.debugDraw
       .resize(screen.size.x, screen.size.y)
       .scale(screen.scale.x, screen.scale.y);
+
+    // As the overlay it is fixed in size and position we can update this here instead
+    // of doing it every frame.
+    this.overlay.pivot.set(-(screen.size.x >> 1), -(screen.size.y >> 1));
   }
 
   /** @internal */
   private updateCamera(): void {
-    const x = (this.camera.world.x * this.screen.unitSize) * this.screen.scale.x;
-    const y = (this.camera.world.y * this.screen.unitSize) * this.screen.scale.y;
-
-    const sx = (this.screen.size.x / 2);
-    const sy = (this.screen.size.y / 2);
-
-    this.root.pivot.set(x - sx, y - sy);
-
-    this.debugDraw.view.x = x - sx;
-    this.debugDraw.view.y = y - sy;
+    this.stage.view.pivot.set(
+      (this.camera.world.x * this.screen.unitSize) - this.screenSizeScaled2.x,
+      (this.camera.world.y * this.screen.unitSize) - this.screenSizeScaled2.y
+    );
   }
 
   /**
@@ -161,7 +186,7 @@ export class Renderer {
     const screen = this.screen;
 
     if (screen.dirty) {
-      this.setRendererDimensions(screen);
+      this.updateRendererDimensions(screen);
 
       this.onResize.push({
         screen: this.screen
@@ -179,6 +204,5 @@ export class Renderer {
     // Render the final image.
     this.renderer.render(this.root);
   }
-
 
 }

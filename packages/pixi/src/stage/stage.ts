@@ -1,9 +1,18 @@
 import { Injectable } from '@heliks/tiles-engine';
 import { Container, Drawable } from '../drawable';
-import { Layer } from './layer';
-import { Layers } from './layers';
 import { Filter } from 'pixi.js';
 
+
+/**
+ * The stage is where game objects are supposed to be rendered.
+ *
+ * Everything rendered here is scaled appropriately according to resolution and zoom
+ * factor, which means that if we have a 200x200px screen with 100x100px resolution a
+ * 20x20px `Drawable` would be scaled to the appropriate size of `40x40px`.
+ *
+ * @see Overlay
+ * @see Renderer
+ */
 @Injectable()
 export class Stage {
 
@@ -20,16 +29,16 @@ export class Stage {
     this.view.filters = [];
   }
 
-  /** Adds a `renderable` object. */
-  public add(renderable: Drawable): this {
-    this.view.add(renderable);
+  /** Adds a `drawable` object. */
+  public add(drawable: Drawable): this {
+    this.view.add(drawable);
 
     return this;
   }
 
-  /** Removes a `renderable`. */
-  public remove(renderable: Drawable): this {
-    this.view.removeChild(renderable);
+  /** Removes a `drawable`. */
+  public remove(drawable: Drawable): this {
+    this.view.removeChild(drawable);
 
     return this;
   }
@@ -42,12 +51,6 @@ export class Stage {
     this.view.scale.set(x, y ?? x);
 
     return this;
-  }
-
-  /** Sets the stage position. */
-  public setPosition(x: number, y: number): void {
-    this.view.x = x * this.view.scale.x;
-    this.view.y = y * this.view.scale.y;
   }
 
 }

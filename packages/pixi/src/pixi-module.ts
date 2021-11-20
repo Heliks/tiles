@@ -15,6 +15,7 @@ import { Screen } from './screen';
 import { DebugDraw } from './debug-draw';
 import { RendererPlugin, RendererPlugins } from './renderer-plugins';
 import { DrawText, DrawTextSystem } from './text';
+import { Overlay } from './stage/overlay';
 
 
 /** Configuration for the renderer module. */
@@ -173,6 +174,7 @@ export class PixiModule implements Module, OnInit {
       .provide(Camera)
       .provide(DebugDraw)
       .provide(Stage)
+      .provide(Overlay)
       .provide(Renderer)
       // Should run before the SpriteDisplaySystem so that sprites are updated on the
       // same frame where the animation possibly transformed them.

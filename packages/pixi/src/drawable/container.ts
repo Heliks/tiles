@@ -34,6 +34,25 @@ export class Container<T extends Drawable = Drawable> extends BaseContainer impl
     return this;
   }
 
+  /** Removes a `renderable` from the container. */
+  public remove(renderable: T): this {
+    this.removeChild(renderable);
+
+    return this;
+  }
+
+  /**
+   * Updates the containers scale factor.
+   *
+   * This means that if we set a scale factor of `2`, a `Drawable` with a size of
+   * 20x20px is rendered as 40x40px inside of it.
+   */
+  public rescale(x: number, y: number): this {
+    this.scale.set(x, y);
+
+    return this;
+  }
+
   /**
    * Transforms the pivot by a percentage `value`. E.g. the value `0.5` will set the
    * pivot to the center of the container. This also updates the [[x]] and [[y]]
