@@ -1,3 +1,4 @@
+export * from './align';
 export * from './camera';
 export * from './debug-draw';
 export * from './texture-format';

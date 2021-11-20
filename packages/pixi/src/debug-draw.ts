@@ -3,11 +3,9 @@ import { Injectable, Vec2 } from '@heliks/tiles-engine';
 import { hex2rgb } from './utils';
 import { Camera } from './camera';
 import { Screen } from './screen';
+import { Align } from './align';
 
-export enum Align {
-  Center,
-  TopLeft
-}
+
 
 /**
  * Utility that can be used to draw debug information on the screen. The debug draw

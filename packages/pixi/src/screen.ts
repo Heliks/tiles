@@ -1,4 +1,5 @@
 import { Vec2, vec2 } from '@heliks/tiles-engine';
+import { Align, alignTo } from './align';
 
 
 /**
@@ -46,6 +47,17 @@ export class Screen {
   constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
     this.size = vec2(w, h);
     this.resolution = vec2(rw, rh);
+  }
+
+  /**
+   * Realigns the given `pos` to the screen.
+   *
+   * @param pos Position that should be realigned.
+   * @param align To where position should be aligned to.
+   * @param out (optional) Vector to which new position will be written to.
+   */
+  public align(pos: Vec2, align: Align, out = vec2(0, 0)): Vec2 {
+    return alignTo(pos, this.size, align, out);
   }
 
   /** Resizes the screen. Also re-calculates the [[scale]]. */
