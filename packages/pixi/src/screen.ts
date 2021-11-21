@@ -50,14 +50,14 @@ export class Screen {
   }
 
   /**
-   * Realigns the given `pos` to the screen.
+   * Realigns the given `pos` to the screens boundaries.
    *
    * @param pos Position that should be realigned.
    * @param align To where position should be aligned to.
    * @param out (optional) Vector to which new position will be written to.
    */
   public align(pos: Vec2, align: Align, out = vec2(0, 0)): Vec2 {
-    return alignTo(pos, this.size, align, out);
+    return alignTo(pos, this.size.x, this.size.y, align, out);
   }
 
   /** Resizes the screen. Also re-calculates the [[scale]]. */
