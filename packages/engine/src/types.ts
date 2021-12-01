@@ -7,3 +7,5 @@ export interface Struct<T = unknown> {
   [key: string]: T;
 }
 
+/** Type alias for a string in a UUID format. */
+export type UUID = string;
