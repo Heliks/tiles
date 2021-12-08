@@ -3,6 +3,7 @@ import { SpriteDisplay } from '../display';
 import { SpriteEvent } from './sprite-event';
 import { Stage } from '../../stage';
 
+
 @Injectable()
 export class SpriteEventSystem extends ReactiveSystem {
 
@@ -12,7 +13,7 @@ export class SpriteEventSystem extends ReactiveSystem {
   /** @internal */
   private cmpSpriteEvent!: Storage<SpriteEvent>;
 
-  constructor(private readonly stage: Stage) {
+  constructor() {
     super(contains(SpriteDisplay, SpriteEvent));
   }
 
