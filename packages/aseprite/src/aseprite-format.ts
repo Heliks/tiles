@@ -1,5 +1,5 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { Frame, SpriteCollection, SpriteSheet, SpriteSheetStorage, Texture, TextureFormat } from '@heliks/tiles-pixi';
+import { Frame, LoadTexture, SpriteCollection, SpriteSheet, SpriteSheetStorage, Texture } from '@heliks/tiles-pixi';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 import { World } from '@heliks/tiles-engine';
 
@@ -43,7 +43,7 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
 
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
-    return loader.fetch(`${getDirectory(file)}/${image}`, new TextureFormat());
+    return loader.fetch(`${getDirectory(file)}/${image}`, new LoadTexture());
   }
 
   /** @inheritDoc */

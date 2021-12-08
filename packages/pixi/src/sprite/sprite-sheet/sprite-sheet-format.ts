@@ -2,7 +2,7 @@ import { Grid, Struct } from '@heliks/tiles-engine';
 import { SpriteAnimationData, SpriteSheet } from './sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { SpriteGrid } from './sprite-grid';
-import { TextureFormat } from '../../texture-format';
+import { LoadTexture } from '../../load-texture';
 
 /** The raw data of a sprite sheet loaded from JSON. */
 interface SpriteSheetData {
@@ -43,7 +43,7 @@ export class SpriteSheetFormat implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
   public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
-    const texture = await loader.fetch(`${getDirectory(file)}/${data.image}`, new TextureFormat());
+    const texture = await loader.fetch(`${getDirectory(file)}/${data.image}`, new LoadTexture());
 
     const sheet = new SpriteGrid(
       new Grid(

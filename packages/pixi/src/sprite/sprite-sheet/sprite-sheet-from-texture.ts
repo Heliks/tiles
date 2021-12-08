@@ -2,7 +2,7 @@ import { Format, LoadType } from '@heliks/tiles-assets';
 import { SpriteSheet } from './sprite-sheet';
 import { SpriteGrid } from './sprite-grid';
 import { Grid } from '@heliks/tiles-engine';
-import { TextureFormat } from '../../texture-format';
+import { LoadTexture } from '../../load-texture';
 
 
 /** (WIP) */
@@ -30,7 +30,7 @@ export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
         this.spriteWidth,
         this.spriteHeight
       ),
-      new TextureFormat().process(data)
+      new LoadTexture().process(data)
     );
   }
 
