@@ -4,6 +4,7 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { SpriteGrid } from './sprite-grid';
 import { LoadTexture } from '../../load-texture';
 
+
 /** The raw data of a sprite sheet loaded from JSON. */
 interface SpriteSheetData {
   cols: number;
@@ -14,7 +15,7 @@ interface SpriteSheetData {
 }
 
 /**
- * Loads a `SpriteSheet` from JSON.
+ * Loads a `SpriteSheet` from a JSON format.
  *
  * ```json
  * {

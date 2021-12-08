@@ -10,8 +10,7 @@ export * from './renderer-plugins';
 export * from './screen';
 export * from './sprite';
 export * from './stage';
-export * from './text';
 
 export { rgb2hex } from './utils';
 
-export { Filter, Texture } from 'pixi.js';
+export { Filter, Texture, Text, BitmapText } from 'pixi.js';
