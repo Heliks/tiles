@@ -1,153 +1,40 @@
-import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteGrid, TextureFormat } from '@heliks/tiles-pixi';
-import { Tileset as BaseTileset } from '@heliks/tiles-tilemap';
-import { Grid } from '@heliks/tiles-engine';
-import { HasTmxPropertyData, Properties, tmxExtractProperties } from './properties';
-import { tmxParseShape, Shape, TmxShapeData } from './shape';
-import { RigidBodyType } from "@heliks/tiles-physics";
+import { Sprite, SpriteGrid } from '@heliks/tiles-pixi';
 
-interface TileData extends HasTmxPropertyData {
-  animation?: {
-    duration: number;
-    tileid: number;
-  }[];
-  id: number;
-  objectgroup?: {
-    objects: TmxShapeData[]
-  }
-}
-
-/** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TmxTilesetData extends HasTmxPropertyData {
-  backgroundcolor: string;
-  columns: number;
-  image: string;
-  imageheight: number;
-  imagewidth: number;
-  name: string;
-  margin: number;
-  spacing: number;
-  tilecount: number;
-  tiledversion: string;
-  tileheight: number;
-  tilewidth: number;
-  tiles?: TileData[];
-  type: 'tileset';
-}
 
 /**
- * The unique ID of a tile. This is identical to the index on the tileset on which the
- * tile is contained.
+ * Each tileset is limited by a global ID range, where each ID corresponds to a local
+ * tile index.
  */
-export type TileId = number;
+export class Tileset {
 
-/** Properties that can be attached to a tile. */
-export interface TileProperties {
   /**
-   * Name of the animation that should be placed on this time. The animation will be
-   * started automatically when the tile is spawned into the world.
+   * Contains the last ID in the global ID range that the tileset is occupying on a
+   * maps global range.
    */
-  animation?: string;
+  public get lastId(): number {
+    return this.firstId + this.spritesheet.size() - 1;
+  }
+
   /**
-   * Manually specifies the objects rigid body type. If not set this will default to
-   * a static rigid body.
-   * Note: Only for objects that have a rigid body.
+   * @param spritesheet Spritesheet for rendering individual sprites.
+   * @param firstId First ID in the global ID range that this tileset occupies.
    */
-  physicsBodyType?: RigidBodyType;
+  constructor(
+    public readonly spritesheet: SpriteGrid,
+    public readonly firstId: number
+  ) {}
+
   /**
-   * Linear damping applied to the objects rigid body.
-   * Note: Only for objects that have a rigid body.
+   * Converts `id` to its local counterpart on [[tileset]]. For example if [[firstId]]
+   * is `12` this function will return the local ID `3` when given a global ID of `15`.
    */
-  physicsDamping?: number;
-}
+  public toLocal(id: number): number {
+    return id - this.firstId + 1;
+  }
 
-/** Wrapper around the default tileset for tiled specific features. */
-export class Tileset extends BaseTileset {
-
-  /** Custom tile properties mapped to the ID of the tile to which they belong */
-  public readonly properties = new Map<TileId, TileProperties>();
-  public readonly shapes = new Map<TileId, Shape[]>();
-
-  public getTileShapesByType<P extends object = object>(tileId: number, type: string): Shape<P>[] | undefined {
-    return this.shapes.get(tileId)?.filter(item => item.type === type) as Shape<P>[];
+  /** Creates a sprite from the given global `id`. */
+  public sprite(id: number): Sprite {
+    return this.spritesheet.sprite(this.toLocal(id) - 1);
   }
 
 }
-
-/** Asset loader format for TMX tilesets. */
-export class TmxTilesetFormat implements Format<TmxTilesetData, Tileset> {
-
-  /** @inheritDoc */
-  public readonly name = 'tmx-tileset';
-
-  /** @inheritDoc */
-  public readonly type = LoadType.Json;
-
-  constructor(public readonly firstId = 1) {}
-
-  /** Creates a `Tileset` from `data`. */
-  public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<Tileset> {
-    // Amount of rows is not contained in the tiled format so it needs to be calculated
-    // manually. The number is rounded down to cut of partial tiles.
-    const grid = new Grid(
-      data.columns,
-      Math.floor(data.imageheight / data.tileheight),
-      data.tilewidth,
-      data.tileheight
-    );
-
-    // Convert the relative path in the tiled format.
-    const source = `${getDirectory(file)}/${data.image}`;
-
-    // Load the texture and create a SpriteGrid from it.
-    const texture = await loader.fetch(source, new TextureFormat());
-    const spritesheet = new SpriteGrid(grid, texture);
-
-    const tileset = new Tileset(
-      spritesheet,
-      this.firstId,
-      data.tilewidth,
-      data.tileheight
-    );
-
-    if (data.tiles) {
-      for (const tileData of data.tiles) {
-        // Handle animations.
-        if (tileData.animation && tileData.animation.length > 0) {
-          // Individual durations are not supported by the SpriteRenderer so we grab
-          // the duration from the first frame and re-use it for all other frames.
-          const frameDuration = tileData.animation[0].duration;
-
-          // Use the ID of the tile as name for the animation.
-          spritesheet.setAnimation(tileData.id.toString(), {
-            frameDuration,
-            frames: tileData.animation.map(item => item.tileid)
-          });
-        }
-
-        // Parse properties.
-        if (tileData.properties) {
-          tileset.properties.set(tileData.id, tmxExtractProperties(tileData));
-        }
-
-        // Parse object shapes.
-        if (tileData.objectgroup) {
-          tileset.shapes.set(
-            tileData.id,
-            tileData.objectgroup.objects.map(object => tmxParseShape(
-              object,
-              data.tilewidth,
-              data.tileheight
-            ))
-          );
-        }
-      }
-    }
-
-    return tileset;
-  }
-
-}
-
-
-

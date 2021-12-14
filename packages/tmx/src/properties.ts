@@ -4,8 +4,11 @@ export interface TmxPropertyData {
   type: 'bool' | 'float' | 'int' | 'string';
 }
 
-/** An object that contains `TmxPropertyData`. */
-export interface HasTmxPropertyData {
+/**
+ * An object that contains custom `TmxPropertyData`.
+ * @see TmxPropertyData
+ */
+export interface HasPropertiesFormat {
   properties?: TmxPropertyData[];
 }
 
@@ -14,7 +17,10 @@ export interface Properties {
   [property: string]: unknown;
 }
 
-/** Helper type that indicates a structure carries parsed TMX properties. */
+/**
+ * An object that carries custom
+ *
+ * Helper type that indicates a structure carries parsed TMX properties. */
 export interface HasProperties<T = Properties> {
 
   /** Custom properties. */
@@ -27,7 +33,7 @@ export interface HasProperties<T = Properties> {
  * `Partial` of the original type `T`, as we currently can not guarantee that all the
  * required properties really exist.
  */
-export function tmxExtractProperties<T extends Properties>(target: HasTmxPropertyData): Partial<T> {
+export function tmxExtractProperties<T extends Properties>(target: HasPropertiesFormat): Partial<T> {
   const data: Properties = {};
 
   if (target.properties) {

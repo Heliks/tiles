@@ -1,10 +1,11 @@
 import { Circle, Rectangle } from '@heliks/tiles-math';
-import { ColliderShape, MaterialId } from '@heliks/tiles-physics';
-import { HasTmxPropertyData, tmxExtractProperties, Properties, HasProperties } from './properties';
+import { ColliderShape } from '@heliks/tiles-physics';
+import { HasProperties, HasPropertiesFormat, Properties, tmxExtractProperties } from './properties';
 import { getCustomType } from './utils';
 
+
 /** TMX JSON format for shapes. */
-export interface TmxShapeData extends HasTmxPropertyData {
+export interface TmxShapeData extends HasPropertiesFormat {
   ellipse?: boolean;
   height: number;
   id: number;
