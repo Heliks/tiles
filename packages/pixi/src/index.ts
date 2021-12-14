@@ -13,4 +13,4 @@ export * from './stage';
 
 export { rgb2hex } from './utils';
 
-export { Filter, Texture, Text, BitmapText } from 'pixi.js';
+export { Filter, Texture, Text, BitmapText, BitmapFont } from 'pixi.js';

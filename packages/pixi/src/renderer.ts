@@ -1,13 +1,13 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { EventQueue, Injectable } from '@heliks/tiles-engine';
-import { Stage } from './stage';
-import { DebugDraw } from './debug-draw';
-import { Camera } from './camera';
-import { Screen } from './screen';
-import { Container } from './drawable';
-import * as PIXI from 'pixi.js'
 import { vec2 } from '@heliks/tiles-math';
-import { Overlay } from './stage/overlay';
+import * as PIXI from 'pixi.js';
+import { Camera } from './camera';
+import { DebugDraw } from './debug-draw';
+import { Container } from './drawable';
+import { Screen } from './screen';
+import { Overlay, Stage } from './stage';
+
 
 /** Event that occurs every time the renderer is resized. */
 export interface OnResizeEvent {

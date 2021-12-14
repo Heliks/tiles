@@ -1,4 +1,4 @@
-import { HasTmxPropertyData } from '../properties';
+import { HasPropertiesFormat } from '../properties';
 
 export enum TmxLayerDataType {
   Objects = 'objectgroup',
@@ -6,7 +6,7 @@ export enum TmxLayerDataType {
 }
 
 /** @interface */
-interface TmxBaseLayerData extends HasTmxPropertyData {
+interface TmxBaseLayerData extends HasPropertiesFormat {
   width: number;
   height: number;
   name: string;
@@ -46,7 +46,7 @@ export type TmxTileLayerData =
   TmxInfiniteTileLayerData;
 
 
-export interface TmxObject extends HasTmxPropertyData {
+export interface TmxObject extends HasPropertiesFormat {
   gid?: number;
   height: number;
   id: number;

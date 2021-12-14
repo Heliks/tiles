@@ -1,10 +1,14 @@
 /** Bitflags to extract certain options from a global tile ID. */
+
+/**
+ * Bitflags that can occur on a GID.
+ */
 export enum TmxGIDFlag {
-  /** Horizontal flip option. */
+  /** Tile is flipped on x axis. */
   FlipX = 0x80000000,
-  /** Vertical flip option. */
+  /** Tile is flipped on y axis. */
   FlipY = 0x40000000,
-  /** Vertical flip option. Will be set on tiles that are rotated. */
+  /** Tile is flipped on x and y axis. */
   FlipXY = 0x20000000
 }
 
@@ -14,16 +18,12 @@ const TMX_GID_MASK =
   TmxGIDFlag.FlipY |
   TmxGIDFlag.FlipXY;
 
-/**
- * Extracts a global ID from a Tiled "gid". This is required because in Tiled a GID can
- * have Bitflags for transformations attached which would result in an invalid global
- * ID if used directly.
- */
+/** Extracts the global id of a tile from a "GID". */
 export function parseGID(gid: number): number {
   return gid & ~TMX_GID_MASK;
 }
 
-/** Returns `true` if a Tiled global ID `gid` has set the bitflag `flag`. */
+/** Returns true if the given `gid` contains the given bitflag `flag`. */
 export function hasFlag(gid: number, flag: TmxGIDFlag): boolean {
   return Boolean(gid & flag);
 }

@@ -1,5 +1,11 @@
 import { Sprite, SpriteSheet } from '@heliks/tiles-pixi';
 
+
+/**
+ * A tileset manages sprites that correspond to a certain tile.
+ *
+ * Tilesets are limited by a global ID range. Each global ID corresponds  that maps to individual tiles.
+ */
 export class Tileset {
 
   /**

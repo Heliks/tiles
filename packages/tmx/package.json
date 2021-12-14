@@ -28,8 +28,8 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-tmx",
   "scripts": {
-    "build": "echo 'WIP'",
-    "build:watch": "yarn build",
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
