@@ -1,12 +1,13 @@
 import { Grid } from '@heliks/tiles-engine';
-import { Tileset } from './tileset';
+import { Layer } from './layers';
+import { Tileset } from '@heliks/tiles-tilemap';
 
 export class Tilemap {
 
-  constructor(
-    public readonly grid: Grid,
-    public readonly tilesets: Tileset[] = []
-  ) {}
+  public readonly tilesets: Tileset[] = [];
+  public readonly layers: Layer[] = [];
+
+  constructor(public readonly grid: Grid) {}
 
   /**
    * Returns the `TilesetItem` that has a `firstId` greater or equal, and a lastId
