@@ -1,20 +1,13 @@
 import { ClassType, GameBuilder, hasOnInit, Module, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { Renderer } from './renderer';
-import { RendererSystem } from './renderer-system';
-import {
-  SpriteAnimation,
-  SpriteAnimationSystem,
-  SpriteDisplay,
-  SpriteDisplaySystem,
-  SpriteSheetStorage
-} from './sprite';
-import { Stage } from './stage';
 import { Camera } from './camera';
-import { Screen } from './screen';
 import { DebugDraw } from './debug-draw';
+import { Renderer } from './renderer';
 import { RendererPlugin, RendererPlugins } from './renderer-plugins';
-import { Overlay } from './stage/overlay';
+import { RendererSystem } from './renderer-system';
+import { Screen } from './screen';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteSheetStorage } from './sprite';
+import { Overlay, Stage } from './stage';
 
 
 /** Configuration for the renderer module. */
@@ -156,7 +149,7 @@ export class PixiModule implements Module, OnInit {
 
     builder
       .component(SpriteAnimation)
-      .component(SpriteDisplay)
+      .component(SpriteRender)
       .provide({
         token: Screen,
         value: new Screen(
@@ -177,7 +170,7 @@ export class PixiModule implements Module, OnInit {
       // Should run before the SpriteDisplaySystem so that sprites are updated on the
       // same frame where the animation possibly transformed them.
       .system(SpriteAnimationSystem)
-      .system(SpriteDisplaySystem)
+      .system(SpriteRenderer)
       .system(RendererSystem);
   }
 

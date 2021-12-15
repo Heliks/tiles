@@ -1,14 +1,15 @@
-import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { contains, Entity, Injectable, Parent, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { RenderGroup } from '../../render-group';
 import { Renderer } from '../../renderer';
 import { Stage } from '../../stage';
-import { SpriteDisplay } from '.';
+import { SpriteRender } from '.';
 import { SpriteSheetStorage } from '../sprite-sheet';
 import { Screen } from '../../screen';
 import { Sprite } from 'pixi.js';
 
 
 @Injectable()
-export class SpriteDisplaySystem extends ReactiveSystem {
+export class SpriteRenderer extends ReactiveSystem {
 
   /**
    * Maps sprites to their respective entities. This reverse mapping is to work around
@@ -23,15 +24,29 @@ export class SpriteDisplaySystem extends ReactiveSystem {
     private readonly stage: Stage,
     private readonly storage: SpriteSheetStorage
   ) {
-    super(contains(SpriteDisplay, Transform));
+    super(contains(SpriteRender, Transform));
   }
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
-    const { _sprite } = world.storage(SpriteDisplay).get(entity);
+    const parents = world.storage(Parent);
+    const render = world.storage(SpriteRender).get(entity);
 
-    this.sprites.set(entity, _sprite);
-    this.stage.add(_sprite);
+    let container = this.stage;
+
+    // Add to render group if necessary.
+    if (parents.has(entity)) {
+      const parent = parents.get(entity);
+      const groups = world.storage(RenderGroup);
+
+      if (groups.has(parent.entity)) {
+        container = groups.get(parent.entity).container;
+      }
+    }
+
+    this.sprites.set(entity, render._sprite);
+
+    container.add(render._sprite);
   }
 
   /** @inheritDoc */
@@ -39,7 +54,7 @@ export class SpriteDisplaySystem extends ReactiveSystem {
     const sprite = this.sprites.get(entity);
 
     if (sprite) {
-      this.stage.remove(sprite);
+      sprite.parent.removeChild(sprite);
     }
   }
 
@@ -48,7 +63,7 @@ export class SpriteDisplaySystem extends ReactiveSystem {
     // Update events from reactive system.
     super.update(world);
 
-    const displays = world.storage(SpriteDisplay);
+    const displays = world.storage(SpriteRender);
     const transforms = world.storage(Transform);
 
     // Update sprites.

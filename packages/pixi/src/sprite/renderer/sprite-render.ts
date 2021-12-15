@@ -1,17 +1,18 @@
-import { SpriteSheet } from '../sprite-sheet/sprite-sheet';
+import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
 import { Sprite } from 'pixi.js';
 import { vec2 } from '@heliks/tiles-math';
 
 /**
- * Component used to render a sprite.
+ * Component that when attached to an entity, will render a sprite. By default the sprite
+ * anchor is the middle of the sprite.
  *
- * By default the center position is the middle of the sprite. This can be changed by
- * updating the anchor with `setAnchor()`.
+ * If the owner of this component is a direct child of an entity that has a `RenderGroup`
+ * component, the sprite will be rendered as part of that group instead of the stage.
  */
-export class SpriteDisplay {
+export class SpriteRender {
 
-  /** The PIXI.JS internal sprite. This is only for internal use. */
+  /** @internal */
   public readonly _sprite = new Sprite();
 
   /** Indicates if the sprite needs to be re-rendered.*/
