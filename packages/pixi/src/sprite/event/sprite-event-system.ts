@@ -1,5 +1,5 @@
 import { contains, Entity, ReactiveSystem, Injectable, World, Storage } from '@heliks/tiles-engine';
-import { SpriteDisplay } from '../display';
+import { SpriteRender } from '../renderer';
 import { SpriteEvent } from './sprite-event';
 import { Stage } from '../../stage';
 
@@ -8,20 +8,20 @@ import { Stage } from '../../stage';
 export class SpriteEventSystem extends ReactiveSystem {
 
   /** @internal */
-  private cmpSpriteDisplay!: Storage<SpriteDisplay>;
+  private cmpSpriteDisplay!: Storage<SpriteRender>;
 
   /** @internal */
   private cmpSpriteEvent!: Storage<SpriteEvent>;
 
   constructor() {
-    super(contains(SpriteDisplay, SpriteEvent));
+    super(contains(SpriteRender, SpriteEvent));
   }
 
   /** @inheritDoc */
   public boot(world: World): void {
     super.boot(world);
 
-    this.cmpSpriteDisplay = world.storage(SpriteDisplay);
+    this.cmpSpriteDisplay = world.storage(SpriteRender);
     this.cmpSpriteEvent = world.storage(SpriteEvent);
   }
 

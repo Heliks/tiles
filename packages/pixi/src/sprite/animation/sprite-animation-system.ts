@@ -1,5 +1,5 @@
 import { contains, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
-import { SpriteDisplay } from '../display';
+import { SpriteRender } from '../renderer';
 import { SpriteSheetStorage } from '../sprite-sheet';
 import { SpriteAnimation } from './sprite-animation';
 
@@ -14,15 +14,15 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     private readonly ticker: Ticker,
     private readonly storage: SpriteSheetStorage
   ) {
-    super(contains(SpriteAnimation, SpriteDisplay));
+    super(contains(SpriteAnimation, SpriteRender));
   }
 
   /**
-   * Applies the transform on the given `animation`, using `display` to create the new
+   * Applies the transform on the given `animation`, using `renderer` to create the new
    * animation. This function always assumes that `transform` is set on the `animation`
    * component. Returns `true` if the animation was successfuly transformed.
    */
-  protected transformAnimation(animation: SpriteAnimation, display: SpriteDisplay): boolean {
+  protected transformAnimation(animation: SpriteAnimation, display: SpriteRender): boolean {
     const sheet = typeof display.spritesheet === 'symbol'
       ? this.storage.get(display.spritesheet)?.data
       : display.spritesheet;
@@ -53,7 +53,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   /** @inheritDoc */
   public update(world: World): void {
     const animations = world.storage(SpriteAnimation);
-    const displays = world.storage(SpriteDisplay);
+    const displays = world.storage(SpriteRender);
 
     for (const entity of this.group.entities) {
       const animation = animations.get(entity);
@@ -80,7 +80,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       const nextFrame = (animation.elapsedTime / (animation.frameDuration / animation.speed))
         % animation.frames.length | 0;
 
-      // Update the sprite display with the next frame if necessary.
+      // Update the sprite renderer with the next frame if necessary.
       if (nextFrame != animation.frame) {
         animation.frame = nextFrame;
 

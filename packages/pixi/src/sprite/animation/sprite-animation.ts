@@ -12,7 +12,7 @@ export class SpriteAnimation {
 
   /**
    * Index of the frame that is currently displayed by the animation. A value of `-1`
-   * means that the animation hasn't yet rendered a frame to the sprite display.
+   * means that the animation hasn't yet rendered a frame to the sprite renderer.
    */
   public frame = -1;
 

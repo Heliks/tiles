@@ -71,7 +71,7 @@ export class Renderer {
     // 2. Overlay
     // 3. Debug
     this.root.addChild(
-      this.stage.view,
+      this.stage,
       this.overlay,
       this.debugDraw.view
     );
@@ -159,7 +159,7 @@ export class Renderer {
     // Note: Because of an issue in PIXi.JS stage and debug draw are resized directly
     // and independently from the renderer because the "artificial" texture used
     // inside of the debug draw will be rendered blurry otherwise.
-    this.stage.scale(screen.scale.x, screen.scale.y);
+    this.stage.scale.set(screen.scale.x, screen.scale.y);
 
     this.debugDraw
       .resize(screen.size.x, screen.size.y)
@@ -172,7 +172,7 @@ export class Renderer {
 
   /** @internal */
   private updateCamera(): void {
-    this.stage.view.pivot.set(
+    this.stage.pivot.set(
       (this.camera.world.x * this.screen.unitSize) - this.screenSizeScaled2.x,
       (this.camera.world.y * this.screen.unitSize) - this.screenSizeScaled2.y
     );

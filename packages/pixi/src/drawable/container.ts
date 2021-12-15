@@ -3,7 +3,7 @@ import { Drawable } from './drawable';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 
 /**
- * A container that can contain many other renderable objects.
+ * A container to group multiple display objects.
  *
  * @typeparam T Kind of `Drawable` contained in this container.
  */

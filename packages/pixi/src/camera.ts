@@ -1,5 +1,4 @@
 import { Injectable } from '@heliks/tiles-engine';
-import { Screen } from './screen';
 import { Vec2, vec2 } from '@heliks/tiles-math';
 
 
@@ -17,24 +16,6 @@ export class Camera {
    * @see transform
    */
   public readonly world = vec2(0, 0);
-
-  private _zoom = 1;
-
-  public get zoom() {
-    return this._zoom;
-  }
-
-  public set zoom(value: number) {
-    const d = value - this._zoom;
-    const p = d / this.zoom;
-
-    // this.world.x += this.world.x * p;
-    // this.world.y += this.world.y * p;
-
-    this._zoom = value;
-  }
-
-  constructor(private readonly screen: Screen) {}
 
   /** Transforms the camera position using the given `x` and `y` local position. */
   public transform(x: number, y: number): this {

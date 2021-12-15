@@ -1,5 +1,5 @@
 export * from './animation';
-export * from './display';
+export * from './renderer';
 export * from './event';
 export * from './sprite-sheet';
 
