@@ -3,14 +3,12 @@
   "peerDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0"
   },
   "description": "Tilemap Module",
   "devDependencies": {
     "@heliks/tiles-assets": "^0.0.0",
     "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
     "@types/jest": "^27.0.3",
     "jest": "^27.3.1",
@@ -27,8 +25,8 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-tilemap",
   "scripts": {
-    "build": "echo 'WIP'",
-    "build:watch": "yarn build"
+    "build": "tsc",
+    "build:watch": "tsc -w"
   },
   "typings": "./lib/index.d.ts",
   "version": "0.0.0"

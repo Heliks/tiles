@@ -1,21 +1,27 @@
+import { Entity, Grid } from '@heliks/tiles-engine';
+import { Container } from '@heliks/tiles-pixi';
 import { Tileset } from './tileset';
-import { Grid } from '@heliks/tiles-engine';
 import { TilesetBag } from './tileset-bag';
+
 
 export class Tilemap extends TilesetBag {
 
+  /** @internal */
+  public readonly view = new Container();
+
   /**
-   * @param grid The grid that represents the boundaries of the map, and also where
-   *  individual tiles are placed.
+   * @param grid Grid that represent the boundaries of the tilemap and the constrains
+   *  where individual tiles will be placed.
    * @param tilesets Collection of tilesets that are used for rendering the tiles.
-   * @param data Tilemap data.
-   * @param layer (optional) Index of the layer where this sprite should be placed.
+   * @param data Tile data.
+   * @param group (optional) Entity that has a `RenderGroup` component. The tilemap
+   *  will be added to that group instead of the stage.
    */
   constructor(
     public readonly grid: Grid,
     public readonly tilesets: Tileset[],
     public readonly data: number[],
-    public readonly layer = 0
+    public readonly group?: Entity
   ) {
     super();
   }
