@@ -1,35 +1,42 @@
-import { contains, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
-import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
-import { Tilemap } from './tilemap';
-import { Container, ScreenDimensions, Stage } from '@heliks/tiles-pixi';
 import { Entity } from '@heliks/ecs';
+import { AssetStorage } from '@heliks/tiles-assets';
+import { contains, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { vec2 } from '@heliks/tiles-math';
+import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
+import { RenderGroup } from '@heliks/tiles-pixi';
+import { Tilemap } from './tilemap';
+
 
 @Injectable()
-export class TilemapRenderer extends ReactiveSystem {
+export class RenderTiles extends ReactiveSystem implements RendererPlugin {
 
   /** Asset storage for tilemaps. */
   public readonly cache: AssetStorage<Tilemap> = new Map();
 
-  /** @internal */
+  /** Entities mapped to their PIXI.js display object. */
   private readonly containers = new Map<Entity, Container>();
 
-  constructor(
-    protected readonly loader: AssetLoader,
-    protected readonly stage: Stage
-
-  ) {
+  /**
+   * @param screen
+   * @param stage
+   */
+  constructor(private readonly screen: Screen, private readonly stage: Stage) {
     super(contains(Tilemap, Transform));
+    console.log(stage)
+  }
+
+  /** @inheritDoc */
+  public onInit(world: World): void {
+    this.boot(world);
   }
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
-    const container = new Container();
 
     // Set the fixed size of the container to the size of the chunk and make sure it
     // is anchored to it's center and not the top-left corner.
-    container
+    tilemap.view
       .setPivot(0.5)
       .setFixedSize(vec2(
         tilemap.grid.width,
@@ -49,11 +56,21 @@ export class TilemapRenderer extends ReactiveSystem {
       sprite.x = pos.x;
       sprite.y = pos.y;
 
-      container.addChild(sprite);
+      tilemap.view.addChild(sprite);
     }
 
-    this.stage.add(container, tilemap.layer);
-    this.containers.set(entity, container);
+    if (tilemap.group) {
+      world
+        .storage(RenderGroup)
+        .get(tilemap.group)
+        .container
+        .add(tilemap.view);
+    }
+    else {
+      this.stage.add(tilemap.view);
+    }
+
+    this.containers.set(entity, tilemap.view);
   }
 
   /** @inheritDoc */
@@ -61,25 +78,20 @@ export class TilemapRenderer extends ReactiveSystem {
     const container = this.containers.get(entity);
 
     if (container) {
-      this.containers.delete(entity);
-      this.stage.remove(container);
+      container.parent.removeChild(container);
     }
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    const us = world.get(ScreenDimensions).unitSize;
-
     super.update(world);
 
     for (const entity of this.group.entities) {
       const transform = world.storage(Transform).get(entity);
-      const container = this.containers.get(entity);
+      const tilemap = world.storage(Tilemap).get(entity);
 
-      if (container) {
-        container.x = transform.world.x * us;
-        container.y = transform.world.y * us;
-      }
+      tilemap.view.x = transform.world.x * this.screen.unitSize;
+      tilemap.view.y = transform.world.y * this.screen.unitSize;
     }
   }
 
