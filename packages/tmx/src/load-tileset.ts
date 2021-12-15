@@ -3,7 +3,7 @@ import { Grid } from '@heliks/tiles-math';
 import { LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
 import { HasPropertiesFormat } from './properties';
 import { TmxShapeData } from './shape';
-import { Tileset } from './tileset';
+import { Tileset } from '@heliks/tiles-tilemap';
 
 
 interface TileFormat extends HasPropertiesFormat {
@@ -35,7 +35,8 @@ export interface TilesetFormat extends HasPropertiesFormat {
   type: 'tileset';
 }
 
-async function foo(data: TilesetFormat, file: string, loader: AssetLoader) {
+/** @internal */
+async function loadSpritesheet(data: TilesetFormat, file: string, loader: AssetLoader): Promise<SpriteGrid> {
   // Amount of rows is not contained in the tiled format so it needs to be calculated
   // manually. The number is rounded down to cut of partial tiles.
   const grid = new Grid(
@@ -69,9 +70,14 @@ export class LoadTileset implements Format<TilesetFormat, Tileset> {
   public async process(data: TilesetFormat, file: string, loader: AssetLoader): Promise<Tileset> {
     // Tiled uses relative paths -> convert it to the absolute image path.
     const image = `${getDirectory(file)}/${data.image}`;
-    const sheet = await foo(data, image, loader);
+    const sheet = await loadSpritesheet(data, image, loader);
 
-    return new Tileset(sheet, this.firstId);
+    return new Tileset(
+      sheet,
+      this.firstId,
+      data.tilewidth,
+      data.tileheight
+    );
   }
 
 }

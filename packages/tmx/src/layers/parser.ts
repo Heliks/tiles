@@ -1,6 +1,6 @@
 import { TmxObjectLayerData, TmxTileLayerData } from './tmx';
 import { ObjectLayer, TileLayer } from './layers';
-import { tmxExtractProperties } from '../properties';
+import { getProperties } from '../properties';
 import { tmxParseObject } from './objects';
 
 /** Parses TMX object layer data. */
@@ -14,19 +14,22 @@ export function tmxParseObjectLayer(data: TmxObjectLayerData): ObjectLayer {
   return new ObjectLayer(
     data.name,
     objects,
-    tmxExtractProperties(data)
+    getProperties(data)
   );
 }
 
 /** Parses TMX tile layer data. */
 export function tmxParseTileLayer(data: TmxTileLayerData): TileLayer {
+  const chunks = [];
+
   if (data.chunks) {
-    throw new Error('Infinite maps are not supported');
+    for (const chunk of data.chunks) {
+      chunks.push(chunk.data);
+    }
+  }
+  else {
+    chunks.push(data.data);
   }
 
-  return new TileLayer(
-    data.name,
-    data.data,
-    tmxExtractProperties(data)
-  );
+  return new TileLayer(data.name, chunks, getProperties(data));
 }

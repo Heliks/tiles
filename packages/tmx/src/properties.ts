@@ -33,7 +33,7 @@ export interface HasProperties<T = Properties> {
  * `Partial` of the original type `T`, as we currently can not guarantee that all the
  * required properties really exist.
  */
-export function tmxExtractProperties<T extends Properties>(target: HasPropertiesFormat): Partial<T> {
+export function getProperties<T extends Properties>(target: HasPropertiesFormat): Partial<T> {
   const data: Properties = {};
 
   if (target.properties) {
