@@ -1,7 +1,8 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { Frame, LoadTexture, SpriteCollection, SpriteSheet, SpriteSheetStorage, Texture } from '@heliks/tiles-pixi';
-import { AsepriteData, AsepriteFrameData } from './file-format';
 import { World } from '@heliks/tiles-engine';
+import { Frame, LoadTexture, SpriteCollection, SpriteSheet, SpriteSheetStorage } from '@heliks/tiles-pixi';
+import { Texture } from 'pixi.js';
+import { AsepriteData, AsepriteFrameData } from './file-format';
 
 
 /** @internal */
