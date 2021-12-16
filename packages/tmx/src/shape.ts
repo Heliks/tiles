@@ -1,11 +1,11 @@
 import { Circle, Rectangle } from '@heliks/tiles-math';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { HasProperties, HasPropertiesFormat, Properties, getProperties } from './properties';
+import { HasProperties, TmxHasProperties, Properties, getProperties } from './properties';
 import { getCustomType } from './utils';
 
 
 /** TMX JSON format for shapes. */
-export interface TmxShapeData extends HasPropertiesFormat {
+export interface TmxShape extends TmxHasProperties {
   ellipse?: boolean;
   height: number;
   id: number;
@@ -44,7 +44,7 @@ export class Shape<P = Properties, S extends ColliderShape = ColliderShape> impl
 }
 
 /** Parses TMX shape data. */
-export function tmxParseShape(data: TmxShapeData, tileWidth: number, tileHeight: number): Shape {
+export function tmxParseShape(data: TmxShape, tileWidth: number, tileHeight: number): Shape {
   // Convert anchor to center. The position also needs to be re-calculated because if
   // the shape exists on an object via the tiled collision editor, we also need to take
   // into account that objects have their origin position at the bottom-center.

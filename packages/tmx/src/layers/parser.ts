@@ -1,10 +1,12 @@
-import { TmxObjectLayerData, TmxTileLayerData } from './tmx';
-import { ObjectLayer, TileLayer } from './layers';
+import { Grid } from '@heliks/tiles-engine';
 import { getProperties } from '../properties';
+import { ObjectLayer, TileChunk, TileLayer } from './layers';
 import { tmxParseObject } from './objects';
+import { TmxObjectLayer, TmxTileLayer } from './tmx';
+
 
 /** Parses TMX object layer data. */
-export function tmxParseObjectLayer(data: TmxObjectLayerData): ObjectLayer {
+export function tmxParseObjectLayer(data: TmxObjectLayer): ObjectLayer {
   const objects = [];
 
   for (const item of data.objects) {
@@ -19,16 +21,21 @@ export function tmxParseObjectLayer(data: TmxObjectLayerData): ObjectLayer {
 }
 
 /** Parses TMX tile layer data. */
-export function tmxParseTileLayer(data: TmxTileLayerData): TileLayer {
+export function tmxParseTileLayer(data: TmxTileLayer, layout: Grid): TileLayer {
   const chunks = [];
 
   if (data.chunks) {
     for (const chunk of data.chunks) {
-      chunks.push(chunk.data);
+      chunks.push(new TileChunk(
+        layout,
+        chunk.data,
+        chunk.x,
+        chunk.y
+      ));
     }
   }
   else {
-    chunks.push(data.data);
+    chunks.push(new TileChunk(layout, data.data, 0, 0));
   }
 
   return new TileLayer(data.name, chunks, getProperties(data));

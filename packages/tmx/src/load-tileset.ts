@@ -1,42 +1,12 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-math';
 import { LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { HasPropertiesFormat } from './properties';
-import { TmxShapeData } from './shape';
 import { Tileset } from '@heliks/tiles-tilemap';
+import { TmxTileset } from './layers';
 
-
-interface TileFormat extends HasPropertiesFormat {
-  animation?: {
-    duration: number;
-    tileid: number;
-  }[];
-  id: number;
-  objectgroup?: {
-    objects: TmxShapeData[]
-  }
-}
-
-/** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TilesetFormat extends HasPropertiesFormat {
-  backgroundcolor: string;
-  columns: number;
-  image: string;
-  imageheight: number;
-  imagewidth: number;
-  name: string;
-  margin: number;
-  spacing: number;
-  tilecount: number;
-  tiledversion: string;
-  tileheight: number;
-  tilewidth: number;
-  tiles?: TileFormat[];
-  type: 'tileset';
-}
 
 /** @internal */
-async function loadSpritesheet(data: TilesetFormat, file: string, loader: AssetLoader): Promise<SpriteGrid> {
+async function load(data: TmxTileset, file: string, loader: AssetLoader): Promise<SpriteGrid> {
   // Amount of rows is not contained in the tiled format so it needs to be calculated
   // manually. The number is rounded down to cut of partial tiles.
   const grid = new Grid(
@@ -52,7 +22,7 @@ async function loadSpritesheet(data: TilesetFormat, file: string, loader: AssetL
 }
 
 /** Format to load TMX tilesets. */
-export class LoadTileset implements Format<TilesetFormat, Tileset> {
+export class LoadTileset implements Format<TmxTileset, Tileset> {
 
   /** @inheritDoc */
   public readonly name = 'tmx-tileset';
@@ -67,10 +37,10 @@ export class LoadTileset implements Format<TilesetFormat, Tileset> {
   constructor(public readonly firstId = 1) {}
 
   /** Creates a `Tileset` from `data`. */
-  public async process(data: TilesetFormat, file: string, loader: AssetLoader): Promise<Tileset> {
+  public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {
     // Tiled uses relative paths -> convert it to the absolute image path.
     const image = `${getDirectory(file)}/${data.image}`;
-    const sheet = await loadSpritesheet(data, image, loader);
+    const sheet = await load(data, image, loader);
 
     return new Tileset(
       sheet,
