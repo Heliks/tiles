@@ -1,60 +1,32 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid, vec2, Vec2 } from '@heliks/tiles-math';
-import { Layer, TmxLayerData, TmxLayerDataType, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
-import { LoadTileset, TilesetFormat } from './load-tileset';
-import { HasPropertiesFormat } from './properties';
-import { Tilemap } from './tilemap';
 import { Tileset } from '@heliks/tiles-tilemap';
+import {
+  Layer,
+  TmxExternalTilemapTileset,
+  TmxLayerType,
+  tmxParseObjectLayer,
+  tmxParseTileLayer,
+  TmxTilemap,
+  TmxTilemapTileset
+} from './layers';
+import { LoadTileset } from './load-tileset';
+import { Tilemap } from './tilemap';
 
 
-/** An external tileset that must be loaded manually. */
-interface TilemapExternalTilesetFormat {
-  firstgid: number;
-  source: string;
-}
+/**
+ * Default value for the amount of tiles that a chunk occupies. Will be used as a
+ * fallback if editor-settings are not available in the provided format.
+ */
+const TMX_DEFAULT_CHUNK_SIZE = 16;
 
-/** Tileset that is directly embedded into the map data. */
-interface TilemapEmbeddedTilesetFormat extends TilesetFormat {
-  firstgid: number;
+/** @internal */
+function isExternalTileset(data: TmxTilemapTileset): data is TmxExternalTilemapTileset {
+  return (data as TmxExternalTilemapTileset).source !== undefined;
 }
 
 /** @internal */
-type TilesetData = TilemapExternalTilesetFormat | TilemapEmbeddedTilesetFormat;
-
-interface TmxEditorSettings {
-  chunksize?: {
-    height: number;
-    width: number;
-  }
-}
-
-/** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#map */
-export interface TmxTilemapData extends HasPropertiesFormat {
-  backgroundcolor: string;
-  editorsettings?: TmxEditorSettings;
-  height: number;
-  hexsidelength: number;
-  infinite: boolean;
-  layers: TmxLayerData[];
-  nextlayerid: number;
-  nextobjectid: number;
-  orientation: 'orthogonal' | 'isometric' | 'staggered' | 'hexagonal';
-  tiledversion: string;
-  tileheight: number;
-  tilesets: TilesetData[];
-  tilewidth: number;
-  type: 'map';
-  width: number;
-}
-
-
-/** @internal */
-function isExternalTileset(data: TilesetData): data is TilemapExternalTilesetFormat {
-  return (data as TilemapExternalTilesetFormat).source !== undefined;
-}
-
-/** @internal */
-async function processTileset(loader: AssetLoader, basePath: string, data: TilesetData): Promise<Tileset> {
+async function processTileset(loader: AssetLoader, basePath: string, data: TmxTilemapTileset): Promise<Tileset> {
   const format = new LoadTileset(data.firstgid);
 
   // If the given data is an external tileset we load it using the loader. Otherwise
@@ -65,17 +37,19 @@ async function processTileset(loader: AssetLoader, basePath: string, data: Tiles
 }
 
 /** @internal */
-function parseLayers(data: TmxTilemapData): Layer[] {
+function parseLayers(data: TmxTilemap): Layer[] {
+  // Create the layout of each individual chunk. We need this to parse tile layers.
+  const layout = getChunkTileLayout(data);
   const layers = [];
 
   for (const item of data.layers) {
     let layer;
 
     switch (item.type) {
-      case TmxLayerDataType.Tiles:
-        layer = tmxParseTileLayer(item);
+      case TmxLayerType.Tiles:
+        layer = tmxParseTileLayer(item, layout);
         break;
-      case TmxLayerDataType.Objects:
+      case TmxLayerType.Objects:
         layer = tmxParseObjectLayer(item);
         break;
     }
@@ -86,18 +60,13 @@ function parseLayers(data: TmxTilemapData): Layer[] {
   return layers;
 }
 
-/**
- * Default value for the amount of tiles that a chunk occupies. Will be used as a
- * fallback if editor-settings are not available in the provided format.
- */
-const TMX_DEFAULT_CHUNK_SIZE = 16;
 
 /**
  * Returns the size of the given tmx map `data` (amount of columns on x axis and
  * amount of columns on y axis). This also returns the size of "infinite maps" which
  * according to the tiled format would have a width and height of `0`.
  */
-export function tmxGetMapSize(data: TmxTilemapData): Vec2 {
+function getMapSize(data: TmxTilemap): Vec2 {
   const size = vec2(data.width, data.height);
 
   if (! data.infinite) {
@@ -119,7 +88,15 @@ export function tmxGetMapSize(data: TmxTilemapData): Vec2 {
 }
 
 /** @internal */
-function createMapChunksGrid(data: TmxTilemapData): Grid {
+
+/**
+ * Returns a `Grid` that describes the layout in which chunks are arranged on the given
+ * tilemap `data`. Columns and rows determine amount of chunks in each direction, cell
+ * size determines amount of tiles in each chunk.
+ *
+ * @see Grid
+ */
+function getMapChunksLayout(data: TmxTilemap): Grid {
   let cw = TMX_DEFAULT_CHUNK_SIZE;
   let ch = TMX_DEFAULT_CHUNK_SIZE;
 
@@ -128,7 +105,7 @@ function createMapChunksGrid(data: TmxTilemapData): Grid {
     ch = data.editorsettings.chunksize.height;
   }
 
-  const size = tmxGetMapSize(data);
+  const size = getMapSize(data);
 
   return new Grid(
     Math.ceil(size.x / cw),
@@ -138,9 +115,25 @@ function createMapChunksGrid(data: TmxTilemapData): Grid {
   );
 }
 
+/**
+ * Returns a `Grid` that describes the tile arrangement in each chunk. The columns and
+ * rows determine the amount of tiles in each chunk, cell size determines tile size.
+ */
+function getChunkTileLayout(data: TmxTilemap): Grid {
+  let cw = TMX_DEFAULT_CHUNK_SIZE;
+  let ch = TMX_DEFAULT_CHUNK_SIZE;
+
+  if (data.editorsettings?.chunksize) {
+    cw = data.editorsettings.chunksize.width;
+    ch = data.editorsettings.chunksize.height;
+  }
+
+  return new Grid(cw, ch, data.tilewidth, data.tileheight);
+}
+
 
 /** Asset loader format for loading TMX tilemaps. */
-export class LoadTilemap implements Format<TmxTilemapData, Tilemap> {
+export class LoadTilemap implements Format<TmxTilemap, Tilemap> {
 
   /** @inheritDoc */
   public readonly name = 'tmx-tilemap';
@@ -149,18 +142,15 @@ export class LoadTilemap implements Format<TmxTilemapData, Tilemap> {
   public readonly type = LoadType.Json;
 
   /** @inheritDoc */
-  public async process(data: TmxTilemapData, file: string, loader: AssetLoader): Promise<Tilemap> {
-    const chunks = createMapChunksGrid(data);
-
-    console.log(chunks)
-
+  public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap> {
     const tilemap = new Tilemap(
       new Grid(
         data.width,
         data.height,
         data.tilewidth,
         data.tileheight
-      )
+      ),
+      getMapChunksLayout(data)
     );
 
     // Load all tilesets simultaneously.

@@ -7,7 +7,15 @@ export class Tilemap {
   public readonly tilesets: Tileset[] = [];
   public readonly layers: Layer[] = [];
 
-  constructor(public readonly grid: Grid) {}
+  /**
+   * @param grid
+   * @param chunkLayout Grid that arranges map chunks. Columns and rows determine amount
+   *  of chunks in each direction, cell size determines amount of tiles in each chunk.
+   */
+  constructor(
+    public readonly grid: Grid,
+    public readonly chunkLayout: Grid
+  ) {}
 
   /**
    * Returns the `TilesetItem` that has a `firstId` greater or equal, and a lastId
