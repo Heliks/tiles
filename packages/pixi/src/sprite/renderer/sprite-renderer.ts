@@ -35,18 +35,16 @@ export class SpriteRenderer extends ReactiveSystem {
     let container = this.stage;
 
     // Add to render group if necessary.
-    if (parents.has(entity)) {
-      const parent = parents.get(entity);
-      const groups = world.storage(RenderGroup);
-
-      if (groups.has(parent.entity)) {
-        container = groups.get(parent.entity).container;
-      }
+    if (typeof render.group === 'number') {
+      world
+        .storage(RenderGroup)
+        .get(render.group)
+        .container
+        .add(render._sprite);
     }
-
-    this.sprites.set(entity, render._sprite);
-
-    container.add(render._sprite);
+    else {
+      this.sprites.set(entity, render._sprite);
+    }
   }
 
   /** @inheritDoc */

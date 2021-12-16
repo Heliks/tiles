@@ -1,14 +1,13 @@
-import { SpriteSheet } from '../sprite-sheet';
 import { Handle } from '@heliks/tiles-assets';
-import { Sprite } from 'pixi.js';
+import { Entity } from '@heliks/tiles-engine';
 import { vec2 } from '@heliks/tiles-math';
+import { Sprite } from 'pixi.js';
+import { SpriteSheet } from '../sprite-sheet';
+
 
 /**
  * Component that when attached to an entity, will render a sprite. By default the sprite
  * anchor is the middle of the sprite.
- *
- * If the owner of this component is a direct child of an entity that has a `RenderGroup`
- * component, the sprite will be rendered as part of that group instead of the stage.
  */
 export class SpriteRender {
 
@@ -37,12 +36,13 @@ export class SpriteRender {
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
    * @param spriteIndex Index of the sprite that should be rendered.
-   * @param layer (optional) Index of the layer where this sprite should be placed.
+   * @param group (optional) Entity that has a `RenderGroup` component. The sprite
+   *  will be added to that group instead of the stage.
    */
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
-    public layer = 0
+    public readonly group?: Entity
   ) {
     // Using the middle position instead of the top-left position will save us extra
     // calculations during the renderer update.
