@@ -1,11 +1,11 @@
-import { contains, Entity, Injectable, Parent, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { Sprite } from 'pixi.js';
+import { SpriteRender } from '.';
 import { RenderGroup } from '../../render-group';
 import { Renderer } from '../../renderer';
-import { Stage } from '../../stage';
-import { SpriteRender } from '.';
-import { SpriteSheetStorage } from '../sprite-sheet';
 import { Screen } from '../../screen';
-import { Sprite } from 'pixi.js';
+import { Stage } from '../../stage';
+import { SpriteSheetStorage } from '../sprite-sheet';
 
 
 @Injectable()
@@ -29,10 +29,7 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
-    const parents = world.storage(Parent);
     const render = world.storage(SpriteRender).get(entity);
-
-    let container = this.stage;
 
     // Add to render group if necessary.
     if (typeof render.group === 'number') {
@@ -43,8 +40,10 @@ export class SpriteRenderer extends ReactiveSystem {
         .add(render._sprite);
     }
     else {
-      this.sprites.set(entity, render._sprite);
+      this.stage.add(render._sprite);
     }
+
+    this.sprites.set(entity, render._sprite);
   }
 
   /** @inheritDoc */
