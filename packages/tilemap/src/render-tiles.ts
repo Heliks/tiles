@@ -59,7 +59,7 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
       tilemap.view.addChild(sprite);
     }
 
-    if (tilemap.group) {
+    if (typeof tilemap.group === 'number') {
       world
         .storage(RenderGroup)
         .get(tilemap.group)
