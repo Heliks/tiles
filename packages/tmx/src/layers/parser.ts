@@ -16,7 +16,8 @@ export function tmxParseObjectLayer(data: TmxObjectLayer): ObjectLayer {
   return new ObjectLayer(
     data.name,
     objects,
-    getProperties(data)
+    getProperties(data),
+    data.visible
   );
 }
 
@@ -38,5 +39,5 @@ export function tmxParseTileLayer(data: TmxTileLayer, layout: Grid): TileLayer {
     chunks.push(new TileChunk(layout, data.data, 0, 0));
   }
 
-  return new TileLayer(data.name, chunks, getProperties(data));
+  return new TileLayer(data.name, chunks, getProperties(data), data.visible);
 }
