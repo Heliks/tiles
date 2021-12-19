@@ -26,15 +26,18 @@ interface Foo<D, P, T extends LayerType> extends HasProperties<P> {
 
 /** @internal */
 abstract class BaseLayer<D, P extends Properties = Properties> implements HasProperties<P> {
+
   /**
    * @param name Custom layer name.
    * @param data Layer data.
    * @param properties Custom layer properties.
+   * @param isVisible Determines if the layer is visible or not.
    */
   constructor(
     public readonly name: string,
     public readonly data: D,
-    public readonly properties: P
+    public readonly properties: P,
+    public readonly isVisible: boolean
   ) {}
 
 }

@@ -15,6 +15,7 @@ interface TmxBaseLayer extends TmxHasProperties {
   offsetx: number;
   offsety: number;
   opacity: number;
+  visible: boolean;
   x: number;
   y: number;
 }
