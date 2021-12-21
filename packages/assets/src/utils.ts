@@ -1,12 +1,16 @@
 /**
- * Returns the directory contained in a file `path`. E.g. the path
- * `'../example/file.json'` will return `'../example'`. The trailing
- * slash is always removed.
+ * Returns the directory part of a file `path` similar to NodeJS `dirname`. The trailing
+ * slash is removed automatically.
  */
-export function getDirectory(path: string): string {
-  // Respect both windows (\) and unix (/) path separators.
-  return path.slice(0, Math.max(0, Math.max(
+export function getDirectory(path: string, append?: string): string {
+  let directory = path.slice(0, Math.max(0, Math.max(
     path.lastIndexOf('\\'),
-    path.lastIndexOf('/')
-  )));
+    path.lastIndexOf('/')))
+  );
+
+  if (append) {
+    directory += append;
+  }
+
+  return directory;
 }
