@@ -1,5 +1,6 @@
 import { Vec2 } from './vec2';
 
+
 /** Boundaries of a rectangle. */
 export interface RectangleBounds extends Vec2 {
   width: number;

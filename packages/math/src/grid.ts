@@ -1,5 +1,6 @@
 import { vec2, Vec2 } from './vec2';
 
+
 export class Grid {
 
   /** Contains the total amount of cells in this grid. */
