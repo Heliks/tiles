@@ -1,5 +1,5 @@
 import { Injectable } from '@heliks/tiles-engine';
-import { Vec2, vec2 } from '@heliks/tiles-math';
+import { Vec2 } from '@heliks/tiles-math';
 
 
 @Injectable()
@@ -15,7 +15,7 @@ export class Camera {
    * Cameras world position. Do not modify this directly.
    * @see transform
    */
-  public readonly world = vec2(0, 0);
+  public readonly world = new Vec2(0, 0);
 
   /** Transforms the camera position using the given `x` and `y` local position. */
   public transform(x: number, y: number): this {
