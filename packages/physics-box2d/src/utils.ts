@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import { b2BodyType, b2CircleShape, b2PolygonShape, b2Shape } from '@flyover/box2d';
+import { Circle } from '@heliks/tiles-engine';
 import { ColliderShape, RigidBodyType } from '@heliks/tiles-physics';
-import { Circle } from '@heliks/tiles-math';
 
 
 export function b2ParseShape(shape: ColliderShape): b2Shape {

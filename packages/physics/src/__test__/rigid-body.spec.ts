@@ -1,6 +1,7 @@
-import { Rectangle } from '@heliks/tiles-math';
+import { Rectangle } from '@heliks/tiles-engine';
 import { Collider } from '../collider';
 import { RigidBody } from '../rigid-body';
+
 
 describe('RigidBody', () => {
   describe('Colliders', () => {

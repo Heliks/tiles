@@ -1,5 +1,6 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { Grid, vec2, Vec2 } from '@heliks/tiles-math';
+import { Grid } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import { Tileset } from '@heliks/tiles-tilemap';
 import {
   Layer,
@@ -67,7 +68,7 @@ function parseLayers(data: TmxTilemap): Layer[] {
  * according to the tiled format would have a width and height of `0`.
  */
 function getMapSize(data: TmxTilemap): Vec2 {
-  const size = vec2(data.width, data.height);
+  const size = new Vec2(data.width, data.height);
 
   if (! data.infinite) {
     return size;

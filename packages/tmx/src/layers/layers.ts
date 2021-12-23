@@ -16,12 +16,6 @@ export enum LayerType {
   Objects
 }
 
-interface Foo<D, P, T extends LayerType> extends HasProperties<P> {
-  name: string;
-  data: D;
-  type: T;
-}
-
 
 
 /** @internal */

@@ -1,9 +1,7 @@
 import { Entity } from '@heliks/ecs';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { contains, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
-import { vec2 } from '@heliks/tiles-math';
-import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
-import { RenderGroup } from '@heliks/tiles-pixi';
+import { contains, Injectable, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { Container, RendererPlugin, RenderGroup, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 
@@ -38,7 +36,7 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
     // is anchored to it's center and not the top-left corner.
     tilemap.view
       .setPivot(0.5)
-      .setFixedSize(vec2(
+      .setFixedSize(new Vec2(
         tilemap.grid.width,
         tilemap.grid.height
       ));

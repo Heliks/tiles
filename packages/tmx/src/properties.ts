@@ -17,15 +17,10 @@ export interface Properties {
   [property: string]: unknown;
 }
 
-/**
- * An object that carries custom
- *
- * Helper type that indicates a structure carries parsed TMX properties. */
-export interface HasProperties<T = Properties> {
-
+/** Helper type that indicates a structure carries custom properties. */
+export interface HasProperties<T extends Properties> {
   /** Custom properties. */
   readonly properties: T;
-
 }
 
 /**
