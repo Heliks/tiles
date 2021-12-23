@@ -1,5 +1,6 @@
+import { Rectangle } from '@heliks/tiles-engine';
 import { Collider } from '../collider';
-import { Rectangle } from '@heliks/tiles-math';
+
 
 const RECT = new Rectangle(0, 0, 0, 0);
 

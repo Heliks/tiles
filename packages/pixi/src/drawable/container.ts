@@ -1,6 +1,7 @@
+import { Vec2 } from '@heliks/tiles-engine';
 import { Container as BaseContainer } from 'pixi.js';
 import { Drawable } from './drawable';
-import { Vec2 } from '@heliks/tiles-math';
+
 
 /**
  * A container to group multiple display objects.

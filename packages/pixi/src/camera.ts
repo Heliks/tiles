@@ -1,5 +1,4 @@
-import { Injectable } from '@heliks/tiles-engine';
-import { Vec2 } from '@heliks/tiles-math';
+import { Injectable, Vec2 } from '@heliks/tiles-engine';
 
 
 @Injectable()

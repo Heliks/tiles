@@ -1,5 +1,5 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { Grid } from '@heliks/tiles-math';
+import { Grid } from '@heliks/tiles-engine';
 import { LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
 import { Tileset } from '@heliks/tiles-tilemap';
 import { TmxTileset } from './layers';

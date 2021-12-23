@@ -1,4 +1,4 @@
-import { vec2 } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { MaterialId } from './material';
 
@@ -69,7 +69,7 @@ export class RigidBody {
   public rotate = false;
 
   /** Current velocity. */
-  public velocity = vec2(0, 0);
+  public velocity = new Vec2(0, 0);
 
   /** Transform flag indicating that the velocity was updated. */
   public isVelocityDirty = false;
@@ -90,7 +90,7 @@ export class RigidBody {
    * update the body position.
    * @internal
    */
-  public _position = vec2(0, 0);
+  public _position = new Vec2(0, 0);
 
   /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).

@@ -1,12 +1,12 @@
-import { Rectangle } from '@heliks/tiles-math';
+import { Rectangle } from '@heliks/tiles-engine';
 import { hasFlag, parseGID, TmxGIDFlag } from '../gid';
-import { Properties, getProperties } from '../properties';
+import { getProperties, Properties } from '../properties';
 import { Shape } from '../shape';
 import { getCustomType } from '../utils';
 import { TmxObject } from './tmx';
 
 
-export class GameObject<P = Properties> extends Shape<P, Rectangle> {
+export class GameObject<P extends Properties = Properties> extends Shape<P, Rectangle> {
 
   /** If `true` the object will be flipped on the x axis. */
   public flipX = false;
@@ -36,7 +36,7 @@ export class GameObject<P = Properties> extends Shape<P, Rectangle> {
 }
 
 /** A `GameObject` that is based on a tile. */
-export interface Tile<P = Properties> extends GameObject<P> {
+export interface Tile<P extends Properties = Properties> extends GameObject<P> {
   /** @inheritDoc */
   tileId: number;
 }
@@ -59,7 +59,6 @@ export function tmxParseObject(data: TmxObject): GameObject {
 
   if (data.gid) {
     object.tileId = parseGID(data.gid);
-
     object.flipX = hasFlag(data.gid, TmxGIDFlag.FlipX);
     object.flipY = hasFlag(data.gid, TmxGIDFlag.FlipY);
   }
@@ -68,7 +67,7 @@ export function tmxParseObject(data: TmxObject): GameObject {
 }
 
 /** Returns `true` if `value` is a `Tile<P>`. */
-export function isTile<P>(value: GameObject<P>): value is Tile<P> {
+export function isTile<P extends Properties>(value: GameObject<P>): value is Tile<P> {
   return !! value.tileId;
 }
 
