@@ -24,6 +24,11 @@ export function vec2dist(vecA: Vec2, vecB: Vec2): number {
   return Math.hypot(vecB.x - vecA.x, vecB.y - vecA.y);
 }
 
+/** Returns the magnitude (length) of a vector. */
+export function vec2mag(vec: Vec2): number {
+  return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+}
+
 // /** Returns the Dot product of two 2D vectors `vecA` and `vecB`. */
 // export function vec2dot(vecA: Vec2Readonly, vecB: Vec2Readonly): number {
 //   return (vecA[0] * vecB[0]) + (vecA[1] * vecB[1]);
