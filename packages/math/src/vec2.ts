@@ -13,7 +13,15 @@ export class Vec2 implements XY {
   constructor(public x = 0, public y = 0) {}
 
   /**
-   * Returns the distance between two vector and `point`. The distance is the length of a
+   * Returns the distance between `pointA` and `pointB`. The distance is the length of a
+   * straight line connecting them.
+   */
+  public static distance(pointA: XY, pointB: XY): number {
+    return Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y);
+  }
+
+  /**
+   * Returns the distance between the vector and `point`. The distance is the length of a
    * straight line connecting them.
    */
   public distance(point: XY): number {
