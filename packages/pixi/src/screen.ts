@@ -1,4 +1,4 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { Vec2, XY } from '@heliks/tiles-engine';
 import { Align, alignTo } from './align';
 
 
@@ -56,7 +56,7 @@ export class Screen {
    * @param align To where position should be aligned to.
    * @param out (optional) Vector to which new position will be written to.
    */
-  public align(pos: Vec2, align: Align, out = new Vec2(0, 0)): Vec2 {
+  public align(pos: XY, align: Align, out: XY = new Vec2(0, 0)): XY {
     return alignTo(pos, this.size.x, this.size.y, align, out);
   }
 
