@@ -153,7 +153,7 @@ describe('Container', () => {
       expect(container.make(Foo)).toBeInstanceOf(Foo);
     });
 
-    it('should resolve meta data if class inherits from another Injectable()', () => {
+    it('should resolve dependencies if class inherits from another Injectable()', () => {
       class DepA {}
       class DepB {}
       class DepC {}
