@@ -9,10 +9,6 @@ import { Vec2 } from '@heliks/tiles-math';
  */
 export class Transform extends BaseTransform {
 
-  /** @inheritDoc */
-  public readonly local = new Vec2();
 
-  /** @inheritDoc */
-  public readonly world = new Vec2();
 
 }
