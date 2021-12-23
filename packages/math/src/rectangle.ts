@@ -1,10 +1,9 @@
-import { Vec2 } from './vec2';
-
-
 /** Boundaries of a rectangle. */
-export interface RectangleBounds extends Vec2 {
+export interface RectangleBounds {
   width: number;
   height: number;
+  x: number;
+  y: number;
 }
 
 /** A rectangle shape. */
