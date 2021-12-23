@@ -1,8 +1,9 @@
-import { InjectorToken } from './types';
 import { getMetadata, setMetadata } from './meta';
+import { InjectorToken } from './types';
+
 
 /**
- * Decorator to make a class "injectible".
+ * Flags a class as "injectable".
  *
  * ```ts
  * class ServiceA {}
@@ -12,7 +13,7 @@ import { getMetadata, setMetadata } from './meta';
  *      .instance(new ServiceA())
  *      .instance(new ServiceB());
  *
- * @injectible()
+ * @Injectable()
  * class Foo {
  *     constructor(a: ServiceA, b: ServiceB) {}
  * }
@@ -24,7 +25,7 @@ import { getMetadata, setMetadata } from './meta';
  * // Creates a new instance of "Foo".
  * const foo = container.make(Foo);
  *
- * // Throws an error because "Bar" is not injectible.
+ * // Throws an error because "Bar" is not an injectable.
  * const bar = container.make(Bar);
  * ```
  *
@@ -41,7 +42,7 @@ export function Injectable(): ClassDecorator {
 }
 
 /**
- * Decorator to manually set which token should be injected at the target.
+ * Decorator that overwrites the token that should be injected.
  *
  * ```ts
  * @Injectable()

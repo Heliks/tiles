@@ -1,7 +1,5 @@
 import { InjectorToken, ParamInjection } from './types';
 
-/** Key that is used to store injector meta data on a symbol using `Reflect`. */
-export const METADATA_KEY = Symbol();
 
 export interface InjectionMetaData {
   /** Overrides injections of `params`. */
@@ -10,11 +8,14 @@ export interface InjectionMetaData {
   params?: InjectorToken[];
 }
 
-export function getMetadata(target: object): InjectionMetaData {
-  return Reflect.getMetadata(METADATA_KEY, target) || {};
+/** Storage for injection metadata. */
+const METADATA = new Map<unknown, InjectionMetaData>();
+
+export function getMetadata(target: unknown): InjectionMetaData {
+  return METADATA.get(target) ?? {};
 }
 
-export function setMetadata(target: object, data: InjectionMetaData): void {
-  Reflect.defineMetadata(METADATA_KEY, data, target);
+export function setMetadata(target: unknown, data: InjectionMetaData): void {
+  METADATA.set(target, data);
 }
 

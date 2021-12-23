@@ -118,10 +118,7 @@ describe('Container', () => {
     it('should append custom values to constructor params', () => {
       @Injectable()
       class Test {
-        constructor(
-          public readonly a: A,
-          public readonly b: true
-        ) {}
+        constructor(public readonly a: A, public readonly b: true) {}
       }
 
       const instance = container.make(Test, [true]);
@@ -149,11 +146,43 @@ describe('Container', () => {
       expect(instance.c).toBeUndefined();
     });
 
-    it('should create injectables that are missing their constructor declaration', () => {
+    it('should create injectables that are missing constructor declarations', () => {
       @Injectable()
       class Foo {}
 
       expect(container.make(Foo)).toBeInstanceOf(Foo);
+    });
+
+    it('should resolve meta data if class inherits from another Injectable()', () => {
+      class DepA {}
+      class DepB {}
+      class DepC {}
+
+      container.bind(DepA, new DepA());
+      container.bind(DepB, new DepB());
+      container.bind(DepC, new DepC());
+
+      @Injectable()
+      class A {
+        constructor(public b: DepB, readonly c: DepC) {}
+      }
+
+      @Injectable()
+      class B extends A {
+        constructor(public a: DepA, b: DepB, c: DepC) {
+          super(b, c);
+        }
+      }
+
+      const ca = container.make(A);
+      const cb = container.make(B);
+
+      expect(cb.a).toBeInstanceOf(DepA);
+      expect(cb.b).toBeInstanceOf(DepB);
+      expect(cb.c).toBeInstanceOf(DepC);
+
+      expect(ca.b).toBeInstanceOf(DepB);
+      expect(ca.c).toBeInstanceOf(DepC);
     });
   });
 });

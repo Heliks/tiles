@@ -2,7 +2,6 @@
 /**
  * Class constructor type.
  * Fixme: This does not work for abstract classes.
- *
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ClassType<T = any> = new (...params: any[]) => T;
