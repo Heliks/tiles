@@ -1,33 +1,38 @@
 /** A two-dimensional vector. */
-export interface Vec2 {
+export interface XY {
   x: number;
   y: number;
 }
 
-/** Utility to create a `Vec2`. */
-export function vec2(x: number, y: number): Vec2 {
-  return {
-    x,
-    y
-  };
+export class Vec2 implements XY {
+
+  /**
+   * @param x Position on x axis.
+   * @param y Position on y axis.
+   */
+  constructor(public x = 0, public y = 0) {}
+
+  /**
+   * Returns the distance between two vector and `point`. The distance is the length of a
+   * straight line connecting them.
+   */
+  public distance(point: XY): number {
+    return Math.hypot(point.x - this.x, point.y - this.y);
+  }
+
+  /** Returns the vectors magnitude (length). */
+  public magnitude(): number {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  /** Returns a copy of this vector. */
+  public copy(): Vec2 {
+    return new Vec2(this.x, this.y);
+  }
+
 }
 
-export function vec2copy(vec: Vec2): Vec2 {
-  return vec2(vec.x, vec.y);
-}
 
-/**
- * Returns the distance between two points `vecA` and `vecB`. The distance is the
- * length of a straight line connecting them.
- */
-export function vec2dist(vecA: Vec2, vecB: Vec2): number {
-  return Math.hypot(vecB.x - vecA.x, vecB.y - vecA.y);
-}
-
-/** Returns the magnitude (length) of a vector. */
-export function vec2mag(vec: Vec2): number {
-  return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
-}
 
 // /** Returns the Dot product of two 2D vectors `vecA` and `vecB`. */
 // export function vec2dot(vecA: Vec2Readonly, vecB: Vec2Readonly): number {

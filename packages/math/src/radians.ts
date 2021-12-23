@@ -1,6 +1,3 @@
-import { rand } from '../utils';
-import { Vec2 } from '../vec2';
-
 /** Conversion factor for degrees to radians. */
 export const DEG2RAD_FACTOR = Math.PI / 180;
 
@@ -24,19 +21,3 @@ export function deg2rad(value: number): number {
 }
 
 
-/**
- * Returns a random position that fits inside of a circle. The center of the circle
- * is always 0/0.
- *
- * @param minRadius Position must be this radius away from the circles center.
- * @param maxRadius Position must be inside of this radius away from the circles center.
- */
-export function getRandomPointInCircle(minRadius: number, maxRadius: number): Vec2 {
-  const r = rand(minRadius, maxRadius);
-  const t = rand(1, 360);
-
-  return {
-    x: Math.sqrt(r) * Math.cos(t),
-    y: Math.sqrt(r) * Math.sin(t)
-  };
-}

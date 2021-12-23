@@ -1,4 +1,4 @@
-import { vec2, Vec2 } from './vec2';
+import { Vec2 } from './vec2';
 
 
 export class Grid {
@@ -32,7 +32,7 @@ export class Grid {
   ) {}
 
   /** Returns the top-left aligned position of the cell that occupies the given `index`. */
-  public position(index: number, out = vec2(0, 0)): Vec2 {
+  public position(index: number, out = new Vec2()): Vec2 {
     out.x = index % this.cols * this.cellWidth;
     out.y = Math.floor(index / this.cols) * this.cellHeight;
 
