@@ -1,7 +1,6 @@
 import { InjectorToken } from './types';
 
 
-
 export function stringifyToken(token: InjectorToken): string {
   // Convert the token to a string.
   const str = token.toString();
