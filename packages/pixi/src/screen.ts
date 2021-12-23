@@ -1,4 +1,4 @@
-import { Vec2, vec2 } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import { Align, alignTo } from './align';
 
 
@@ -27,7 +27,7 @@ export class Screen {
    * Scale in which everything is rendered. Should not be updated manually because
    * this is calculated at runtime.
    */
-  public readonly scale = vec2(1, 1);
+  public readonly scale = new Vec2(1, 1);
 
   /**
    * Screen size in px. Do not update this directly.
@@ -45,8 +45,8 @@ export class Screen {
    *  translate in-game unit measurements to pixel dimensions on screen.
    */
   constructor(w: number, h: number, rw: number, rh: number, public unitSize = 1) {
-    this.size = vec2(w, h);
-    this.resolution = vec2(rw, rh);
+    this.size = new Vec2(w, h);
+    this.resolution = new Vec2(rw, rh);
   }
 
   /**
@@ -56,7 +56,7 @@ export class Screen {
    * @param align To where position should be aligned to.
    * @param out (optional) Vector to which new position will be written to.
    */
-  public align(pos: Vec2, align: Align, out = vec2(0, 0)): Vec2 {
+  public align(pos: Vec2, align: Align, out = new Vec2(0, 0)): Vec2 {
     return alignTo(pos, this.size.x, this.size.y, align, out);
   }
 

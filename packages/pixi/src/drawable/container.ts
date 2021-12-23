@@ -1,6 +1,6 @@
 import { Container as BaseContainer } from 'pixi.js';
 import { Drawable } from './drawable';
-import { Vec2, vec2 } from '@heliks/tiles-math';
+import { Vec2 } from '@heliks/tiles-math';
 
 /**
  * A container to group multiple display objects.
@@ -97,7 +97,7 @@ export class Container<T extends Drawable = Drawable> extends BaseContainer impl
    * size is returned, otherwise the size is calculated based on the containers bounds.
    */
   public getFixedSize(): Vec2 {
-    return this.fixedSize ? this.fixedSize : vec2(this.width, this.height);
+    return this.fixedSize ? this.fixedSize : new Vec2(this.width, this.height);
   }
 
   /**

@@ -1,6 +1,5 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { EventQueue, Injectable } from '@heliks/tiles-engine';
-import { vec2 } from '@heliks/tiles-math';
+import { EventQueue, Injectable, Vec2 } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
@@ -38,7 +37,7 @@ export class Renderer {
    * @see Screen.scale
    * @see updateCamera
    */
-  private readonly screenSizeScaled2 = vec2(0, 0);
+  private readonly screenSizeScaled2 = new Vec2(0, 0);
 
   /**
    * Root container that holds all draw-ables that make up the whole game scene.

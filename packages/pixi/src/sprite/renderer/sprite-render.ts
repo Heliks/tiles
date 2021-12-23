@@ -1,6 +1,5 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Entity } from '@heliks/tiles-engine';
-import { vec2 } from '@heliks/tiles-math';
+import { Entity, Vec2 } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteSheet } from '../sprite-sheet';
 
@@ -24,13 +23,13 @@ export class SpriteRender {
   public flipY = false;
 
   /** Scale factor of the sprite. */
-  public scale = vec2(1, 1);
+  public scale = new Vec2(1, 1);
 
   /**
    * Origin position of the sprite. Do not update this directly, and use the `setAnchor()`
    * method instead.
    */
-  public anchor = vec2(0, 0);
+  public anchor = new Vec2(0, 0);
 
   /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`

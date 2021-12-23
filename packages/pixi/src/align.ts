@@ -1,4 +1,4 @@
-import { Vec2, vec2 } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 
 export enum Align {
   Center,
@@ -23,7 +23,7 @@ export enum Align {
  * @param align Alignment to the box.
  * @param out (optional) Vector to which the result should be written to.
  */
-export function alignTo(pos: Vec2, width: number, height: number, align: Align, out = vec2(0, 0)): Vec2 {
+export function alignTo(pos: Vec2, width: number, height: number, align: Align, out = new Vec2(0, 0)): Vec2 {
   out.x = pos.x;
   out.y = pos.y;
 

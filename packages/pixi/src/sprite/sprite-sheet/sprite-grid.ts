@@ -1,4 +1,4 @@
-import { Grid, Vec2, vec2 } from '@heliks/tiles-engine';
+import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
 import { cropTexture } from '../../utils';
 import { SpriteSheet } from './sprite-sheet';
@@ -38,7 +38,7 @@ export class SpriteGrid extends SpriteSheet {
 
   /** Returns a vector of the size of each individual sprite in this sprite sheet. */
   public getSpriteSize(): Vec2 {
-    return vec2(
+    return new Vec2(
       this.grid.cellWidth,
       this.grid.cellHeight
     );
