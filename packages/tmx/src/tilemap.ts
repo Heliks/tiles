@@ -1,6 +1,7 @@
 import { Grid } from '@heliks/tiles-engine';
 import { Layer } from './layers';
-import { Tileset } from '@heliks/tiles-tilemap';
+import { Tileset } from './tileset';
+
 
 export class Tilemap {
 
