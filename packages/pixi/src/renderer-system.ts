@@ -1,11 +1,15 @@
 import { ComponentEventType } from '@heliks/ecs';
-import { contains, Injectable, OnInit, ProcessingSystem, Storage, Subscriber, World } from '@heliks/tiles-engine';
+import { contains, Injectable, OnInit, ProcessingSystem, Storage, Subscriber, World, XY } from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Renderer } from './renderer';
 import { RendererPlugins } from './renderer-plugins';
 import { Stage } from './stage';
-import { depthSort } from './depth';
 
+
+/** CompareFn to sort elements by depth (lower y axis first).*/
+function sortByDepth(a: XY, b: XY): number {
+  return a.y - b.y;
+}
 
 /** System responsible for updating the renderer. */
 @Injectable()
@@ -52,7 +56,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
       const group = this.groups.get(entity);
 
       if (group.sort) {
-        depthSort(group.container.children);
+        group.container.children.sort(sortByDepth);
       }
     }
 
