@@ -1,9 +1,9 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { TmxTilemapTile, TmxTileset } from './layers';
 import { parseShape } from './shape';
 import { Tileset } from './tileset';
+import { TmxTilemapTile, TmxTileset } from './tmx';
 
 
 // Lookup to map TmxTilesetObjectAlignment values to Align values.

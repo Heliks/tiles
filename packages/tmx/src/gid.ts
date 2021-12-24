@@ -1,8 +1,4 @@
 /** Bitflags to extract certain options from a global tile ID. */
-
-/**
- * Bitflags that can occur on a GID.
- */
 export enum TmxGIDFlag {
   /** Tile is flipped on x axis. */
   FlipX = 0x80000000,

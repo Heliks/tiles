@@ -1,8 +1,8 @@
 import { Grid } from '@heliks/tiles-engine';
 import { getProperties } from '../properties';
+import { TmxObjectLayer, TmxTileLayer } from '../tmx';
 import { ObjectLayer, TileChunk, TileLayer } from './layers';
-import { tmxParseObject } from './objects';
-import { TmxObjectLayer, TmxTileLayer } from './tmx';
+import { tmxParseObject } from '../objects';
 
 
 /** Parses TMX object layer data. */
