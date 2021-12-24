@@ -70,7 +70,7 @@ export interface TmxObjectLayer extends TmxBaseLayer {
 
 export type TmxLayer = TmxTileLayer | TmxObjectLayer;
 
-interface TmxTilemapTile extends TmxHasProperties {
+export interface TmxTilemapTile extends TmxHasProperties {
   animation?: {
     duration: number;
     tileid: number;

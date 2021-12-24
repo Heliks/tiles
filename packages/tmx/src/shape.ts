@@ -44,7 +44,7 @@ export class Shape<P extends Properties = Properties, S extends ColliderShape = 
 }
 
 /** Parses TMX shape data. */
-export function tmxParseShape(data: TmxShape, tileWidth: number, tileHeight: number): Shape {
+export function parseShape(data: TmxShape, tileWidth: number, tileHeight: number): Shape {
   // Convert anchor to center. The position also needs to be re-calculated because if
   // the shape exists on an object via the tiled collision editor, we also need to take
   // into account that objects have their origin position at the bottom-center.
