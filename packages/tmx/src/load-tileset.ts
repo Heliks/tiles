@@ -1,9 +1,21 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
-import { LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { Tileset } from '@heliks/tiles-tilemap';
+import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
 import { TmxTileset } from './layers';
+import { Tileset } from './tileset';
 
+
+const ALIGN_LOOKUP = {
+  'right': Align.Right,
+  'left': Align.Left,
+  'center': Align.Center,
+  'top': Align.Top,
+  'topleft': Align.TopLeft,
+  'topright': Align.TopRight,
+  'bottom': Align.Bottom,
+  'bottomleft': Align.BottomLeft,
+  'bottomright': Align.BottomRight
+};
 
 /** @internal */
 async function load(data: TmxTileset, file: string, loader: AssetLoader): Promise<SpriteGrid> {
@@ -42,12 +54,18 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
     const image = `${getDirectory(file)}/${data.image}`;
     const sheet = await load(data, image, loader);
 
-    return new Tileset(
+    const tileset = new Tileset(
       sheet,
       this.firstId,
       data.tilewidth,
       data.tileheight
     );
+
+    if (data.objectalignment) {
+      tileset.objectAlign = ALIGN_LOOKUP[ data.objectalignment ] ?? Align.BottomLeft;
+    }
+
+    return tileset;
   }
 
 }
