@@ -1,6 +1,6 @@
 /**
- * Returns the directory part of a file `path` similar to NodeJS `dirname`. The trailing
- * slash is removed automatically.
+ * Returns the directory in the given `path`, similiar to NodeJS `__dirname()` without
+ * a trailing slash. Additional directory segments can be added via `append`.
  */
 export function getDirectory(path: string, ...append: string[]): string {
   const directory = path.slice(0, Math.max(0, Math.max(
