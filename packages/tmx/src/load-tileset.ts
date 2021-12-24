@@ -1,10 +1,12 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { TmxTileset } from './layers';
+import { TmxTilemapTile, TmxTileset } from './layers';
+import { parseShape } from './shape';
 import { Tileset } from './tileset';
 
 
+// Lookup to map TmxTilesetObjectAlignment values to Align values.
 const ALIGN_LOOKUP = {
   'right': Align.Right,
   'left': Align.Left,
@@ -33,6 +35,19 @@ async function load(data: TmxTileset, file: string, loader: AssetLoader): Promis
   return new SpriteGrid(grid, texture);
 }
 
+/** @internal */
+function parseTile(tileset: Tileset, tile: TmxTilemapTile): void {
+  if (tile.objectgroup) {
+    const shapes = tile.objectgroup.objects.map(item => parseShape(
+      item,
+      tileset.tileWidth,
+      tileset.tileHeight
+    ));
+
+    tileset.setTileShapes(tile.id, shapes);
+  }
+}
+
 /** Format to load TMX tilesets. */
 export class LoadTileset implements Format<TmxTileset, Tileset> {
 
@@ -51,7 +66,7 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
   /** Creates a `Tileset` from `data`. */
   public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {
     // Tiled uses relative paths -> convert it to the absolute image path.
-    const image = `${getDirectory(file)}/${data.image}`;
+    const image = getDirectory(file, data.image);
     const sheet = await load(data, image, loader);
 
     const tileset = new Tileset(
@@ -64,6 +79,14 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
     if (data.objectalignment) {
       tileset.objectAlign = ALIGN_LOOKUP[ data.objectalignment ] ?? Align.BottomLeft;
     }
+
+    if (data.tiles) {
+      for (const tile of data.tiles) {
+        parseTile(tileset, tile);
+      }
+    }
+
+    console.log(tileset);
 
     return tileset;
   }
