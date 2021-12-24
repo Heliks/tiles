@@ -1,16 +1,5 @@
-export interface TmxPropertyData {
-  name: string;
-  value: string | number;
-  type: 'bool' | 'float' | 'int' | 'string';
-}
+import { TmxHasProperties } from './tmx';
 
-/**
- * An object that contains custom `TmxPropertyData`.
- * @see TmxPropertyData
- */
-export interface TmxHasProperties {
-  properties?: TmxPropertyData[];
-}
 
 /** Custom properties. */
 export interface Properties {

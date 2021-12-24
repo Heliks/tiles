@@ -1,17 +1,10 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
-import {
-  Layer,
-  TmxExternalTilemapTileset,
-  TmxLayerType,
-  tmxParseObjectLayer,
-  tmxParseTileLayer,
-  TmxTilemap,
-  TmxTilemapTileset
-} from './layers';
+import { Layer, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
 import { LoadTileset } from './load-tileset';
 import { Tilemap } from './tilemap';
 import { Tileset } from './tileset';
+import { TmxExternalTilemapTileset, TmxLayerType, TmxTilemap, TmxTilemapTileset } from './tmx';
 
 
 /**

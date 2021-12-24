@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
 import { HasProperties, Properties } from '../properties';
-import { GameObject } from './objects';
+import { GameObject } from '../objects';
 
 /** Available layer types. */
 export enum LayerType {
