@@ -48,4 +48,12 @@ export class Vec2 implements XY {
     return new Vec2(this.x, this.y);
   }
 
+  /** Scales this vector by the given `factor`. */
+  public scale(factor: number): this {
+    this.x *= factor;
+    this.y *= factor;
+
+    return this;
+  }
+
 }
