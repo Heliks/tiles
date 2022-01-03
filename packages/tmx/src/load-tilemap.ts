@@ -2,6 +2,7 @@ import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-asset
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { Layer, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
 import { LoadTileset } from './load-tileset';
+import { getProperties, Properties } from './properties';
 import { Tilemap } from './tilemap';
 import { Tileset } from './tileset';
 import { TmxExternalTilemapTileset, TmxLayerType, TmxTilemap, TmxTilemapTileset } from './tmx';
@@ -125,8 +126,12 @@ function getChunkTileLayout(data: TmxTilemap): Grid {
 }
 
 
-/** Asset loader format for loading TMX tilemaps. */
-export class LoadTilemap implements Format<TmxTilemap, Tilemap> {
+/**
+ * Asset loader format for loading TMX tile maps.
+ *
+ * @typeparam P Custom properties found on tile maps.
+ */
+export class LoadTilemap<P extends Properties = Properties> implements Format<TmxTilemap, Tilemap<P>> {
 
   /** @inheritDoc */
   public readonly name = 'tmx-tilemap';
@@ -135,15 +140,16 @@ export class LoadTilemap implements Format<TmxTilemap, Tilemap> {
   public readonly type = LoadType.Json;
 
   /** @inheritDoc */
-  public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap> {
-    const tilemap = new Tilemap(
+  public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap<P>> {
+    const tilemap = new Tilemap<P>(
       new Grid(
         data.width,
         data.height,
         data.tilewidth,
         data.tileheight
       ),
-      getMapChunksLayout(data)
+      getMapChunksLayout(data),
+      getProperties<P>(data)
     );
 
     // Load all tilesets simultaneously.

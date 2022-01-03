@@ -86,8 +86,6 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
       }
     }
 
-    console.log(tileset);
-
     return tileset;
   }
 

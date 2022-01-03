@@ -1,4 +1,4 @@
-import { Rectangle } from '@heliks/tiles-engine';
+import { Rectangle, Vec2 } from '@heliks/tiles-engine';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
 import { getProperties, Properties } from './properties';
 import { Shape } from './shape';
