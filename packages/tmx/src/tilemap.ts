@@ -1,9 +1,10 @@
 import { Grid } from '@heliks/tiles-engine';
 import { Layer } from './layers';
+import { Properties } from './properties';
 import { Tileset } from './tileset';
 
 
-export class Tilemap {
+export class Tilemap<P extends Properties = Properties> {
 
   public readonly tilesets: Tileset[] = [];
   public readonly layers: Layer[] = [];
@@ -12,10 +13,12 @@ export class Tilemap {
    * @param grid
    * @param chunkLayout Grid that arranges map chunks. Columns and rows determine amount
    *  of chunks in each direction, cell size determines amount of tiles in each chunk.
+   * @param properties Custom properties.
    */
   constructor(
     public readonly grid: Grid,
-    public readonly chunkLayout: Grid
+    public readonly chunkLayout: Grid,
+    public readonly properties: P
   ) {}
 
   /**

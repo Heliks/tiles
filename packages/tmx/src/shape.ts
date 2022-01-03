@@ -1,4 +1,4 @@
-import { Circle, Rectangle } from '@heliks/tiles-engine';
+import { Circle, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { HasProperties, Properties, getProperties } from './properties';
 import { TmxShape } from './tmx';
