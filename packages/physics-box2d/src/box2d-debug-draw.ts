@@ -1,7 +1,7 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
 import { Camera, DebugDraw, Renderer, RendererPlugin, Screen } from '@heliks/tiles-pixi';
-import { Inject, Injectable, OnInit, PI_2 } from '@heliks/tiles-engine';
-import { B2_WORLD } from './const';
+import { Inject, Injectable, OnInit, PI_2, Subscriber } from '@heliks/tiles-engine';
+import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 
 
 // Needs to be disabled for Box2D.
@@ -14,18 +14,16 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
     return this.debugDraw.context;
   }
 
-  /**
-   * @param camera {@link Camera}
-   * @param debugDraw {@link DebugDraw}
-   * @param renderer {@link Renderer}
-   * @param screen {@link Screen}
-   * @param world Box2D world.
-   */
+  /** @internal */
+  private raycasts$!: Subscriber;
+
   constructor(
     private readonly camera: Camera,
     private readonly debugDraw: DebugDraw,
     private readonly renderer: Renderer,
     private readonly screen: Screen,
+    @Inject(B2_RAYCASTS)
+    private readonly raycasts: RaycastQueue,
     @Inject(B2_WORLD)
     private readonly world: b2World
   ) {
@@ -39,11 +37,38 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
   /** @inheritDoc */
   public onInit(): void {
     this.world.SetDebugDraw(this);
+    this.raycasts$ = this.raycasts.subscribe();
+  }
+
+  private drawRaycast(raycast: RaycastEvent): void {
+    this.ctx.save();
+    this.ctx.beginPath();
+
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = '#ff00e5';
+
+    this.ctx.moveTo(
+      (raycast.start.x - this.camera.world.x) * this.screen.unitSize,
+      (raycast.start.y - this.camera.world.y) * this.screen.unitSize,
+    );
+
+    this.ctx.lineTo(
+      (raycast.end.x - this.camera.world.x) * this.screen.unitSize,
+      (raycast.end.y - this.camera.world.y) * this.screen.unitSize,
+    );
+
+    this.ctx.stroke();
+    this.ctx.restore();
   }
 
   /** @inheritDoc */
   public update(): void {
     this.world.DrawDebugData();
+
+    // Draw raycasts.
+    for (const raycast of this.raycasts.read(this.raycasts$)) {
+      this.drawRaycast(raycast);
+    }
   }
 
   /** Box2D callback to translate the drawing canvas. */

@@ -50,8 +50,8 @@ export class Box2dContactListener extends b2ContactListener {
     const entityA = fixtureA.GetBody().GetUserData();
     const entityB = fixtureB.GetBody().GetUserData();
 
-    colliderA.addContact(entityB, colliderB.id);
-    colliderB.addContact(entityA, colliderA.id);
+    colliderA.collider.addContact(entityB, colliderB.collider.id);
+    colliderB.collider.addContact(entityA, colliderA.collider.id);
 
     this.push(entityA, entityB, ContactEvent.Begin);
   }
@@ -67,8 +67,8 @@ export class Box2dContactListener extends b2ContactListener {
     const entityA = fixtureA.GetBody().GetUserData();
     const entityB = fixtureB.GetBody().GetUserData();
 
-    colliderA.removeContact(entityB, colliderB.id);
-    colliderB.removeContact(entityA, colliderA.id);
+    colliderA.collider.removeContact(entityB, colliderB.collider.id);
+    colliderB.collider.removeContact(entityA, colliderA.collider.id);
 
     // Todo: This is a race-condition with the entity world that already cleaned up the
     //  rigid bodies. This should be fixed because as of right now there is no

@@ -1,11 +1,19 @@
 /* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
-import { Entity, Inject, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Collider, ContactEvents, MaterialManager, Physics, RigidBody } from '@heliks/tiles-physics';
+import { Entity, EventQueue, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
+import { Collider, ContactEvents, MaterialManager, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { b2ParseBodyType, b2ParseShape } from './utils';
-import { B2_WORLD } from './const';
+import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
 
+
+/** User data that will be assigned to `b2Fixture` instances. */
+interface FixtureUserData {
+  /** Collider instance from which this fixture was created. */
+  collider: Collider;
+  /** Owner of the rigid body to which the `collider` is attached to. */
+  entity: Entity;
+}
 
 @Injectable()
 export class Box2dWorld extends Physics {
@@ -27,11 +35,14 @@ export class Box2dWorld extends Physics {
 
   /**
    * @param world Box2D world.
+   * @param raycasts Event queue for raycasts.
    * @param materials {@link MaterialManager}
    */
   constructor(
     @Inject(B2_WORLD)
     private readonly world: b2World,
+    @Inject(B2_RAYCASTS)
+    private readonly raycasts: RaycastQueue,
     private readonly materials: MaterialManager
   ) {
     super();
@@ -94,7 +105,12 @@ export class Box2dWorld extends Physics {
       this.parseCollider(body, collider, bFixtureDef);
 
       // Assign "Collider" to created fixture for later backtracking.
-      bBody.CreateFixture(bFixtureDef).SetUserData(collider);
+      bBody
+        .CreateFixture(bFixtureDef)
+        .SetUserData({
+          collider,
+          entity
+        });
     }
 
     bBody.SetLinearDamping(body.damping);
@@ -175,6 +191,27 @@ export class Box2dWorld extends Physics {
     if (body) {
       body.ApplyLinearImpulse(force, body.GetWorldCenter());
     }
+  }
+
+  /** @inheritDoc */
+  public raycast(start: XY, end: XY, obstacles: RaycastObstacle[] = []): RaycastObstacle[] {
+    this.world.RayCast(start, end, fixture => {
+      obstacles.push(fixture.GetUserData() as FixtureUserData);
+
+      return 0;
+    });
+
+    // Since this can run fairly often we only push these events in case there are any
+    // subscribers to this queue to prevent the creation of unnecessary garbage that has
+    // to be collected. This will mostly be used to draw debug information anyway.
+    if (this.raycasts.subscriberAmount > 0) {
+      this.raycasts.push({
+        start,
+        end
+      });
+    }
+
+    return obstacles;
   }
 
 }
