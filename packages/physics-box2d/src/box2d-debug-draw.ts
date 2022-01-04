@@ -117,7 +117,6 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
     this.drawPolygonVertices(vertices);
 
     // Draw the shape.
-    ctx.fill();
     ctx.stroke();
   }
 
@@ -133,7 +132,6 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
     this.drawPolygonVertices(vertices);
 
     // Draw the shape.
-    ctx.fill();
     ctx.stroke();
   }
 
@@ -161,10 +159,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
       cy + axis.y * radius
     );
 
-    ctx.fillStyle = color.MakeStyleString(0.5);
     ctx.strokeStyle = color.MakeStyleString(1);
-
-    ctx.fill();
     ctx.stroke();
   }
 
