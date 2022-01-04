@@ -1,9 +1,9 @@
 /* eslint-disable new-cap */
 import { b2World } from '@flyover/box2d';
-import { ClassType, GameBuilder, Vec2 } from '@heliks/tiles-engine';
+import { ClassType, EventQueue, GameBuilder, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
 import { Box2dWorld } from './box2d-world';
-import { B2_WORLD } from './const';
+import { B2_RAYCASTS, B2_WORLD } from './const';
 
 
 export class Box2dAdapter implements PhysicsAdapter {
@@ -24,10 +24,15 @@ export class Box2dAdapter implements PhysicsAdapter {
     // noinspection JSPotentiallyInvalidConstructorUsage
     const world = new b2World(this.gravity);
 
-    builder.provide({
-      token: B2_WORLD,
-      value: world
-    });
+    builder
+      .provide({
+        token: B2_RAYCASTS,
+        value: new EventQueue()
+      })
+      .provide({
+        token: B2_WORLD,
+        value: world
+      });
   }
 
 }
