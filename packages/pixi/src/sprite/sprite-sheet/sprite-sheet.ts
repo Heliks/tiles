@@ -9,10 +9,7 @@ export interface SpriteAnimationData {
   frameDuration?: number;
 }
 
-/**
- * A sheet that contains multiple sprites and data associated with it
- * (e.g. animations).
- */
+/** A collection of sprites. */
 export abstract class SpriteSheet {
 
   /** @internal */
