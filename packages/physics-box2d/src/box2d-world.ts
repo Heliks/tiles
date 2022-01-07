@@ -1,10 +1,10 @@
 /* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
-import { Entity, EventQueue, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
+import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, MaterialManager, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
 import { Box2dContactListener } from './box2d-contact-listener';
-import { b2ParseBodyType, b2ParseShape } from './utils';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
+import { b2ParseBodyType, b2ParseShape } from './utils';
 
 
 /** User data that will be assigned to `b2Fixture` instances. */

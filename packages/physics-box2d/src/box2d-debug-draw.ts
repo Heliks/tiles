@@ -49,12 +49,12 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
 
     this.ctx.moveTo(
       (raycast.start.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.start.y - this.camera.world.y) * this.screen.unitSize,
+      (raycast.start.y - this.camera.world.y) * this.screen.unitSize
     );
 
     this.ctx.lineTo(
       (raycast.end.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.end.y - this.camera.world.y) * this.screen.unitSize,
+      (raycast.end.y - this.camera.world.y) * this.screen.unitSize
     );
 
     this.ctx.stroke();

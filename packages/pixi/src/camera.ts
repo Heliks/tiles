@@ -28,7 +28,7 @@ export class Camera {
    * Converts a screen `position`  to a position in the world space. This modifies the
    * original input.
    */
-  public toWorldPosition(position: Vec2): Vec2 {
+  public toWorldPosition(): Vec2 {
     throw new Error('Todo');
   }
 
@@ -36,7 +36,7 @@ export class Camera {
    * Converts a world `position` to a position on the screen. This modifies the
    * original input.
    */
-  public toScreenPosition(position: Vec2): Vec2 {
+  public toScreenPosition(): Vec2 {
     throw new Error('Todo');
   }
 
