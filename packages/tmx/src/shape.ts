@@ -7,11 +7,10 @@ import { getCustomType } from './utils';
 
 /**
  * A basic shape. Most commonly used inside the Tiled collision editor to create
- * colliders for certain objects but can also appear as freely placed shape on any
- * object layer.
+ * colliders for objects but can also appear as freely placed shape on any object layer.
  *
- * @typeparam P Custom properties added to the shape.
- * @typeparam T Allowed custom types.
+ * @typeparam P Custom shape properties.
+ * @typeparam S Shape of the collider.
  */
 export class Shape<P extends Properties = Properties, S extends ColliderShape = ColliderShape> implements HasProperties<P> {
 

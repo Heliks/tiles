@@ -1,7 +1,6 @@
-import { contains, Entity, ReactiveSystem, Injectable, World, Storage } from '@heliks/tiles-engine';
+import { contains, Entity, Injectable, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteEvent } from './sprite-event';
-import { Stage } from '../../stage';
 
 
 @Injectable()
@@ -32,8 +31,8 @@ export class SpriteEventSystem extends ReactiveSystem {
 
     sprite.interactive = true;
 
-    const onDown  = () => events.down.push(Symbol());
-    const onUp    = () => events.up.push(Symbol());
+    const onDown  = (): unknown => events.down.push(Symbol());
+    const onUp    = (): unknown => events.up.push(Symbol());
 
     // PIXI.JS will handle the events internally, we just forward them to our event
     // queues. We do normalize some events however, so that the component works the

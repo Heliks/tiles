@@ -1,7 +1,6 @@
-import { GameBuilder } from './game-builder';
+import { getStorageInjectorToken } from '../ecs';
 import { Game } from '../game';
-import { getStorageInjectorToken, System } from '../ecs';
-import { Storage } from '@heliks/ecs';
+import { GameBuilder } from './game-builder';
 
 
 describe('GameBuilder', () => {

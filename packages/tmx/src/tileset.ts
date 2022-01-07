@@ -7,8 +7,10 @@ import { Shape } from './shape';
 export class Tileset extends Base {
 
   /**
-   * Objects that are placed via this tileset have positions be relative to this
-   * alignment mode.
+   * Positions of objects that are placed via this tilesets are relative to this
+   * alignment mode. By default tiled uses the objects bottom left corner.
+   *
+   * @see Align
    */
   public objectAlign = Align.BottomLeft;
 
