@@ -1,13 +1,13 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
-import { Frame, LoadTexture, SpriteCollection, SpriteSheet, SpriteSheetStorage } from '@heliks/tiles-pixi';
+import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet, SpriteSheetStorage } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 
 
 /** @internal */
-function createFrame(data: AsepriteFrameData): Frame {
-  const frame = new Frame(
+function createPackedSprite(data: AsepriteFrameData): PackedSprite {
+  const frame = new PackedSprite(
     data.frame.x,
     data.frame.y,
     data.frame.w,
@@ -24,10 +24,14 @@ function createFrame(data: AsepriteFrameData): Frame {
 }
 
 /**
- * Asset loader format that loads sprite-sheets exported from Aseprite.
+ * Asset loader format that loads spritesheets exported by aseprite.
+ *
+ * The format will always create a `PackedSpriteSheet`, regardless if the sprite sheet
+ * was packed by aseprite or not.
+ *
  * Supports both "Hash" and "Array" outputs.
  */
-export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
+export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
 
   /** @inheritDoc */
   public readonly name = 'PIXI:aseprite';
@@ -44,25 +48,25 @@ export class AsepriteFormat implements Format<AsepriteData, SpriteCollection> {
 
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
-    return loader.fetch(`${getDirectory(file)}/${image}`, new LoadTexture());
+    return loader.fetch(getDirectory(file, image), new LoadTexture());
   }
 
   /** @inheritDoc */
-  public async process(data: AsepriteData, file: string, loader: AssetLoader): Promise<SpriteCollection> {
+  public async process(data: AsepriteData, file: string, loader: AssetLoader): Promise<PackedSpriteSheet> {
     const texture = await this.getTexture(file, loader, data.meta.image);
-    const collection = new SpriteCollection(texture);
+    const collection = new PackedSpriteSheet(texture);
 
     let i = 0;
 
     if (Array.isArray(data.frames)) {
       for (let l = data.frames.length; i < l; i++) {
-        collection.setFrame(i, createFrame(data.frames[i]));
+        collection.setPackedSprite(i, createPackedSprite(data.frames[i]));
       }
     }
     else {
       for (const name in data.frames) {
         if (data.frames.hasOwnProperty(name)) {
-          collection.setFrame(i, createFrame(data.frames[name]));
+          collection.setPackedSprite(i, createPackedSprite(data.frames[name]));
 
           i++;
         }

@@ -12,4 +12,3 @@ export * from './screen';
 export * from './sprite';
 export * from './stage';
 export { rgb2hex } from './utils';
-
