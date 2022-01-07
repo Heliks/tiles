@@ -30,11 +30,12 @@ export class SpriteAnimation {
 
   /**
    * Name of the animation that should be played next. The animation data that will be
-   * used is from the [[SpriteDisplay]] component adjacent to this animation. This
-   * does not wait for the current animation to complete.
+   * used is from the [[SpriteDisplay]] component adjacent to this component. Does not
+   * wait for the current animation to complete.
    *
-   * Do not modify this directly and instead use [[play()]] to avoid unwanted side-
-   * effects.
+   * Do not modify this directly. Use `play()` to modify the current animation.
+   *
+   * @see play()
    */
   public transform?: string;
 
@@ -110,12 +111,16 @@ export class SpriteAnimation {
   }
 
   /**
-   * Returns `true` if the animation is "complete". An animation is considered complete
-   * when it displays its last frame. If the animation loops it means that it is
-   * considered incomplete on the next frame again.
+   * Returns `true` if the current animation is complete.
+   *
+   * The animation is considered complete when it is displaying its last frame. This means
+   * that if the animation loops the result of this function is only valid for one frame.
+   *
+   * The animation is always considered incomplete when it is queued to be changed to a
+   * different animation.
    */
   public isComplete(): boolean {
-    return this.frame === this.frames.length - 1;
+    return this.transform === undefined && this.frame === this.frames.length - 1;
   }
 
   /**
