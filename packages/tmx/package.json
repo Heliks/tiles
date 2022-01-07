@@ -5,7 +5,8 @@
     "@heliks/tiles-engine": "^0.0.0",
     "@heliks/tiles-pixi": "^0.0.0",
     "@heliks/tiles-tilemap": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0"
+    "@heliks/tiles-physics": "^0.0.0",
+    "pixi.js": "^5.3.3"
   },
   "description": "Tiled loader",
   "devDependencies": {
@@ -16,6 +17,7 @@
     "@heliks/tiles-physics": "^0.0.0",
     "@types/jest": "^27.0.3",
     "jest": "^27.3.1",
+    "pixi.js": "^5.3.3",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^27.0.7",
     "typescript": "^4.1.2"
