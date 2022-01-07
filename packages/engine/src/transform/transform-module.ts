@@ -1,13 +1,15 @@
 import { GameBuilder, Module } from '../game-builder';
-import { Hierarchy } from '@heliks/ecs-hierarchy';
+import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { HierarchySystem } from './hierarchy-system';
 import { TransformSystem } from './transform-system';
-import { Transform } from './transform';
+import { Transform } from '@heliks/ecs-transform';
 
 
 /**
- * Optional module that provides a simple hierarchical transform system. This module
- * is not required to use the `Transform` component independently.
+ * Module that provides a hierarchical transform system. This module is optional.
+ *
+ * @see Transform
+ * @see Hierarchy
  */
 export class TransformModule implements Module {
 
@@ -16,6 +18,7 @@ export class TransformModule implements Module {
     const hierarchy = new Hierarchy();
 
     builder
+      .component(Parent)
       .component(Transform)
       .provide({
         token: Hierarchy,
