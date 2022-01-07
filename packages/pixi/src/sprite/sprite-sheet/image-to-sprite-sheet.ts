@@ -5,8 +5,13 @@ import { Grid } from '@heliks/tiles-engine';
 import { LoadTexture } from '../../load-texture';
 
 
-/** (WIP) */
-export class SpriteSheetFromTexture implements Format<Blob, SpriteSheet> {
+/**
+ * Asset loader format that loads an image and creates a `SpriteSheet` from it.
+ *
+ * @see LoadTexture
+ * @see SpriteSheet
+ */
+export class ImageToSpriteSheet implements Format<Blob, SpriteSheet> {
 
   /** @inheritDoc */
   public readonly name = 'PIXI:sprite-sheet-from-texture';
