@@ -18,14 +18,14 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies the transform on the given `animation`, using `renderer` to create the new
-   * animation. This function always assumes that `transform` is set on the `animation`
-   * component. Returns `true` if the animation was successfuly transformed.
+   * Applies the transform on the given `animation` component, using `render` to create
+   * the new animation. This function assumes that a the `transform` property is set on
+   * the animation component. Returns `true` if the transform was successful.
    */
-  protected transformAnimation(animation: SpriteAnimation, display: SpriteRender): boolean {
-    const sheet = typeof display.spritesheet === 'symbol'
-      ? this.storage.get(display.spritesheet)?.data
-      : display.spritesheet;
+  protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
+    const sheet = typeof render.spritesheet === 'symbol'
+      ? this.storage.get(render.spritesheet)?.data
+      : render.spritesheet;
 
     if (!sheet) {
       return false;
