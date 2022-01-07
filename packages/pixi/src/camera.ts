@@ -1,4 +1,5 @@
-import { Injectable, Vec2 } from '@heliks/tiles-engine';
+import { Injectable, Vec2, XY } from '@heliks/tiles-engine';
+import { Screen } from './screen';
 
 
 @Injectable()
@@ -16,6 +17,8 @@ export class Camera {
    */
   public readonly world = new Vec2(0, 0);
 
+  constructor(private readonly screen: Screen) {}
+
   /** Transforms the camera position using the given `x` and `y` local position. */
   public transform(x: number, y: number): this {
     this.world.x = x;
@@ -25,11 +28,25 @@ export class Camera {
   }
 
   /**
-   * Converts a screen `position`  to a position in the world space. This modifies the
-   * original input.
+   * Converts a screen position (in px) to a position in the world space.
    */
-  public toWorldPosition(): Vec2 {
-    throw new Error('Todo');
+  public screenToWorld(x: number, y: number): Vec2;
+
+  /**
+   * Converts a screen position (in px) to a position in the world space. The result is
+   * is written to `out`.
+   */
+  public screenToWorld<T extends XY>(x: number, y: number, out: T): T;
+
+  /** @internal */
+  public screenToWorld(x: number, y: number, result: XY = new Vec2()): XY {
+    const sx = (x - ((this.screen.size.x) >> 1)) / this.screen.unitSize / this.screen.scale.x;
+    const sy = (y - ((this.screen.size.y) >> 1)) / this.screen.unitSize / this.screen.scale.y;
+
+    result.x = sx + this.world.x;
+    result.y = sy + this.world.y;
+
+    return result;
   }
 
   /**

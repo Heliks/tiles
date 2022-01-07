@@ -18,7 +18,7 @@ export class Screen {
   public dirty = true;
 
   /**
-   * Screen resolution in px. Do not update this directly.
+   * Do not update this directly.
    * Todo: Implement a way to switch screen resolutions.
    */
   public readonly resolution: Vec2;
