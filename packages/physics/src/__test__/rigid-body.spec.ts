@@ -42,5 +42,36 @@ describe('RigidBody', () => {
 
       expect(body.colliders[0].sensor).toBeTruthy();
     });
+
+    it('should inherit the bodies collision group and mask', () => {
+      const body = new RigidBody();
+      const coll = new Collider(new Rectangle(1, 1));
+
+      body.group = 1;
+      body.mask = 4;
+
+      body.attach(coll);
+
+      expect(coll).toMatchObject({
+        group: 1,
+        mask: 4
+      });
+    });
+
+    it('should not inherit collision group or mask if it was manually set on the collider', () => {
+      const body = new RigidBody();
+      const coll = new Collider(new Rectangle(1, 1));
+
+      body.group = 1;
+      body.mask = 2;
+
+      coll.group = 4;
+      coll.mask = 8;
+
+      body.attach(coll);
+
+      expect(coll.group).toBe(4);
+      expect(coll.mask).toBe(8);
+    });
   });
 });

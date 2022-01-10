@@ -41,11 +41,26 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   /** Unique identifier. */
   public readonly id = uuid();
 
-  /***/
+  /** Contains all colliders that are currently in physical contact with this one. */
   public readonly contacts: ColliderContact[] = [];
 
-  /** @inheritDoc */
-  public material?: MaterialId;
+  /**
+   * Bitset that contains the colliders collision groups. If this is not set the collider
+   * will inherit all groups from the rigid body to which it was attached to.
+   *
+   * @see RigidBody.group
+   */
+  public group?: number;
+
+  /**
+   * Bitset that contains the collision groups that are allowed to collide ith this
+   * collider. If this is not set the collider will inherit the mask of the rigid body
+   * to which it was attached to.
+   *
+   * @see group
+   * @see RigidBody.mask
+   */
+  public mask?: number;
 
   /** @inheritDoc */
   public sensor = false;
@@ -60,8 +75,10 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
 
   /**
    * @param shape Physical shape of the collider.
+   * @param material Id of a physics material. If this is set the collider will inherit
+   *  physical properties of that material such as friction or restitution.
    */
-  constructor(public shape: T) {}
+  constructor(public shape: T, public material?: MaterialId) {}
 
   /**
    * Creates a collider with a `Rectangle` shape.

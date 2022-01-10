@@ -47,8 +47,10 @@ export class RigidBody {
   public dirty = true;
 
   /**
-   * Bits that determine the rigid bodies collision groups. This can exclude other rigid
-   * bodies from colliding with this one, depending on their own collision [[mask]].
+   * Bitset that contains the collision group that will be assigned to attached colliders
+   * that don't specify a group of their own.
+   *
+   * @see Collider.group
    */
   public group = 0x0001;
 
@@ -60,8 +62,12 @@ export class RigidBody {
   public isBullet = false;
 
   /**
-   * Bits that determine with which collision groups we are allowed to collide with. By
-   * default we will collide with all other groups.
+   * Bitset that contains the collision groups that are allowed to collide with colliders
+   * of this rigid body. Unless they specify their own mask, this value will be passed
+   * down to all colliders that are attached to this body. By default they are allowed to
+   * collide with everything.
+   *
+   * @see Collider.mask
    */
   public mask = COLLIDE_ALL_MASK;
 
@@ -136,6 +142,14 @@ export class RigidBody {
     // Check for undefined because material ID can be "0".
     if (collider.material === undefined) {
       collider.material = this.material;
+    }
+
+    if (collider.group === undefined) {
+      collider.group = this.group;
+    }
+
+    if (collider.mask === undefined) {
+      collider.mask = this.mask
     }
 
     this.colliders.push(collider);
