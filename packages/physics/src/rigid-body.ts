@@ -23,9 +23,6 @@ export enum RigidBodyType {
   Kinematic
 }
 
-/** A bit mask for a collision group that collides with all other collision groups. */
-export const COLLIDE_ALL_MASK = 0xFFFF;
-
 /** A 2D rigid body component. */
 export class RigidBody {
 
@@ -64,12 +61,12 @@ export class RigidBody {
   /**
    * Bitset that contains the collision groups that are allowed to collide with colliders
    * of this rigid body. Unless they specify their own mask, this value will be passed
-   * down to all colliders that are attached to this body. By default they are allowed to
-   * collide with everything.
+   * down to all colliders that are attached to this body. Set to `0xFFFF` to collide
+   * with all groups.
    *
    * @see Collider.mask
    */
-  public mask = COLLIDE_ALL_MASK;
+  public mask = 0xFFFF;
 
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
