@@ -2,6 +2,7 @@
 import { b2World } from '@flyover/box2d';
 import { ClassType, EventQueue, GameBuilder, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
+import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dWorld } from './box2d-world';
 import { B2_RAYCASTS, B2_WORLD } from './const';
 
@@ -32,7 +33,8 @@ export class Box2dAdapter implements PhysicsAdapter {
       .provide({
         token: B2_WORLD,
         value: world
-      });
+      })
+      .provide(Box2dBodyFactory);
   }
 
 }

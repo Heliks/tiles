@@ -1,77 +1,37 @@
-import { b2Body, b2CircleShape, b2Fixture, b2PolygonShape, b2Shape } from '@flyover/box2d';
-import { b2FixtureDef } from '@flyover/box2d';
-import { Circle, Entity } from '@heliks/tiles-engine';
-import { Rectangle } from '@heliks/tiles-engine';
-import { Injectable } from '@heliks/tiles-engine';
-import { Collider, Material, MaterialManager, RigidBody } from '@heliks/tiles-physics';
-import { b2ParseShape } from '../utils';
-
-@Injectable()
-export class BodyFactory {
-
-  constructor(public readonly materials: MaterialManager) {}
-
-  public parseFixture(body: RigidBody, collider: Collider, def = new b2FixtureDef()): b2FixtureDef {
-    // Attach the shape to the fixture.
-    def.shape = b2ParseShape(collider.shape);
-    def.isSensor = collider.sensor;
-
-    // Assign material. Hard check here because the number 0 is a valid material id.
-    if (collider.material !== undefined) {
-      const material = this.materials.get(collider.material);
-
-      def.density = material.density;
-      def.friction = material.friction;
-      def.restitution = material.restitution;
-    }
-
-    // Collision groups are inherited by the rigid body itself.
-    def.filter.categoryBits = body.group;
-    def.filter.maskBits = body.mask;
-
-    return def;
-  }
-
-}
+import { b2CircleShape, b2FixtureDef, b2PolygonShape, b2World } from '@flyover/box2d';
+import { Circle, Rectangle } from '@heliks/tiles-engine';
+import { Collider, Material, MaterialManager } from '@heliks/tiles-physics';
+import { Box2dBodyFactory } from '../box2d-body-factory';
 
 
 describe('BodyFactory', () => {
   let materials: MaterialManager;
-  let factory: BodyFactory;
+  let factory: Box2dBodyFactory;
 
   beforeEach(() => {
     materials = new MaterialManager();
-    factory   = new BodyFactory(materials);
+    factory   = new Box2dBodyFactory(new b2World({ x: 0, y: 0 }), materials);
   });
 
   describe('fixtures', () => {
-    it('should be parsed', () => {
-      const def = factory.parseFixture(
-        new RigidBody(),
-        new Collider(new Rectangle(1, 1))
-      );
+    it('should be returned', () => {
+      const fixture = factory.getFixtureDef(new Collider(new Rectangle(1, 1)));
 
-      expect(def).toBeInstanceOf(b2FixtureDef);
+      expect(fixture).toBeInstanceOf(b2FixtureDef);
     });
 
-    it('should be able to have a rectangle shape', () => {
-      const def = factory.parseFixture(
-        new RigidBody(),
-        new Collider(new Rectangle(1, 1))
-      );
+    it('should have be able to have a rectangle shape', () => {
+      const fixture = factory.getFixtureDef(new Collider(new Rectangle(1, 1)));
 
-      expect(def.shape).toBeInstanceOf(b2PolygonShape);
+      expect(fixture.shape).toBeInstanceOf(b2PolygonShape);
     });
 
     it('should be able to have a circle shape', () => {
-      const rad = 1;
-      const def = factory.parseFixture(
-        new RigidBody(),
-        new Collider(new Circle(rad))
-      );
+      const radians = 1;
+      const fixture = factory.getFixtureDef(new Collider(new Circle(radians)));
 
-      expect(def.shape).toBeInstanceOf(b2CircleShape)
-      expect(def.shape.m_radius).toBe(rad);
+      expect(fixture.shape).toBeInstanceOf(b2CircleShape)
+      expect(fixture.shape.m_radius).toBe(radians);
     });
 
     it('should inherit material properties', () => {
@@ -79,17 +39,28 @@ describe('BodyFactory', () => {
 
       materials.register(material);
 
+      const fixture = factory.getFixtureDef(new Collider(new Rectangle(0, 0), 'test'));
 
-      const def = factory.parseFixture(
-        new RigidBody(),
-        new Collider(new Rectangle(0, 0), 'test')
-      );
-
-      expect(def).toMatchObject({
+      expect(fixture).toMatchObject({
         density: material.density,
         friction: material.friction,
         restitution: material.restitution
       });
+    });
+
+    it('should set group and mask bits', () => {
+      const group = 1;
+      const mask  = 4;
+
+      const collider = new Collider(new Rectangle(1, 1));
+
+      collider.group = group;
+      collider.mask = mask;
+
+      const fixture = factory.getFixtureDef(collider);
+
+      expect(fixture.filter.categoryBits).toBe(group);
+      expect(fixture.filter.maskBits).toBe(mask);
     });
   });
 });

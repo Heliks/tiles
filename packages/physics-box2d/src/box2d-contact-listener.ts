@@ -1,9 +1,8 @@
+/* eslint-disable new-cap */
 import { b2Contact, b2ContactListener } from '@flyover/box2d';
 import { ContactEvent, ContactEvents, RigidBody } from '@heliks/tiles-physics';
 import { Entity, World } from '@heliks/tiles-engine';
 
-// Needs to be disabled for Box2D.
-/* eslint-disable new-cap */
 
 /** Listens to Box2D contact events and forwards them to an `EventQueue`. */
 export class Box2dContactListener extends b2ContactListener {
