@@ -50,17 +50,17 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
    *
    * @see RigidBody.group
    */
-  public group = 0x0001;
+  public group?: number;
 
   /**
    * Bitset that contains the collision groups that are allowed to collide ith this
    * collider. If this is not set the collider will inherit the mask of the rigid body
-   * to which it was attached to. Set to `0xFFFF` to collide with all groups.
+   * to which it was attached to.
    *
    * @see group
    * @see RigidBody.mask
    */
-  public mask = 0xFFFF;
+  public mask?: number;
 
   /** @inheritDoc */
   public sensor = false;
