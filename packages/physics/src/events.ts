@@ -1,6 +1,6 @@
 import { Entity, EventQueue } from '@heliks/tiles-engine';
 import { Collider } from './collider';
-import { RigidBody } from './rigid-body';
+
 
 export enum ContactEvent {
   /** Two body parts started colliding. */
