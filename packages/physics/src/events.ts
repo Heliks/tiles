@@ -1,4 +1,5 @@
 import { Entity, EventQueue } from '@heliks/tiles-engine';
+import { Collider } from './collider';
 import { RigidBody } from './rigid-body';
 
 export enum ContactEvent {
@@ -8,18 +9,20 @@ export enum ContactEvent {
   End
 }
 
-/** The meta-data that is emitted when a `ContactEvent` happens. */
+/**
+ * Contact event payload.
+ */
 export interface ContactEventBody {
-  /** The entity that triggered the contact event. */
+  colliderA: Collider;
+  colliderB: Collider;
   entityA: Entity;
-  /** The entity with which [[entityA]] collided. */
   entityB: Entity;
-  bodyA: RigidBody;
-  bodyB: RigidBody;
-
-  /** Event type. */
   type: ContactEvent;
 }
 
-/** A custom event channel where contact events are pushed. */
+/**
+ * Event queue that contains contact events between two physics colliders.
+ *
+ * @see ContactEvent
+ */
 export class ContactEvents extends EventQueue<ContactEventBody> {}
