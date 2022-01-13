@@ -67,6 +67,7 @@ export class Box2dBodyFactory {
       bBody
         .CreateFixture(bFixtureDef)
         .SetUserData({
+          body,
           collider,
           entity
         });

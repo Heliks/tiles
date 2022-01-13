@@ -1,4 +1,4 @@
-import { Entity, Circle, Rectangle, uuid } from '@heliks/tiles-engine';
+import { Circle, Entity, Rectangle, uuid } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
 
 
@@ -66,12 +66,10 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   public sensor = false;
 
   /**
-   * Contains all assigned tags.
-   *
-   * Tags can be used to identify the collider. They do not have any immediate effect
-   * on how the physics of the collider behaves.
+   * Bitmask that contains all tags that are currently set. The amount of maximum
+   * available tags is limited to 32.
    */
-  public readonly tags = new Set<string>();
+  public tags = 0;
 
   /**
    * @param shape Physical shape of the collider.
@@ -97,32 +95,6 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   }
 
   /**
-   * Tags the collider with one or more user defined tags.
-   * @see tags
-   */
-  public tag(...tags: string[]): this {
-    for (const tag of tags) {
-      this.tags.add(tag);
-    }
-
-    return this;
-  }
-
-  /**
-   * Returns `true` if the collider is tagged with all given `tags`.
-   * @see tags
-   */
-  public hasTags(...tags: string[]): boolean {
-    for (const tag of tags) {
-      if (! this.tags.has(tag)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
    * Converts the collider into a sensor.
    * @see sensor
    */
@@ -130,6 +102,51 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
     this.sensor = true;
 
     return this;
+  }
+
+  /**
+   * Adds all tags stored in the given tag `mask`.
+   *
+   * ```ts
+   * const A = 1;
+   * const B = 2;
+   *
+   * // Adds tag A.
+   * tags.tag(A);
+   *
+   * // Adds tag A and B at once.
+   * tags.tag(A | B);
+   * ```
+   */
+  public tag(mask: number): this {
+    this.tags |= mask;
+
+    return this;
+  }
+
+  /**
+   * Removes all tags stored in the given tag `mask`.
+   *
+   * ```ts
+   * const A = 1;
+   * const B = 2;
+   *
+   * // Removes tag A.
+   * tags.untag(A);
+   *
+   * // Removes tag A and B at once.
+   * tags.untag(A | B);
+   * ```
+   */
+  public untag(mask: number): this {
+    this.tags &= ~mask;
+
+    return this;
+  }
+
+  /** Returns `true` if all tags in the given tag `mask` are set. */
+  public hasTags(mask: number): boolean {
+    return Boolean((this.tags & mask) === mask);
   }
 
   /** Registers a new contact with the collider of another entity. */
