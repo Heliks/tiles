@@ -111,6 +111,17 @@ export class SpriteAnimation {
   }
 
   /**
+   * Returns `true` if the animation with the given `name` is played right now or if the
+   * it is about to be transformed into that animation.
+   *
+   * @see playing
+   * @see transform
+   */
+  public isPlaying(name: string): boolean {
+    return this.playing === name || this.transform === name;
+  }
+
+  /**
    * Returns `true` if the current animation is complete.
    *
    * The animation is considered complete when it is displaying its last frame. This means
