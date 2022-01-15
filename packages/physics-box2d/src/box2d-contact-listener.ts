@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import { b2Contact, b2ContactListener } from '@flyover/box2d';
 import { World } from '@heliks/tiles-engine';
-import { ContactEvent, ContactEvents, ContactEventType } from '@heliks/tiles-physics';
+import { ContactEvents, ContactEventType } from '@heliks/tiles-physics';
 import { FixtureUserData } from './types';
 
 
