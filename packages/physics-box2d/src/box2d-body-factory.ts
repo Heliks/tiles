@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
 import { Entity, Transform } from '@heliks/tiles-engine';
 import { Inject, Injectable } from '@heliks/tiles-injector';
