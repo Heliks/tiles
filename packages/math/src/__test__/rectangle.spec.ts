@@ -2,7 +2,6 @@ import { Rectangle } from '../rectangle';
 
 
 describe('Rectangle', () => {
-
   it.each([
     [1, 1, false],
     [5, 1, false],
@@ -11,4 +10,12 @@ describe('Rectangle', () => {
     expect(new Rectangle(5, 5, 5, 5).contains(x, y)).toBe(expected);
   });
 
+  it('should be scaled', () => {
+    const rectangle = new Rectangle(5, 5).scale(10);
+
+    expect(rectangle).toMatchObject({
+      width: 50,
+      height: 50
+    });
+  });
 });
