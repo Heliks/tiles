@@ -36,4 +36,12 @@ export class Rectangle implements RectangleBounds {
     return new Rectangle(this.width, this.height, this.x, this.y);
   }
 
+  /** Scales the rectangle by the given `factor`. */
+  public scale(factor: number): this {
+    this.width *= factor;
+    this.height *= factor;
+
+    return this;
+  }
+
 }
