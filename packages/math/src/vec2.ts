@@ -43,6 +43,11 @@ export class Vec2 implements XY {
     return this;
   }
 
+  /** Returns the angle of the vector in radians. */
+  public radians(): number {
+    return Math.atan2(this.y, this.x);
+  }
+
   /** Returns a copy of this vector. */
   public copy(): Vec2 {
     return new Vec2(this.x, this.y);
