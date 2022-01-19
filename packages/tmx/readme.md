@@ -8,7 +8,8 @@ Note: Only supports the tiled JSON format.
 
 ## Position values
 
-Position values for tile shapes will be converted to be center aligned.
+Position values for free-floating shape objects will be converted to be 
+relative to the objects center instead of the top left corner.
 
 ## Tile Animations
 
