@@ -2,7 +2,7 @@ import { Grid } from '@heliks/tiles-engine';
 import { getProperties } from '../properties';
 import { TmxObjectLayer, TmxTileLayer } from '../tmx';
 import { ObjectLayer, TileChunk, TileLayer } from './layers';
-import { tmxParseObject } from '../objects';
+import { parseObject } from '../objects';
 
 
 /** Parses TMX object layer data. */
@@ -10,7 +10,7 @@ export function tmxParseObjectLayer(data: TmxObjectLayer): ObjectLayer {
   const objects = [];
 
   for (const item of data.objects) {
-    objects.push(tmxParseObject(item));
+    objects.push(parseObject(item));
   }
 
   return new ObjectLayer(
