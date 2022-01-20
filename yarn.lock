@@ -643,20 +643,20 @@
   dependencies:
     "@types/systemjs" "^0.20.6"
 
-"@heliks/ecs-hierarchy@^0.1.4":
-  version "0.1.4"
-  resolved "http://193.31.26.163:4873/@heliks%2fecs-hierarchy/-/ecs-hierarchy-0.1.4.tgz#6e38a1c1ce0114856c4e87593c1b66f65896d653"
-  integrity sha512-kBox/xuwUr2TEi+1y2EqB8nZluqwRtKrFzqBFdaMBHnWPst6vCVf/rX28HgKDTaSmDfSAohuJWLXBxRnzhL9nw==
+"@heliks/ecs-hierarchy@^0.1.5":
+  version "0.1.5"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs-hierarchy/-/ecs-hierarchy-0.1.5.tgz#a6bbc56ee4f047098c3ffb054ee51ac33eb8ea72"
+  integrity sha512-h8e5YNZfuBzNf9JB0tokM1IiTVgyLWtB6vJSVGQmamVZET8QANyJInVd68/1S/WCRK4xYtZxPIoHqq2sBI1Q0g==
 
-"@heliks/ecs-transform@^0.1.4":
-  version "0.1.4"
-  resolved "http://193.31.26.163:4873/@heliks%2fecs-transform/-/ecs-transform-0.1.4.tgz#917cc0361530428c7a56c90a450f5e661140faf1"
-  integrity sha512-uluTdqc6P3cHorrBncdQ8TrflCLcFsa8fk/khV3c4DplR994MjDDj7JDyzVIbAmqUiiHoZgTAA2FLOjaeE+kIw==
+"@heliks/ecs-transform@^0.1.5":
+  version "0.1.5"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs-transform/-/ecs-transform-0.1.5.tgz#ac4b4938aabf78e5a0f338582746767e2416e54e"
+  integrity sha512-2wrlJqjD7MmMIcOQbjSMsUZJB40wDnVDX1KYmiCy75wx//Z9mjFn3pYYQzyMKIjEyeq4g0AEMFkFmFuJbZWJVg==
 
-"@heliks/ecs@^0.1.4":
-  version "0.1.4"
-  resolved "http://193.31.26.163:4873/@heliks%2fecs/-/ecs-0.1.4.tgz#2ba2a1f6592d543cc4cd12285f379fd42f55eaf7"
-  integrity sha512-2l8+Vbtlmcr8xLG9gMDaFRD90l7Wby2l6uiOFsuvqY69xBV0CgFxuS6Mfqp8NF8GpUyE0+7XFFEcEu0s9bAZSA==
+"@heliks/ecs@^0.1.5":
+  version "0.1.5"
+  resolved "http://193.31.26.163:4873/@heliks%2fecs/-/ecs-0.1.5.tgz#5913e409e88a5e384d86232fe8d47b10904852d7"
+  integrity sha512-3HAh54prcPiLyQm3pijXP21mqu2o1wwjnaA5Pz7t9XfclSpdP/4zSa/9Xp2PvzXxwrEu5+TSMf4DDu7iY+jagw==
   dependencies:
     "@heliks/event-queue" "^0.2.2"
 
