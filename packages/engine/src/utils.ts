@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4, v5 } from 'uuid';
 
 
 /** Caps `value` to the boundaries `min` and `max`. */
@@ -21,14 +21,19 @@ export function containsAll<T = unknown>(target: T[], items: T[]): boolean {
   return items.every(i => target.includes(i));
 }
 
+/**
+ * Namespace used to generate v5 UUIDs.
+ *
+ * @see uuid()
+ */
+const UUID_NAMESPACE = '06d8878c-8305-44f2-8bca-98b311f857dd';
 
 /**
- * Creates RFC4122 compliant UUID (Universally Unique Identifiers).
- *
- * Internally this simply wraps the `uuid` npm package.
+ * Creates a random UUID (Universally Unique Identifiers). If a `seed` is given an RFC
+ * version 5 (namespace with SHA-1) UUID will be created instead.
  *
  * @see https://de.wikipedia.org/wiki/Universally_Unique_Identifier
  */
-export function uuid(): string {
-  return uuidv4();
+export function uuid(seed?: string | number): string {
+  return (seed ? v5(seed.toString(), UUID_NAMESPACE) : v4()).toString();
 }
