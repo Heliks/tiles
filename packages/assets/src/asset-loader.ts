@@ -2,6 +2,7 @@ import { Injectable, ltrim } from '@heliks/tiles-engine';
 import { AssetStorage, Handle } from './asset';
 import { Format, LoadType } from './formats';
 
+
 @Injectable()
 export class AssetLoader {
 
@@ -32,7 +33,7 @@ export class AssetLoader {
    * @typeparam D Kind of data that should be stored as an asset.
    */
   public data<D>(data: D, storage: AssetStorage<D>): Handle<D> {
-    const handle = Symbol();
+    const handle = new Handle('');
 
     this.complete(handle, data, '', storage);
 
@@ -71,8 +72,7 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Instantly returns a file handle that can be used to access the asset
-   * in storage as soon as it completes loading.
+   * Loads a file. Instantly returns a file handle that can be used to access the asset.
    *
    * Note: The asset is only available after it finished loading.
    *
@@ -81,7 +81,7 @@ export class AssetLoader {
    * @param storage The storage where the loaded asset should be stored.
    */
   public load<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Handle<R> {
-    const handle = Symbol();
+    const handle = new Handle(path);
 
     // Load the file async and save it to storage.
     this.fetch(path, format).then(
@@ -101,7 +101,7 @@ export class AssetLoader {
    */
   public async<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Promise<Handle<R>> {
     return this.fetch(path, format).then(data => {
-      const handle = Symbol();
+      const handle = new Handle(path);
 
       this.complete(handle, data, format.name, storage);
 

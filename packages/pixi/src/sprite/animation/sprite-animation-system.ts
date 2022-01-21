@@ -1,3 +1,4 @@
+import { Handle } from '@heliks/tiles-assets';
 import { contains, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteSheetStorage } from '../sprite-sheet';
@@ -23,9 +24,10 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * the animation component. Returns `true` if the transform was successful.
    */
   protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet = typeof render.spritesheet === 'symbol'
-      ? this.storage.get(render.spritesheet)?.data
-      : render.spritesheet;
+    const sheet =
+      render.spritesheet instanceof Handle
+        ? this.storage.get(render.spritesheet)?.data
+        : render.spritesheet;
 
     if (!sheet) {
       return false;

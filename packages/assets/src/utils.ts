@@ -1,5 +1,5 @@
 /**
- * Returns the directory in the given `path`, similiar to NodeJS `__dirname()` without
+ * Returns the directory in the given `path`, similar to NodeJS `__dirname()` without
  * a trailing slash. Additional directory segments can be added via `append`.
  */
 export function getDirectory(path: string, ...append: string[]): string {

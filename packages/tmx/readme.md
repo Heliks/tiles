@@ -2,9 +2,9 @@ WIP
 
 # Tiled (TMX) Module
 
-Module for loading and handling tiled (TMX) maps. 
+Loads tiled (tmx) map and tileset files.
 
-Note: Only supports the tiled JSON format.
+- [Tiled](https://www.mapeditor.org/)
 
 ## Position values
 

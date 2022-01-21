@@ -9,8 +9,8 @@ export enum LoadType {
 /**
  * An asset format.
  *
- * @typeparam D Raw data that is processed to produce `T`.
- * @typeparam R Result that this format will produce from processing data `R`.
+ * @typeparam D Raw data that is processed to produce `R`.
+ * @typeparam R Result that this format will produce from processing data `D`.
  * @typeparam L Loader that is executing this format during [[process()]].
  */
 export interface Format<D, R, L = unknown> {

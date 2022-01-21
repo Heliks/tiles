@@ -1,6 +1,15 @@
 /** A unique pointer to an asset. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type Handle<T = unknown> = symbol;
+export class Handle<T = unknown> {
+
+  /**
+   * @param path Path of the asset file that this handle points to.
+   */
+  constructor(public readonly path: string) {}
+
+}
+
+
 
 /**
  * A loaded asset

@@ -1,3 +1,4 @@
+import { Handle } from '@heliks/tiles-assets';
 import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
@@ -65,22 +66,23 @@ export class SpriteRenderer extends ReactiveSystem {
 
     // Update sprites.
     for (const entity of this.group.entities) {
-      const display = displays.get(entity);
-      const sheet = typeof display.spritesheet === 'symbol'
-        ? this.storage.get(display.spritesheet)?.data
-        : display.spritesheet;
+      const render = displays.get(entity);
+      const sheet =
+        render.spritesheet instanceof Handle
+          ? this.storage.get(render.spritesheet)?.data
+          : render.spritesheet;
 
-      const sprite = display._sprite;
+      const sprite = render._sprite;
 
       // No sheet means that the asset hasn't finished loading yet.
-      if (display.dirty && sheet) {
-        display.dirty = false;
+      if (render.dirty && sheet) {
+        render.dirty = false;
 
-        sprite.texture = sheet.texture(display.spriteIndex);
+        sprite.texture = sheet.texture(render.spriteIndex);
 
         // Flip sprite.
-        sprite.scale.x = display.flipX ? -display.scale.x : display.scale.x;
-        sprite.scale.y = display.flipY ? -display.scale.y : display.scale.y;
+        sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
+        sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
       }
 
       // Update the sprites position.
