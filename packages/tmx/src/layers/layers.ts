@@ -46,8 +46,8 @@ export class ObjectLayer extends BaseLayer<GameObject[]> {
 export class TileChunk {
 
   /**
-   * @param grid Grid that describes tile arrangement in this chunk. The columns and rows
-   *  determine the amount of tiles in each chunk, cell size determines tile size.
+   * @param grid Grid that describes tile arrangement in this chunk. Columns and rows
+   *  determine amount of tiles in each direction, cell size determines tile size.
    * @param data Tile data.
    * @param x X axis position in px, relative to the top left corner of the map.
    * @param y Y axis position in px, relative to the top left corner of the map.
