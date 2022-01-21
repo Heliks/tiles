@@ -57,8 +57,10 @@ function parseLayers(data: TmxTilemap): Layer[] {
 
 /**
  * Returns the size of the given tmx map `data` (amount of columns on x axis and
- * amount of columns on y axis). This also returns the size of "infinite maps" which
- * according to the tiled format would have a width and height of `0`.
+ * amount of columns on y axis).
+ *
+ * This also returns the size of "infinite maps" which according to the tiled format
+ * would have a width and height of `0`.
  */
 function getMapSize(data: TmxTilemap): Vec2 {
   const size = new Vec2(data.width, data.height);
@@ -81,48 +83,73 @@ function getMapSize(data: TmxTilemap): Vec2 {
   return size;
 }
 
-/** @internal */
 
 /**
- * Returns a `Grid` that describes the layout in which chunks are arranged on the given
- * tilemap `data`. Columns and rows determine amount of chunks in each direction, cell
- * size determines amount of tiles in each chunk.
+ * Returns a `Grid` that describes the layout in which chunks should be arranged on the
+ * given tilemap `data`.
+ *
+ * Columns and rows determine amount of chunks in each direction, cell size determines
+ * amount of tiles in each chunk.
+ *
+ * Maps that are not "infinite" will always only have a single chunk that covers the
+ * size of the whole map.
  *
  * @see Grid
  */
 function getMapChunksLayout(data: TmxTilemap): Grid {
-  let cw = TMX_DEFAULT_CHUNK_SIZE;
-  let ch = TMX_DEFAULT_CHUNK_SIZE;
-
-  if (data.editorsettings?.chunksize) {
-    cw = data.editorsettings.chunksize.width;
-    ch = data.editorsettings.chunksize.height;
-  }
-
   const size = getMapSize(data);
 
+  if (! data.infinite) {
+    return new Grid(1, 1, size.x, size.y);
+  }
+
+  let chunksX = TMX_DEFAULT_CHUNK_SIZE;
+  let chunksY = TMX_DEFAULT_CHUNK_SIZE;
+
+  if (data.editorsettings?.chunksize) {
+    chunksX = data.editorsettings.chunksize.width;
+    chunksY = data.editorsettings.chunksize.height;
+  }
+
   return new Grid(
-    Math.ceil(size.x / cw),
-    Math.ceil(size.y / ch),
-    cw,
-    ch
+    Math.ceil(size.x / chunksX),
+    Math.ceil(size.y / chunksY),
+    chunksX,
+    chunksY
   );
 }
 
 /**
- * Returns a `Grid` that describes the tile arrangement in each chunk. The columns and
- * rows determine the amount of tiles in each chunk, cell size determines tile size.
+ * Returns a `Grid` that describes how tiles should be arranged in a chunk.
+ *
+ * Columns and rows determine the amount of tiles in each chunk, while cell size
+ * determines the tile size.
+ *
+ * For maps that are not "infinite" the chunk will always cover the whole map.
  */
 function getChunkTileLayout(data: TmxTilemap): Grid {
-  let cw = TMX_DEFAULT_CHUNK_SIZE;
-  let ch = TMX_DEFAULT_CHUNK_SIZE;
+  let tilesX = TMX_DEFAULT_CHUNK_SIZE;
+  let tilesY = TMX_DEFAULT_CHUNK_SIZE;
 
-  if (data.editorsettings?.chunksize) {
-    cw = data.editorsettings.chunksize.width;
-    ch = data.editorsettings.chunksize.height;
+  if (data.infinite) {
+    if (data.editorsettings?.chunksize) {
+      tilesX = data.editorsettings.chunksize.width;
+      tilesY = data.editorsettings.chunksize.height;
+    }
+  }
+  else {
+    const size = getMapSize(data);
+
+    tilesX = size.x;
+    tilesY = size.y;
   }
 
-  return new Grid(cw, ch, data.tilewidth, data.tileheight);
+  return new Grid(
+    tilesX,
+    tilesY,
+    data.tilewidth,
+    data.tileheight
+  );
 }
 
 
