@@ -22,40 +22,40 @@ export abstract class Physics {
    * Called once when the adapter is initialized. This can be used for example to set-up
    * additional services.
    */
-  abstract setup(world: World): void;
+  public abstract setup(world: World): void;
 
   /**
    * Moves the physics world forwards in time based on the given `delta` time
    * (in seconds).
    */
-  abstract update(delta: number): void;
+  public abstract update(delta: number): void;
 
   /**
    * Creates a body for `entity` in the physics world based on a rigid `body`
    * at `position`.
    */
-  abstract createBody(entity: Entity, body: RigidBody, transform: Transform): void;
+  public abstract createBody(entity: Entity, body: RigidBody, transform: Transform): void;
 
   /** Destroys the body of `entity` in the physics world. */
-  abstract destroyBody(entity: Entity): void;
+  public abstract destroyBody(entity: Entity): void;
 
   /**
    * Updates the values of the rigid `body` of `entity` with its counterpart in the
    * physics world. The current position of the physics body will be applied to `trans`.
    */
-  abstract updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void;
+  public abstract updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void;
 
   /** Draws the adapters debug information to the renderers debug draw. */
-  abstract drawDebugData(): void;
+  public abstract drawDebugData(): void;
 
   /** Applies a linear impulse at the center of an `entity` using `force`. */
-  abstract impulse(entity: Entity, force: Vec2): void;
+  public abstract impulse(entity: Entity, force: Vec2): void;
 
   /**
    * Performs a raycast from the given `start` to `end` point. Obstacles that collided
    * with the ray are returned. If an `obstacles` array is provided, the obstacles
    * that the ray encounters are added to that array instead.
    */
-  abstract raycast(start: XY, end: XY, obstacles?: RaycastObstacle[]): RaycastObstacle[];
+  public abstract raycast(start: XY, end: XY, obstacles?: RaycastObstacle[]): RaycastObstacle[];
 
 }

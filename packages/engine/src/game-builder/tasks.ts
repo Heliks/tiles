@@ -174,6 +174,8 @@ export class AddComponent<C extends ComponentType, A extends C = C> implements T
 
 export class AddModule implements Task {
 
+  // False positive
+  // eslint-disable-next-line unicorn/prefer-module
   constructor(private readonly module: Module, private readonly builder: GameBuilder) {}
 
   /** @inheritDoc */

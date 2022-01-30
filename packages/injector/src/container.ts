@@ -137,9 +137,9 @@ export class Container implements Base {
 
   /** @inheritDoc */
   public merge(container: Container): this {
-    container.getBindings().forEach((binding, sym) => {
-      this.bindings.set(sym, binding);
-    });
+    for (const [token, binding] of container.getBindings()) {
+      this.bindings.set(token, binding);
+    }
 
     return this;
   }
