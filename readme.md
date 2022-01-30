@@ -8,6 +8,9 @@ $ yarn install
 
 # Build
 
+Requirements:
+- Node 14
+
 ### Build all packages
 
 ```bash
