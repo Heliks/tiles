@@ -1,11 +1,11 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
-import { Layer, tmxParseObjectLayer, tmxParseTileLayer } from './layers';
+import { parseLayers } from './layers';
 import { LoadTileset } from './load-tileset';
 import { getProperties, Properties } from './properties';
 import { Tilemap } from './tilemap';
 import { Tileset } from './tileset';
-import { TmxExternalTilemapTileset, TmxLayerType, TmxTilemap, TmxTilemapTileset } from './tmx';
+import { TmxExternalTilemapTileset, TmxTilemap, TmxTilemapTileset } from './tmx';
 
 
 /**
@@ -29,31 +29,6 @@ async function processTileset(loader: AssetLoader, basePath: string, data: TmxTi
     ? loader.fetch(`${basePath}/${data.source}`, format)
     : format.process(data, '', loader);
 }
-
-/** @internal */
-function parseLayers(data: TmxTilemap): Layer[] {
-  // Create the layout of each individual chunk. We need this to parse tile layers.
-  const layout = getChunkTileLayout(data);
-  const layers = [];
-
-  for (const item of data.layers) {
-    let layer;
-
-    switch (item.type) {
-      case TmxLayerType.Tiles:
-        layer = tmxParseTileLayer(item, layout);
-        break;
-      case TmxLayerType.Objects:
-        layer = tmxParseObjectLayer(item);
-        break;
-    }
-
-    layers.push(layer);
-  }
-
-  return layers;
-}
-
 
 /**
  * Returns the size of the given tmx map `data` (amount of columns on x axis and
@@ -188,8 +163,11 @@ export class LoadTilemap<P extends Properties = Properties> implements Format<Tm
       ))
     );
 
+    // Create the layout of each individual chunk. We need this to parse tile layers.
+    const chunkTileGrid = getChunkTileLayout(data);
+
     tilemap.tilesets.push(...tilesets);
-    tilemap.layers.push(...parseLayers(data));
+    tilemap.layers.push(...parseLayers(data, chunkTileGrid));
 
     return tilemap;
   }
