@@ -3,7 +3,9 @@ import { TmxHasProperties } from './utils';
 
 export enum TmxLayerType {
   Objects = 'objectgroup',
-  Tiles = 'tilelayer'
+  Tiles = 'tilelayer',
+  Group = 'group',
+  Image = 'image'
 }
 
 interface TmxBaseLayer extends TmxHasProperties {
@@ -61,4 +63,9 @@ export interface TmxObjectLayer extends TmxBaseLayer {
   type: TmxLayerType.Objects;
 }
 
-export type TmxLayer = TmxTileLayer | TmxObjectLayer;
+export interface TmxGroupLayer extends TmxBaseLayer {
+  layers: (TmxGroupLayer | TmxTileLayer | TmxObjectLayer)[];
+  type: TmxLayerType.Group;
+}
+
+export type TmxLayer = TmxTileLayer | TmxObjectLayer | TmxGroupLayer;
