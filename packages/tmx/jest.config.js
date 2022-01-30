@@ -1,3 +1,4 @@
 module.exports = {
-  ...require('../../jest.config.base')
+  ...require('../../jest.config.base'),
+  testEnvironment: 'jsdom'
 }

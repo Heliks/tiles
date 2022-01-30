@@ -15,11 +15,12 @@ export enum TmxTilesetObjectAlignment {
   BottomRight = 'bottomright'
 }
 
-export interface TmxTilemapTile extends TmxHasProperties {
+export interface TmxTilesetTile extends TmxHasProperties {
   animation?: {
     duration: number;
     tileid: number;
   }[];
+  /** Note: This is actually the tile index, not the ID. */
   id: number;
   objectgroup?: {
     objects: TmxShape[]
@@ -41,6 +42,6 @@ export interface TmxTileset extends TmxHasProperties {
   tiledversion: string;
   tileheight: number;
   tilewidth: number;
-  tiles?: TmxTilemapTile[];
+  tiles?: TmxTilesetTile[];
   type: 'tileset';
 }

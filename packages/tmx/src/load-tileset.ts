@@ -1,9 +1,10 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
+import { getProperties } from './properties';
 import { parseShape } from './shape';
 import { Tileset } from './tileset';
-import { TmxTilemapTile, TmxTileset } from './tmx';
+import { TmxTilesetTile, TmxTileset } from './tmx';
 
 
 // Lookup to map TmxTilesetObjectAlignment values to Align values.
@@ -35,8 +36,18 @@ async function load(data: TmxTileset, file: string, loader: AssetLoader): Promis
   return new SpriteGrid(grid, texture);
 }
 
-/** @internal */
-function parseTile(tileset: Tileset, tile: TmxTilemapTile): void {
+
+/**
+ * Parses TMX tile data and adds the extracted information to the given `tileset`.
+ *
+ * @param tileset Tileset to which tile information should be added.
+ * @param tile Tile data that should be parsed.
+ */
+export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
+  // The tileID here is actually just the tile index.. Convert it to a local ID.
+  const tileId = tile.id + 1;
+
+  // Assign shapes if tile has any.
   if (tile.objectgroup) {
     const shapes = tile.objectgroup.objects.map(item => parseShape(
       item,
@@ -44,9 +55,15 @@ function parseTile(tileset: Tileset, tile: TmxTilemapTile): void {
       tileset.tileHeight
     ));
 
-    tileset.setTileShapes(tile.id, shapes);
+    tileset.setTileShapes(tileId, shapes);
+  }
+
+  // Assign custom properties if the tile has any.
+  if (tile.properties) {
+    tileset.tileProperties.set(tileId, getProperties(tile));
   }
 }
+
 
 /** Format to load TMX tilesets. */
 export class LoadTileset implements Format<TmxTileset, Tileset> {
