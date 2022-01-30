@@ -1,4 +1,5 @@
-import { hasFlag, parseGID, TmxGIDFlag } from "./gid";
+import { hasFlag, parseGID, TmxGIDFlag } from "../gid";
+
 
 describe('parseGID', () => {
   it('should parse a Tiled GID', () => {
