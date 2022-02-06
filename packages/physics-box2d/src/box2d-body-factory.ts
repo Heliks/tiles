@@ -47,7 +47,7 @@ export class Box2dBodyFactory {
   }
 
   /** @inheritDoc */
-  public createBody(entity: Entity, body: RigidBody, transform: Transform): b2Body {
+  public createBody(entity: Entity, body: RigidBody, transform = new Transform()): b2Body {
     const def = new b2BodyDef();
 
     def.fixedRotation = !body.rotate;

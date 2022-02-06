@@ -32,6 +32,7 @@ export interface ColliderContact {
   entity: Entity;
 }
 
+
 /**
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
@@ -45,17 +46,24 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   public readonly contacts: ColliderContact[] = [];
 
   /**
-   * Bitset that contains the colliders collision groups. If this is not set the collider
-   * will inherit all groups from the rigid body to which it was attached to.
+   * Collision group bits. If not set the groups will be inherited from the the rigid
+   * body to which the collider was attached to.
+   *
+   * Do not update this directly. Use `setFilterData()` instead.
    *
    * @see RigidBody.group
    */
   public group?: number;
 
+  /** Indicates that the collider requires an update. */
+  public isDirty = false;
+
   /**
-   * Bitset that contains the collision groups that are allowed to collide ith this
-   * collider. If this is not set the collider will inherit the mask of the rigid body
-   * to which it was attached to.
+   * Bits of the collision groups that are allowed to collide ith this collider. If not
+   * set the mask will be inherited from the rigid body to which the collider was
+   * attached to.
+   *
+   * Do not update this directly. Use `setFilterData()` instead.
    *
    * @see group
    * @see RigidBody.mask
@@ -171,6 +179,24 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
     if (~index) {
       this.contacts.splice(index, 1);
     }
+
+    return this;
+  }
+
+  /**
+   * Updates the collision filter data.
+   *
+   * @param groups Collision group bits.
+   * @param mask Collision mask bits.
+   *
+   * @see group
+   * @see mask
+   */
+  public setFilterData(groups: number, mask: number): this {
+    this.group = groups;
+    this.mask = mask;
+
+    this.isDirty = true;
 
     return this;
   }

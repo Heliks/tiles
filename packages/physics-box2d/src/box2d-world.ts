@@ -1,10 +1,11 @@
 /* eslint-disable new-cap */
-import { b2Body, b2World } from '@flyover/box2d';
+import { b2Body, b2World, b2Filter } from '@flyover/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
+import { syncBodyFixtures } from './fixtures';
 
 
 /** User data that will be assigned to `b2Fixture` instances. */
@@ -81,6 +82,8 @@ export class Box2dWorld extends Physics {
     }
   }
 
+
+
   /** @inheritDoc */
   public updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void {
     const bBody = this.bodies.get(entity);
@@ -122,6 +125,9 @@ export class Box2dWorld extends Physics {
 
     body.velocity.x = velocity.x;
     body.velocity.y = velocity.y;
+
+    // Synchronize fixtures.
+    syncBodyFixtures(bBody);
   }
 
   /** @inheritDoc */
