@@ -1,6 +1,5 @@
-import { Entity, EventQueue } from '@heliks/tiles-engine';
-import { Collider } from './collider';
-import { RigidBody } from './rigid-body';
+import { EventQueue } from '@heliks/tiles-engine';
+import { ColliderContact } from './collider-contact';
 
 
 export enum ContactEventType {
@@ -14,12 +13,7 @@ export enum ContactEventType {
  * Contact event payload.
  */
 export interface ContactEvent {
-  bodyA: RigidBody;
-  bodyB: RigidBody;
-  colliderA: Collider;
-  colliderB: Collider;
-  entityA: Entity;
-  entityB: Entity;
+  contact: ColliderContact;
   type: ContactEventType;
 }
 

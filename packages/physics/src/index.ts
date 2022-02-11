@@ -1,4 +1,5 @@
 export * from './collider';
+export * from './collider-contact';
 export * from './events';
 export * from './material';
 export * from './physics';
