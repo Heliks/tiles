@@ -13,6 +13,12 @@ export class SpriteRender {
   /** @internal */
   public readonly _sprite = new Sprite();
 
+  /**
+   * Origin position of the sprite. Do not update this directly, and use the `setAnchor()`
+   * method instead.
+   */
+  public anchor = new Vec2(0, 0);
+
   /** Indicates if the sprite needs to be re-rendered.*/
   public dirty = true;
 
@@ -25,11 +31,17 @@ export class SpriteRender {
   /** Scale factor of the sprite. */
   public scale = new Vec2(1, 1);
 
-  /**
-   * Origin position of the sprite. Do not update this directly, and use the `setAnchor()`
-   * method instead.
-   */
-  public anchor = new Vec2(0, 0);
+  /** @internal */
+  public _group?: Entity;
+
+  /** The opacity of the sprite. Value from 0-1. */
+  public set opacity(opacity: number) {
+    this._sprite.alpha = opacity;
+  }
+
+  public get opacity(): number {
+    return this._sprite.alpha;
+  }
 
   /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
@@ -41,7 +53,7 @@ export class SpriteRender {
   constructor(
     public spritesheet: SpriteSheet | Handle<SpriteSheet>,
     public spriteIndex: number,
-    public readonly group?: Entity
+    public group?: Entity
   ) {
     // Using the middle position instead of the top-left position will save us extra
     // calculations during the renderer update.

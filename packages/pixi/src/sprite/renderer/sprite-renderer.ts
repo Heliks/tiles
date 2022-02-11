@@ -28,12 +28,8 @@ export class SpriteRenderer extends ReactiveSystem {
     super(contains(SpriteRender, Transform));
   }
 
-  /** @inheritDoc */
-  public onEntityAdded(world: World, entity: Entity): void {
-    const render = world.storage(SpriteRender).get(entity);
-
-    // Add to render group if necessary.
-    if (typeof render.group === 'number') {
+  public updateRenderGroup(world: World, render: SpriteRender): void {
+    if (render.group !== undefined) {
       world
         .storage(RenderGroup)
         .get(render.group)
@@ -44,6 +40,15 @@ export class SpriteRenderer extends ReactiveSystem {
       this.stage.add(render._sprite);
     }
 
+    render._group = render.group;
+  }
+
+  /** @inheritDoc */
+  public onEntityAdded(world: World, entity: Entity): void {
+    const render = world.storage(SpriteRender).get(entity);
+
+    // Add to render group if necessary.
+    this.updateRenderGroup(world, render);
     this.sprites.set(entity, render._sprite);
   }
 
@@ -73,6 +78,14 @@ export class SpriteRenderer extends ReactiveSystem {
           : render.spritesheet;
 
       const sprite = render._sprite;
+
+      // Change render group.
+      if (render.group !== render._group) {
+        // Remove from current container.
+        render._sprite.parent.removeChild(render._sprite);
+
+        this.updateRenderGroup(world, render);
+      }
 
       // No sheet means that the asset hasn't finished loading yet.
       if (render.dirty && sheet) {
