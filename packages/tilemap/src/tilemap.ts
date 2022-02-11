@@ -9,6 +9,15 @@ export class Tilemap extends TilesetBag {
   /** @internal */
   public readonly view = new Container();
 
+  /** The opacity of the tilemap. Value from 0-1. */
+  public set opacity(opacity: number) {
+    this.view.alpha = opacity;
+  }
+
+  public get opacity(): number {
+    return this.view.alpha;
+  }
+
   /**
    * @param grid Grid that represent the boundaries of the tilemap and the constrains
    *  where individual tiles will be placed.
