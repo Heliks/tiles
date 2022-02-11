@@ -25,13 +25,6 @@ export interface ColliderData {
 
 }
 
-export interface ColliderContact {
-  /** Id of the collider with which we are colliding. */
-  colliderId: number;
-  /** Entity which with we are colliding with. */
-  entity: Entity;
-}
-
 
 /**
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
@@ -41,9 +34,6 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
 
   /** Unique identifier. */
   public readonly id = uuid();
-
-  /** Contains all colliders that are currently in physical contact with this one. */
-  public readonly contacts: ColliderContact[] = [];
 
   /**
    * Collision group bits. If not set the groups will be inherited from the the rigid
@@ -155,32 +145,6 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   /** Returns `true` if all tags in the given tag `mask` are set. */
   public hasTags(mask: number): boolean {
     return Boolean((this.tags & mask) === mask);
-  }
-
-  /** Registers a new contact with the collider of another entity. */
-  public addContact(entity: Entity, colliderId: number): this {
-    this.contacts.push({
-      colliderId,
-      entity
-    });
-
-    return this;
-  }
-
-  /**
-   * Removes the contact between this collider and the collider of `entity` matching
-   * `colliderId`.
-   */
-  public removeContact(entity: Entity, colliderId: number): this {
-    const index = this.contacts.findIndex(
-      item => item.entity === entity && item.colliderId === colliderId
-    );
-
-    if (~index) {
-      this.contacts.splice(index, 1);
-    }
-
-    return this;
   }
 
   /**

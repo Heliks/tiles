@@ -1,5 +1,7 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { EventQueue, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
+import { ColliderContact } from './collider-contact';
+import { ContactEvent } from './events';
 import { MaterialId } from './material';
 
 
@@ -30,10 +32,18 @@ export class RigidBody {
   public colliders: Collider[] = [];
 
   /**
-   * Linear damping that is applied to the whole body. This determines how much the
-   * velocity of the body deteriorates over time in relation to the worlds gravity. In
-   * top-down games where the world usually does not have a gravity this needs to be
-   * set to an appropriate value or objects will move forever.
+   * Contains `ColliderContact` for each physical contact a collider attached to this
+   * rigid body. The `entityA` (`colliderA`...) properties is guaranteed to contain the
+   * information to this body.
+   */
+  public readonly contacts: ColliderContact[] = [];
+
+  /**
+   * Linear damping. Determines how much the velocity of the body decays over time in
+   * relation to the worlds gravity.
+   *
+   * In zero-gravity worlds (a.E. top-down games) this needs to be set manually for
+   * velocity to decay at all.
    */
   public damping = 0;
 
@@ -67,6 +77,12 @@ export class RigidBody {
    * @see Collider.mask
    */
   public mask = 0xFFFF;
+
+  /**
+   * If set to an event queue, contact events that include a collider that is attached
+   * to this rigid body, will be emitted here.
+   */
+  public onContact?: EventQueue<ContactEvent>;
 
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
