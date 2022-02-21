@@ -28,13 +28,13 @@ interface SpriteSheetData {
  * To load the sprite sheet:
  *
  * ```ts
- * const sheet = world.get(AssetLoader).fetch('foo.json', new SpriteSheetFormat());
+ * const sheet = world.get(AssetLoader).fetch('foo.json', new LoadSpriteSheet());
  * ```
  *
  * @see SpriteSheetData
  * @see SpriteSheet
  */
-export class SpriteSheetFormat implements Format<SpriteSheetData, SpriteSheet> {
+export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
   public readonly name = 'PIXI:sprite-sheet';

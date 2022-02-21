@@ -11,7 +11,7 @@ import { LoadTexture } from '../../load-texture';
  * @see LoadTexture
  * @see SpriteSheet
  */
-export class ImageToSpriteSheet implements Format<Blob, SpriteSheet> {
+export class LoadSpriteSheetFromImage implements Format<Blob, SpriteSheet> {
 
   /** @inheritDoc */
   public readonly name = 'PIXI:sprite-sheet-from-texture';
