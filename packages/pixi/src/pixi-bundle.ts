@@ -1,4 +1,4 @@
-import { ClassType, GameBuilder, hasOnInit, Module, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
+import { ClassType, GameBuilder, hasOnInit, Bundle, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
@@ -10,8 +10,8 @@ import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, S
 import { Overlay, Stage } from './stage';
 
 
-/** Configuration for the renderer module. */
-export interface RendererModuleConfig {
+/** Configuration for the renderer bundle. */
+export interface RendererBundleConfig {
 
   /** Enables anti-aliasing if set to `true`. Enabled by default. */
   antiAlias?: boolean;
@@ -57,12 +57,12 @@ export interface RendererModuleConfig {
 }
 
 /**
- * Module that provides a WebGL drawing context.
+ * Bundle that provides a WebGL drawing context via PIXI.JS.
  *
  * To ensure that rendering does not appear out of sync it is recommended that the
- * renderer plugin runs as late as possible in the execution order.
+ * renderer plugin runs as late as possible in the system execution order.
  */
-export class PixiModule implements Module, OnInit {
+export class PixiBundle implements Bundle, OnInit {
 
   /** Plugins added to the renderer. */
   private readonly plugins: ClassType<RendererPlugin>[] = [];
@@ -70,7 +70,7 @@ export class PixiModule implements Module, OnInit {
   /**
    * @param config Renderer configuration.
    */
-  constructor(public readonly config: RendererModuleConfig) {}
+  constructor(public readonly config: RendererBundleConfig) {}
 
   /**
    * Adds a `plugin`.

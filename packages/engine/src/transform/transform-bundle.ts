@@ -1,17 +1,17 @@
-import { GameBuilder, Module } from '../game-builder';
 import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
+import { Transform } from '@heliks/ecs-transform';
+import { Bundle, GameBuilder } from '../game-builder';
 import { HierarchySystem } from './hierarchy-system';
 import { TransformSystem } from './transform-system';
-import { Transform } from '@heliks/ecs-transform';
 
 
 /**
- * Module that provides a hierarchical transform system. This module is optional.
+ * Bundle that provides a hierarchical transform system. This module is optional.
  *
  * @see Transform
  * @see Hierarchy
  */
-export class TransformModule implements Module {
+export class TransformBundle<T extends Transform = Transform> implements Bundle {
 
   /** @inheritDoc */
   public build(builder: GameBuilder): void {

@@ -1,5 +1,6 @@
-import { Injectable } from '@heliks/tiles-engine';
-import { Container } from '../drawable';
+import { Entity, Injectable, World } from '@heliks/tiles-engine';
+import { Container, Drawable } from '../drawable';
+import { RenderGroup } from '../render-group';
 
 
 /**
@@ -13,6 +14,38 @@ import { Container } from '../drawable';
  * @see Renderer
  */
 @Injectable()
-export class Stage extends Container {}
+export class Stage extends Container {
+
+  /**
+   * Contains render groups that are added to this stage, mapped to the entity to which
+   * the component is assigned to.
+   *
+   * Do not modify this directly, as the render system takes care of managing stage
+   * groups automatically.
+   */
+  public readonly groups = new Map<Entity, RenderGroup>();
+
+  /**
+   * Inserts a `drawable` into the stage. If a render `group` is given as a parent, the
+   * drawable will be added as child of that group.
+   *
+   * Throws if the group is not a part of this stage.
+   */
+  public insert(world: World, drawable: Drawable, group?: Entity): void {
+    if (group !== undefined) {
+      const component = this.groups.get(group);
+
+      if (! component) {
+        throw new Error(`Invalid render group ${group}`);
+      }
+
+      component.container.add(drawable);
+    }
+    else {
+      this.add(drawable);
+    }
+  }
+
+}
 
 

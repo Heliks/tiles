@@ -4,6 +4,8 @@ import { Collider } from './collider';
 
 /**
  * Describes the contact that occurs between two colliders.
+ *
+ * @see Collider
  */
 export class ColliderContact {
 

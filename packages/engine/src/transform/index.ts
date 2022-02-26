@@ -1,4 +1,4 @@
-export * from './transform-module';
+export * from './transform-bundle';
 
 // Re-export types from packages.
 export * from '@heliks/ecs-hierarchy';

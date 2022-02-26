@@ -1,12 +1,26 @@
-import { Container } from '@heliks/tiles-injector';
-import { Ticker } from './ticker';
-import { World } from './ecs';
 import { SystemDispatcher } from '@heliks/ecs';
+import { Container } from '@heliks/tiles-injector';
+import { World } from './ecs';
+import { StateMachine, StateStackState } from './state';
+import { Ticker } from './ticker';
 
 
+/**
+ * Implementation of a game state.
+ */
+export type GameState = StateStackState<World>;
+
+
+/**
+ * Game runtime that is produced by a `GameBuilder`.
+ *
+ * Everything related to the game is stored and can be controlled via this instance.
+ *
+ * @see GameBuilder
+ */
 export class Game {
 
-  /** @see Ticker */
+  /** Ticker that executes the game loop. */
   public readonly ticker = new Ticker();
 
   /** @see World */
@@ -14,6 +28,13 @@ export class Game {
 
   /** @see SystemDispatcher */
   public readonly dispatcher: SystemDispatcher;
+
+  /**
+   * Contains the state machine that executes the game state.
+   *
+   * @see StateMachine
+   */
+  public readonly state: StateMachine<World>;
 
   /**
    * @param container Global service container. All modules and services will have
@@ -33,22 +54,28 @@ export class Game {
       this.ticker,
       this.world
     );
+
+    this.state = new StateMachine(this.world);
   }
 
   /**
-   * Updates the engine and all of its sub-systems. This is the main game loop and is
-   * called once on every frame.
+   * Updates all sub-systems of the game, e.g. systems, entities, game state. This is the
+   * game loop and called once on each frame.
    */
-  protected update(): void {
+  public update(): void {
     this.dispatcher.update();
 
     // Updates the world. E.g. entities, components.
     this.world.update();
+    this.state.update();
   }
 
-  /** Starts the game. */
-  public start(): void {
+  /**
+   * Starts the game using the given `state`.
+   */
+  public start(state: GameState): void {
     this.ticker.start();
+    this.state.start(state);
   }
 
   /** Stops the game. */
