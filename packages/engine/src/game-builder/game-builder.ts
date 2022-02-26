@@ -1,22 +1,20 @@
+import { Container } from '@heliks/tiles-injector';
 import { ComponentType, System, World } from '../ecs';
 import { Game } from '../game';
 import { ClassType } from '../types';
-import { AddComponent, AddModule, AddProvider, AddSystem, Task } from './tasks';
-import { GameBuilder as Builder, Module } from './types';
+import { Bundle } from './bundle';
 import { Provider } from './provider';
-import { Container } from '@heliks/tiles-injector';
+import { AddBundle, AddComponent, AddProvider, AddSystem, Task } from './tasks';
+import { GameBuilder as Builder } from './types';
 
 
 /**
- * Builder responsible for building the game runtime.
+ * Builds the game runtime.
  *
- * The builder will initialize all dependencies (services, systems etc.) in the same
- * order as they were added. Meaning that if `ServiceA` is added before `ServiceB`,
- * only `ServiceB` can access `ServiceA`, but not the other way around. On the same
- * note a game system `SystemA` will always run before `SystemB`, if `SystemA` was
- * added to the builder first.
+ * The builder will execute all of its tasks in the same order as they were added.
  *
  * @see Game
+ * @see Task
  */
 export class GameBuilder implements Builder {
 
@@ -43,18 +41,25 @@ export class GameBuilder implements Builder {
   }
 
   /** @inheritDoc */
-  public component<C extends ComponentType, A extends C>(component: C, alias?: A): this {
+  public component<C extends ComponentType>(component: C): this;
+
+  /** @inheritDoc */
+  public component<A extends ComponentType, C extends A>(component: C, alias: A): this;
+
+  /** @internal */
+  public component(component: ComponentType, alias?: ComponentType): this {
     this.tasks.push(new AddComponent(component, alias));
 
     return this;
   }
 
   /**
-   * Adds a `module` and immediately invokes the `build()` function to queue
-   * additional tasks from inside the module.
+   * Adds the given `bundle` to the game.
+   *
+   * @see Bundle
    */
-  public module<M extends Module>(module: M): this {
-    this.tasks.push(new AddModule(module, new GameBuilder(this.container)));
+  public module<B extends Bundle>(bundle: B): this {
+    this.tasks.push(new AddBundle(bundle, new GameBuilder(this.container)));
 
     return this;
   }

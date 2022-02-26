@@ -2,7 +2,7 @@ export * from './align';
 export * from './camera';
 export * from './debug-draw';
 export * from './load-texture';
-export * from './pixi-module';
+export * from './pixi-bundle';
 export * from './drawable';
 export * from './render-group';
 export * from './renderer';

@@ -1,8 +1,8 @@
-import { ClassType, Module } from '@heliks/tiles-engine';
+import { ClassType, Bundle } from '@heliks/tiles-engine';
 import { Physics } from './physics';
 
 
-export interface PhysicsAdapter extends Module {
+export interface PhysicsAdapter extends Bundle {
 
   /**
    * Returns the adapters implementation type for the `Physics` provider.

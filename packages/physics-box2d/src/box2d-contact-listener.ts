@@ -43,7 +43,7 @@ export class Box2dContactListener extends b2ContactListener {
           a.collider,
           b.collider
         ),
-        type,
+        type
       });
     }
   }

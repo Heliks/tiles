@@ -1,8 +1,9 @@
+import { Bundle, GameBuilder } from '@heliks/tiles-engine';
 import { AssetLoader } from './asset-loader';
-import { GameBuilder, Module } from '@heliks/tiles-engine';
 
-/** Module that provides tools for asset loading and management. */
-export class AssetsModule implements Module {
+
+/** Bundle that provides tools for asset loading and management. */
+export class AssetsBundle implements Bundle {
 
   /**
    * @param baseUrl (optional) Directory from which the loader is attempting to load

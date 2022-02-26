@@ -13,12 +13,17 @@ export interface GameBuilder {
    * Technically components don't have to be pre-registered. This additionally binds
    * the storage that stores this component type on the service container. The storage
    * can then be injected using the `InjectStorage()` decorator.
-   *
-   * If `alias` is set to a component type that has a signature that is compatible with
-   * the type of `component`, the `component` will be registered using the same storage
-   * as `alias`.
    */
-  component<C extends ComponentType, A extends C>(component: C, alias?: A): this;
+  component<C extends ComponentType>(component: C): this;
+
+  /**
+   * Registers a `component`. The component will be stored using the storage of `alias`.
+   *
+   * Technically components don't have to be pre-registered. This additionally binds
+   * the storage that stores this component type on the service container. The storage
+   * can then be injected using the `InjectStorage()` decorator.
+   */
+  component<A extends ComponentType, C extends A>(component: C, alias: A): this;
 
   /**
    * Registers a `provider`.
@@ -45,15 +50,6 @@ export interface GameBuilder {
    */
   init(game: World): void;
 
-}
-
-/**
- * A module that bundles multiple systems or providers together.
- *
- * Modules can implement lifecycle events.
- */
-export interface Module {
-  build(builder: GameBuilder): unknown;
 }
 
 

@@ -1,10 +1,15 @@
+import { Entity } from '@heliks/tiles-engine';
 import { Container } from './drawable';
 
 
-/** Groups drawable objects. */
+/**
+ * Component that can be attached to an entity to make it a render group.
+ *
+ * Render groups are containers that group drawables together.
+ */
 export class RenderGroup {
 
-  /** Contains renderer objects that belong to entities that are a member of this group. */
+  /** @internal */
   public readonly container = new Container();
 
   /** The opacity of the sprite. Value from 0-1. */
@@ -19,7 +24,11 @@ export class RenderGroup {
   /**
    * @param sort If set to `true` children in this render group will be automatically
    *  depth sorted at the start of each frame.
+   * @param group Entity that has a `RenderGroup` component. If set, the render group
+   *  will be added to that group as a child.
    */
-  constructor(public sort = false) {}
+  constructor(public sort = false, public readonly group?: Entity) {}
+
+
 
 }

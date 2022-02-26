@@ -33,20 +33,22 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
   }
 
   /** @internal*/
-  private processEventQueue(): void {
+  private processEventQueue(world: World): void {
     for (const event of this.groups.events(this.subscriber$)) {
       if (event.type === ComponentEventType.Added) {
-        this.stage.add(event.component.container);
+        this.stage.insert(world, event.component.container, event.component.group);
+        this.stage.groups.set(event.entity, event.component);
       }
       else {
         this.stage.remove(event.component.container);
+        this.stage.groups.delete(event.entity)
       }
     }
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    this.processEventQueue();
+    this.processEventQueue(world);
 
     for (const plugin of this.plugins.items) {
       plugin.update(world);

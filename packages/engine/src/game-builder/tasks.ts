@@ -1,6 +1,10 @@
-import { ClassType } from '../types';
 import { ComponentType, System } from '@heliks/ecs';
+import { Container } from '@heliks/tiles-injector';
+import { getStorageInjectorToken, World } from '../ecs';
 import { Game } from '../game';
+import { ClassType } from '../types';
+import { Bundle } from './bundle';
+import { hasOnInit } from './lifecycle';
 import {
   ClassProvider,
   FactoryProvider,
@@ -10,17 +14,19 @@ import {
   Provider,
   ValueProvider
 } from './provider';
-import { getStorageInjectorToken, World } from '../ecs';
-import { Container } from '@heliks/tiles-injector';
-import { GameBuilder, Module } from './types';
-import { hasOnInit } from './lifecycle';
+import { GameBuilder } from './types';
 
 
-/** Build task. */
+/**
+ * Task that is executed by the `GameBuilder`.
+ *
+ * @see GameBuilder
+ */
 export interface Task {
 
   /**
-   * Executes the build tasks.
+   * Executes the task. All setup logic and pre-configuration is done here. After this,
+   * the task is essentially completed.
    */
   exec(game: Game): unknown;
 
@@ -172,15 +178,24 @@ export class AddComponent<C extends ComponentType, A extends C = C> implements T
 
 }
 
-export class AddModule implements Task {
 
-  // False positive
-  // eslint-disable-next-line unicorn/prefer-module
-  constructor(private readonly module: Module, private readonly builder: GameBuilder) {}
+/**
+ * Task that adds a bundle of systems, services etc. to the game.
+ *
+ * @see Bundle
+ */
+export class AddBundle implements Task {
+
+  /**
+   * @param bundle Instance of the bundle that should be added to the game.
+   * @param builder An instance of the game builder. Should be separate from the game
+   *  builder that registers this task.
+   */
+  constructor(private readonly bundle: Bundle, private readonly builder: GameBuilder) {}
 
   /** @inheritDoc */
   public exec(game: Game): void {
-    this.module.build(this.builder);
+    this.bundle.build(this.builder);
     this.builder.exec(game);
   }
 
@@ -188,14 +203,14 @@ export class AddModule implements Task {
   public init(world: World): void {
     this.builder.init(world);
 
-    if (hasOnInit(this.module)) {
-      this.module.onInit(world);
+    if (hasOnInit(this.bundle)) {
+      this.bundle.onInit(world);
     }
   }
 
   /** @internal */
   public toString(): string {
-    return `AddModule(${this.module.constructor.name})`;
+    return `AddBundle:${this.bundle.constructor.name}`;
   }
 
 }
