@@ -29,11 +29,7 @@ export class SpriteRenderer extends ReactiveSystem {
   }
 
   public updateRenderGroup(world: World, render: SpriteRender): void {
-    this.stage.insert(
-      world,
-      render._sprite,
-      render.group
-    );
+    this.stage.insert(render._sprite, render.group);
 
     render._group = render.group;
   }

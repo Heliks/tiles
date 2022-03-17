@@ -1,9 +1,10 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { EventQueue, Injectable, Vec2 } from '@heliks/tiles-engine';
+import { RenderTexture } from 'pixi.js';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
-import { Container } from './drawable';
+import { Container, Drawable } from './drawable';
 import { Screen } from './screen';
 import { Overlay, Stage } from './stage';
 
@@ -175,6 +176,16 @@ export class Renderer {
       (this.camera.world.x * this.screen.unitSize) - this.screenSizeScaled2.x,
       (this.camera.world.y * this.screen.unitSize) - this.screenSizeScaled2.y
     );
+  }
+
+  /**
+   * Renders the given `drawable` to the WebGL view.
+   *
+   * @param drawable The object that should be rendered to the WebGL view.
+   * @param texture (optional) The texture to which the drawable should be rendered to.
+   */
+  public render(drawable: Drawable, texture?: RenderTexture): void {
+    this.renderer.render(drawable, texture);
   }
 
   /**
