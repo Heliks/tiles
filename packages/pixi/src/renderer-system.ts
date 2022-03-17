@@ -1,5 +1,5 @@
 import { ComponentEventType } from '@heliks/ecs';
-import { contains, Injectable, OnInit, ProcessingSystem, Storage, Subscriber, World, XY } from '@heliks/tiles-engine';
+import { contains, Injectable, OnInit, ProcessingSystem, Storage, Subscriber, World } from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Renderer } from './renderer';
 import { RendererPlugins } from './renderer-plugins';
@@ -28,7 +28,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
   }
 
   /** @internal*/
-  private processEventQueue(world: World): void {
+  private processEventQueue(): void {
     for (const event of this.groups.events(this.subscriber$)) {
       if (event.type === ComponentEventType.Added) {
         this.stage.insert(event.component.container, event.component.group);
@@ -43,7 +43,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
 
   /** @inheritDoc */
   public update(world: World): void {
-    this.processEventQueue(world);
+    this.processEventQueue();
 
     for (const plugin of this.plugins.items) {
       plugin.update(world);

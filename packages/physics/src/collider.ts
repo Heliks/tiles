@@ -1,4 +1,4 @@
-import { Circle, Entity, Rectangle, uuid } from '@heliks/tiles-engine';
+import { Circle, Rectangle, uuid } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
 
 

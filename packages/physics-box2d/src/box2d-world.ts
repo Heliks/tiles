@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { b2Body, b2World, b2Filter } from '@flyover/box2d';
+import { b2Body, b2World } from '@flyover/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';

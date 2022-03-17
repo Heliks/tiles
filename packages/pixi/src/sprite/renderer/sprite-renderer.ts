@@ -2,7 +2,6 @@ import { Handle } from '@heliks/tiles-assets';
 import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
-import { RenderGroup } from '../../render-group';
 import { Renderer } from '../../renderer';
 import { Screen } from '../../screen';
 import { Stage } from '../../stage';
