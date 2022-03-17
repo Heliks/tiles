@@ -1,4 +1,4 @@
-import { Entity, Injectable, World } from '@heliks/tiles-engine';
+import { Entity, Injectable } from '@heliks/tiles-engine';
 import { Container, Drawable } from '../drawable';
 import { RenderGroup } from '../render-group';
 

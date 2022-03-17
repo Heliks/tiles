@@ -11,7 +11,7 @@ import { TransformSystem } from './transform-system';
  * @see Transform
  * @see Hierarchy
  */
-export class TransformBundle<T extends Transform = Transform> implements Bundle {
+export class TransformBundle implements Bundle {
 
   /** @inheritDoc */
   public build(builder: GameBuilder): void {
