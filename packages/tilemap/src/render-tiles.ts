@@ -1,10 +1,13 @@
 import { Entity } from '@heliks/ecs';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { contains, Injectable, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Container, RendererPlugin, RenderGroup, Screen, Stage } from '@heliks/tiles-pixi';
+import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 
+/**
+ * Plugin for the PIXI.JS renderer that draws tile maps.
+ */
 @Injectable()
 export class RenderTiles extends ReactiveSystem implements RendererPlugin {
 
@@ -20,7 +23,6 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
    */
   constructor(private readonly screen: Screen, private readonly stage: Stage) {
     super(contains(Tilemap, Transform));
-    console.log(stage)
   }
 
   /** @inheritDoc */
@@ -32,8 +34,7 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
 
-    // Set the fixed size of the container to the size of the chunk and make sure it
-    // is anchored to it's center and not the top-left corner.
+    // Move tilemap anchor to center.
     tilemap.view
       .setPivot(0.5)
       .setFixedSize(new Vec2(
@@ -49,25 +50,19 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
       }
 
       const pos = tilemap.grid.position(i);
-      const sprite = tilemap.tileset(gId).sprite(gId);
 
+      const tileset = tilemap.tileset(gId);
+      const sprite = tileset.sprite(gId);
+
+      // Y position needs to be adjusted for tiles that are larger than the tile grid. In
+      // that case, most editors will anchor the tile bottom-left, so we do the same.
       sprite.x = pos.x;
-      sprite.y = pos.y;
+      sprite.y = pos.y - (tileset.tileHeight - tilemap.grid.cellHeight);
 
       tilemap.view.addChild(sprite);
     }
 
-    if (typeof tilemap.group === 'number') {
-      world
-        .storage(RenderGroup)
-        .get(tilemap.group)
-        .container
-        .add(tilemap.view);
-    }
-    else {
-      this.stage.add(tilemap.view);
-    }
-
+    this.stage.insert(tilemap.view, tilemap.group);
     this.containers.set(entity, tilemap.view);
   }
 
