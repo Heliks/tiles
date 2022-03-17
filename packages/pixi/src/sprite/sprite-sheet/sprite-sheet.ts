@@ -54,6 +54,16 @@ export abstract class SpriteSheet {
   }
 
   /**
+   * Returns `true` if an animation data with the given `name` exists on the
+   * sprite sheet.
+   *
+   * @see SpriteAnimationData
+   */
+  public hasAnimation(name: string): boolean {
+    return this.animations.has(name);
+  }
+
+  /**
    * Creates a `SpriteAnimation` component from the `SpriteAnimationData` matching the
    * given animation `name`. Throws an error if the animation does not exist.
    */

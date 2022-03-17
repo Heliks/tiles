@@ -25,13 +25,16 @@ export class Stage extends Container {
    */
   public readonly groups = new Map<Entity, RenderGroup>();
 
+  /** @inheritDoc */
+  public sortableChildren = true;
+
   /**
    * Inserts a `drawable` into the stage. If a render `group` is given as a parent, the
    * drawable will be added as child of that group.
    *
    * Throws if the group is not a part of this stage.
    */
-  public insert(world: World, drawable: Drawable, group?: Entity): void {
+  public insert(drawable: Drawable, group?: Entity): void {
     if (group !== undefined) {
       const component = this.groups.get(group);
 

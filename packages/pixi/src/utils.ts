@@ -39,5 +39,3 @@ export function hex2rgb(hex: number): [number, number, number] {
   return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
 }
 
-
-

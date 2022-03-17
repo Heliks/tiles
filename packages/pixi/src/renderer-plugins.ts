@@ -1,5 +1,15 @@
 import { World } from "@heliks/tiles-engine";
+import { Renderer } from './renderer';
 
+
+export interface RenderPass {
+
+  /**
+   * Called after the first render pass.
+   */
+  render(renderer: Renderer): void;
+
+}
 
 /**
  * A renderer plugin is basically the same as a normal game system, but instead of
@@ -11,7 +21,7 @@ import { World } from "@heliks/tiles-engine";
  *
  * Plugins can implement lifecycle hooks.
  */
-export interface RendererPlugin {
+export interface RendererPlugin extends Partial<RenderPass> {
 
   /** Called once on each frame before the scene is drawn. */
   update(world: World): void;
@@ -21,7 +31,11 @@ export interface RendererPlugin {
 /** Manages renderer plugins. */
 export class RendererPlugins {
 
-  /** Contains all registered plugins. */
+  /**
+   * Contains all registered plugins.
+   *
+   * @see RendererPlugin
+   */
   public readonly items: RendererPlugin[] = [];
 
   /** Adds a `plugin`. */

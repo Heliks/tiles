@@ -6,11 +6,6 @@ import { RendererPlugins } from './renderer-plugins';
 import { Stage } from './stage';
 
 
-/** CompareFn to sort elements by depth (lower y axis first).*/
-function sortByDepth(a: XY, b: XY): number {
-  return a.y - b.y;
-}
-
 /** System responsible for updating the renderer. */
 @Injectable()
 export class RendererSystem extends ProcessingSystem implements OnInit {
@@ -36,7 +31,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
   private processEventQueue(world: World): void {
     for (const event of this.groups.events(this.subscriber$)) {
       if (event.type === ComponentEventType.Added) {
-        this.stage.insert(world, event.component.container, event.component.group);
+        this.stage.insert(event.component.container, event.component.group);
         this.stage.groups.set(event.entity, event.component);
       }
       else {
@@ -57,13 +52,14 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
     for (const entity of this.group.entities) {
       const group = this.groups.get(entity);
 
-      if (group.sort) {
-        group.container.children.sort(sortByDepth);
+      if (group.sorter) {
+        group.container.children.sort(group.sorter);
       }
     }
 
     // Renders everything to the view.
     this.renderer.update();
+
     this.renderer.debugDraw.clear();
   }
 
