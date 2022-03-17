@@ -49,13 +49,34 @@ export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
 
   // Assign shapes if tile has any.
   if (tile.objectgroup) {
-    const shapes = tile.objectgroup.objects.map(item => parseShape(
-      item,
-      tileset.tileWidth,
-      tileset.tileHeight
-    ));
+    const shapes = tile
+      .objectgroup
+      .objects
+      .map(item => parseShape(
+        item,
+        tileset.tileWidth,
+        tileset.tileHeight
+      ));
 
     tileset.setTileShapes(tileId, shapes);
+  }
+
+  if (tile.animation) {
+    const frames = [];
+
+    // Duration of each frame in MS. Currently frame duration for individual frames is
+    // not supported.
+    let frameDuration = 100;
+
+    for (const frameData of tile.animation) {
+      frames.push(frameData.tileid);
+      frameDuration = frameData.duration;
+    }
+
+    tileset.setAnimation(tileId, {
+      frames,
+      frameDuration
+    });
   }
 
   // Assign custom properties if the tile has any.
