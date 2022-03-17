@@ -7,8 +7,8 @@ export function rand(max: number, min = 0): number {
  * Linear interpolation.
  * @see https://gamedevbeginner.com/the-right-way-to-lerp-in-unity-with-examples/
  */
-export function lerp(min: number, max: number, t: number): number {
-  return min * (1 - t) + max * t;
+export function lerp(v1: number, v2: number, t: number): number {
+  return v1 * (1 - t) + v2 * t
 }
 
 
