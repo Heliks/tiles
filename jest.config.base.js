@@ -1,8 +1,5 @@
-/**
- * Default configuration for ts-jest projects.
- */
-// noinspection JSUnresolvedVariable
-module.exports = {
+/** Default configuration for ts-jest projects. */
+const DEFAULT_TEST_CONFIG = {
   collectCoverageFrom: [
     "./src/**/*.ts"
   ],
@@ -13,16 +10,34 @@ module.exports = {
     "**/*.spec.ts"
   ],
   setupFiles: [],
+  moduleNameMapper: {
+    '^uuid$': require.resolve('uuid')
+  },
   moduleFileExtensions: [
-    "ts",
-    "tsx",
     "js",
     "jsx",
+    "ts",
+    "tsx",
     "json",
     "node"
   ],
   modulePathIgnorePatterns: [
     "node_modules"
-  ],
-  verbose: true
+  ]
 };
+
+/**
+ * Merges the default test configuration with the given `config`. If no config is given,
+ * the default config is returned.
+ *
+ * @see DEFAULT_TEST_CONFIG
+ * @returns {Object}
+ */
+function config(config) {
+  return config ? { ...DEFAULT_TEST_CONFIG, ...config } : DEFAULT_TEST_CONFIG;
+}
+
+module.exports = {
+  config
+};
+
