@@ -5,27 +5,25 @@
   },
   "description": "Box2D Adapter for @heliks/tiles-physics",
   "devDependencies": {
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0",
-    "@types/jest": "^27.4.0",
-    "jest": "^27.4.7",
-    "ts-jest": "^27.1.3",
-    "typescript": "^4.1.2"
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-math": "workspace:^",
+    "typescript": "^4.7.4"
   },
   "files": [
     "lib/*"
   ],
-  "keywords": [],
-  "license": "",
+  "license": "MIT",
   "main": "./lib/index.js",
   "name": "@heliks/tiles-physics-box2d",
   "peerDependencies": {
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0"
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-math": "workspace:^"
   },
   "scripts": {
     "build": "tsc",

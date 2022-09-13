@@ -5,28 +5,26 @@
   "publishConfig": {
     "registry": "http://193.31.26.163:4873/"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^8.8.0",
-    "eslint-plugin-import": "^2.25.4",
+    "@types/jest": "29.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
     "eslint-plugin-unicorn": "^40.1.0",
-    "lerna": "^4.0.0",
+    "jest": "29.0.3",
+    "jest-canvas-mock": "^2.4.0",
+    "jest-environment-jsdom": "29.0.3",
     "rimraf": "^3.0.2",
-    "typescript": "^4.1.2"
+    "ts-jest": "29.0.0",
+    "typescript": "^4.8.3"
   },
   "scripts": {
-    "lint": "eslint 'packages/**/*.ts' --config .eslintrc.json",
-    "link": "lerna link",
-    "test": "lerna run test --no-prefix --stream",
-    "build": "yarn build:clean && lerna run --stream --sort build",
-    "build:clean": "rimraf packages/**/*/lib",
-    "build:watch": "lerna run build:watch --parallel --stream",
-    "clean": "yarn build:clean && lerna clean && rm -rf node_modules"
+    "lint": "eslint packages/**/*.ts --config .eslintrc.json",
+    "test": "pnpm -r test",
+    "build": "pnpm clean:builds && pnpm -r --sort run build",
+    "build:watch": "pnpm -r --no-sort build:watch",
+    "clean:builds": "rimraf ./packages/*/lib",
+    "clean:dependencies": "rimraf packages/*/node_modules && rimraf node_modules",
+    "clean": "pnpm clean:builds && pnpm clean:dependencies"
   }
 }
