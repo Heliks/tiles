@@ -8,6 +8,13 @@ export interface OnInit {
   onInit(world: World): void;
 }
 
+/**
+ * Types that extend this one support lifecycle hooks.
+ *
+ * @see OnInit
+ */
+export type HasLifecycleEvents = Partial<OnInit>;
+
 /** @internal */
 export function hasOnInit(target: unknown): target is OnInit {
   return Boolean((target as OnInit).onInit);

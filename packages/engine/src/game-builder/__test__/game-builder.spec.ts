@@ -1,6 +1,6 @@
-import { getStorageInjectorToken } from '../ecs';
-import { Game } from '../game';
-import { GameBuilder } from './game-builder';
+import { getStorageInjectorToken } from '../../ecs';
+import { Game } from '../../game';
+import { GameBuilder } from '../game-builder';
 
 
 describe('GameBuilder', () => {
@@ -134,7 +134,7 @@ describe('GameBuilder', () => {
       class TestService {}
 
       const game = new GameBuilder()
-        .module({
+        .bundle({
           build: builder => void builder.provide(TestService)
         })
         .build();
@@ -146,7 +146,7 @@ describe('GameBuilder', () => {
     it('should call OnInit lifecycle hook', () => {
       const init = jest.fn();
       const game = new GameBuilder()
-        .module({
+        .bundle({
           build: () => void 0,
           onInit: init
         })
@@ -162,7 +162,7 @@ describe('GameBuilder', () => {
       };
 
       const game = new GameBuilder()
-        .module({
+        .bundle({
           build: builder => void builder.system(system)
         })
         .build();
