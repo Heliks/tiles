@@ -6,7 +6,6 @@
     "baseUrl": "src",
     "outDir": "lib",
     "types": [
-      "reflect-metadata",
       "jest"
     ]
   }
