@@ -5,15 +5,17 @@ import { ClassType } from '../types';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
 import { AddBundle, AddComponent, AddProvider, AddSystem, Task } from './tasks';
-import { GameBuilder as Builder } from './types';
+import { Builder as Builder } from './builder';
 
 
 /**
- * Builds the game runtime.
+ * Builder that is used to compose the game runtime.
  *
- * The builder will execute all of its tasks in the same order as they were added.
+ * The order in which builder tasks (e.g. adding providers, systems, etc.) are executed
+ * is important. For example, if a system that is added before another system, it will
+ * also be registered on the dispatcher first. Providers that use dependency injection
+ * can only inject symbols that were provided before.
  *
- * @see Game
  * @see Task
  */
 export class GameBuilder implements Builder {
@@ -22,28 +24,27 @@ export class GameBuilder implements Builder {
   private readonly tasks: Task[] = [];
 
   /**
-   * @param container Global service container.
+   * @param container Service container that is used for the game runtime. All providers,
+   *  systems, etc. will be registered here.
    */
   constructor(public readonly container: Container = new Container()) {}
 
-  /** @inheritDoc */
-  public provide(provider: Provider): this {
-    this.tasks.push(new AddProvider(provider));
-
-    return this;
-  }
-
-  /** @inheritDoc */
-  public system(system: ClassType<System> | System): this {
-    this.tasks.push(new AddSystem(system));
-
-    return this;
-  }
-
-  /** @inheritDoc */
+  /**
+   * Registers a `component`.
+   *
+   * Technically components don't have to be pre-registered. This additionally binds
+   * the storage that stores this component type on the service container. The storage
+   * can then be injected using the `InjectStorage()` decorator.
+   */
   public component<C extends ComponentType>(component: C): this;
 
-  /** @inheritDoc */
+  /**
+   * Registers a `component`. The component will be stored using the storage of `alias`.
+   *
+   * Technically components don't have to be pre-registered. This additionally binds
+   * the storage that stores this component type on the service container. The storage
+   * can then be injected using the `InjectStorage()` decorator.
+   */
   public component<A extends ComponentType, C extends A>(component: C, alias: A): this;
 
   /** @internal */
@@ -54,11 +55,28 @@ export class GameBuilder implements Builder {
   }
 
   /**
+   * Adds a system to the dispatcher and registers it on the service container. If a type
+   * is given instead, it will be instantiated with service container first.
+   */
+  public system(system: ClassType<System> | System): this {
+    this.tasks.push(new AddSystem(system));
+
+    return this;
+  }
+
+  /** Adds a `provider`. */
+  public provide(provider: Provider): this {
+    this.tasks.push(new AddProvider(provider));
+
+    return this;
+  }
+
+  /**
    * Adds the given `bundle` to the game.
    *
    * @see Bundle
    */
-  public module<B extends Bundle>(bundle: B): this {
+  public bundle<B extends Bundle<GameBuilder>>(bundle: B): this {
     this.tasks.push(new AddBundle(bundle, new GameBuilder(this.container)));
 
     return this;

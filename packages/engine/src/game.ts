@@ -16,7 +16,7 @@ export type GameState = StateStackState<World>;
  *
  * Everything related to the game is stored and can be controlled via this instance.
  *
- * @see GameBuilder
+ * @see Builder
  */
 export class Game {
 

@@ -1,6 +1,7 @@
 import { BindingFactory, Container, InjectorToken } from '@heliks/tiles-injector';
 import { ClassType } from '../types';
 
+
 /**
  * Provides a class that will be instantiated with the service container when the
  * app is started.
