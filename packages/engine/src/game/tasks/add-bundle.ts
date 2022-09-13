@@ -1,6 +1,6 @@
 import { Builder } from '../builder';
 import { Bundle } from '../bundle';
-import { Game } from '../../game';
+import { Game } from '../game';
 import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';

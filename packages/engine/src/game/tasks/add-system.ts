@@ -1,6 +1,6 @@
 import { System } from '@heliks/ecs';
 import { ClassType } from '../../types';
-import { Game } from '../../game';
+import { Game } from '../game';
 import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';

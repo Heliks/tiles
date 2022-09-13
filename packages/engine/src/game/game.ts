@@ -1,6 +1,6 @@
 import { SystemDispatcher } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
-import { World } from './ecs';
+import { World } from '../ecs';
 import { StateMachine, StateStackState } from './state';
 import { Ticker } from './ticker';
 

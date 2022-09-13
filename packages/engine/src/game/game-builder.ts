@@ -1,6 +1,6 @@
 import { Container } from '@heliks/tiles-injector';
 import { ComponentType, System, World } from '../ecs';
-import { Game } from '../game';
+import { Game } from './game';
 import { ClassType } from '../types';
 import { Bundle } from './bundle';
 import { Provider } from './provider';

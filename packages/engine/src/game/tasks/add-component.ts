@@ -1,5 +1,5 @@
 import { ComponentType } from '@heliks/ecs';
-import { Game } from '../../game';
+import { Game } from '../game';
 import { getStorageInjectorToken } from '../../ecs';
 import { Task } from './task';
 

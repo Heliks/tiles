@@ -1,5 +1,5 @@
 import { World } from '../../ecs';
-import { Game } from '../../game';
+import { Game } from '../game';
 
 
 /**
