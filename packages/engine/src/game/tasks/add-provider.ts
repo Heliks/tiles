@@ -7,7 +7,7 @@ import {
   ValueProvider
 } from '../provider';
 import { ClassType } from '../../types';
-import { Game } from '../../game';
+import { Game } from '../game';
 import { Task } from './task';
 import { Container } from '@heliks/tiles-injector';
 

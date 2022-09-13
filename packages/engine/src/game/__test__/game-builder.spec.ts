@@ -1,5 +1,5 @@
 import { getStorageInjectorToken } from '../../ecs';
-import { Game } from '../../game';
+import { Game } from '../game';
 import { GameBuilder } from '../game-builder';
 
 

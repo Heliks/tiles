@@ -1,8 +1,8 @@
 import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { Transform } from '@heliks/ecs-transform';
-import { Bundle, GameBuilder } from '../game-builder';
 import { HierarchySystem } from './hierarchy-system';
 import { TransformSystem } from './transform-system';
+import { Bundle, GameBuilder } from '../game';
 
 
 /**
