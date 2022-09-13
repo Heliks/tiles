@@ -2,9 +2,10 @@
   "author": "Felix Wolf",
   "description": "Tiles Box2D Module",
   "devDependencies": {
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0",
-    "typescript": "^4.8.3"
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-math": "workspace:^",
+    "typescript": "^4.7.4"
   },
   "files": [
     "lib/*"
@@ -14,8 +15,9 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-physics",
   "peerDependencies": {
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0"
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-math": "workspace:^"
   },
   "scripts": {
     "build": "tsc",

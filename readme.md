@@ -3,27 +3,36 @@ just a 2d game engine playground
 Everything is WIP
 
 ```bash
-$ yarn install
+$ pnpm install
 ```
+
+# Setup
+
+## Requirements:
+
+- Node 14
+- pnpm
+
+Install dependencies via `pnpm`.
+
+```$bash
+$ pnpm install
+```
+
 
 # Build
 
-Requirements:
-- Node 14
-
-### Build all packages
-
 ```bash
-$ yarn build
+$ pnpm build
 ```
 
 ### Watch for file changes 
 
-Note: All packages need to be build via `yarn:build` once before file watchers 
-can be used because they are not sorted according to the dependency graph.
+Note: When packages are build in watch mode, they are not sorted according to
+their dependency graph. All packages must be build via `pnpm build` once.
 
 ```bash
-$ yarn build:watch
+$ pnpm build:watch
 ```
 
 # Testing
@@ -31,5 +40,5 @@ $ yarn build:watch
 Before running unit tests make sure the project was build at least once.
 
 ```bash
-yarn test
+pnpm test
 ```

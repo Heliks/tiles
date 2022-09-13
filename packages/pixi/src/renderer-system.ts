@@ -1,5 +1,13 @@
-import { ComponentEventType } from '@heliks/ecs';
-import { contains, Injectable, OnInit, ProcessingSystem, Storage, Subscriber, World } from '@heliks/tiles-engine';
+import {
+  ComponentEventType,
+  contains,
+  Injectable,
+  OnInit,
+  ProcessingSystem,
+  Storage,
+  Subscriber,
+  World
+} from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Renderer } from './renderer';
 import { RendererPlugins } from './renderer-plugins';

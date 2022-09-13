@@ -3,7 +3,7 @@
   "description": "Tiles assets module",
   "devDependencies": {
     "@heliks/tiles-engine": "^0.0.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.7.4"
   },
   "files": ["lib/*"],
   "keywords": [],
