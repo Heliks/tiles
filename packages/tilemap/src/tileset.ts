@@ -1,45 +1,22 @@
 import { Sprite, SpriteSheet } from '@heliks/tiles-pixi';
 
 
-/**
- * A tileset manages sprites that correspond to a certain tile.
- *
- * Tilesets are limited by a global ID range. Each global ID corresponds  that maps to individual tiles.
- */
+/** Collection of tiles */
 export class Tileset {
 
-  /**
-   * Contains the last ID in the global ID range that the tileset is occupying on a
-   * maps global range.
-   */
-  public get lastId(): number {
-    return this.firstId + this.spritesheet.size() - 1;
+  /** Contains the total amount of tiles that exist on this tileset. */
+  public get size(): number {
+    return this.spritesheet.size();
   }
 
   /**
    * @param spritesheet Spritesheet for rendering individual sprites.
-   * @param firstId First ID in the global ID range of the map that this tileset occupies.
-   * @param tileWidth Tile width in px.
-   * @param tileHeight Tile height in px.
    */
-  constructor(
-    public readonly spritesheet: SpriteSheet,
-    public readonly firstId: number,
-    public readonly tileWidth: number,
-    public readonly tileHeight: number
-  ) {}
+  constructor(public readonly spritesheet: SpriteSheet) {}
 
-  /**
-   * Converts `id` to its local counterpart on [[tileset]]. For example if [[firstId]]
-   * is `12` this function will return the local ID `3` when given a global ID of `15`.
-   */
-  public toLocal(id: number): number {
-    return id - this.firstId + 1;
-  }
-
-  /** Creates a sprite from the given global `id`. */
-  public sprite(id: number): Sprite {
-    return this.spritesheet.sprite(this.toLocal(id) - 1);
+  /** Creates a sprite from the tile at the given `index`. */
+  public sprite(index: number): Sprite {
+    return this.spritesheet.sprite(index);
   }
 
 }
