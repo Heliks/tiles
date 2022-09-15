@@ -1,7 +1,7 @@
 import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { Transform } from '@heliks/ecs-transform';
-import { HierarchySystem } from './hierarchy-system';
-import { TransformSystem } from './transform-system';
+import { UpdateHierarchy } from './update-hierarchy';
+import { UpdateTransforms } from './update-transforms';
 import { Bundle, GameBuilder } from '../game';
 
 
@@ -24,8 +24,8 @@ export class TransformBundle implements Bundle {
         token: Hierarchy,
         value: hierarchy
       })
-      .system(HierarchySystem)
-      .system(TransformSystem);
+      .system(UpdateHierarchy)
+      .system(UpdateTransforms);
   }
 
 }

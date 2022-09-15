@@ -136,6 +136,12 @@ importers:
       pixi.js: 5.3.12
       typescript: 4.8.3
 
+  packages/random:
+    specifiers:
+      typescript: ^4.7.4
+    devDependencies:
+      typescript: 4.8.3
+
   packages/tilemap:
     specifiers:
       '@heliks/tiles-assets': ^0.0.0
