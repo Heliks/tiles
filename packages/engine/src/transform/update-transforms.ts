@@ -5,7 +5,7 @@ import { Hierarchy } from '@heliks/ecs-hierarchy';
 
 /** @inheritDoc */
 @Injectable()
-export class TransformSystem extends Base {
+export class UpdateTransforms extends Base {
 
   constructor(hierarchy: Hierarchy) {
     super(hierarchy);

@@ -1,0 +1,19 @@
+{
+  "name": "@heliks/tiles-random",
+  "version": "0.0.0",
+  "description": "Optional package to deal with everything random",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}

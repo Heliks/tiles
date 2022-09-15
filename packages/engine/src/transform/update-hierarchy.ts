@@ -4,7 +4,7 @@ import { Injectable } from '@heliks/tiles-injector';
 
 /** @inheritDoc */
 @Injectable()
-export class HierarchySystem extends Base {
+export class UpdateHierarchy extends Base {
 
   constructor(hierarchy: Hierarchy) {
     super(hierarchy);

@@ -41,7 +41,7 @@ export class PhysicsBundle implements Bundle {
 
     builder
       .provide(MaterialManager)
-      .module(this.adapter)
+      .bundle(this.adapter)
       .provide(this.getPhysicsProvider())
       .provide(ContactEvents)
       .system(UpdateWorld)
