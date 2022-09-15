@@ -49,14 +49,17 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
       }
 
       const pos = tilemap.grid.position(i);
+      const loc = tilemap.tilesets.getFromGlobalId(gId);
 
-      const tileset = tilemap.tileset(gId);
-      const sprite = tileset.sprite(gId);
+      const sprite = loc.tileset.sprite(
+        loc.getLocalId(gId) - 1
+      );
 
-      // Y position needs to be adjusted for tiles that are larger than the tile grid. In
-      // that case, most editors will anchor the tile bottom-left, so we do the same.
+      // The y position needs to be adjusted for tiles that are larger than the tilemap
+      // on which they are placed. Most map editors will anchor the tile at the bottom
+      // left of the grid cell, so we do the same.
       sprite.x = pos.x;
-      sprite.y = pos.y - (tileset.tileHeight - tilemap.grid.cellHeight);
+      sprite.y = pos.y - (sprite.height - tilemap.grid.cellHeight);
 
       tilemap.view.addChild(sprite);
     }

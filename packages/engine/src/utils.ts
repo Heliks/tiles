@@ -37,3 +37,22 @@ const UUID_NAMESPACE = '06d8878c-8305-44f2-8bca-98b311f857dd';
 export function uuid(seed?: string | number): string {
   return (seed ? v5(seed.toString(), UUID_NAMESPACE) : v4()).toString();
 }
+
+
+/**
+ * Creates an array with a length of `size` and pre-fills it with the given `value`.
+ *
+ * ```ts
+ * // ['bar', 'bar', 'bar']
+ * const foo = createPackedArray(3, 'bar');
+ * ```
+ */
+export function createPackedArray<T>(size: number, value: T): T[] {
+  const data: T[] = [];
+
+  for (let i = 0, l = size; i < l; i++) {
+    data.push(value);
+  }
+
+  return data;
+}
