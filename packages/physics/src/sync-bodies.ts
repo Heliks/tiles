@@ -24,14 +24,14 @@ export class SyncBodies extends ProcessingSystem {
       const body = bodies.get(entity);
       const transform = transforms.get(entity);
 
-      body._isPositionDirty =
-        body._position.x !== transform.world.x ||
-        body._position.y !== transform.world.y
+      // If the entities world position was manually changed via the transform component,
+      // mark the position as dirty so the adapter will update the body accordingly.
+      body._position.dirty = !body._position.value.equals(transform.world);
 
       this.adapter.updateEntityBody(entity, body, transform);
 
-      body._position.x = transform.world.x;
-      body._position.y = transform.world.y;
+      body._position.value.x = transform.world.x;
+      body._position.value.y = transform.world.y;
     }
   }
 

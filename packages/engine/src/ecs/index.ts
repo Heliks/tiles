@@ -18,6 +18,7 @@ export {
 // Export hierarchy system..
 export * from '@heliks/ecs-hierarchy';
 
+export * from './change-aware-value';
 export * from './storage';
 export * from './processing-system';
 export * from './reactive-system';

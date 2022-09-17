@@ -12,5 +12,4 @@ export * from './ticker';
 export * from './tasks';
 
 /** @see BaseBundle */
-export type Bundle = BaseBundle<GameBuilder>;
-
+export interface Bundle extends BaseBundle<GameBuilder> {}

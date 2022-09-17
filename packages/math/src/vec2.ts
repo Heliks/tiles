@@ -7,8 +7,8 @@ export interface XY {
 export class Vec2 implements XY {
 
   /**
-   * @param x Position on x axis.
-   * @param y Position on y axis.
+   * @param x X-Axis.
+   * @param y Y-Axis.
    */
   constructor(public x = 0, public y = 0) {}
 
@@ -48,9 +48,17 @@ export class Vec2 implements XY {
     return Math.atan2(this.y, this.x);
   }
 
-  /** Returns a copy of this vector. */
-  public copy(): Vec2 {
+  /** Returns a clone of this vector. */
+  public clone(): Vec2 {
     return new Vec2(this.x, this.y);
+  }
+
+  /** Copies `point` as the new value for this vector. */
+  public copy(point: XY): this {
+    this.x = point.x;
+    this.y = point.y;
+
+    return this;
   }
 
   /** Scales this vector by the given `factor`. */
@@ -59,6 +67,19 @@ export class Vec2 implements XY {
     this.y *= factor;
 
     return this;
+  }
+
+  /** Adds `point` to this vector. */
+  public add(point: XY): this {
+    this.x += point.x;
+    this.y += point.y;
+
+    return this;
+  }
+
+  /** Returns `true` if `point` is equal to this vector. */
+  public equals(point: XY): boolean {
+    return this.x === point.x && this.y === point.y;
   }
 
 }

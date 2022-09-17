@@ -6,6 +6,7 @@ import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
 import { syncBodyFixtures } from './fixtures';
+import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 
 
 /** User data that will be assigned to `b2Fixture` instances. */
@@ -15,6 +16,7 @@ interface FixtureUserData {
   /** Owner of the rigid body to which the `collider` is attached to. */
   entity: Entity;
 }
+
 
 @Injectable()
 export class Box2dWorld extends Physics {
@@ -64,7 +66,6 @@ export class Box2dWorld extends Physics {
     this.world.Step(delta, this.velocityIterations, this.positionIterations);
   }
 
-
   /** @inheritDoc */
   public createBody(entity: Entity, body: RigidBody, transform: Transform): void {
     const bBody = this.factory.createBody(entity, body, transform);
@@ -82,52 +83,24 @@ export class Box2dWorld extends Physics {
     }
   }
 
-
-
   /** @inheritDoc */
-  public updateEntityBody(entity: Entity, body: RigidBody, trans: Transform): void {
-    const bBody = this.bodies.get(entity);
+  public updateEntityBody(entity: Entity, component: RigidBody, transform: Transform): void {
+    const body = this.bodies.get(entity);
 
-    if (!bBody) {
+    if (! body) {
       return;
     }
 
-    const position = bBody.GetPosition();
-    const velocity = bBody.GetLinearVelocity();
+    syncBodyPosition(body, component, transform);
+    syncBodyRotation(body, component, transform);
 
-    if (body._isPositionDirty) {
-      position.Set(trans.world.x, trans.world.y);
-
-      // Clear flag to indicate that we've updated the position.
-      body._isPositionDirty = false;
-    }
-    else {
-      trans.world.x = position.x;
-      trans.world.y = position.y;
+    // Apply force.
+    if (component._force.read()) {
+      body.ApplyForce(component._force.value, body.GetWorldCenter());
     }
 
-    if (body.rotate) {
-      trans.rotation = bBody.GetAngle();
-    }
-    else {
-      bBody.SetAngle(trans.rotation);
-    }
-
-    // Update velocity on the rigid body if it was transformed.
-    if (body.isVelocityDirty) {
-      bBody.SetLinearVelocity(velocity.Set(
-        body.velocity.x,
-        body.velocity.y
-      ));
-
-      body.isVelocityDirty = false;
-    }
-
-    body.velocity.x = velocity.x;
-    body.velocity.y = velocity.y;
-
-    // Synchronize fixtures.
-    syncBodyFixtures(bBody);
+    syncBodyVelocity(body, component);
+    syncBodyFixtures(body);
   }
 
   /** @inheritDoc */
