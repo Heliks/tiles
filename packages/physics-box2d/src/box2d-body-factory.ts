@@ -55,7 +55,7 @@ export class Box2dBodyFactory {
 
     // Set position and velocity.
     def.position.Set(transform.world.x, transform.world.y);
-    def.linearVelocity.Set(body.velocity.x, body.velocity.y);
+    def.linearVelocity.Copy(body.getVelocity());
 
     const bBody = this.world.CreateBody(def);
     const bFixtureDef = new b2FixtureDef();

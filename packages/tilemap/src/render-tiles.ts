@@ -5,7 +5,9 @@ import { Tilemap } from './tilemap';
 
 
 /**
- * Plugin for the PIXI.JS renderer that draws tile maps.
+ * Renderer plugin that draws `Tilemap` components attached to entities.
+ *
+ * @see Tilemap
  */
 @Injectable()
 export class RenderTiles extends ReactiveSystem implements RendererPlugin {

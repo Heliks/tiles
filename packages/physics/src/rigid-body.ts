@@ -1,4 +1,4 @@
-import { EventQueue, Vec2 } from '@heliks/tiles-engine';
+import { ChangeAwareValue, EventQueue, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -40,7 +40,7 @@ export class RigidBody {
 
   /**
    * Linear damping. Determines how much the velocity of the body decays over time in
-   * relation to the worlds gravity.
+   * relation to the world gravity.
    *
    * In zero-gravity worlds (a.E. top-down games) this needs to be set manually for
    * velocity to decay at all.
@@ -87,39 +87,21 @@ export class RigidBody {
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
 
-  /** Current velocity. */
-  public velocity = new Vec2(0, 0);
+  /** @internal */
+  public readonly _force = new ChangeAwareValue(new Vec2());
 
-  /** Transform flag indicating that the velocity was updated. */
-  public isVelocityDirty = false;
+  /** @internal */
+  public readonly _position = new ChangeAwareValue(new Vec2(0, 0));
 
-  /**
-   * If this value is `true` the position of the rigid body should be updated according
-   * to the entities `Transform` values (instead of `Transform` being updated with the
-   * body position). This will automatically be set during the body synchronization
-   * before it is passed to the physics adapter. It must be cleared manually however.
-   * @internal
-   */
-  public _isPositionDirty = false;
-
-  /**
-   * Keeps track of the last known position of the entity to determine when the entities
-   * position was changed outside of the physics engine. If a changed position is found
-   * the [[isPositionDirty]] flag will be set to `true` so that the physics engine can
-   * update the body position.
-   * @internal
-   */
-  public _position = new Vec2(0, 0);
+  /** @internal */
+  public readonly _velocity = new ChangeAwareValue(new Vec2(0, 0));
 
   /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).
    * @param material (optional) Default material for attached colliders that don't
    *  specify their own. Updating this does not affect already attached colliders.
    */
-  constructor(
-    public readonly type = RigidBodyType.Static,
-    public material?: MaterialId
-  ) {}
+  constructor(public readonly type = RigidBodyType.Static, public material?: MaterialId) {}
 
   /** Creates a new dynamic rigid body. */
   public static dynamic(material?: MaterialId): RigidBody {
@@ -170,12 +152,39 @@ export class RigidBody {
     return this;
   }
 
-  /** Updates the velocity. */
+  /** Sets the bodies linear velocity. */
   public setVelocity(x: number, y: number): this {
-    this.velocity.x = x;
-    this.velocity.y = y;
+    this._velocity.value.x = x;
+    this._velocity.value.y = y;
+    this._velocity.dirty = true;
 
-    this.isVelocityDirty = true;
+    return this;
+  }
+
+  /** Returns a vector that contains the bodies current linear velocity. */
+  public getVelocity(): Vec2 {
+    return this._velocity.value;
+  }
+
+  /** Sets the bodies world position.. */
+  public setPosition(x: number, y: number): this {
+    this._position.value.x = x;
+    this._position.value.y = y;
+    this._position.dirty = true;
+
+    return this;
+  }
+
+  /** Returns a vector that contains the bodies current world position. */
+  public getPosition(): Vec2 {
+    return this._velocity.value;
+  }
+
+  /** Applies a force to the body. */
+  public applyForce(x: number, y: number): this {
+    this._force.value.x = x;
+    this._force.value.y = y;
+    this._force.dirty = true;
 
     return this;
   }
