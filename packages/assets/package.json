@@ -6,7 +6,6 @@
     "typescript": "^4.7.4"
   },
   "files": ["lib/*"],
-  "keywords": [],
   "license": "MIT",
   "main": "./lib/index.js",
   "name": "@heliks/tiles-assets",

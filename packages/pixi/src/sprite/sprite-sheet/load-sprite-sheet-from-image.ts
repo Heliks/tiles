@@ -27,6 +27,11 @@ export class LoadSpriteSheetFromImage implements Format<Blob, SpriteSheet> {
   ) {}
 
   /** @inheritDoc */
+  public getAssetType(): typeof SpriteSheet {
+    return SpriteSheet;
+  }
+
+  /** @inheritDoc */
   public process(data: Blob): SpriteSheet {
     return new SpriteGrid(
       new Grid(

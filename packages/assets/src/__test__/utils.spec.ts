@@ -1,4 +1,5 @@
-import { getDirectory } from "../utils";
+import { getDirectory } from '../utils';
+
 
 describe('getDirectory()', () => {
   it('should return the directory from a unix path', () => {

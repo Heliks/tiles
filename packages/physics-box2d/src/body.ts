@@ -1,3 +1,5 @@
+/* eslint-disable new-cap */
+
 import { b2Body } from '@flyover/box2d';
 import { RigidBody } from '@heliks/tiles-physics';
 import { Transform } from '@heliks/tiles-engine';
@@ -26,7 +28,7 @@ export function syncBodyPosition(body: b2Body, component: RigidBody, transform: 
   }
 }
 
-export function syncBodyRotation(body: b2Body, component: RigidBody, transform: Transform) {
+export function syncBodyRotation(body: b2Body, component: RigidBody, transform: Transform): void {
   if (component.rotate) {
     transform.rotation = body.GetAngle();
   }

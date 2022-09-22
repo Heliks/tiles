@@ -1,4 +1,8 @@
 /** Possible ways to load an asset. */
+import { Type } from '@heliks/tiles-engine';
+import { AssetType } from './asset';
+
+
 export enum LoadType {
   ArrayBuffer,
   Blob,
@@ -16,15 +20,25 @@ export enum LoadType {
 export interface Format<D, R, L = unknown> {
 
   /**
-   * Will be passed down to all assets that are loaded with this format.
+   * Name that uniquely identifies this format. This has no technical effects and
+   * merely serves for debugging purposes.
    */
   readonly name: string;
 
   /**
-   * Returns the `LoadType` of an asset. If this is not specified the asset will
-   * be loaded with `Text` by default.
+   * Specifies how the file should be loaded. If not specified, the asset will be
+   * loaded as text by default.
+   *
+   * @see LoadType
    */
   readonly type?: LoadType;
+
+  /**
+   * Returns the type of asset that is produced by this format. After the asset
+   * processing has finished, the loader will store it in the storage appropriate
+   * to this type.
+   */
+  getAssetType(): AssetType;
 
   /**
    * Reads the given `data` and produces asset data `R`.
@@ -47,6 +61,11 @@ export class ImageFormat implements Format<Blob, HTMLImageElement> {
 
   /** @inheritDoc */
   public readonly type = LoadType.Blob;
+
+  /** @inheritDoc */
+  public getAssetType(): Type<HTMLImageElement> {
+    return HTMLImageElement;
+  }
 
   /** @inheritDoc */
   public process(data: Blob): HTMLImageElement {

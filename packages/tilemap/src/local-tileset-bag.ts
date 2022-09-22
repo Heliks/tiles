@@ -58,9 +58,7 @@ export class LocalTilesetBag {
 
   /** Returns `true` if `tileset` is part of this bag. */
   public has(tileset: Tileset): boolean {
-    return Boolean(this.find(
-      tileset
-    ));
+    return this.items.some(item => item.tileset === tileset);
   }
 
   /**

@@ -1,11 +1,11 @@
-import { Handle } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
 import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
 import { Renderer } from '../../renderer';
 import { Screen } from '../../screen';
 import { Stage } from '../../stage';
-import { SpriteSheetStorage } from '../sprite-sheet';
+import { SpriteSheet } from '../sprite-sheet';
 
 
 @Injectable()
@@ -18,13 +18,18 @@ export class SpriteRenderer extends ReactiveSystem {
    */
   private sprites = new Map<Entity, Sprite>();
 
+  /** @internal */
+  private storage: AssetStorage<SpriteSheet>;
+
   constructor(
     private readonly dimensions: Screen,
     private readonly renderer: Renderer,
     private readonly stage: Stage,
-    private readonly storage: SpriteSheetStorage
+    loader: AssetLoader
   ) {
     super(contains(SpriteRender, Transform));
+
+    this.storage = loader.storage(SpriteSheet);
   }
 
   public updateRenderGroup(world: World, render: SpriteRender): void {
@@ -82,11 +87,11 @@ export class SpriteRenderer extends ReactiveSystem {
         render.dirty = false;
 
         sprite.texture = sheet.texture(render.spriteIndex);
-
-        // Flip sprite.
-        sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
-        sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
       }
+
+      // Flip sprite.
+      sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
+      sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
 
       // Update the sprites position.
       const trans = transforms.get(entity);

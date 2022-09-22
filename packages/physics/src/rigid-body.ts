@@ -53,6 +53,8 @@ export class RigidBody {
    */
   public dirty = true;
 
+  public disabled = false;
+
   /**
    * Bitset that contains the collision group that will be assigned to attached colliders
    * that don't specify a group of their own.

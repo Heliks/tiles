@@ -1,21 +1,19 @@
-import { Handle } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
 import { contains, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
-import { SpriteSheetStorage } from '../sprite-sheet';
 import { SpriteAnimation } from './sprite-animation';
+import { SpriteSheet } from '../sprite-sheet';
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
-  /**
-   * @param storage The storage containing sprite sheets.
-   * @param ticker [[Ticker]]
-   */
-  constructor(
-    private readonly ticker: Ticker,
-    private readonly storage: SpriteSheetStorage
-  ) {
+  /** @internal */
+  private storage: AssetStorage<SpriteSheet>;
+
+  constructor(private readonly ticker: Ticker, loader: AssetLoader) {
     super(contains(SpriteAnimation, SpriteRender));
+
+    this.storage = loader.storage(SpriteSheet);
   }
 
   /**
@@ -29,7 +27,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         ? this.storage.get(render.spritesheet)?.data
         : render.spritesheet;
 
-    if (!sheet) {
+    if (! sheet) {
       return false;
     }
 
@@ -67,7 +65,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       }
 
       // Cancel if the animation is complete and does not loop.
-      if (!animation.loop && animation.isComplete()) {
+      if (! animation.loop && animation.isComplete()) {
         continue;
       }
 
@@ -90,6 +88,10 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         display.flipY = animation.flipY;
 
         display.setIndex(animation.frames[nextFrame]);
+
+        if (nextFrame === 0) {
+          animation.loops++;
+        }
       }
     }
   }

@@ -91,6 +91,8 @@ export class Box2dWorld extends Physics {
       return;
     }
 
+    body.SetActive(!component.disabled);
+
     syncBodyPosition(body, component, transform);
     syncBodyRotation(body, component, transform);
 
