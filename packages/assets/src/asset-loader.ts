@@ -1,5 +1,5 @@
-import { Injectable, ltrim } from '@heliks/tiles-engine';
-import { AssetStorage, AssetType, Handle } from './asset';
+import { Injectable, ltrim, Type } from '@heliks/tiles-engine';
+import { AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
 import { Format, LoadType } from './formats';
 import { join } from './utils';
 
@@ -59,6 +59,8 @@ export class AssetLoader {
 
   /** @internal */
   private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
+    handle.state = LoadingState.Loaded;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.storage(format.getAssetType()).set(handle, {
       data,
@@ -138,6 +140,43 @@ export class AssetLoader {
 
       return handle;
     });
+  }
+
+  /**
+   * Creates an instance of the given asset collection `type` and autoloads all
+   * appropriate asset handles.
+   *
+   * ```ts
+   * class MyCollection {
+   *
+   *   @Load('foo.png', () => new LoadTexture())
+   *   public texture!: Handle<Texture>;
+   *
+   * }
+   *
+   * const collection = loader.collection(MyCollection);
+   *
+   * // Contains the asset handle that can be used to resolve the texture asset from
+   * // its appropriate storage.
+   * console.log(collection.data.texture);
+   * ```
+   *
+   * @see AssetCollection
+   */
+  public collection<C>(type: Type<C>): AssetCollection<C> {
+    const meta = getCollectionMetadata(type);
+
+    if (! meta) {
+      throw new Error('Class type is not an asset collection.');
+    }
+
+    const collection = new type();
+
+    for (const item of meta.properties) {
+      (collection as any)[ item.key ] = this.load(item.path, item.format());
+    }
+
+    return new AssetCollection(collection, meta);
   }
 
 }

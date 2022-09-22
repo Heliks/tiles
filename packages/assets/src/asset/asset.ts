@@ -1,8 +1,18 @@
-import { Type } from "@heliks/tiles-engine";
+import { AbstractType, Type } from '@heliks/tiles-engine';
+
+export enum LoadingState {
+  /** Asset is currently loading. */
+  Loading,
+  /** Asset is fully loaded and can be used. */
+  Loaded
+}
 
 /** A unique pointer to an asset. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class Handle<T = unknown> {
+
+  /** Contains the loading state of the asset to which this handle points to. */
+  public state = LoadingState.Loading;
 
   /**
    * @param path Path of the asset file that this handle points to.
@@ -20,7 +30,7 @@ export class Handle<T = unknown> {
  * as `AssetType<Texture>`, where `Texture` will be used as the key to access the storage
  * for that asset type.
  */
-export type AssetType<T = unknown> = Type<T>;
+export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
 
 /**
  * A loaded asset
