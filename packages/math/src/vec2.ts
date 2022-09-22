@@ -77,6 +77,14 @@ export class Vec2 implements XY {
     return this;
   }
 
+  /** Subtracts `point` to this vector. */
+  public sub(point: XY): this {
+    this.x -= point.x;
+    this.y -= point.y;
+
+    return this;
+  }
+
   /** Returns `true` if `point` is equal to this vector. */
   public equals(point: XY): boolean {
     return this.x === point.x && this.y === point.y;

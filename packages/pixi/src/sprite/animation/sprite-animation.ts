@@ -19,6 +19,16 @@ export class SpriteAnimation {
   /** If set to `true` the animation will start from scratch after it has completed. */
   public loop = true;
 
+  /**
+   * Amount of times that the animation has looped. If the animation does not loop,
+   * this will have no effect.
+   *
+   * Will be reset when a different animation starts to be played.
+   *
+   * @see loop
+   */
+  public loops = 0;
+
   /** The name of the animation that is currently playing. */
   public playing?: string;
 
@@ -55,6 +65,8 @@ export class SpriteAnimation {
 
     this.elapsedTime = -1;
     this.speed = 1;
+
+    this.loops = 0;
 
     return this;
   }
@@ -95,6 +107,7 @@ export class SpriteAnimation {
     // Only start playing the animation if we aren't playing it already.
     if (this.playing !== name) {
       this.loop = loop;
+
       this.transform = name;
 
       this.flipX = false;

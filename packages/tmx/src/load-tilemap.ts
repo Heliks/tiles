@@ -142,6 +142,11 @@ export class LoadTilemap<P extends Properties = Properties> implements Format<Tm
   public readonly type = LoadType.Json;
 
   /** @inheritDoc */
+  public getAssetType(): typeof Tilemap {
+    return Tilemap;
+  }
+
+  /** @inheritDoc */
   public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap<P>> {
     const tilemap = new Tilemap<P>(
       new Grid(

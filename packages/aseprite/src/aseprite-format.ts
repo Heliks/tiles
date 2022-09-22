@@ -1,6 +1,6 @@
 import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
-import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet, SpriteSheetStorage } from '@heliks/tiles-pixi';
+import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 
@@ -41,9 +41,12 @@ export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
 
   /** Utility method that uses the `AssetLoader` to load a `SpriteSheet` from `path`. */
   public static load(world: World, path: string): Handle<SpriteSheet> {
-    return world
-      .get(AssetLoader)
-      .load(path, new AsepriteFormat(), world.get(SpriteSheetStorage));
+    return world.get(AssetLoader).load(path, new AsepriteFormat());
+  }
+
+  /** @inheritDoc */
+  public getAssetType(): typeof SpriteSheet {
+    return SpriteSheet;
   }
 
   /** @internal */

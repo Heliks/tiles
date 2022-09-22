@@ -1,4 +1,4 @@
-import { ClassType, GameBuilder, hasOnInit, Bundle, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
+import { Bundle, ClassType, GameBuilder, hasOnInit, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
@@ -6,7 +6,7 @@ import { Renderer } from './renderer';
 import { RendererPlugin, RendererPlugins } from './renderer-plugins';
 import { RendererSystem } from './renderer-system';
 import { Screen } from './screen';
-import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteSheetStorage } from './sprite';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
 import { Overlay, Stage } from './stage';
 
 
@@ -160,7 +160,6 @@ export class PixiBundle implements Bundle, OnInit {
           this.config.unitSize
         )
       })
-      .provide(SpriteSheetStorage)
       .provide(this.getPluginProvider())
       .provide(Camera)
       .provide(DebugDraw)

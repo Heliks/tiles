@@ -43,6 +43,11 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
   public readonly type = LoadType.Json;
 
   /** @inheritDoc */
+  public getAssetType(): typeof SpriteSheet {
+    return SpriteSheet;
+  }
+
+  /** @inheritDoc */
   public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
     const texture = await loader.fetch(`${getDirectory(file)}/${data.image}`, new LoadTexture());
 

@@ -12,4 +12,5 @@ export * from './ticker';
 export * from './tasks';
 
 /** @see BaseBundle */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Bundle extends BaseBundle<GameBuilder> {}

@@ -4,7 +4,7 @@ import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
 import { getProperties } from './properties';
 import { parseShape } from './shape';
 import { Tileset } from './tileset';
-import { TmxTilesetTile, TmxTileset } from './tmx';
+import { TmxTileset, TmxTilesetTile } from './tmx';
 
 
 // Lookup to map TmxTilesetObjectAlignment values to Align values.
@@ -100,6 +100,11 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
    *  tileset that is being loaded.
    */
   constructor(public readonly firstId = 1) {}
+
+  /** @inheritDoc */
+  public getAssetType(): typeof Tileset {
+    return Tileset;
+  }
 
   /** Creates a `Tileset` from `data`. */
   public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {

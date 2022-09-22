@@ -1,41 +1,82 @@
 import { Injectable, ltrim } from '@heliks/tiles-engine';
-import { AssetStorage, Handle } from './asset';
+import { AssetStorage, AssetType, Handle } from './asset';
 import { Format, LoadType } from './formats';
+import { join } from './utils';
 
 
+/**
+ * Loads assets via the fetch API.
+ *
+ * This is the primary way to import assets such as sound, videos, fonts, etc. into the
+ * game. The loader will put assets in appropriate storages depending on the asset type
+ * specified by the format that was used to load the file. Storages for asset types can
+ * be accessed via {@link storage()}.
+ */
 @Injectable()
 export class AssetLoader {
 
   /**
-   * @param baseUrl Directory from which the loader is attempting to load assets.
+   * A map that contains storages mapped to the asset type that they are storing. If an
+   * asset is loaded, the loader will automatically put it in the appropriate storage
+   * according to the asset type specified by the format that was used to load the
+   * asset file. See: {@link Format.getAssetType}.
    */
-  constructor(public baseUrl = '') {}
+  private readonly storages = new Map<AssetType, AssetStorage<unknown>>();
 
-  /** Combines the given `path` with the loaders [[baseUrl]]. */
+  /**
+   * @param root Root path from which assets should be loaded. The loader will prepend
+   *  this to every file path that it loads.
+   */
+  constructor(public root = '') {}
+
+  /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
   public getPath(path: string): string {
-    return `${this.baseUrl}/${ltrim(path, '/')}`;
+    return join(this.root, ltrim(path, '/'))
   }
 
-  /** Called internally to complete a download. */
-  protected complete<D>(handle: Handle<D>, data: D, name: string, storage: AssetStorage<D>): void {
-    storage.set(handle, {
-      name,
-      data
+  /**
+   * Returns the storage that is used to store assets that are loaded with the given
+   * file `format`. If the storage does not exist, it will be created in the process.
+   *
+   * ```ts
+   * // Returns the storage for all assets loaded with the `ImageFormat`.
+   * const storage = assets.storage(ImageFormat);
+   * ```
+   */
+  public storage<R = unknown>(type: AssetType<R>): AssetStorage<R> {
+    let storage = this.storages.get(type) as AssetStorage<R>;
+
+    if (storage) {
+      return storage;
+    }
+
+    storage = new Map();
+
+    this.storages.set(type, storage);
+
+    return storage;
+  }
+
+  /** @internal */
+  private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.storage(format.getAssetType()).set(handle, {
+      data,
+      name: format.name
     });
   }
 
   /**
-   * Loads `data` into the given `storage` and returns a file handle that can be used
-   * to access it in that same storage.
-   *
-   * @param data Data that should be loaded into `storage`.
-   * @param storage Location where asset should be stored.
-   * @typeparam D Kind of data that should be stored as an asset.
+   * Loads `data` as an asset into the given asset `storage` and returns a `Handle<D>`
+   * with which it can be accessed.
    */
   public data<D>(data: D, storage: AssetStorage<D>): Handle<D> {
     const handle = new Handle('');
 
-    this.complete(handle, data, '', storage);
+    storage.set(handle, {
+      name: '',
+      data
+    });
 
     return handle;
   }
@@ -72,38 +113,28 @@ export class AssetLoader {
   }
 
   /**
-   * Loads a file. Instantly returns a file handle that can be used to access the asset.
-   *
-   * Note: The asset is only available after it finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
+   * Loads a file and returns a `Handle<R>` that can be used to access the file in its
+   * asset storage after it has finished loading.
    */
-  public load<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Handle<R> {
+  public load<D, R>(path: string, format: Format<D, R, AssetLoader>): Handle<R> {
     const handle = new Handle(path);
 
-    // Load the file async and save it to storage.
-    this.fetch(path, format).then(
-      data => this.complete(handle, data, format.name, storage)
-    );
+    this.fetch(path, format).then(data => {
+      this.complete(handle, data, format);
+    });
 
     return handle;
   }
 
   /**
-   * Loads a file. Similarly to [[load()]] this function will return a file handle,
-   * but only after the asset has finished loading.
-   *
-   * @param path Path to the file that should be loaded.
-   * @param format The format that should be used to parse the files raw data.
-   * @param storage The storage where the loaded asset should be stored.
+   * Loads a file. Like {@link load} this will return a file handle that can be used to
+   * access the asset, but only after the asset has finished loading.
    */
-  public async<D, R>(path: string, format: Format<D, R, AssetLoader>, storage: AssetStorage<R>): Promise<Handle<R>> {
+  public async<D, R>(path: string, format: Format<D, R, AssetLoader>): Promise<Handle<R>> {
     return this.fetch(path, format).then(data => {
       const handle = new Handle(path);
 
-      this.complete(handle, data, format.name, storage);
+      this.complete(handle, data, format);
 
       return handle;
     });

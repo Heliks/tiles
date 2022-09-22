@@ -12,3 +12,7 @@ export function getDirectory(path: string, ...append: string[]): string {
 
   return append.join('/');
 }
+
+export function join(...segments: string[]): string {
+  return segments.join('/');
+}
