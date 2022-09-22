@@ -1,8 +1,8 @@
-/** Possible ways to load an asset. */
 import { Type } from '@heliks/tiles-engine';
 import { AssetType } from './asset';
 
 
+/** Possible ways to load an asset. */
 export enum LoadType {
   ArrayBuffer,
   Blob,
