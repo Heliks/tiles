@@ -1,4 +1,4 @@
-import { contains, Injectable, ProcessingSystem, Transform, World } from '@heliks/tiles-engine';
+import { Injectable, ProcessingSystem, Query, QueryBuilder, Transform, World } from '@heliks/tiles-engine';
 import { RigidBody } from './rigid-body';
 import { Physics } from './physics';
 
@@ -11,7 +11,12 @@ export class SyncBodies extends ProcessingSystem {
    * @param adapter The physics adapter.
    */
   constructor(private readonly adapter: Physics) {
-    super(contains(RigidBody, Transform));
+    super();
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(RigidBody).contains(Transform).build();
   }
 
   /** @inheritDoc */
@@ -20,7 +25,7 @@ export class SyncBodies extends ProcessingSystem {
     const transforms = world.storage(Transform);
 
     // Update entities with rigid bodies.
-    for (const entity of this.group.entities) {
+    for (const entity of this.query.entities) {
       const body = bodies.get(entity);
       const transform = transforms.get(entity);
 

@@ -1,9 +1,10 @@
 import {
   ComponentEventType,
-  contains,
   Injectable,
   OnInit,
   ProcessingSystem,
+  Query,
+  QueryBuilder,
   Storage,
   Subscriber,
   World
@@ -26,7 +27,12 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
     private readonly renderer: Renderer,
     private readonly stage: Stage
   ) {
-    super(contains(RenderGroup));
+    super();
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(RenderGroup).build();
   }
 
   /** @inheritDoc */
@@ -57,7 +63,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
       plugin.update(world);
     }
 
-    for (const entity of this.group.entities) {
+    for (const entity of this.query.entities) {
       const group = this.groups.get(entity);
 
       if (group.sorter) {

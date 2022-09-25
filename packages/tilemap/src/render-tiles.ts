@@ -1,5 +1,5 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { contains, Entity, Injectable, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
@@ -23,7 +23,12 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
    * @param stage
    */
   constructor(private readonly screen: Screen, private readonly stage: Stage) {
-    super(contains(Tilemap, Transform));
+    super();
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(Tilemap).contains(Transform).build();
   }
 
   /** @inheritDoc */
@@ -83,7 +88,7 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
   public update(world: World): void {
     super.update(world);
 
-    for (const entity of this.group.entities) {
+    for (const entity of this.query.entities) {
       const transform = world.storage(Transform).get(entity);
       const tilemap = world.storage(Tilemap).get(entity);
 

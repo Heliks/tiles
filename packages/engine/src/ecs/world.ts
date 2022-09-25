@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
-import { Storage, World as WorldBase } from '@heliks/ecs';
-import { ClassType } from '../types';
+import { Entity, Storage, World as WorldBase } from '@heliks/ecs';
+import { ClassType, Type } from '../types';
 
 export class World extends WorldBase implements ImmutableContainer {
 
@@ -20,6 +20,16 @@ export class World extends WorldBase implements ImmutableContainer {
   /** @inheritDoc */
   public get<T>(token: InjectorToken<T>): T {
     return this.container.get<T>(token);
+  }
+
+  /**
+   * Adds a component to an entity.
+   * Todo: Move this to ECS package.
+   */
+  public add(entity: Entity, component: object): this {
+    this.storage(component.constructor as Type<unknown>).set(entity, component);
+
+    return this;
   }
 
   /** Returns all initialized component storages. */
