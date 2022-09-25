@@ -1,8 +1,9 @@
 import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
-import { contains, Injectable, ProcessingSystem, Ticker, World } from '@heliks/tiles-engine';
+import { Injectable, ProcessingSystem, Query, QueryBuilder, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteAnimation } from './sprite-animation';
 import { SpriteSheet } from '../sprite-sheet';
+
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
@@ -11,9 +12,14 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   private storage: AssetStorage<SpriteSheet>;
 
   constructor(private readonly ticker: Ticker, loader: AssetLoader) {
-    super(contains(SpriteAnimation, SpriteRender));
+    super();
 
     this.storage = loader.storage(SpriteSheet);
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(SpriteRender).contains(SpriteAnimation).build();
   }
 
   /**
@@ -55,7 +61,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     const animations = world.storage(SpriteAnimation);
     const displays = world.storage(SpriteRender);
 
-    for (const entity of this.group.entities) {
+    for (const entity of this.query.entities) {
       const animation = animations.get(entity);
       const display = displays.get(entity);
 

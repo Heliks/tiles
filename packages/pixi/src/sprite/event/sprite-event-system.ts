@@ -1,4 +1,4 @@
-import { contains, Entity, Injectable, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteEvent } from './sprite-event';
 
@@ -13,7 +13,12 @@ export class SpriteEventSystem extends ReactiveSystem {
   private cmpSpriteEvent!: Storage<SpriteEvent>;
 
   constructor() {
-    super(contains(SpriteRender, SpriteEvent));
+    super();
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(SpriteRender).contains(SpriteEvent).build();
   }
 
   /** @inheritDoc */

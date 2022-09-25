@@ -28,12 +28,12 @@ export abstract class ReactiveSystem extends ProcessingSystem {
     super.boot(world);
 
     // Subscribe to added / removed entities.
-    this._subscriber = this.group.subscribe();
+    this._subscriber = this.query.events.subscribe();
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    for (const event of this.group.events(this._subscriber)) {
+    for (const event of this.query.events.read(this._subscriber)) {
       if (event.type === EntityGroupEvent.Added) {
         this.onEntityAdded(world, event.entity);
       }

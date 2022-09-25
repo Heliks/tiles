@@ -1,5 +1,5 @@
 import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
-import { contains, Entity, Injectable, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
 import { Renderer } from '../../renderer';
@@ -27,9 +27,14 @@ export class SpriteRenderer extends ReactiveSystem {
     private readonly stage: Stage,
     loader: AssetLoader
   ) {
-    super(contains(SpriteRender, Transform));
+    super();
 
     this.storage = loader.storage(SpriteSheet);
+  }
+
+  /** @inheritDoc */
+  public build(builder: QueryBuilder): Query {
+    return builder.contains(SpriteRender).contains(Transform).build();
   }
 
   public updateRenderGroup(world: World, render: SpriteRender): void {
@@ -65,7 +70,7 @@ export class SpriteRenderer extends ReactiveSystem {
     const transforms = world.storage(Transform);
 
     // Update sprites.
-    for (const entity of this.group.entities) {
+    for (const entity of this.query.entities) {
       const render = displays.get(entity);
       const sheet =
         render.spritesheet instanceof Handle
