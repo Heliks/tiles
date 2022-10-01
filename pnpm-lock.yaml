@@ -56,7 +56,7 @@ importers:
 
   packages/engine:
     specifiers:
-      '@heliks/ecs': ^0.2.1
+      '@heliks/ecs': ^0.2.2
       '@heliks/ecs-hierarchy': ^0.2.1
       '@heliks/ecs-transform': ^0.2.1
       '@heliks/event-queue': ^0.2.2
@@ -67,9 +67,9 @@ importers:
       typescript: ^4.7.4
       uuid: 8.3.2
     dependencies:
-      '@heliks/ecs': 0.2.1
-      '@heliks/ecs-hierarchy': 0.2.1_yfigsbrigqtcwyguk7xizs3pge
-      '@heliks/ecs-transform': 0.2.1_pg6grczpk4a2srpmk5dxsawa5u
+      '@heliks/ecs': 0.2.2
+      '@heliks/ecs-hierarchy': 0.2.1_b6sx3alsmfb5eupk5pbtj4sl3a
+      '@heliks/ecs-transform': 0.2.1_4bnzeju5sas6myrsf7iblgk3si
       '@heliks/event-queue': 0.2.2
       '@heliks/tiles-injector': link:../injector
       '@heliks/tiles-math': link:../math
@@ -542,30 +542,30 @@ packages:
       '@types/systemjs': 0.20.8
     dev: false
 
-  /@heliks/ecs-hierarchy/0.2.1_yfigsbrigqtcwyguk7xizs3pge:
+  /@heliks/ecs-hierarchy/0.2.1_b6sx3alsmfb5eupk5pbtj4sl3a:
     resolution: {integrity: sha512-A2oDOGYRLJlWc1C2rd1vCezV9BssMubVb1j3V5hOR6d5RVp2kR4Fao6wWYRxyfrJ+vzK9N1jVUoGICpA+HmVlA==}
     peerDependencies:
       '@heliks/ecs': ^0.2.0-rc01
       '@heliks/event-queue': ^0.2.2
     dependencies:
-      '@heliks/ecs': 0.2.1
+      '@heliks/ecs': 0.2.2
       '@heliks/event-queue': 0.2.2
     dev: false
 
-  /@heliks/ecs-transform/0.2.1_pg6grczpk4a2srpmk5dxsawa5u:
+  /@heliks/ecs-transform/0.2.1_4bnzeju5sas6myrsf7iblgk3si:
     resolution: {integrity: sha512-+vudbgKZR0EqTU7JQO0GMVvb5/oqiYWhV2ZfG59f9QZpFdXWvhr5pEaWboy4D4yTwwwMuk2j42yAihrWfoLbqQ==}
     peerDependencies:
       '@heliks/ecs': ^0.2.1
       '@heliks/ecs-hierarchy': ^0.2.1
       '@heliks/event-queue': ^0.2.2
     dependencies:
-      '@heliks/ecs': 0.2.1
-      '@heliks/ecs-hierarchy': 0.2.1_yfigsbrigqtcwyguk7xizs3pge
+      '@heliks/ecs': 0.2.2
+      '@heliks/ecs-hierarchy': 0.2.1_b6sx3alsmfb5eupk5pbtj4sl3a
       '@heliks/event-queue': 0.2.2
     dev: false
 
-  /@heliks/ecs/0.2.1:
-    resolution: {integrity: sha512-7+QE1hrPG7iuLO7G8lClaeaqXiyflkIPxilBgkYGB6Y7gggoGtC2Nug0qkbDA1pfiESTKhugnGiDzPc7mjTlzw==}
+  /@heliks/ecs/0.2.2:
+    resolution: {integrity: sha512-icz+vmsVXVS0cwW8AZl/LvIxfjxZTMjFADS6TLv+tG5H8YyWEzDL+CQS/BOZtPBy4dI+pV0HKhYbjxE2bDT7VQ==}
     dependencies:
       '@heliks/event-queue': 0.2.2
     dev: false
