@@ -53,6 +53,7 @@ export class RigidBody {
    */
   public dirty = true;
 
+  // Todo: Document
   public disabled = false;
 
   /**
