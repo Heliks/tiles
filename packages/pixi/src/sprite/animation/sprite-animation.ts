@@ -135,13 +135,12 @@ export class SpriteAnimation {
   }
 
   /**
-   * Returns `true` if the current animation is complete.
+   * Returns `true` if the animation that is currently playing is complete.
    *
-   * The animation is considered complete when it is displaying its last frame. This means
-   * that if the animation loops the result of this function is only valid for one frame.
-   *
-   * The animation is always considered incomplete when it is queued to be changed to a
-   * different animation.
+   * The animation is considered complete when it is displaying its last frame. This
+   * means that if the animation loops that this result is only valid for as long as
+   * it stays on that frame. The animation is always incomplete when it is about to
+   * be transformed.
    */
   public isComplete(): boolean {
     return this.transform === undefined && this.frame === this.frames.length - 1;

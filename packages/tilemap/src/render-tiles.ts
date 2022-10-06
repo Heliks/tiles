@@ -4,6 +4,34 @@ import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 
+/** @internal */
+function render(tilemap: Tilemap): void {
+  tilemap.view.removeChildren();
+
+  for (let i = 0, l = tilemap.data.length; i < l; i++) {
+    const gId = tilemap.data[i];
+
+    if (gId === 0) {
+      continue;
+    }
+
+    const pos = tilemap.grid.position(i);
+    const loc = tilemap.tilesets.getFromGlobalId(gId);
+
+    const sprite = loc.tileset.sprite(
+      loc.getLocalId(gId) - 1
+    );
+
+    // The y position needs to be adjusted for tiles that are larger than the tilemap
+    // on which they are placed. Most map editors will anchor the tile at the bottom
+    // left of the grid cell, so we do the same.
+    sprite.x = pos.x;
+    sprite.y = pos.y - (sprite.height - tilemap.grid.cellHeight);
+
+    tilemap.view.addChild(sprite);
+  }
+}
+
 /**
  * Renderer plugin that draws `Tilemap` components attached to entities.
  *
@@ -48,28 +76,7 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
         tilemap.grid.height
       ));
 
-    for (let i = 0, l = tilemap.data.length; i < l; i++) {
-      const gId = tilemap.data[i];
-
-      if (gId === 0) {
-        continue;
-      }
-
-      const pos = tilemap.grid.position(i);
-      const loc = tilemap.tilesets.getFromGlobalId(gId);
-
-      const sprite = loc.tileset.sprite(
-        loc.getLocalId(gId) - 1
-      );
-
-      // The y position needs to be adjusted for tiles that are larger than the tilemap
-      // on which they are placed. Most map editors will anchor the tile at the bottom
-      // left of the grid cell, so we do the same.
-      sprite.x = pos.x;
-      sprite.y = pos.y - (sprite.height - tilemap.grid.cellHeight);
-
-      tilemap.view.addChild(sprite);
-    }
+    render(tilemap);
 
     this.stage.insert(tilemap.view, tilemap.group);
     this.containers.set(entity, tilemap.view);
@@ -91,6 +98,10 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
     for (const entity of this.query.entities) {
       const transform = world.storage(Transform).get(entity);
       const tilemap = world.storage(Tilemap).get(entity);
+
+      if (tilemap.dirty) {
+        render(tilemap);
+      }
 
       tilemap.view.x = transform.world.x * this.screen.unitSize;
       tilemap.view.y = transform.world.y * this.screen.unitSize;
