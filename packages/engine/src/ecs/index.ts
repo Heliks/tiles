@@ -16,6 +16,7 @@ export {
 } from '@heliks/ecs';
 
 export * from './change-aware-value';
+export * from './entity-ref';
 export * from './storage';
 export * from './processing-system';
 export * from './reactive-system';
