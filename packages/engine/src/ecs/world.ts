@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
 import { Entity, Storage, World as WorldBase } from '@heliks/ecs';
 import { ClassType, Type } from '../types';
+import { EntityRef } from './entity-ref';
 
 export class World extends WorldBase implements ImmutableContainer {
 
@@ -37,6 +38,11 @@ export class World extends WorldBase implements ImmutableContainer {
     return [
       ...this.storages.values()
     ];
+  }
+
+  /** Returns a reference to the given `entity`. */
+  public reference<C = unknown>(entity: Entity): EntityRef {
+    return new EntityRef<C>(this, entity);
   }
 
 }
