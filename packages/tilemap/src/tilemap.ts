@@ -4,8 +4,8 @@ import { LocalTilesetBag } from './local-tileset-bag';
 
 
 /**
- * Component that when attached, will render a tilemap on its world position. A tilemap
- * is essentially a grid where each cell can possibly contain a tile.
+ * Component that when added to an entity, will render a tilemap on its world position. A
+ * tilemap is essentially a grid where each cell can possibly contain a tile.
  */
 export class Tilemap {
 
@@ -26,6 +26,12 @@ export class Tilemap {
    * ```
    */
   public readonly data: number[];
+
+  /**
+   * Setting this to `true` will re-render the tilemap on the next frame. This should be
+   * set when the data of this tilemap has changed.
+   */
+  public dirty = false;
 
   /**
    * Bag that stores tilesets that are used to render tiles. For every ID in `data`, this
@@ -58,6 +64,22 @@ export class Tilemap {
    */
   constructor(public readonly grid: Grid, public readonly group?: Entity) {
     this.data = createPackedArray(grid.size, 0);
+  }
+
+  /**
+   * Sets a global `tileId` at the given cell `index`. If this changes the tile ID that
+   * occupies that index, the tilemap is marked as {@link dirty}. Returns `false` if no
+   * data was changed.
+   */
+  public set(cell: number, tileId: number): boolean {
+    if (this.data[ cell ] === tileId) {
+      return false;
+    }
+
+    this.data[ cell ] = tileId;
+    this.dirty = true;
+
+    return true;
   }
 
 }
