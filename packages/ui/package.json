@@ -1,0 +1,27 @@
+{
+  "name": "@heliks/tiles-ui",
+  "version": "0.0.0",
+  "description": "UI Package for tiles",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "peerDependencies": {
+    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-pixi": "^0.0.0",
+    "pixi.js": "^5.3.3"
+  },
+  "devDependencies": {
+    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-pixi": "^0.0.0",
+    "typescript": "^4.7.4",
+    "pixi.js": "^5.3.3"
+  }
+}
