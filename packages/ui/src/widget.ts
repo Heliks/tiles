@@ -1,4 +1,3 @@
-import { Align } from '@heliks/tiles-pixi';
 import { UiWidget } from './ui-widget';
 import { getPivotPosition, Pivot, PIVOT_TOP_LEFT } from './pivot';
 
@@ -10,6 +9,11 @@ export enum AlignWidget {
   Screen
 }
 
+export enum Interaction {
+  None,
+  Clicked
+}
+
 /**
  * Renders a UI widget on the entity to which this component is attached to.
  *
@@ -18,6 +22,20 @@ export enum AlignWidget {
  * widgets are aligned to the screen and have their pivot in their top left corner.
  */
 export class Widget<W extends UiWidget = UiWidget> {
+
+  /**
+   * Contains the current user interaction with this UI element. If interactions are
+   * disabled the interaction will always be `Interaction.None`.
+   *
+   * @see interactive
+   */
+  public interaction = Interaction.None;
+
+  /**
+   * If set to `true`, user interactions (a.E. click, hover, etc.) will be enabled for
+   * this widget. The current interaction can be read from {@link interaction}.
+   */
+  public interactive = false;
 
   /**
    * Determines the pivot of the UI element. Default is its own top left corner.
@@ -44,7 +62,9 @@ export class Widget<W extends UiWidget = UiWidget> {
    *  screen. If this widget is the child of another widget, this position is always
    *  relative to the parent. By default, widgets are aligned to the screen.
    */
-  constructor(public readonly widget: W, public x = 0, public y = 0, public align = AlignWidget.Screen) {}
+  constructor(public readonly widget: W, public x = 0, public y = 0, public align = AlignWidget.Screen) {
+    this.interactive = Boolean(widget.interactive);
+  }
 
   /** Creates a {@link Widget} that is aligned to the screen. */
   public static screen<T extends UiWidget>(widget: T, x = 0, y = 0): Widget<T> {

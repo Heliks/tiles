@@ -5,14 +5,15 @@ import {
   Injectable,
   OnInit,
   Parent,
-  Query,
+  Query, Rectangle,
   Storage,
   Subscriber, Vec2,
   World
 } from '@heliks/tiles-engine';
 import { alignTo, Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
-import { AlignWidget, Widget } from './widget';
+import { AlignWidget, Interaction, Widget } from './widget';
 import { getPivotPosition } from './pivot';
+import { Graphics } from 'pixi.js';
 
 
 /**
@@ -73,9 +74,11 @@ export class DrawUi implements OnInit, RendererPlugin {
     }
   }
 
+  private readonly nextInteractionQueue = new Map<Entity, Interaction>();
+
   /** Called when an `entity` gets a `UiWidget` component attached. */
   private onWidgetAdded(entity: Entity, widget: Widget): void {
-    // Needs to be updated to avoid flickering
+    // Update to avoid flickering.
     widget.widget.update();
 
     if (this.parents.has(entity)) {
@@ -134,13 +137,12 @@ export class DrawUi implements OnInit, RendererPlugin {
   public update(): void {
     this.syncWidgetComponents();
 
-    // This works a similar to the transform system.
     for (const entity of this.query.entities) {
+      const widget = this.widgets.get(entity);
+
       if (this.parents.has(entity)) {
         continue;
       }
-
-      const widget = this.widgets.get(entity);
 
       widget.widget.update();
       widget.updateViewPivot();
