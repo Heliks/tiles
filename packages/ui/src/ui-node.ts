@@ -2,10 +2,10 @@ import { UiWidget } from './ui-widget';
 import { getPivotPosition, Pivot, PIVOT_TOP_LEFT } from './pivot';
 
 
-export enum AlignWidget {
-  /** Position of widget is a world position. */
+export enum AlignNode {
+  /** Position of node is a world position. */
   World,
-  /** Position of widget is a screen position. */
+  /** Position of node is a screen position. */
   Screen
 }
 
@@ -15,13 +15,13 @@ export enum Interaction {
 }
 
 /**
- * Renders a UI widget on the entity to which this component is attached to.
+ * Renders a UI node on the entity to which this component is attached to.
  *
- * The dimensions of the widget is measured in pixels. The position is either measured
- * in in-game units or pixels, depending on where the widget is aligned to. By default,
- * widgets are aligned to the screen and have their pivot in their top left corner.
+ * The dimensions of the node is measured in pixels. The position is either measured
+ * in in-game units or pixels, depending on where the node is aligned to. By default,
+ * nodes are aligned to the screen and have their pivot in their top left corner.
  */
-export class Widget<W extends UiWidget = UiWidget> {
+export class UiNode<W extends UiWidget = UiWidget> {
 
   /**
    * Contains the current user interaction with this UI element. If interactions are
@@ -55,25 +55,25 @@ export class Widget<W extends UiWidget = UiWidget> {
   }
 
   /**
-   * @param widget The widget that should be renderer by this component.
+   * @param widget The widget that should be renderer by this node.
    * @param x Either world or screen x-axis position, depending on {@link align}.
    * @param y Either world or screen y-axis position, depending on {@link align}.
-   * @param align Determines if the widget is aligned to the world space or to the
-   *  screen. If this widget is the child of another widget, this position is always
-   *  relative to the parent. By default, widgets are aligned to the screen.
+   * @param align Determines if the node is aligned to the world space or screen. If this
+   *  node is the child of another node, this position is always relative to the parent.
+   *  By default, node are aligned to the screen.
    */
-  constructor(public readonly widget: W, public x = 0, public y = 0, public align = AlignWidget.Screen) {
+  constructor(public readonly widget: W, public x = 0, public y = 0, public align = AlignNode.Screen) {
     this.interactive = Boolean(widget.interactive);
   }
 
-  /** Creates a {@link Widget} that is aligned to the screen. */
-  public static screen<T extends UiWidget>(widget: T, x = 0, y = 0): Widget<T> {
-    return new Widget(widget, x, y, AlignWidget.Screen);
+  /** Creates a {@link UiNode} that is aligned to the screen. */
+  public static screen<T extends UiWidget>(widget: T, x = 0, y = 0): UiNode<T> {
+    return new UiNode(widget, x, y, AlignNode.Screen);
   }
 
-  /** Creates a {@link Widget} that is aligned to the world. */
-  public static world<T extends UiWidget>(widget: T, x = 0, y = 0): Widget<T> {
-    return new Widget(widget, x, y, AlignWidget.World);
+  /** Creates a {@link UiNode} that is aligned to the world. */
+  public static world<T extends UiWidget>(widget: T, x = 0, y = 0): UiNode<T> {
+    return new UiNode(widget, x, y, AlignNode.World);
   }
 
   /** @internal */

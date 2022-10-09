@@ -170,9 +170,11 @@ export class AssetLoader {
       throw new Error('Class type is not an asset collection.');
     }
 
+    // eslint-disable-next-line new-cap
     const collection = new type();
 
     for (const item of meta.properties) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (collection as any)[ item.key ] = this.load(item.path, item.format());
     }
 
