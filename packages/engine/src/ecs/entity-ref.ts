@@ -6,6 +6,10 @@ import { ComponentType, Entity, ENTITY_BITS, ENTITY_MASK, World } from '@heliks/
  */
 export class EntityRef<C = unknown> {
 
+  /**
+   * @param world World in which the entity exists.
+   * @param entity The entity that is being referenced.
+   */
   constructor(public readonly world: World, public readonly entity: Entity) {}
 
   /**
@@ -25,11 +29,14 @@ export class EntityRef<C = unknown> {
     return this.entity >> ENTITY_BITS;
   }
 
-  /**
-   * @param type
-   */
+  /** Returns the component of type `T` of which {@link entity} is the owner. */
   public get<T extends C>(type: ComponentType<T>): T {
     return this.world.storage(type).get(this.entity);
+  }
+
+  /** Destroys the referenced entity. */
+  public destroy(): void {
+    this.world.destroy(this.entity);
   }
 
 }

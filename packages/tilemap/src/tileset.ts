@@ -1,4 +1,5 @@
 import { Sprite, SpriteSheet } from '@heliks/tiles-pixi';
+import { Texture } from 'pixi.js';
 
 
 /** Collection of tiles */
@@ -14,9 +15,14 @@ export class Tileset {
    */
   constructor(public readonly spritesheet: SpriteSheet) {}
 
-  /** Creates a sprite from the tile at the given `index`. */
+  /** Creates a {@link Sprite} from the tile located at the given tile `index`. */
   public sprite(index: number): Sprite {
     return this.spritesheet.sprite(index);
+  }
+
+  /** Creates a {@link Texture} from the tile located at the given tile `index`. */
+  public texture(index: number): Texture {
+    return this.spritesheet.texture(index);
   }
 
 }

@@ -12,6 +12,7 @@ import {
 } from '@heliks/tiles-engine';
 import { alignTo, Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
 import { AlignWidget, Widget } from './widget';
+import { getPivotPosition } from './pivot';
 
 
 /**
@@ -54,13 +55,7 @@ export class DrawUi implements OnInit, RendererPlugin {
     child.widget.view.x = (parent.x + child.x) * this.screen.unitSize;
     child.widget.view.y = (parent.y + child.y) * this.screen.unitSize;
 
-    alignTo(
-      child.widget.view,
-      parent.width,
-      parent.height,
-      child.pivot,
-      child.widget.view
-    );
+    child.updateViewPivot();
   }
 
   private transformChildren(entity: Entity, parent: Widget): void {
@@ -148,6 +143,7 @@ export class DrawUi implements OnInit, RendererPlugin {
       const widget = this.widgets.get(entity);
 
       widget.widget.update();
+      widget.updateViewPivot();
 
       this.syncViewPosition(widget);
       this.transformChildren(entity, widget);

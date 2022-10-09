@@ -8,7 +8,6 @@ describe('Compass', () => {
       { compass: Compass.NE, x: 1, y: -1 },
       { compass: Compass.NW, x: -1, y: -1 },
 
-
       { compass: Compass.S, x: 0, y: 1 },
       { compass: Compass.SE, x: 1, y: 1 },
       { compass: Compass.SW, x: -1, y: 1 },

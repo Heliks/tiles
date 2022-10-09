@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-import { UiWidget } from './ui-widget';
+import { UiWidget } from '../ui-widget';
 
 
 export class UiText implements UiWidget {

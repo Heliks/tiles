@@ -39,7 +39,7 @@ export class Tilemap {
    *
    * @see data
    */
-  public readonly tilesets = new LocalTilesetBag();
+  public tilesets = new LocalTilesetBag();
 
   /**
    * Contains the display object on which the tilemap will be rendered. Will either be
