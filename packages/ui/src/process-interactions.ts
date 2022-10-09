@@ -1,6 +1,6 @@
 import { Graphics } from 'pixi.js';
 import { Entity, ProcessingSystem, Query, QueryBuilder, Rectangle, Storage, World } from '@heliks/tiles-engine';
-import { Interaction, Widget } from './widget';
+import { Interaction, UiNode } from './ui-node';
 
 
 /**
@@ -11,55 +11,55 @@ export class ProcessInteractions extends ProcessingSystem {
   /** Contains all entities that were recently clicked. */
   private readonly clicked = new Set<Entity>();
 
-  /** Storage for {@link Widget} components. */
-  private widgets!: Storage<Widget>;
+  /** Storage for {@link UiNode} components. */
+  private nodes!: Storage<UiNode>;
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
-    return builder.contains(Widget).build();
+    return builder.contains(UiNode).build();
   }
 
   /** @inheritDoc */
   public onInit(world: World): void {
-    this.widgets = world.storage(Widget);
+    this.nodes = world.storage(UiNode);
   }
 
   /** @internal */
-  private setupViewInteraction(entity: Entity, widget: Widget): void {
-    widget.widget.view.interactive = true;
+  private setupViewInteraction(entity: Entity, node: UiNode): void {
+    node.widget.view.interactive = true;
 
     // Graphics need to have their hit area manually set.
-    if (widget.widget.view instanceof Graphics) {
-      widget.widget.view.hitArea = new Rectangle(widget.width, widget.height, 0, 0);
+    if (node.widget.view instanceof Graphics) {
+      node.widget.view.hitArea = new Rectangle(node.width, node.height, 0, 0);
     }
 
-    widget.widget.view.on('pointerdown', () => {
+    node.widget.view.on('pointerdown', () => {
       this.clicked.add(entity);
     });
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     for (const entity of this.query.entities) {
-      const widget = this.widgets.get(entity);
+      const node = this.nodes.get(entity);
 
-      if (widget.interactive) {
-        const view = widget.widget.view;
+      if (node.interactive) {
+        const view = node.widget.view;
 
         // Register interaction if necessary.
         if (! view.interactive) {
-          this.setupViewInteraction(entity, widget);
+          this.setupViewInteraction(entity, node);
         }
 
         // Check for clicks.
         if (this.clicked.has(entity)) {
-          widget.interaction = Interaction.Clicked;
+          node.interaction = Interaction.Clicked;
 
           continue;
         }
       }
 
-      widget.interaction = Interaction.None;
+      node.interaction = Interaction.None;
     }
 
     this.clicked.clear();

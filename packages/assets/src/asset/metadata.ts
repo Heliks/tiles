@@ -51,7 +51,7 @@ export function getCollectionMetadata<C>(type: Type<C>): AssetCollectionMetadata
  * ```
  */
 export function Load(path: string, format: FormatGetter): PropertyDecorator {
-  return function (target: Object, key: string | symbol) {
+  return function loadDecorator(target: Object, key: string | symbol) {
     let meta = METADATA.get(target.constructor);
 
     // If no metadata for this object exists yet, create it.

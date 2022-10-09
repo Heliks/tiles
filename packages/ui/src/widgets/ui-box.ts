@@ -23,7 +23,7 @@ export class UiBox implements UiWidget {
 
   /** Style properties. */
   public readonly style: BoxStyle = {
-    opacity: 1,
+    opacity: 1
   }
 
   /** @inheritDoc */

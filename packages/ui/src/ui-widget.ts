@@ -1,4 +1,3 @@
-import { RectangleBounds } from '@heliks/tiles-engine';
 import { Drawable } from '@heliks/tiles-pixi';
 
 
@@ -6,20 +5,24 @@ import { Drawable } from '@heliks/tiles-pixi';
 export interface UiWidget {
 
   /**
-   * If specified, this will be inherited by the {@link Widget} component. This is useful
+   * If specified, this will be inherited by the {@link Node} component. This is useful
    * for widgets that are interactive by default (a.E. buttons). The interaction can
    * still be disabled directly on the component.
    */
   readonly interactive?: boolean;
 
   /**
-   * The widgets `Drawable`. This drawable must have rectangular boundaries.
-   * @see Drawable
-   * @see RectangleBounds
+   * Contains the {@link Drawable} for this widget.
+   *
+   * Will be added to the stage automatically where appropriate.
    */
   view: Drawable;
 
-  /** Updates the widgets drawable (view). This is called once on each frame. */
+  /**
+   * Updates the widget view. If this widget is attached to a {@link Node} component,
+   * this will be called automatically once per frame until the entity holding that
+   * component is destroyed.
+   */
   update(): void;
 
 }
