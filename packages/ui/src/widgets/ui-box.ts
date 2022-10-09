@@ -1,7 +1,7 @@
 import { Graphics, Sprite } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { BorderStyle } from './border-style';
-import { UiWidget } from './ui-widget';
+import { BorderStyle } from '../border-style';
+import { UiWidget } from '../ui-widget';
 
 
 /** Available styles for {@link UiBox} */

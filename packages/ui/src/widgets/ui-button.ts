@@ -6,6 +6,7 @@ export enum ButtonEvent {
   Up
 }
 
+
 export class UiButton extends UiBox {
 
   /** Indicates if the buttons is currently being clicked. */

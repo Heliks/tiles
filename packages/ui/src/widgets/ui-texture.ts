@@ -1,4 +1,4 @@
-import { UiWidget } from './ui-widget';
+import { UiWidget } from '../ui-widget';
 import { Sprite, Texture } from 'pixi.js';
 
 

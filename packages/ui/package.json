@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
   },
   "peerDependencies": {
     "@heliks/tiles-engine": "^0.0.0",

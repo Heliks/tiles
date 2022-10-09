@@ -1,6 +1,6 @@
 import { Vec2, XY } from '@heliks/tiles-engine';
 
-
+// Todo: Rename this
 export enum Align {
   Center,
   Left,

@@ -178,6 +178,18 @@ importers:
       reflect-metadata: 0.1.13
       typescript: 4.8.3
 
+  packages/ui:
+    specifiers:
+      '@heliks/tiles-engine': ^0.0.0
+      '@heliks/tiles-pixi': ^0.0.0
+      pixi.js: ^5.3.3
+      typescript: ^4.7.4
+    devDependencies:
+      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-pixi': link:../pixi
+      pixi.js: 5.3.12
+      typescript: 4.8.3
+
 packages:
 
   /@ampproject/remapping/2.2.0:

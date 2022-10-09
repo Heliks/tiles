@@ -10,7 +10,7 @@ export interface UiWidget {
    * @see Drawable
    * @see RectangleBounds
    */
-  view: Drawable & RectangleBounds;
+  view: Drawable;
 
   /** Updates the widgets drawable (view). This is called once on each frame. */
   update(): void;

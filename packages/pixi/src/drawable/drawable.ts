@@ -1,3 +1,4 @@
+import { RectangleBounds } from '@heliks/tiles-engine';
 import { DisplayObject } from 'pixi.js';
 
 /**
@@ -7,4 +8,4 @@ import { DisplayObject } from 'pixi.js';
  *
  * @see DisplayObject
  */
-export type Drawable = DisplayObject;
+export type Drawable = DisplayObject & RectangleBounds;
