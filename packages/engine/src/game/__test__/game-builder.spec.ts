@@ -170,4 +170,15 @@ describe('GameBuilder', () => {
       expect(system.onInit).toHaveBeenCalledWith(game.world);
     })
   });
+
+  it('should run a callback function during the build process', () => {
+    const builder = new GameBuilder();
+    const callback = jest.fn();
+
+    builder
+      .run(callback)
+      .build();
+
+    expect(callback).toHaveBeenCalled();
+  });
 });
