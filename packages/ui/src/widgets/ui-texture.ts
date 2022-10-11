@@ -15,11 +15,6 @@ export class UiTexture implements UiWidget {
   /** @inheritDoc */
   public update(): void {
     this.view.texture = this.texture;
-
-    this.view.pivot.set(
-      this.texture.width >> 1,
-      this.texture.height >> 1
-    );
   }
 
 }

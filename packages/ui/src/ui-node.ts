@@ -86,4 +86,11 @@ export class UiNode<W extends UiWidget = UiWidget> {
     );
   }
 
+  /** Sets the {@link pivot}. */
+  public setPivot(pivot: Pivot): this {
+    this.pivot = pivot;
+
+    return this;
+  }
+
 }

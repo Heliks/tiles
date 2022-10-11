@@ -45,3 +45,6 @@ export const PIVOT_LEFT: Pivot = [0, 0.5];
 /** {@link Pivot} preset that sets the pivot of a UI element to its right side. */
 export const PIVOT_RIGHT: Pivot = [1, 0.5];
 
+/** {@link Pivot} preset that sets the pivot of a UI element to its center. */
+export const PIVOT_CENTER: Pivot = [0.5, 0.5];
+
