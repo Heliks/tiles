@@ -71,18 +71,23 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /**
-   * Adds the given `bundle` to the game.
-   *
-   * @see Bundle
-   */
+  /** Adds a `bundle` to the game. */
   public bundle<B extends Bundle<GameBuilder>>(bundle: B): this {
     this.tasks.push(new AddBundle(bundle, new GameBuilder(this.container)));
 
     return this;
   }
 
-  /** @inheritDoc */
+  /** Runs a callback function during the build process. */
+  public run(callback: (game: Game) => void): this {
+    this.tasks.push({
+      exec: callback
+    });
+
+    return this;
+  }
+
+  /** @internal */
   public exec(game: Game): void {
     for (const task of this.tasks) {
       try {
@@ -96,7 +101,7 @@ export class GameBuilder implements Builder {
     }
   }
 
-  /** @inheritDoc */
+  /** @internal */
   public init(world: World): void {
     for (const task of this.tasks) {
       task.init?.(world);

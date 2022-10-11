@@ -11,7 +11,6 @@ export {
   Query,
   QueryBuilder,
   QueryManager,
-  Storage,
   System
 } from '@heliks/ecs';
 
