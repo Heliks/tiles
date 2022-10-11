@@ -12,7 +12,7 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
-import { AlignNode, Interaction, UiNode } from './ui-node';
+import { AlignNode, UiNode } from './ui-node';
 
 
 /**
@@ -51,6 +51,7 @@ export class DrawUi implements OnInit, RendererPlugin {
     this.subscription = this.nodes.subscribe();
   }
 
+  /** @internal */
   private transformChild(parent: UiNode, child: UiNode): void {
     child.widget.view.x = (parent.x + child.x) * this.screen.unitSize;
     child.widget.view.y = (parent.y + child.y) * this.screen.unitSize;
@@ -58,27 +59,26 @@ export class DrawUi implements OnInit, RendererPlugin {
     child.updateViewPivot();
   }
 
-  private transformChildren(entity: Entity, parent: UiNode): void {
+  /** @internal */
+  private transformChildren(world: World, entity: Entity, parent: UiNode): void {
     const children = this.hierarchy.children.get(entity);
 
     if (children) {
       for (const item of children) {
         const child = this.nodes.get(item);
 
-        child.widget.update();
+        child.widget.update(world);
 
         this.transformChild(parent, child);
-        this.transformChildren(item, child);
+        this.transformChildren(world, item, child);
       }
     }
   }
 
-  private readonly nextInteractionQueue = new Map<Entity, Interaction>();
-
   /** Called when an `entity` gets a `UiWidget` component attached. */
-  private onWidgetAdded(entity: Entity, node: UiNode): void {
+  private onWidgetAdded(world: World, entity: Entity, node: UiNode): void {
     // Update to avoid flickering.
-    node.widget.update();
+    node.widget.update(world);
 
     if (this.parents.has(entity)) {
       const parent = this.nodes.get(
@@ -98,10 +98,10 @@ export class DrawUi implements OnInit, RendererPlugin {
   }
 
   /** @internal */
-  private syncNodeComponents(): void {
+  private syncNodeComponents(world: World): void {
     for (const event of this.nodes.events(this.subscription)) {
       if (event.type === ComponentEventType.Added) {
-        this.onWidgetAdded(event.entity, event.component);
+        this.onWidgetAdded(world, event.entity, event.component);
       }
       else if (event.type === ComponentEventType.Removed) {
         this.stage.remove(event.component.widget.view);
@@ -130,8 +130,8 @@ export class DrawUi implements OnInit, RendererPlugin {
   }
 
   /** @inheritDoc */
-  public update(): void {
-    this.syncNodeComponents();
+  public update(world: World): void {
+    this.syncNodeComponents(world);
 
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
@@ -140,11 +140,11 @@ export class DrawUi implements OnInit, RendererPlugin {
         continue;
       }
 
-      node.widget.update();
+      node.widget.update(world);
       node.updateViewPivot();
 
       this.syncViewPosition(node);
-      this.transformChildren(entity, node);
+      this.transformChildren(world, entity, node);
     }
   }
 

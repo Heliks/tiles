@@ -180,11 +180,13 @@ importers:
 
   packages/ui:
     specifiers:
+      '@heliks/tiles-assets': ^0.0.0
       '@heliks/tiles-engine': ^0.0.0
       '@heliks/tiles-pixi': ^0.0.0
       pixi.js: ^5.3.3
       typescript: ^4.7.4
     devDependencies:
+      '@heliks/tiles-assets': link:../assets
       '@heliks/tiles-engine': link:../engine
       '@heliks/tiles-pixi': link:../pixi
       pixi.js: 5.3.12

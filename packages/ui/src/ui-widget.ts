@@ -1,4 +1,5 @@
 import { Drawable } from '@heliks/tiles-pixi';
+import { World } from '@heliks/tiles-engine';
 
 
 /** Implementation of an UI widget. */
@@ -23,6 +24,6 @@ export interface UiWidget {
    * this will be called automatically once per frame until the entity holding that
    * component is destroyed.
    */
-  update(): void;
+  update(world: World): void;
 
 }
