@@ -54,6 +54,11 @@ export class UiNode<W extends UiWidget = UiWidget> {
     return this.widget.view.height;
   }
 
+  /** Contains `true` if the node is visible. */
+  public get isVisible(): boolean {
+    return this.widget.view.visible;
+  }
+
   /**
    * @param widget The widget that should be renderer by this node.
    * @param x Either world or screen x-axis position, depending on {@link align}.
@@ -89,6 +94,20 @@ export class UiNode<W extends UiWidget = UiWidget> {
   /** Sets the {@link pivot}. */
   public setPivot(pivot: Pivot): this {
     this.pivot = pivot;
+
+    return this;
+  }
+
+  /** Shows the node if it was previously hidden. */
+  public show(): this {
+    this.widget.view.visible = true;
+
+    return this;
+  }
+
+  /** Hides the UI node. Hidden nodes will still be updated, but not drawn. */
+  public hide(): this {
+    this.widget.view.visible = false;
 
     return this;
   }

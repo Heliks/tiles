@@ -11,9 +11,7 @@ describe('Tilemap', () => {
     });
 
     it('should return true if data was changed', () => {
-      const changed = tilemap.set(10, 5);
-
-      expect(changed).toBeTruthy();
+      expect(tilemap.set(10, 5)).toBeTruthy();
     });
 
     it('should return false if no data was changed', () => {
@@ -22,6 +20,14 @@ describe('Tilemap', () => {
       const changed = tilemap.set(10, 5);
 
       expect(changed).toBeFalsy();
+    });
+
+    it.each([
+      -1,
+      100,
+      101
+    ])('should not change data for out of bounds cell %i', cell => {
+      expect(tilemap.set(cell, 1)).toBeFalsy();
     });
 
     it('should mark tilemap as dirty if data was changed', () => {

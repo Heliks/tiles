@@ -72,7 +72,7 @@ export class Tilemap {
    * data was changed.
    */
   public set(cell: number, tileId: number): boolean {
-    if (this.data[ cell ] === tileId) {
+    if (cell < 0 || cell >= this.grid.size || this.data[ cell ] === tileId) {
       return false;
     }
 
