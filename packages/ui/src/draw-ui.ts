@@ -1,6 +1,6 @@
 import {
-  ComponentEventType,
   Entity,
+  EntityQueryEvent,
   Hierarchy,
   Injectable,
   OnInit,
@@ -48,7 +48,7 @@ export class DrawUi implements OnInit, RendererPlugin {
     this.parents = world.storage(Parent);
     this.nodes = world.storage(UiNode);
 
-    this.subscription = this.nodes.subscribe();
+    this.subscription = this.query.events.subscribe();
   }
 
   /** @internal */
@@ -97,14 +97,19 @@ export class DrawUi implements OnInit, RendererPlugin {
     this.stage.add(node.widget.view);
   }
 
-  /** @internal */
-  private syncNodeComponents(world: World): void {
-    for (const event of this.nodes.events(this.subscription)) {
-      if (event.type === ComponentEventType.Added) {
-        this.onWidgetAdded(world, event.entity, event.component);
+  /**
+   * Synchronizes the widget view of UI nodes with the renderer stage. New nodes will
+   * have their view added to the stage, destroyed nodes will have their views removed.
+   */
+  private syncNodeViews(world: World): void {
+    for (const event of this.query.events.read(this.subscription)) {
+      const node = this.nodes.get(event.entity);
+
+      if (event.type === EntityQueryEvent.Added) {
+        this.onWidgetAdded(world, event.entity, node);
       }
-      else if (event.type === ComponentEventType.Removed) {
-        this.stage.remove(event.component.widget.view);
+      else {
+        this.stage.remove(node.widget.view);
       }
     }
   }
@@ -131,7 +136,7 @@ export class DrawUi implements OnInit, RendererPlugin {
 
   /** @inheritDoc */
   public update(world: World): void {
-    this.syncNodeComponents(world);
+    this.syncNodeViews(world);
 
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
