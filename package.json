@@ -25,6 +25,8 @@
     "build:watch": "pnpm -r --no-sort build:watch",
     "clean:builds": "rimraf ./packages/*/lib",
     "clean:dependencies": "rimraf packages/*/node_modules && rimraf node_modules",
-    "clean": "pnpm clean:builds && pnpm clean:dependencies"
+    "clean": "pnpm clean:builds && pnpm clean:dependencies",
+    "publish": "pnpm clean:builds && pnpm build && pnpm -r publish",
+    "publish:dry": "pnpm clean:builds && pnpm build && pnpm -r publish --dry-run"
   }
 }
