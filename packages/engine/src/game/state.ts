@@ -1,96 +1,102 @@
-/**
- * Generic interface of a state machine stack.
- *
- * @typeparam T Item that is pushed into the stack. Mostly this will either be a state
- *  name that the state machine associates with a certain state, or a state directly,
- *  depending on the implementation of the state machine.
- */
-export interface Stack<T> {
-  /** Pushes an `item` at the top of the stack. */
-  push(item: T): this;
-  /** Removes the top most item from the stack. */
+/** Generic interface of a state machine stack. */
+export interface Stack<I> {
+
+  /**
+   * Pushes a `state` at the top of the stack. The state that was previously at the top
+   * of the stack will be paused in the process.
+   */
+  push(item: I): this;
+
+  /**
+   * Removes the top most state from the stack. If the stack is not empty afterwards,
+   * it will resume the next top most state, otherwise the state machine is shut down.
+   */
   pop(): this;
-  /** Replaces the top-most item of the stack with `item`. */
-  switch(item: T): this;
-}
-
-
-/**
- * State that can be used inside of a state machine.
- *
- * @see StateMachine
- * @see Stack
- *
- * @typeparam T Data that is passed down to this state by the state machine.
- * @typeparam S Stack type.
- */
-export interface State<T, S extends Stack<unknown>> {
-
-  /** Called when added to a stack. */
-  onStart?(data: T): unknown;
-
-  /** Called when removed from a stack. */
-  onStop?(data: T): unknown;
-
-  /** Called when a different `State<T>` is pushed over this one. */
-  onPause?(data: T): unknown;
-
-  /** Called when this state becomes active after having been inactive once. */
-  onResume?(data: T): unknown;
 
   /**
-   * Called when the state machine is updated and this state is currently on
-   * top of the stack, usually once per frame.
+   * Replaces the top-most state of the stack with `state`. The state that is replaced
+   * will be removed from the stack entirely.
    */
-  update(stack: S, data: T): unknown;
+  switch(item: I): this;
 
 }
 
-export type StateStack<T> = Stack<State<T, StateStack<T>>>;
-export type StateStackState<T> = State<T, StateStack<T>>;
-
 /**
- * Stack based push-down automation (PDA) state machine.
+ * Implementation of a state that runs in a {@link StateMachine}.
  *
- * @typeparam T The data that will be passed down to each state.
+ * States implement a {@link update} method that contains the state logic. Additionally,
+ * they can act upon certain events that happen when the state machine interact with
+ * this state.
+ *
+ * The state machine will pass down the data type `D` to events in this state.
  */
-export class StateMachine<T> implements StateStack<T> {
+export interface State<D> {
+
+  /** Event that is called when the state is first pushed to the stack. */
+  onStart?(data: D): unknown;
+
+  /** Event that is called when the state is removed from to the stack. */
+  onStop?(data: D): unknown;
 
   /**
-   * Contains the state that is currently on top of the stack or `undefined`
-   * if the stack is empty.
+   * If this state was previously the active state, this will be called after another
+   * state replaces it. The state is still part of the stack and can become active
+   * again at a later time.
+   *
+   * @see onResume
    */
-  public get active(): StateStackState<T> | undefined {
+  onPause?(data: D): unknown;
+
+  /**
+   * If this state was previously paused, this will be called after the event becomes
+   * the active state in the state stack again.
+   *
+   * @see onPause
+   */
+  onResume?(data: D): unknown;
+
+  /**
+   * Contains the implementation of the state.
+   *
+   * If this state is the top-most state in a state machine, this will be called once
+   * on each frame. During the execution of this method, state changes can be triggered
+   * by interacting with the `stack`.
+   */
+  update(stack: Stack<State<D>>, data: D): unknown;
+
+}
+
+/**
+ * Push-down automation (PDA) state machine.
+ */
+export class StateMachine<D> implements Stack<State<D>> {
+
+  /** Contains the state that is currently on top of the stack, if any. */
+  public get active(): State<D> | undefined {
     return this.stack[this.stack.length - 1];
   }
 
-  /** Contains the current stack size. */
+  /** Amount of states that are currently part of the stack. */
   public get size(): number {
     return this.stack.length;
   }
 
-  /** Indicates if the state machine is currently running. */
-  protected running = false;
+  /** @internal */
+  private running = false;
+
+  /** @internal */
+  private readonly stack: State<D>[] = [];
 
   /**
-   * The stack of states. The last state in the list is considered
-   * the [[active]] state.
+   * @param data Data that the state machine passes down to its states.
    */
-  protected readonly stack: StateStackState<T>[] = [];
+  constructor(public data: D) {}
 
-  /**
-   * @param data The state machines data that will be passed down to state when
-   * they receive lifecycle or update events.
-   */
-  constructor(public data: T) {}
-
-  /** Pushes a `state` at the top of the stack. */
-  public push(state: StateStackState<T>): this {
+  /** @inheritDoc */
+  public push(state: State<D>): this {
     if (this.running) {
       const active = this.active;
 
-      // Pause the state that is currently active as we'll be pushing
-      // a new state over it.
       active?.onPause?.(this.data);
 
       this.stack.push(state);
@@ -101,27 +107,21 @@ export class StateMachine<T> implements StateStack<T> {
     return this;
   }
 
-  /**
-   * Removes the top most state from the stack. If the stack is not empty afterwards
-   * it will resume the next top most state, otherwise the state machine is shut down.
-   */
+  /** @inheritDoc */
   public pop(): this {
     if (this.running) {
       let state = this.stack.pop();
 
-      // If we got a state from the top of the stack stop it before starting
-      // the next one.
       state?.onStop?.(this.data);
 
-      // Get the next active state. If there is we'll resume it, otherwise
-      // the state machine will be exited.
+      // Get next active state. If successful, the state will be resumed. Otherwise the
+      // state machine is shut down.
       state = this.active;
 
       if (state) {
         state.onResume?.(this.data);
       }
       else {
-        // Shutdown state machine.
         this.running = false;
       }
     }
@@ -129,8 +129,8 @@ export class StateMachine<T> implements StateStack<T> {
     return this;
   }
 
-  /** Replaces the top-most state of the stack with `state`. */
-  public switch(state: StateStackState<T>): this {
+  /** @inheritDoc */
+  public switch(state: State<D>): this {
     if (this.running) {
       const top = this.stack.pop();
 
@@ -139,6 +139,7 @@ export class StateMachine<T> implements StateStack<T> {
 
       // Push the given state to the top of the stack and start it if possible.
       this.stack.push(state);
+
       state.onStart?.(this.data);
     }
 
@@ -150,7 +151,7 @@ export class StateMachine<T> implements StateStack<T> {
    * Throws an error if the state machine is started with an empty stack. This means
    * that the first time it is started, the `state` parameter is mandatory.
    */
-  public start(state?: StateStackState<T>): this {
+  public start(state?: State<D>): this {
     if (state) {
       this.stack.push(state);
     }

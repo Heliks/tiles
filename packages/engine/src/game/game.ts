@@ -1,14 +1,8 @@
 import { SystemDispatcher } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
 import { World } from '../ecs';
-import { StateMachine, StateStackState } from './state';
+import { State, StateMachine } from './state';
 import { Ticker } from './ticker';
-
-
-/**
- * Implementation of a game state.
- */
-export type GameState = StateStackState<World>;
 
 
 /**
@@ -73,7 +67,7 @@ export class Game {
   /**
    * Starts the game using the given `state`.
    */
-  public start(state: GameState): void {
+  public start(state: State<World>): void {
     this.ticker.start();
     this.state.start(state);
   }

@@ -1,7 +1,7 @@
-import { StateMachine, StateStackState } from '../state';
+import { State, StateMachine } from '../state';
 
 /** A state that does nothing. */
-class NoopState<T = any> implements StateStackState<T> {
+class NoopState<T = any> implements State<T> {
   /** @inheritDoc */
   public onStart = jest.fn();
   /** @inheritDoc */
