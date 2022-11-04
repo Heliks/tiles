@@ -30,9 +30,9 @@ importers:
 
   packages/aseprite:
     specifiers:
-      '@heliks/tiles-assets': ^0.0.0
-      '@heliks/tiles-engine': ^0.0.0
-      '@heliks/tiles-pixi': ^0.0.0
+      '@heliks/tiles-assets': workspace:^
+      '@heliks/tiles-engine': workspace:^
+      '@heliks/tiles-pixi': workspace:^
       '@types/node': ^14.14.2
       pixi.js: ^5.3.3
       reflect-metadata: ^0.1.13
@@ -51,7 +51,7 @@ importers:
       '@heliks/tiles-engine': ^0.0.0
       typescript: ^4.7.4
     devDependencies:
-      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-engine': 0.0.0
       typescript: 4.8.3
 
   packages/engine:
@@ -132,7 +132,7 @@ importers:
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-engine': 0.0.0
       pixi.js: 5.3.12
       typescript: 4.8.3
 
@@ -151,7 +151,7 @@ importers:
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-engine': 0.0.0
       '@heliks/tiles-pixi': link:../pixi
       reflect-metadata: 0.1.13
       typescript: 4.8.3
@@ -169,7 +169,7 @@ importers:
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-engine': 0.0.0
       '@heliks/tiles-physics': link:../physics
       '@heliks/tiles-pixi': link:../pixi
       '@heliks/tiles-tilemap': link:../tilemap
@@ -187,7 +187,7 @@ importers:
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': link:../engine
+      '@heliks/tiles-engine': 0.0.0
       '@heliks/tiles-pixi': link:../pixi
       pixi.js: 5.3.12
       typescript: 4.8.3
@@ -564,7 +564,6 @@ packages:
     dependencies:
       '@heliks/ecs': 0.2.3
       '@heliks/event-queue': 0.2.2
-    dev: false
 
   /@heliks/ecs-transform/0.2.1_u6x4mwkau2czeuwsltlmfdku74:
     resolution: {integrity: sha512-+vudbgKZR0EqTU7JQO0GMVvb5/oqiYWhV2ZfG59f9QZpFdXWvhr5pEaWboy4D4yTwwwMuk2j42yAihrWfoLbqQ==}
@@ -576,17 +575,35 @@ packages:
       '@heliks/ecs': 0.2.3
       '@heliks/ecs-hierarchy': 0.2.1_kx46edkhj3ph5xr42a5pay3eza
       '@heliks/event-queue': 0.2.2
-    dev: false
 
   /@heliks/ecs/0.2.3:
     resolution: {integrity: sha512-Yo5wVHPDrN0xxGdjW++uWNfl5PkDf27Tnwp+lhCEFsAqOY/bQACYdMOJs7ZhJWaiuYUCRf3cQVKnExvaqpCgBw==}
     dependencies:
       '@heliks/event-queue': 0.2.2
-    dev: false
 
   /@heliks/event-queue/0.2.2:
     resolution: {integrity: sha512-diooo7sorw3x+FMSgheJ7tgRi9mjLCf/UvDRSVkOXprPvH2nsUiOc1sCnzhsxHw0QJhcNtRQsRzaDuuj0KYrow==}
-    dev: false
+
+  /@heliks/tiles-engine/0.0.0:
+    resolution: {integrity: sha512-j8/+OV0+CSXa6fcEOIJb0QuUmH844JRq8EDnp3fbRaGvj+5lt80AQ3Iak0pggh+yywL/Ev0ZcMgjPlm0Wk4rnA==}
+    dependencies:
+      '@heliks/ecs': 0.2.3
+      '@heliks/ecs-hierarchy': 0.2.1_kx46edkhj3ph5xr42a5pay3eza
+      '@heliks/ecs-transform': 0.2.1_u6x4mwkau2czeuwsltlmfdku74
+      '@heliks/event-queue': 0.2.2
+      '@heliks/tiles-injector': 0.0.0
+      '@heliks/tiles-math': 0.0.0
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
+    dev: true
+
+  /@heliks/tiles-injector/0.0.0:
+    resolution: {integrity: sha512-cWmsY+7TlM9B5aHDUHjFs46pr5H4u0m+ghyWXhwvUJbs3jAMqMi/fvHcE1vu/jbDne4BD06IBcfaLDIDvFSqwQ==}
+    dev: true
+
+  /@heliks/tiles-math/0.0.0:
+    resolution: {integrity: sha512-eHIW02eH5+K8PomB3/ORZxwDiJdh+tz5Bu4a4F9PYlzkC6GkiaR/3VEj4BYXtHfXE1J+SV+MbClzTPHi3GCejw==}
+    dev: true
 
   /@humanwhocodes/config-array/0.10.5:
     resolution: {integrity: sha512-XVVDtp+dVvRxMoxSiSfasYaG02VEe1qH5cKgMQJWhol6HwzbcqoCMJi8dAGoYAO57jhUyhI6cWuRiTcRaDaYug==}
@@ -4000,7 +4017,6 @@ packages:
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
-    dev: false
 
   /v8-to-istanbul/9.0.1:
     resolution: {integrity: sha512-74Y4LqY74kLE6IFyIjPtkSTWzUZmj8tdHT9Ii/26dvQ6K9Dl2NbEfj0XgU2sHCtKgt5VupqhlO/5aWuqS+IY1w==}
