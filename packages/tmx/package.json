@@ -1,20 +1,20 @@
 {
   "author": "Felix Wolf",
   "peerDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-tilemap": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-tilemap": "workspace:^",
     "pixi.js": "^5.3.3"
   },
   "description": "Tiled loader",
   "devDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-physics": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
-    "@heliks/tiles-tilemap": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-tilemap": "workspace:^",
     "@types/node": "^17.0.13",
     "pixi.js": "^5.3.3",
     "reflect-metadata": "^0.1.13",
@@ -33,5 +33,5 @@
     "_test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.0"
+  "version": "0.0.1-rc1"
 }

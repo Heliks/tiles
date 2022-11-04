@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-random",
-  "version": "0.0.0",
+  "version": "0.0.1-rc1",
   "description": "Optional package to deal with everything random",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
