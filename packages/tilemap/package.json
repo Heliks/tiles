@@ -1,15 +1,15 @@
 {
   "author": "Felix Wolf",
   "peerDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0"
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^"
   },
   "description": "Tilemap Module",
   "devDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.7.4"
   },

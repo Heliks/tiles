@@ -2,7 +2,7 @@
   "author": "Felix Wolf",
   "description": "Tiles assets module",
   "devDependencies": {
-    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-engine": "workspace:^",
     "typescript": "^4.7.4"
   },
   "files": ["lib/*"],
@@ -10,7 +10,7 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-assets",
   "peerDependencies": {
-    "@heliks/tiles-engine": "^0.0.0"
+    "@heliks/tiles-engine": "workspace:^"
   },
   "scripts": {
     "build": "tsc",

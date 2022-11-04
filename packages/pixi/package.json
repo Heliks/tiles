@@ -2,8 +2,8 @@
   "author": "Felix Wolf",
   "description": "Tiles PIXI.JS module",
   "devDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
     "typescript": "^4.7.4",
     "pixi.js": "^5.3.3"
   },
@@ -15,8 +15,8 @@
   "main": "./lib/index.js",
   "name": "@heliks/tiles-pixi",
   "peerDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
     "pixi.js": "^5.3.3"
   },
   "scripts": {

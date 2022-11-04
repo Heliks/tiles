@@ -15,15 +15,15 @@
     "test": "jest --config ./jest.config.js"
   },
   "peerDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
     "pixi.js": "^5.3.3"
   },
   "devDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
     "typescript": "^4.7.4",
     "pixi.js": "^5.3.3"
   }

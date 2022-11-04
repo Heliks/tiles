@@ -48,10 +48,10 @@ importers:
 
   packages/assets:
     specifiers:
-      '@heliks/tiles-engine': ^0.0.0
+      '@heliks/tiles-engine': workspace:^
       typescript: ^4.7.4
     devDependencies:
-      '@heliks/tiles-engine': 0.0.0
+      '@heliks/tiles-engine': link:../engine
       typescript: 4.8.3
 
   packages/engine:
@@ -126,13 +126,13 @@ importers:
 
   packages/pixi:
     specifiers:
-      '@heliks/tiles-assets': ^0.0.0
-      '@heliks/tiles-engine': ^0.0.0
+      '@heliks/tiles-assets': workspace:^
+      '@heliks/tiles-engine': workspace:^
       pixi.js: ^5.3.3
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': 0.0.0
+      '@heliks/tiles-engine': link:../engine
       pixi.js: 5.3.12
       typescript: 4.8.3
 
@@ -144,14 +144,14 @@ importers:
 
   packages/tilemap:
     specifiers:
-      '@heliks/tiles-assets': ^0.0.0
-      '@heliks/tiles-engine': ^0.0.0
-      '@heliks/tiles-pixi': ^0.0.0
+      '@heliks/tiles-assets': workspace:^
+      '@heliks/tiles-engine': workspace:^
+      '@heliks/tiles-pixi': workspace:^
       reflect-metadata: ^0.1.13
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': 0.0.0
+      '@heliks/tiles-engine': link:../engine
       '@heliks/tiles-pixi': link:../pixi
       reflect-metadata: 0.1.13
       typescript: 4.8.3
@@ -180,14 +180,14 @@ importers:
 
   packages/ui:
     specifiers:
-      '@heliks/tiles-assets': ^0.0.0
-      '@heliks/tiles-engine': ^0.0.0
-      '@heliks/tiles-pixi': ^0.0.0
+      '@heliks/tiles-assets': workspace:^
+      '@heliks/tiles-engine': workspace:^
+      '@heliks/tiles-pixi': workspace:^
       pixi.js: ^5.3.3
       typescript: ^4.7.4
     devDependencies:
       '@heliks/tiles-assets': link:../assets
-      '@heliks/tiles-engine': 0.0.0
+      '@heliks/tiles-engine': link:../engine
       '@heliks/tiles-pixi': link:../pixi
       pixi.js: 5.3.12
       typescript: 4.8.3
