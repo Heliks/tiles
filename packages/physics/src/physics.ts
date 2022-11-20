@@ -1,8 +1,7 @@
-import { Entity, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Injectable } from '@heliks/tiles-injector';
-import { XY } from '@heliks/tiles-math';
+import { Entity, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider } from './collider';
 import { RigidBody } from './rigid-body';
+
 
 /**
  * An obstacle encountered by a raycast.

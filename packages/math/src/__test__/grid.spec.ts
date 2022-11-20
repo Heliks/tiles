@@ -12,7 +12,7 @@ describe('Grid', () => {
     const grid = new Grid(5, 5, 16, 16);
 
     // Get x and y position from cell idnex.
-    const pos = grid.position(index);
+    const pos = grid.getPosition(index);
 
     expect(pos).toMatchObject({
       x,
@@ -31,7 +31,7 @@ describe('Grid', () => {
     const grid = new Grid(5, 5, 16, 16);
 
     // Get the index from the given x and y positions.
-    const idx = grid.index(x, y);
+    const idx = grid.getIndexAt(x, y);
 
     expect(idx).toBe(index);
   });

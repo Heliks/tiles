@@ -24,8 +24,8 @@
     "@heliks/ecs-hierarchy": "^0.2.1",
     "@heliks/ecs-transform": "^0.2.1",
     "@heliks/event-queue": "^0.2.2",
-    "@heliks/tiles-injector": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0",
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-math": "workspace:^",
     "reflect-metadata": "^0.1.13"
   }
 }

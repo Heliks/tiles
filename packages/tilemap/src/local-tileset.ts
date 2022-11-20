@@ -27,10 +27,21 @@ export class LocalTileset {
     return this.firstId + id - 1;
   }
 
+  /** Converts a global tile ID to a local tile index. */
+  public getLocalIndex(id: number): number {
+    return id - this.firstId;
+  }
+
   /** Converts a global tile ID to a local one. */
   public getLocalId(id: number): number {
     return id - this.firstId + 1;
   }
 
+  /** Returns `true` if this local tileset is the owner a global tile id `id`. */
+  public checkId(id: number): boolean {
+    return Boolean(id >= this.firstId && id <= this.lastId);
+  }
+
 }
+
 

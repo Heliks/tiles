@@ -1,7 +1,6 @@
 /* eslint-disable new-cap */
 import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
-import { Entity, Transform } from '@heliks/tiles-engine';
-import { Inject, Injectable } from '@heliks/tiles-injector';
+import { Entity, Inject, Injectable, Transform } from '@heliks/tiles-engine';
 import { Collider, MaterialManager, RigidBody } from '@heliks/tiles-physics';
 import { B2_WORLD } from './const';
 import { b2ParseBodyType, b2ParseShape } from './utils';
