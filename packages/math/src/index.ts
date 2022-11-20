@@ -1,3 +1,5 @@
+export * from './random';
+
 export * from './circle';
 export * from './compass';
 export * from './grid';

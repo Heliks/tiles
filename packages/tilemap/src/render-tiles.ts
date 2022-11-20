@@ -15,7 +15,7 @@ function render(tilemap: Tilemap): void {
       continue;
     }
 
-    const pos = tilemap.grid.position(i);
+    const pos = tilemap.grid.getPosition(i);
     const loc = tilemap.tilesets.getFromGlobalId(gId);
 
     const sprite = loc.tileset.sprite(

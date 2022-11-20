@@ -1,6 +1,6 @@
 import { createPackedArray, Entity, Grid } from '@heliks/tiles-engine';
 import { Container } from '@heliks/tiles-pixi';
-import { LocalTilesetBag } from './local-tileset-bag';
+import { LocalTilesetBag } from './tileset';
 
 
 /**
@@ -12,8 +12,8 @@ export class Tilemap {
   /**
    * Grid data. Each index represents a grid cell and each value a tile ID. If a cell
    * has a value of `0`, it means that that cell is not occupied by any tile. The data
-   * is packed, which means that this array is guaranteed to have a length equal to the
-   * grid size.
+   * is packed, which means that this array is guaranteed to have a length equal to size
+   * of the grid of this tilemap.
    *
    * For example, the data of a 3x3 grid could be laid out like this:
    *
@@ -80,6 +80,14 @@ export class Tilemap {
     this.dirty = true;
 
     return true;
+  }
+
+  /**
+   * Returns the tile ID that occupies a `cell` index. Returns `0` if `cell` is outside
+   * the boundaries of the tilemap grid, or if that cell is not occupied by any tile.
+   */
+  public get(cell: number): number {
+    return this.grid.isIndexInBounds(cell) ? this.data[ cell ] : 0;
   }
 
 }
