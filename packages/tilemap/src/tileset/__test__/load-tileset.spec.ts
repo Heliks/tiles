@@ -42,5 +42,4 @@ describe('LoadTileset', () => {
 
     expect(tileset.spritesheet.size()).toBe(100);
   });
-
 });

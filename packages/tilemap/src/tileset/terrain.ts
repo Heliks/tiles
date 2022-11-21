@@ -24,6 +24,7 @@ export enum TerrainType {
  */
 export class Terrain<I = number> {
 
+  /** @internal */
   private readonly tiles: TerrainTile<I>[] = [];
 
   /**
@@ -39,6 +40,7 @@ export class Terrain<I = number> {
    */
   constructor(public readonly type: TerrainType, public readonly name: string) {}
 
+  /** Maps `terrainId` to one or more tile `indexes`. */
   public set(terrainId: I, ...indexes: number[]): this {
     for (const idx of indexes) {
       this.tiles.push({
@@ -52,6 +54,7 @@ export class Terrain<I = number> {
     return this;
   }
 
+  /** Returns all {@link TerrainTile} with the given `terrainId`. */
   public get(terrainId: I): TerrainTile<I>[] {
     return this.tiles.filter(item => item.terrainId === terrainId);
   }

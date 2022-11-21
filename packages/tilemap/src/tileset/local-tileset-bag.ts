@@ -73,7 +73,7 @@ export class LocalTilesetBag {
 
   /**
    * Returns the `LocalTileset` for a global tile ID. Throws an error if the ID is not
-   * in range of any of the local tilesets in this bag.
+   * in range of the local tilesets in this bag.
    */
   public getFromGlobalId(globalId: number): LocalTileset {
     const tileset = this.items.find(
