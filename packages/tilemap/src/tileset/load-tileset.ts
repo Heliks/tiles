@@ -47,6 +47,12 @@ export interface TilesetData {
   /** Path where the tileset image is located. Relative to the tileset file. */
   image: string;
 
+  /** Width of the tileset spritesheet image in px. */
+  imageWidth: number;
+
+  /** Height of the tileset spritesheet image in px. */
+  imageHeight: number;
+
   /** Contains terrain definitions, if any. */
   terrains?: TerrainData[];
 
@@ -64,8 +70,8 @@ async function createTilesetSpriteGrid(data: TilesetData, file: string, loader: 
 
   return new SpriteGrid(
     new Grid(
-      Math.floor(texture.width / data.tileWidth),
-      Math.floor(texture.height / data.tileHeight),
+      Math.floor(data.imageWidth / data.tileWidth),
+      Math.floor(data.imageHeight / data.tileHeight),
       data.tileWidth,
       data.tileHeight
     ),
@@ -75,7 +81,7 @@ async function createTilesetSpriteGrid(data: TilesetData, file: string, loader: 
 
 /** @internal */
 function deserializeTerrainData(data: TerrainData): Terrain {
-  const terrain = new Terrain(data.type, data.name);
+  const terrain = new Terrain(data.name);
 
   for (let i = 0; i < data.data.length;) {
     const terrainId = data.data[i++];

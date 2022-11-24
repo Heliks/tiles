@@ -1,15 +1,15 @@
-import { Grid } from '@heliks/tiles-engine';
+import { createPackedArray, Grid } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
 
 
 describe('Tilemap', () => {
+  let tilemap: Tilemap;
+
+  beforeEach(() => {
+    tilemap = new Tilemap(new Grid(10, 10, 16, 16));
+  });
+
   describe('when setting a tile id', () => {
-    let tilemap: Tilemap;
-
-    beforeEach(() => {
-      tilemap = new Tilemap(new Grid(10, 10, 16, 16));
-    });
-
     it('should return true if data was changed', () => {
       expect(tilemap.set(10, 5)).toBeTruthy();
     });
@@ -34,6 +34,28 @@ describe('Tilemap', () => {
       tilemap.set(10, 5);
 
       expect(tilemap.dirty).toBeTruthy();
+    });
+  });
+
+  describe('when overwriting tile data', () => {
+    it('should overwrite tile data', () => {
+      const data = createPackedArray(100, 5);
+
+      tilemap.setAll(data);
+
+      expect(tilemap.data).toEqual(data);
+    });
+
+    it('should mark tilemap as dirty', () => {
+      tilemap.setAll(createPackedArray(100, 0));
+
+      expect(tilemap.dirty).toBeTruthy();
+    });
+
+    it('should throw if new data is not equal to the size of the tilemap', () => {
+      expect(() => {
+        tilemap.setAll(createPackedArray(5, 0));
+      }).toThrow();
     });
   });
 });

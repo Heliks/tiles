@@ -72,14 +72,33 @@ export class Tilemap {
    * data was changed.
    */
   public set(cell: number, tileId: number): boolean {
-    if (cell < 0 || cell >= this.grid.size || this.data[ cell ] === tileId) {
-      return false;
+    if (this.grid.isIndexInBounds(cell) && this.data[ cell ] !== tileId) {
+      this.data[ cell ] = tileId;
+      this.dirty = true;
+
+      return true;
     }
 
-    this.data[ cell ] = tileId;
+    return false;
+  }
+
+  /**
+   * Overwrites the existing tilemap data. The new `data` must have a length equal to
+   * the size of the tilemap.
+   *
+   * @see data
+   */
+  public setAll(data: number[]): this {
+    if (data.length !== this.grid.size) {
+      throw new Error('Data must have equal indexes to tilemap size.');
+    }
+
+    this.data.length = 0;
+    this.data.push(...data);
+
     this.dirty = true;
 
-    return true;
+    return this;
   }
 
   /**

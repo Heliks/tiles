@@ -1,4 +1,4 @@
-export * from './brush';
+export * from './terrain-brush';
 export * from './tileset';
 
 export * from './render-tiles';

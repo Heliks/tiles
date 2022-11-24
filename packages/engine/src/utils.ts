@@ -1,10 +1,7 @@
 import { v4, v5 } from 'uuid';
 
 
-/** Caps `value` to the boundaries `min` and `max`. */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
-}
+
 
 /** Trims `char` characters on the left side of the string `value`. */
 export function ltrim(value: string, char: string): string {

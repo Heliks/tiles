@@ -2,8 +2,8 @@
  * Maps a tile ID in a terrain to a tile index of a tileset. A terrain can have more
  * than one terrain tile with the same `terrainId`.
  */
-export interface TerrainTile<I = number> {
-  terrainId: I;
+export interface TerrainTile {
+  terrainId: number;
   tileIndex: number;
 }
 
@@ -22,10 +22,10 @@ export enum TerrainType {
  * example, a common 2-edge wang set has a total of 16 tiles, while a blob tileset can
  * have up to 256.
  */
-export class Terrain<I = number> {
+export class Terrain {
 
   /** @internal */
-  private readonly tiles: TerrainTile<I>[] = [];
+  private readonly tiles: TerrainTile[] = [];
 
   /**
    * Fast lookup for mapped tile indexes.
@@ -34,14 +34,13 @@ export class Terrain<I = number> {
   private readonly indexes = new Set<number>();
 
   /**
-   * @param type Terrain type.
    * @param name Display name. This does not have any technical effect on the terrain
    *  itself as it is mainly for debugging / maintenance purposes.
    */
-  constructor(public readonly type: TerrainType, public readonly name: string) {}
+  constructor(public readonly name: string) {}
 
   /** Maps `terrainId` to one or more tile `indexes`. */
-  public set(terrainId: I, ...indexes: number[]): this {
+  public set(terrainId: number, ...indexes: number[]): this {
     for (const idx of indexes) {
       this.tiles.push({
         terrainId: terrainId,
@@ -55,7 +54,7 @@ export class Terrain<I = number> {
   }
 
   /** Returns all {@link TerrainTile} with the given `terrainId`. */
-  public get(terrainId: I): TerrainTile<I>[] {
+  public get(terrainId: number): TerrainTile[] {
     return this.tiles.filter(item => item.terrainId === terrainId);
   }
 

@@ -23,18 +23,18 @@ export class LocalTileset {
   ) {}
 
   /** Converts a local tile ID to a global one. */
-  public getGlobalId(id: number): number {
-    return this.firstId + id - 1;
+  public getGlobalId(localId: number): number {
+    return this.firstId + localId - 1;
   }
 
   /** Converts a global tile ID to a local tile index. */
-  public getLocalIndex(id: number): number {
-    return id - this.firstId;
+  public getLocalIndex(globalId: number): number {
+    return globalId - this.firstId;
   }
 
   /** Converts a global tile ID to a local one. */
-  public getLocalId(id: number): number {
-    return id - this.firstId + 1;
+  public getLocalId(globalId: number): number {
+    return globalId - this.firstId + 1;
   }
 
   /** Returns `true` if this local tileset is the owner a global tile id `id`. */

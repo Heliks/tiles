@@ -1,4 +1,5 @@
-import { Vec2 } from './vec2';
+import { Vec2, XY } from './vec2';
+import { clamp } from './utils';
 
 
 export class Grid {
@@ -31,17 +32,38 @@ export class Grid {
     public readonly cellHeight: number
   ) {}
 
-  /** Returns the top-left aligned position of the cell that occupies the given `index`. */
-  public getPosition(index: number, out = new Vec2()): Vec2 {
-    out.x = index % this.cols * this.cellWidth;
-    out.y = Math.floor(index / this.cols) * this.cellHeight;
+  /**
+   * Returns a vector that represents the location of a `cell` index. The x-axis
+   * represents the grid column, y the grid row.
+   */
+  public getLocation(cell: number, out?: XY): XY {
+    const x = cell % this.cols;
+    const y = Math.floor(cell / this.cols);
+
+    if (out) {
+      out.x = x;
+      out.y = y;
+    }
+    else {
+      out = { x, y };
+    }
 
     return out;
   }
 
+  /** Returns the top-left aligned position of a `cell` index. */
+  public getPosition(cell: number, out = new Vec2()): XY {
+    const loc = this.getLocation(cell, out);
+
+    loc.x *= this.cellWidth;
+    loc.y *= this.cellHeight;
+
+    return loc;
+  }
+
   /** Returns the index of the cell that is located at `col` and `row`. */
   public getIndex(col: number, row: number): number {
-    return (row * this.cols) + col;
+    return (clamp(row, 0, this.rows - 1) * this.cols) + clamp(col, 0, this.cols - 1);
   }
 
   /** Returns the index of the cell that is located at the position `x` and `y` */
@@ -54,12 +76,12 @@ export class Grid {
 
   /** Returns `true` if a `cell` index is within the bounds of this grid. */
   public isIndexInBounds(cell: number): boolean {
-    return cell < 0 || cell >= this.size;
+    return cell >= 0 && cell < this.size;
   }
 
   /** Returns `true` if `col` and `row` are within the bounds of this grid. */
   public isLocationInBounds(col: number, row: number): boolean {
-    return col < this.cols && row < this.rows;
+    return col < this.cols && col >= 0 && row < this.rows && row >= 0;
   }
 
 }
