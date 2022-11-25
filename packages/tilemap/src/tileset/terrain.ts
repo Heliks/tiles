@@ -1,15 +1,34 @@
-/**
- * Maps a tile ID in a terrain to a tile index of a tileset. A terrain can have more
- * than one terrain tile with the same `terrainId`.
- */
-export interface TerrainTile {
-  terrainId: number;
-  tileIndex: number;
+export enum TerrainBit {
+  North = 1,
+  NorthEast = 2,
+  NorthWest = 128,
+  South = 16,
+  SouthEast = 8,
+  SouthWest = 32,
+  East = 4,
+  West = 64
 }
 
-export enum TerrainType {
-  Corner,
-  Edge
+/**
+ * A terrain ID is a bitset of {@link TerrainBit} bits. Tile indexes mapped to this ID
+ * should cover every edge for every bit int this set. For example:
+ *
+ *  ```ts
+ *  // Tiles mapped to this terrain ID are supposed to cover the north-east corner and
+ *  // the northern edge.
+ *  const terrainId = TerrainBit.North | TerrainBit.NorthEast;
+ *  ```
+ */
+export type TerrainId = number;
+
+/**
+ * Maps a tile index to a terrain ID.
+ *
+ * @see TerrainId
+ */
+export interface TerrainRule {
+  terrainId: TerrainId;
+  tileIndex: number;
 }
 
 /**
@@ -17,20 +36,13 @@ export enum TerrainType {
  * other in a `TileGrid`. For example, if we were to draw a patch of grass or a body of
  * water, it can automatically decide where edges or transitions to other tiles should
  * be placed.
- *
- * The number of possible tiles in a terrain varies depending on the terrain type. For
- * example, a common 2-edge wang set has a total of 16 tiles, while a blob tileset can
- * have up to 256.
  */
 export class Terrain {
 
   /** @internal */
-  private readonly tiles: TerrainTile[] = [];
+  private readonly rules: TerrainRule[] = [];
 
-  /**
-   * Fast lookup for mapped tile indexes.
-   * @internal
-   */
+  /** @internal */
   private readonly indexes = new Set<number>();
 
   /**
@@ -39,28 +51,34 @@ export class Terrain {
    */
   constructor(public readonly name: string) {}
 
-  /** Maps `terrainId` to one or more tile `indexes`. */
-  public set(terrainId: number, ...indexes: number[]): this {
-    for (const idx of indexes) {
-      this.tiles.push({
-        terrainId: terrainId,
-        tileIndex: idx
-      });
+  public static createId(...bits: TerrainBit[]): TerrainId {
+    let terrainId = 0;
 
-      this.indexes.add(idx);
+    for (const bit of bits) {
+      terrainId |= bit;
     }
+
+    return terrainId;
+  }
+
+  public rule(tile: number, terrainId: TerrainId): this {
+    this.rules.push({
+      tileIndex: tile,
+      terrainId
+    });
+
+    this.indexes.add(tile);
 
     return this;
   }
 
-  /** Returns all {@link TerrainTile} with the given `terrainId`. */
-  public get(terrainId: number): TerrainTile[] {
-    return this.tiles.filter(item => item.terrainId === terrainId);
+  /** Returns `true` if a `tile` index has a {@link TerrainRule}. */
+  public hasRule(tile: number): boolean {
+    return this.indexes.has(tile);
   }
 
-  /** Returns `true` if `tileIdx` is mapped to any {@link TerrainTile}. */
-  public isDefined(tileIdx: number): boolean {
-    return this.indexes.has(tileIdx);
+  public getRules(terrainId: number): TerrainRule[] {
+    return this.rules.filter(item => item.terrainId === terrainId);
   }
 
 }

@@ -1,198 +1,106 @@
-import { TerrainBrush } from '../terrain-brush';
 import { Grid } from '@heliks/tiles-engine';
-import { createEmptyTileset } from '../tileset/__test__/utils';
-import { LocalTileset, Terrain } from '../tileset';
 import { Tilemap } from '../tilemap';
+import { LocalTileset, Terrain, TerrainBit } from '../tileset';
+import { createEmptyTileset } from '../tileset/__test__/utils';
+import { TerrainBrush } from '../terrain-brush';
 
 
 describe('TerrainBrush', () => {
   let brush: TerrainBrush;
+  let terrain: Terrain;
+  let tilemap: Tilemap;
 
   beforeEach(() => {
-    const tileset = createEmptyTileset(new Grid(4, 4, 16, 16));
-    const terrain = new Terrain('Test')
+    terrain = new Terrain('foobar');
+    tilemap = new Tilemap(new Grid(3, 3, 16, 16));
 
-    terrain
-      .set(0, 0)
-      .set(1, 1)
-      .set(2, 2)
-      .set(3, 3)
-      .set(4, 4)
-      .set(5, 5)
-      .set(6, 6)
-      .set(7, 7)
-      .set(8, 8)
-      .set(9, 9)
-      .set(10, 10)
-      .set(11, 11)
-      .set(12, 12)
-      .set(13, 13)
-      .set(14, 14)
-      .set(15, 15);
+    const tileset = createEmptyTileset(new Grid(5, 5, 16, 16));
 
-    brush = new TerrainBrush(new LocalTileset(tileset, 1), terrain);
+    brush = new TerrainBrush(tilemap, new LocalTileset(tileset, 1), terrain);
   });
 
   it.each([
     {
-      expected: false,
       col: 1,
       row: 1,
-      data: [
-        0, 1, 0,
-        1, 0, 1,
-        0, 1, 0
-      ],
-    },
-    {
-      expected: true,
-      col: 0,
-      row: 0,
-      data: [
-        1, 1, 0,
-        0, 1, 0,
-        1, 1, 0
-      ],
-    },
-    {
-      expected: false,
-      col: 3,
-      row: 0,
-      data: [
-        1, 1, 0,
-        1, 1, 0,
-        1, 1, 1
-      ],
-    },
-    {
-      expected: false,
-      col: -1,
-      row: -1,
       data: [
         1, 1, 0,
         1, 1, 0,
         0, 0, 0
       ],
-    }
-  ])('should check if tile at location $col and $row belongs to terrain', data => {
-    const tilemap = new Tilemap(new Grid(3, 3, 16, 16)).setAll(data.data);
-
-    const isTerrain = brush.isTerrainTile(tilemap, data.col, data.row);
-
-    expect(isTerrain).toBe(data.expected);
-  });
-
-  it.each([
-    {
-      terrainId: 15,
-      col: 1,
-      row: 1,
-      data: [
-        0, 1, 0,
-        1, 0, 1,
-        0, 1, 0
-      ]
+      terrainId: Terrain.createId(
+        TerrainBit.NorthWest,
+        TerrainBit.North,
+        TerrainBit.West
+      )
     },
     {
-      terrainId: 14,
       col: 1,
-      row: 1,
+      row: 2,
       data: [
         0, 0, 0,
-        1, 0, 1,
-        0, 1, 0
-      ]
-    },
-    {
-      terrainId: 7,
-      col: 0,
-      row: 1,
-      data: [
-        1, 1, 0,
-        0, 1, 0,
-        1, 1, 0
-      ],
-    },
-    {
-      terrainId: 8,
-      col: 2,
-      row: 0,
-      data: [
-        1, 1, 0,
-        1, 1, 0,
+        0, 1, 1,
         1, 1, 1
       ],
-    },
-    {
-      terrainId: 3,
-      col: 0,
-      row: 1,
-      data: [
-        1, 1, 0,
-        1, 1, 0,
-        0, 0, 0
-      ],
+      terrainId: Terrain.createId(
+        TerrainBit.NorthEast,
+        TerrainBit.North,
+        TerrainBit.East,
+        TerrainBit.West
+      )
     }
-  ])('should return $terrainId as terrain ID for location col $col row $row', data => {
-    const tilemap = new Tilemap(new Grid(3, 3, 16, 16)).setAll(data.data);
+  ])('should return terrain id $terrainId at location col $col row $row', data => {
+    tilemap.setAll(data.data);
+    terrain.rule(0, 0);
 
-    const idx = brush.getTerrainTileId(
-      tilemap,
-      data.col,
-      data.row
-    );
+    const terrainId = brush.getTerrainId(data.col, data.row);
 
-    expect(idx).toEqual(data.terrainId);
+    expect(terrainId).toBe(data.terrainId);
   });
 
-  it.each([
-    {
-      col: 0,
-      row: 0,
-      data: [
-        0, 1, 0,
-        1, 1, 0,
-        0, 0, 0
-      ],
-      expected: [
-        7, 13, 0,
-        4, 1, 0,
-        0, 0, 0
-      ]
-    },
-    {
-      col: 0,
-      row: 1,
-      data: [
-        1, 1, 0,
-        0, 1, 0,
-        1, 1, 0
-      ],
-      expected: [
-        7, 1, 0,
-        8, 14, 0,
-        4, 1, 0
-      ]
-    },
-    {
-      col: 1,
-      row: 1,
-      data: [
-        0, 1, 0,
-        1, 0, 1,
-        0, 1, 0
-      ],
-      expected: [
-        0, 5, 0,
-        3, 16, 9,
-        0, 2, 0
-      ]
-    }
-  ])('draw terrain at location x: $col y: $row', data => {
-    const tilemap = new Tilemap(new Grid(3, 3, 16, 16)).setAll(data.data);
+  it('should draw terrain', () => {
+    tilemap.setAll([
+      0, 0, 0,
+      0, 1, 1,
+      1, 1, 1
+    ]);
 
-    brush.draw(tilemap, data.col, data.row);
+    terrain
+      .rule(0, 0)
+      .rule(1, Terrain.createId(
+        TerrainBit.East,
+        TerrainBit.South,
+        TerrainBit.SouthEast,
+        TerrainBit.SouthWest,
+      ))
+      .rule(2, Terrain.createId(
+        TerrainBit.West,
+        TerrainBit.South,
+        TerrainBit.SouthWest
+      ))
+      .rule(3, Terrain.createId(
+        TerrainBit.East,
+        TerrainBit.NorthEast
+      ))
+      .rule(4, Terrain.createId(
+        TerrainBit.East,
+        TerrainBit.West,
+        TerrainBit.North,
+        TerrainBit.NorthEast
+      ))
+      .rule(5, Terrain.createId(
+        TerrainBit.West,
+        TerrainBit.North,
+        TerrainBit.NorthWest
+      ));
 
-    expect(tilemap.data).toEqual(data.expected);
+    brush.draw(1, 2);
+
+    expect(tilemap.data).toEqual([
+      0, 0, 0,
+      0, 2, 3,
+      4, 5, 6
+    ]);
   });
 });
+
