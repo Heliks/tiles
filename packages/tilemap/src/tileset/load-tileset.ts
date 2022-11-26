@@ -6,9 +6,22 @@ import { Terrain, TerrainBit, TerrainId } from './terrain';
 
 
 /**
- * Serialize-able terrain rule data from which a {@link TerrainId} can be generated. Each
- * property corresponds to a {@link TerrainBit}. For every property that is set, the
- * corresponding terrain bit will be added to the terrain id generated from it.
+ * Serialize-able terrain rule data. Each property corresponds to a {@link TerrainBit}
+ * in a {@link TerrainRule}. If a property is set to `true`, the corresponding bit must
+ * be present on a {@link TerrainId} to match this rule. If it is set to `false`, the
+ * terrain id is not allowed to contain this bit. If a property is omitted completely,
+ * its bit is optional.
+ *
+ * From the example below a rule will be generated that matches when the northern side
+ * of a tile is adjacent to another tile in the terrain and has no tile adjacent on
+ * the southern side. All other sides and corners are optional.
+ *
+ * ```json
+ * {
+ *   "n": true,
+ *   "s:" false
+ * }
+ * ```
  */
 export interface TerrainRuleData {
   n?: boolean;
@@ -83,21 +96,42 @@ async function createTilesetSpriteGrid(data: TilesetData, file: string, loader: 
 }
 
 /** @internal */
-function deserializeTerrainId(data: TerrainRuleData): TerrainId {
-  let id = 0;
+interface TerrainMasks {
+  contains: TerrainId;
+  excludes: TerrainId;
+}
 
-  if (data.n) id |= TerrainBit.North;
-  if (data.ne) id |= TerrainBit.NorthEast;
-  if (data.nw) id |= TerrainBit.NorthWest;
+/** @internal */
+function deserializeTerrainBit(bit: TerrainBit, masks: TerrainMasks, value?: boolean) {
+  if (value !== undefined) {
+    if (value) {
+      masks.contains |= bit;
+    }
+    else {
+      masks.excludes |= bit;
+    }
+  }
+}
 
-  if (data.s) id |= TerrainBit.South;
-  if (data.se) id |= TerrainBit.SouthEast;
-  if (data.sw) id |= TerrainBit.SouthWest;
+/** @internal */
+function deserializeTerrainRule(data: TerrainRuleData): TerrainMasks {
+  const masks = {
+    contains: 0,
+    excludes: 0
+  };
 
-  if (data.e) id |= TerrainBit.East;
-  if (data.w) id |= TerrainBit.West;
+  deserializeTerrainBit(TerrainBit.North, masks, data.n);
+  deserializeTerrainBit(TerrainBit.NorthEast, masks, data.ne);
+  deserializeTerrainBit(TerrainBit.NorthWest, masks, data.nw);
 
-  return id;
+  deserializeTerrainBit(TerrainBit.South, masks, data.s);
+  deserializeTerrainBit(TerrainBit.SouthEast, masks, data.se);
+  deserializeTerrainBit(TerrainBit.SouthWest, masks, data.sw);
+
+  deserializeTerrainBit(TerrainBit.East, masks, data.e);
+  deserializeTerrainBit(TerrainBit.West, masks, data.w);
+
+  return masks;
 }
 
 /** @internal */
@@ -105,11 +139,19 @@ function deserializeTerrainData(data: TerrainData): Terrain {
   const terrain = new Terrain(data.name);
 
   for (const tile of data.tiles) {
-    const terrainId = tile.rules
-      ? deserializeTerrainId(tile.rules)
-      : 0;
+    if (tile.rules) {
+      const masks = deserializeTerrainRule(tile.rules);
 
-    terrain.rule(tile.index, terrainId);
+      terrain.rule(
+        tile.index,
+        masks.contains,
+        masks.excludes
+      );
+    }
+    else {
+      // If there are no rules, this tile can appear anywhere.
+      terrain.rule(tile.index, 0);
+    }
   }
 
   return terrain;

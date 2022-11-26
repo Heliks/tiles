@@ -1,3 +1,10 @@
+import { TerrainRule } from './terrain-rule';
+
+
+/**
+ * Contains a bit for each possible side that a {@link Terrain} can "query" to check
+ * for adjacent tiles.
+ */
 export enum TerrainBit {
   North = 1,
   NorthEast = 2,
@@ -10,8 +17,8 @@ export enum TerrainBit {
 }
 
 /**
- * A terrain ID is a bitset of {@link TerrainBit} bits. Tile indexes mapped to this ID
- * should cover every edge for every bit int this set. For example:
+ * A terrain ID is a bitset of {@link TerrainBit terrain bits} and represents which
+ * sides and corners a tile that belongs to a {@link Terrain} covers.
  *
  *  ```ts
  *  // Tiles mapped to this terrain ID are supposed to cover the north-east corner and
@@ -22,20 +29,10 @@ export enum TerrainBit {
 export type TerrainId = number;
 
 /**
- * Maps a tile index to a terrain ID.
- *
- * @see TerrainId
- */
-export interface TerrainRule {
-  terrainId: TerrainId;
-  tileIndex: number;
-}
-
-/**
- * Terrains are a set of rules that define which tiles should be displayed next to each
- * other in a `TileGrid`. For example, if we were to draw a patch of grass or a body of
- * water, it can automatically decide where edges or transitions to other tiles should
- * be placed.
+ * Terrains are a set of rules that control which tiles should be drawn adjacent to
+ * each other in a {@link Tilemap}. For example, if we were to draw a patch of grass
+ * or a body of water, it can automatically decide where edges or transitions to other
+ * tiles should be drawn.
  */
 export class Terrain {
 
@@ -51,6 +48,7 @@ export class Terrain {
    */
   constructor(public readonly name: string) {}
 
+  /** Creates a {@link TerrainId}, using the given `bits. */
   public static createId(...bits: TerrainBit[]): TerrainId {
     let terrainId = 0;
 
@@ -61,11 +59,13 @@ export class Terrain {
     return terrainId;
   }
 
-  public rule(tile: number, terrainId: TerrainId): this {
-    this.rules.push({
-      tileIndex: tile,
-      terrainId
-    });
+  /** Defines a new {@link TerrainRule}. */
+  public rule(tile: number, contains: TerrainId, excludes: TerrainId = 0): this {
+    this.rules.push(new TerrainRule(
+      tile,
+      contains,
+      excludes
+    ));
 
     this.indexes.add(tile);
 
@@ -77,8 +77,14 @@ export class Terrain {
     return this.indexes.has(tile);
   }
 
-  public getRules(terrainId: number): TerrainRule[] {
-    return this.rules.filter(item => item.terrainId === terrainId);
+  /** Returns all {@link TerrainRule terrain rules} with the given `tileIndex`. */
+  public getTileRules(tileIndex: number): TerrainRule[] {
+    return this.rules.filter(item => item.tileIndex === tileIndex);
+  }
+
+  /** Returns all {@link TerrainRule terrain rules} that match the given `terrainId`. */
+  public match(terrainId: TerrainId): TerrainRule[] {
+    return this.rules.filter(item => item.test(terrainId));
   }
 
 }

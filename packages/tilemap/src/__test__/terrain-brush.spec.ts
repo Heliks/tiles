@@ -58,6 +58,7 @@ describe('TerrainBrush', () => {
     expect(terrainId).toBe(data.terrainId);
   });
 
+
   it('should draw terrain', () => {
     tilemap.setAll([
       0, 0, 0,
@@ -66,7 +67,12 @@ describe('TerrainBrush', () => {
     ]);
 
     terrain
-      .rule(0, 0)
+      .rule(0, 0, Terrain.createId(
+          TerrainBit.North,
+          TerrainBit.East,
+          TerrainBit.South,
+          TerrainBit.West
+      ))
       .rule(1, Terrain.createId(
         TerrainBit.East,
         TerrainBit.South,
@@ -78,16 +84,16 @@ describe('TerrainBrush', () => {
         TerrainBit.South,
         TerrainBit.SouthWest
       ))
-      .rule(3, Terrain.createId(
-        TerrainBit.East,
-        TerrainBit.NorthEast
-      ))
-      .rule(4, Terrain.createId(
-        TerrainBit.East,
-        TerrainBit.West,
-        TerrainBit.North,
-        TerrainBit.NorthEast
-      ))
+      .rule(
+        3,
+        Terrain.createId(TerrainBit.East, TerrainBit.NorthEast),
+        Terrain.createId(TerrainBit.North)
+      )
+      .rule(
+        4,
+        Terrain.createId(TerrainBit.East, TerrainBit.West, TerrainBit.North, TerrainBit.NorthEast),
+        Terrain.createId(TerrainBit.NorthWest)
+      )
       .rule(5, Terrain.createId(
         TerrainBit.West,
         TerrainBit.North,

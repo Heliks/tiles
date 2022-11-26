@@ -1,4 +1,4 @@
-import { getRandomItem, Grid } from '@heliks/tiles-engine';
+import { Grid } from '@heliks/tiles-engine';
 import { LocalTileset, Terrain, TerrainBit, TerrainId, TerrainRule } from './tileset';
 import { Tilemap } from './tilemap';
 
@@ -11,6 +11,7 @@ import { Tilemap } from './tilemap';
  */
 export class TerrainBrush {
 
+  /** @internal */
   private get grid(): Grid {
     return this.tilemap.grid;
   }
@@ -62,8 +63,9 @@ export class TerrainBrush {
     return terrainId;
   }
 
-  public getTerrainRulesAt(col: number, row: number): TerrainRule[] {
-    return this.terrain.getRules(this.getTerrainId(col, row));
+  /** @internal */
+  private match(col: number, row: number): TerrainRule[] {
+    return this.terrain.match(this.getTerrainId(col, row));
   }
 
   /**
@@ -73,7 +75,7 @@ export class TerrainBrush {
    */
   private getRandomTileId(rules: TerrainRule[]): number {
     // Pick random rule and convert its local tile index to a global tile id.
-    return this.tileset.getGlobalId(getRandomItem(rules).tileIndex + 1);
+    return this.tileset.getGlobalId(rules[0].tileIndex + 1);
   }
 
   /**
@@ -86,7 +88,7 @@ export class TerrainBrush {
    * will be returned.
    */
   public getTileId(col: number, row: number): number {
-    const rules = this.getTerrainRulesAt(col, row);
+    const rules = this.match(col, row);
 
     return rules.length > 0
       ? this.getRandomTileId(rules)
@@ -96,10 +98,11 @@ export class TerrainBrush {
   /** @internal */
   private _updateNeighbourTile(col: number, row: number) {
     if (this.isTerrainTile(col, row)) {
-      this.tilemap.set(
-        this.grid.getIndex(col, row),
-        this.getTileId(col, row)
-      );
+      const tileId = this.getTileId(col, row);
+
+      if (tileId > 0) {
+        this.tilemap.set(this.grid.getIndex(col, row), tileId);
+      }
     }
   }
 
