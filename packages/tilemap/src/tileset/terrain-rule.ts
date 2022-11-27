@@ -2,21 +2,22 @@ import { TerrainId } from './terrain';
 
 
 /**
- * Defines a rule for a terrain to match a tile index.
+ * Defines a rule to match a {@link TerrainId}.
  *
- * A {@link TerrainId} must pass two criteria to match this rule. First, it needs to
- * contain *all* bits from the `contains` bitset. Last, it is not allowed to contain
- * any bits of the `excludes` bitset.
+ * The terrain id must pass two criteria to match this rule. First, it needs to contain
+ * all bits from the `contains` bitset. Last, it is not allowed to contain any bits of
+ * the `excludes` bitset.
  */
 export class TerrainRule {
 
   /**
-   * @param tileIndex Index of the tile that should be drawn when this rule is matched.
+   * @param indexes Tile indexes mapped to this rule. If this rule is matched, the
+   *  terrain brush will draw a random tile from this list.
    * @param contains All {@link TerrainBit terrain bits} required to match this rule.
    * @param excludes All {@link TerrainBit terrain bits} that are allowed to be omitted.
    */
   constructor(
-    public readonly tileIndex: number,
+    public readonly indexes: number[],
     public readonly contains: TerrainId = 0,
     public readonly excludes: TerrainId = 0
   ) {}

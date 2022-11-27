@@ -23,7 +23,7 @@ describe('Terrain', () => {
       terrainId: Terrain.createId(TerrainBit.South)
     }
   ])('should match terrain id $terrainId', data => {
-    const rule = new TerrainRule(1, Terrain.createId(TerrainBit.North));
+    const rule = new TerrainRule([1], Terrain.createId(TerrainBit.North));
     const result = rule.test(data.terrainId);
 
     expect(result).toBe(data.expected);

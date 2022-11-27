@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
-import { LocalTileset, Terrain, TerrainBit } from '../tileset';
+import { LocalTileset, Terrain, TerrainBit, TerrainRule } from '../tileset';
 import { createEmptyTileset } from '../tileset/__test__/utils';
 import { TerrainBrush } from '../terrain-brush';
 

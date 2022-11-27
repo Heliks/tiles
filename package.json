@@ -21,6 +21,7 @@
   "scripts": {
     "lint": "eslint packages/**/*.ts --config .eslintrc.json",
     "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test -- --coverage",
     "build": "pnpm clean:builds && pnpm -r --sort run build",
     "build:watch": "pnpm -r --no-sort build:watch",
     "clean:builds": "rimraf ./packages/*/lib",

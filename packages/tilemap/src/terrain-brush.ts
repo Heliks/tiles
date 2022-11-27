@@ -1,4 +1,4 @@
-import { Grid } from '@heliks/tiles-engine';
+import { getRandomItem, Grid } from '@heliks/tiles-engine';
 import { LocalTileset, Terrain, TerrainBit, TerrainId, TerrainRule } from './tileset';
 import { Tilemap } from './tilemap';
 
@@ -68,14 +68,17 @@ export class TerrainBrush {
     return this.terrain.match(this.getTerrainId(col, row));
   }
 
-  /**
-   * Picks a random rule and converts its local tile index to a global tile id.
-   *
-   * @internal
-   */
+  /** @internal */
   private getRandomTileId(rules: TerrainRule[]): number {
-    // Pick random rule and convert its local tile index to a global tile id.
-    return this.tileset.getGlobalId(rules[0].tileIndex + 1);
+    // If a terrain is configured correctly, we match a single rule in most cases. It is
+    // however possible in theory to have two rules match at the same time. In this case,
+    // pick a random one.
+    const rule = getRandomItem(rules);
+
+    // From the rule, pick a random tile index and convert it to a global tile ID.
+    return this.tileset.getGlobalId(
+      getRandomItem(rule.indexes) + 1
+    );
   }
 
   /**
@@ -83,7 +86,7 @@ export class TerrainBrush {
    * part of the terrain.
    *
    * Internally matches {@link TerrainRule terrain rules} for that location, converts
-   * the local tile index of that rule to a global tile ID and returns it. If there are
+   * a random tile index of that rule to a global tile ID and returns it. If there are
    * multiple matching rules, a random one will be picked. If there are no matches, `0`
    * will be returned.
    */

@@ -18,7 +18,7 @@ export enum TerrainBit {
 
 /**
  * A terrain ID is a bitset of {@link TerrainBit terrain bits} and represents which
- * sides and corners a tile that belongs to a {@link Terrain} covers.
+ * sides and corners a tile covers.
  *
  *  ```ts
  *  // Tiles mapped to this terrain ID are supposed to cover the north-east corner and
@@ -30,7 +30,7 @@ export type TerrainId = number;
 
 /**
  * Terrains are a set of rules that control which tiles should be drawn adjacent to
- * each other in a {@link Tilemap}. For example, if we were to draw a patch of grass
+ * each other on a {@link Tilemap}. For example, if we were to draw a patch of grass
  * or a body of water, it can automatically decide where edges or transitions to other
  * tiles should be drawn.
  */
@@ -59,15 +59,33 @@ export class Terrain {
     return terrainId;
   }
 
-  /** Defines a new {@link TerrainRule}. */
-  public rule(tile: number, contains: TerrainId, excludes: TerrainId = 0): this {
-    this.rules.push(new TerrainRule(
-      tile,
+  /** @internal */
+  private createTerrainRule(tile: number | number[], contains: TerrainId, excludes: TerrainId): TerrainRule {
+    const indexes = [];
+
+    if (Array.isArray(tile)) {
+      indexes.push(...tile);
+    }
+    else {
+      indexes.push(tile);
+    }
+
+    return new TerrainRule(
+      indexes,
       contains,
       excludes
-    ));
+    );
+  }
 
-    this.indexes.add(tile);
+  /** Defines a new {@link TerrainRule}. */
+  public rule(tile: number | number[], contains: TerrainId = 0, excludes: TerrainId = 0): this {
+    const rule = this.createTerrainRule(tile, contains, excludes);
+
+    this.rules.push(rule);
+
+    for (const index of rule.indexes) {
+      this.indexes.add(index);
+    }
 
     return this;
   }
@@ -77,9 +95,9 @@ export class Terrain {
     return this.indexes.has(tile);
   }
 
-  /** Returns all {@link TerrainRule terrain rules} with the given `tileIndex`. */
+  /** Returns all {@link TerrainRule terrain rules} that maps `tileIndex`. */
   public getTileRules(tileIndex: number): TerrainRule[] {
-    return this.rules.filter(item => item.tileIndex === tileIndex);
+    return this.rules.filter(item => item.indexes.includes(tileIndex));
   }
 
   /** Returns all {@link TerrainRule terrain rules} that match the given `terrainId`. */

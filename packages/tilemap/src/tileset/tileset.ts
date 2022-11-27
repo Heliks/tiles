@@ -40,9 +40,18 @@ export class Tileset {
     return this;
   }
 
-  /** Returns the {@link Terrain} with the given `name`, if any. */
-  public getTerrain(name: string): Terrain | undefined {
-    return this.terrains.get(name);
+  /**
+   * Returns the {@link Terrain} with the given `name`. Throws an error if no terrain
+   * with that name exists.
+   */
+  public getTerrain(name: string): Terrain {
+    const terrain = this.terrains.get(name);
+
+    if (! terrain) {
+      throw new Error(`Unknown terrain ${name}`);
+    }
+
+    return terrain;
   }
 
 }

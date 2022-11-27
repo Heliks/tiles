@@ -23,7 +23,7 @@ import { Terrain, TerrainBit, TerrainId } from './terrain';
  * }
  * ```
  */
-export interface TerrainRuleData {
+export interface TerrainRuleFlags {
   n?: boolean;
   ne?: boolean;
   nw?: boolean;
@@ -35,12 +35,14 @@ export interface TerrainRuleData {
 }
 
 /**
- * Serialize-able data that maps a tile index to {@link TerrainRuleData}. From this data
- * structure, a {@link TerrainRule} will be generated.
+ * Serialize-able data for a {@link TerrainRule}.
+ *
+ * @see Terrain
+ * @see TerrainRuleFlags
  */
 export interface TerrainTileData {
-  index: number;
-  rules?: TerrainRuleData;
+  index: number | number[];
+  rules?: TerrainRuleFlags;
 }
 
 /**
@@ -114,7 +116,7 @@ function deserializeTerrainBit(bit: TerrainBit, masks: TerrainMasks, value?: boo
 }
 
 /** @internal */
-function deserializeTerrainRule(data: TerrainRuleData): TerrainMasks {
+function deserializeTerrainRule(data: TerrainRuleFlags): TerrainMasks {
   const masks = {
     contains: 0,
     excludes: 0
