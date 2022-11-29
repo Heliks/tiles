@@ -20,8 +20,12 @@ export class Renderer {
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
-  /** Asset storage for loaded textures. */
-  public readonly textures: AssetStorage<PIXI.Texture> = new Map();
+  /**
+   * Root container that holds all draw-ables that make up the game scene. It is not
+   * recommended to modify this directly. To add elements to the renderer use one of
+   * the dedicated stages {@link Stage} or {@link Overlay}.
+   */
+  public readonly root = new Container();
 
   /**
    * If set to `true`, the renderer will automatically be resized every time the window
@@ -39,12 +43,6 @@ export class Renderer {
    * @see updateCamera
    */
   private readonly screenSizeScaled2 = new Vec2(0, 0);
-
-  /**
-   * Root container that holds all draw-ables that make up the whole game scene.
-   * @see Container
-   */
-  protected readonly root = new Container();
 
   /** Contains the renderers height in px. */
   public get height(): number {
