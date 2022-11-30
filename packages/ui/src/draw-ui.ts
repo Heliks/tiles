@@ -1,6 +1,5 @@
 import {
   Entity,
-  EntityQueryEvent,
   Hierarchy,
   Injectable,
   OnInit,
@@ -52,15 +51,59 @@ export class DrawUi implements OnInit, RendererPlugin {
   }
 
   /** @internal */
-  private transformChild(parent: UiNode, child: UiNode): void {
-    child.widget.view.x = (parent.x + child.x) * this.screen.unitSize;
-    child.widget.view.y = (parent.y + child.y) * this.screen.unitSize;
+  private getViewPositionFromScreenPosition(node: UiNode): Vec2 {
+    return this.camera.screenToWorld(node.x, node.y, this._scratch).scale(this.screen.unitSize);
+  }
+
+  /**
+   * Updates the position of a {@link UiNode node} that is the root of other nodes. This
+   * does not apply any transform to children of this node.
+   *
+   * @see transformNodeChildren
+   * @internal
+   */
+  private transformRootNode(node: UiNode): void {
+    if (node.align === AlignNode.World) {
+      node.widget.view.x = node.x * this.screen.unitSize;
+      node.widget.view.y = node.y * this.screen.unitSize;
+
+      return;
+    }
+
+    const position = this.getViewPositionFromScreenPosition(node);
+
+    node.widget.view.x = position.x;
+    node.widget.view.y = position.y;
+  }
+
+  /**
+   * Updates the position of a node that is a child of `parent`. The `align` is the
+   * alignment of the root node, which necessarily isn't the given parent.
+   *
+   * @internal
+   */
+  private transformChildNode(parent: UiNode, child: UiNode, align: AlignNode): void {
+    if (align === AlignNode.World) {
+      child.widget.view.x = (parent.x + child.x) * this.screen.unitSize;
+      child.widget.view.y = (parent.y + child.y) * this.screen.unitSize;
+    }
+    else {
+      child.widget.view.x = parent.widget.view.x + child.x;
+      child.widget.view.y = parent.widget.view.y + child.y;
+    }
 
     child.updateViewPivot();
   }
 
-  /** @internal */
-  private transformChildren(world: World, entity: Entity, parent: UiNode): void {
+  /**
+   * Updates the position of all {@link UiNode nodes} that are children of the given
+   * parent `entity`. The `align` is the alignment of the root node, which necessarily
+   * isn't the given parent.
+   *
+   * @see transformChildNode
+   * @internal
+   */
+  private transformNodeChildren(world: World, entity: Entity, node: UiNode, align: AlignNode): void {
     const children = this.hierarchy.children.get(entity);
 
     if (children) {
@@ -69,13 +112,17 @@ export class DrawUi implements OnInit, RendererPlugin {
 
         child.widget.update(world);
 
-        this.transformChild(parent, child);
-        this.transformChildren(world, item, child);
+        this.transformChildNode(node, child, align);
+        this.transformNodeChildren(world, item, child, align);
       }
     }
   }
 
-  /** Called when an `entity` gets a `UiWidget` component attached. */
+  /**
+   * Called when an `entity` gets a `UiWidget` component attached.
+   *
+   * @internal
+   */
   private onWidgetAdded(world: World, entity: Entity, node: UiNode): void {
     // Update to avoid flickering.
     node.widget.update(world);
@@ -87,7 +134,7 @@ export class DrawUi implements OnInit, RendererPlugin {
 
       // If position is not adjusted before element is added to the stage the element
       // would flicker by appearing in the wrong position for a single frame.
-      this.transformChild(parent, node);
+      this.transformChildNode(parent, node, parent.align);
     }
     else {
       node.widget.view.x = node.x * this.screen.unitSize;
@@ -100,38 +147,20 @@ export class DrawUi implements OnInit, RendererPlugin {
   /**
    * Synchronizes the widget view of UI nodes with the renderer stage. New nodes will
    * have their view added to the stage, destroyed nodes will have their views removed.
+   *
+   * @internal
    */
   private syncNodeViews(world: World): void {
     for (const event of this.query.events.read(this.subscription)) {
       const node = this.nodes.get(event.entity);
 
-      if (event.type === EntityQueryEvent.Added) {
+      if (event.isAdded) {
         this.onWidgetAdded(world, event.entity, node);
       }
       else {
         this.stage.remove(node.widget.view);
       }
     }
-  }
-
-  /** @internal */
-  private getViewPositionFromScreenPosition(node: UiNode): Vec2 {
-    return this.camera.screenToWorld(node.x, node.y, this._scratch).scale(this.screen.unitSize);
-  }
-
-  /** @internal */
-  private syncViewPosition(node: UiNode): void {
-    if (node.align === AlignNode.World) {
-      node.widget.view.x = node.x * this.screen.unitSize;
-      node.widget.view.y = node.y * this.screen.unitSize;
-
-      return;
-    }
-
-    const position = this.getViewPositionFromScreenPosition(node);
-
-    node.widget.view.x = position.x;
-    node.widget.view.y = position.y;
   }
 
   /** @inheritDoc */
@@ -148,8 +177,8 @@ export class DrawUi implements OnInit, RendererPlugin {
       node.widget.update(world);
       node.updateViewPivot();
 
-      this.syncViewPosition(node);
-      this.transformChildren(world, entity, node);
+      this.transformRootNode(node);
+      this.transformNodeChildren(world, entity, node, node.align);
     }
   }
 

@@ -15,11 +15,12 @@ export enum Interaction {
 }
 
 /**
- * Renders a UI node on the entity to which this component is attached to.
+ * Component that renders a UI node on the entity to which it is attached to.
  *
- * The dimensions of the node is measured in pixels. The position is either measured
- * in in-game units or pixels, depending on where the node is aligned to. By default,
- * nodes are aligned to the screen and have their pivot in their top left corner.
+ * The unit in which the position is measured depends on the {@link align alignment}. If
+ * it is aligned to the screen, the position is measured in pixels. If it is aligned to
+ * the world instead, it is measured in game units. Width and height are always measured
+ * in pixels.
  */
 export class UiNode<W extends UiWidget = UiWidget> {
 
