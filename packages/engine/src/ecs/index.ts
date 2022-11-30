@@ -10,6 +10,8 @@ export {
   entityVersion,
   Query,
   QueryBuilder,
+  QueryEvent,
+  QueryEventType,
   QueryManager,
   Storage,
   System
