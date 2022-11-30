@@ -1,4 +1,4 @@
-import { Entity, EntityGroupEvent, Subscriber, World } from '@heliks/ecs';
+import { Entity, Subscriber, World } from '@heliks/ecs';
 import { ProcessingSystem } from './processing-system';
 
 
@@ -34,7 +34,7 @@ export abstract class ReactiveSystem extends ProcessingSystem {
   /** @inheritDoc */
   public update(world: World): void {
     for (const event of this.query.events.read(this._subscriber)) {
-      if (event.type === EntityGroupEvent.Added) {
+      if (event.isAdded) {
         this.onEntityAdded(world, event.entity);
       }
       else {

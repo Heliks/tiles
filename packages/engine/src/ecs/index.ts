@@ -6,7 +6,6 @@ export {
   ComponentEventType,
   ComponentType,
   Entity,
-  EntityGroupEvent as EntityQueryEvent, // Todo: Rename this in ecs package
   entityId,
   entityVersion,
   Query,
