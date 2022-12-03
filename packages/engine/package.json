@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "uuid": "8.3.2",
-    "@heliks/ecs": "^0.2.4-rc-1",
+    "@heliks/ecs": "^0.2.4-rc-3",
     "@heliks/ecs-hierarchy": "^0.2.1",
     "@heliks/ecs-transform": "^0.2.1",
     "@heliks/event-queue": "^0.2.2",

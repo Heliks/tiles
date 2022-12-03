@@ -1,7 +1,6 @@
 // Re-export everything needed from ecs package. The ecs version is kinda non-negotiable
 // so makes no sense to bundle this as a peer dependency.
 export {
-  Builder as EntityBuilder,
   ComponentEvent,
   ComponentEventType,
   ComponentType,
@@ -18,6 +17,7 @@ export {
 } from '@heliks/ecs';
 
 export * from './change-aware-value';
+export * from './entity-builder';
 export * from './entity-ref';
 export * from './storage';
 export * from './processing-system';
