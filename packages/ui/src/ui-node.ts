@@ -2,47 +2,18 @@ import { UiWidget } from './ui-widget';
 import { getPivotPosition, Pivot, PIVOT_TOP_LEFT } from './pivot';
 
 
-export enum AlignNode {
-  /** Position of node is a world position. */
-  World,
-  /** Position of node is a screen position. */
-  Screen
-}
-
-export enum Interaction {
-  None,
-  Clicked
-}
-
 /**
- * Component that renders a UI node on the entity to which it is attached to.
+ * Component that renders a UI node on the entity to which it is attached to. The entity
+ * must be a child of an entity with a {@link UiRoot} component or another node.
  *
- * The unit in which the position is measured depends on the {@link align alignment}. If
- * it is aligned to the screen, the position is measured in pixels. If it is aligned to
- * the world instead, it is measured in game units. Width and height are always measured
- * in pixels.
+ * The alignment of UI nodes depend on the alignment of the ui root of which they are
+ * a child of. So are the units in which positions are measured. If the root is aligned
+ * to the screen, they are measured in pixels. If aligned to the world, they are measured
+ * in in-game units instead.
  */
 export class UiNode<W extends UiWidget = UiWidget> {
 
-  /**
-   * Contains the current user interaction with this UI element. If interactions are
-   * disabled the interaction will always be `Interaction.None`.
-   *
-   * @see interactive
-   */
-  public interaction = Interaction.None;
-
-  /**
-   * If set to `true`, user interactions (a.E. click, hover, etc.) will be enabled for
-   * this widget. The current interaction can be read from {@link interaction}.
-   */
-  public interactive = false;
-
-  /**
-   * Determines the pivot of the UI element. Default is its own top left corner.
-   *
-   * @see Pivot
-   */
+  /** Determines the pivot of the UI element. Default is top-left corner. */
   public pivot: Pivot = PIVOT_TOP_LEFT;
 
   /** Width in px. */
@@ -64,23 +35,8 @@ export class UiNode<W extends UiWidget = UiWidget> {
    * @param widget The widget that should be renderer by this node.
    * @param x Either world or screen x-axis position, depending on {@link align}.
    * @param y Either world or screen y-axis position, depending on {@link align}.
-   * @param align Determines if the node is aligned to the world space or screen. If this
-   *  node is the child of another node, this position is always relative to the parent.
-   *  By default, node are aligned to the screen.
    */
-  constructor(public readonly widget: W, public x = 0, public y = 0, public align = AlignNode.Screen) {
-    this.interactive = Boolean(widget.interactive);
-  }
-
-  /** Creates a {@link UiNode} that is aligned to the screen. */
-  public static screen<T extends UiWidget>(widget: T, x = 0, y = 0): UiNode<T> {
-    return new UiNode(widget, x, y, AlignNode.Screen);
-  }
-
-  /** Creates a {@link UiNode} that is aligned to the world. */
-  public static world<T extends UiWidget>(widget: T, x = 0, y = 0): UiNode<T> {
-    return new UiNode(widget, x, y, AlignNode.World);
-  }
+  constructor(public readonly widget: W, public x = 0, public y = 0) {}
 
   /** @internal */
   public updateViewPivot(): void {

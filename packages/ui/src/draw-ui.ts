@@ -8,10 +8,13 @@ import {
   Storage,
   Subscriber,
   Vec2,
-  World
+  World,
+  XY
 } from '@heliks/tiles-engine';
 import { Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
-import { AlignNode, UiNode } from './ui-node';
+import { UiNode } from './ui-node';
+import { AlignNode, UiRoot } from './ui-root';
+import { SyncRoots } from './sync-roots';
 
 
 /**
@@ -23,99 +26,152 @@ export class DrawUi implements OnInit, RendererPlugin {
 
   /** @internal */
   private nodes!: Storage<UiNode>;
+  private roots!: Storage<UiRoot>;
   private parents!: Storage<Parent>;
-  private subscription!: Subscriber;
-  private query!: Query;
-
-  /** @internal */
+  private nodeQuery$!: Subscriber;
+  private nodeQuery!: Query;
+  private rootQuery!: Query;
   private _scratch = new Vec2();
+  private readonly syncRoots: SyncRoots;
 
   constructor(
     private readonly camera: Camera,
     private readonly hierarchy: Hierarchy,
     private readonly stage: Stage,
     private readonly screen: Screen
-  ) {}
-
-  /** @inheritDoc */
-  public onInit(world: World): void {
-    this.query = world
-      .query()
-      .contains(UiNode)
-      .build();
-
-    this.parents = world.storage(Parent);
-    this.nodes = world.storage(UiNode);
-
-    this.subscription = this.query.events.subscribe();
+  ) {
+    this.syncRoots = new SyncRoots(stage);
   }
 
   /** @internal */
-  private getViewPositionFromScreenPosition(node: UiNode): Vec2 {
-    return this.camera.screenToWorld(node.x, node.y, this._scratch).scale(this.screen.unitSize);
+  private initQueries(world: World): void {
+    this.rootQuery = world
+      .query()
+      .contains(UiRoot)
+      .build();
+
+    this.nodeQuery = world
+      .query()
+      .contains(UiNode)
+      .contains(Parent)
+      .build();
+
+    this.nodeQuery$ = this.nodeQuery.events.subscribe();
+  }
+
+  /** @inheritDoc */
+  public onInit(world: World): void {
+    this.parents = world.storage(Parent);
+
+    this.nodes = world.storage(UiNode);
+    this.roots = world.storage(UiRoot);
+
+    this.initQueries(world);
+    this.syncRoots.onInit(world);
+  }
+
+  /** @internal */
+  private getViewPositionFromScreenPosition(screen: XY): Vec2 {
+    return this.camera.screenToWorld(screen.x, screen.y, this._scratch).scale(this.screen.unitSize);
   }
 
   /**
-   * Updates the position of a {@link UiNode node} that is the root of other nodes. This
-   * does not apply any transform to children of this node.
+   * Updates the position of a {@link UiRoot}. This does not apply any transform to child
+   * nodes of this root.
    *
-   * @see transformNodeChildren
    * @internal
    */
-  private transformRootNode(node: UiNode): void {
-    if (node.align === AlignNode.World) {
-      node.widget.view.x = node.x * this.screen.unitSize;
-      node.widget.view.y = node.y * this.screen.unitSize;
+  private updateRoot(root: UiRoot): void {
+    if (root.align === AlignNode.World) {
+      root.container.x = root.x * this.screen.unitSize;
+      root.container.y = root.y * this.screen.unitSize;
 
       return;
     }
 
-    const position = this.getViewPositionFromScreenPosition(node);
+    const position = this.getViewPositionFromScreenPosition(root);
 
-    node.widget.view.x = position.x;
-    node.widget.view.y = position.y;
+    root.container.x = position.x;
+    root.container.y = position.y;
+  }
+
+  /** @internal */
+  private updateWorldAlignedNodePos(node: UiNode, parent?: UiNode): void {
+    let x = node.x;
+    let y = node.y;
+
+    if (parent) {
+      x += parent.x;
+      y += parent.y;
+    }
+
+    node.widget.view.x = x * this.screen.unitSize;
+    node.widget.view.y = y * this.screen.unitSize;
+  }
+
+  /** @internal */
+  private updateScreenAlignedNodePos(node: UiNode, parent?: UiNode): void {
+    node.widget.view.x = node.x;
+    node.widget.view.y = node.y;
+
+    if (parent) {
+      node.widget.view.x += parent.widget.view.x;
+      node.widget.view.y += parent.widget.view.y;
+    }
   }
 
   /**
-   * Updates the position of a node that is a child of `parent`. The `align` is the
-   * alignment of the root node, which necessarily isn't the given parent.
+   * Updates the position of a node. The `align` is the alignment of the root node, which
+   * necessarily isn't the given parent.
    *
    * @internal
    */
-  private transformChildNode(parent: UiNode, child: UiNode, align: AlignNode): void {
+  private updateNodePos(node: UiNode, align: AlignNode, parent?: UiNode): void {
     if (align === AlignNode.World) {
-      child.widget.view.x = (parent.x + child.x) * this.screen.unitSize;
-      child.widget.view.y = (parent.y + child.y) * this.screen.unitSize;
+      this.updateWorldAlignedNodePos(node, parent);
     }
     else {
-      child.widget.view.x = parent.widget.view.x + child.x;
-      child.widget.view.y = parent.widget.view.y + child.y;
+      this.updateScreenAlignedNodePos(node, parent);
     }
 
-    child.updateViewPivot();
+    node.updateViewPivot();
   }
 
   /**
-   * Updates the position of all {@link UiNode nodes} that are children of the given
-   * parent `entity`. The `align` is the alignment of the root node, which necessarily
-   * isn't the given parent.
-   *
-   * @see transformChildNode
-   * @internal
+   * Updates all entities with a {@link UiNode} component that are part of the hierarchy
+   * of `entity`. The `entity` isn't necessarily the owner of a {@link UiNode} and can
+   * be a {@link UiRoot} component owner instead. The `align` is the alignment of the
+   * root node, which necessarily isn't the given parent.
    */
-  private transformNodeChildren(world: World, entity: Entity, node: UiNode, align: AlignNode): void {
+  private updateNodes(world: World, entity: Entity, align: AlignNode, parent?: UiNode): void {
     const children = this.hierarchy.children.get(entity);
 
     if (children) {
       for (const item of children) {
-        const child = this.nodes.get(item);
+        const node = this.nodes.get(item);
 
-        child.widget.update(world);
+        node.widget.update(world);
 
-        this.transformChildNode(node, child, align);
-        this.transformNodeChildren(world, item, child, align);
+        this.updateNodePos(node, align, parent);
+        this.updateNodes(world, item, align, node);
       }
     }
+  }
+
+  /** @internal */
+  private getNodeRootEntity(entity: Entity): Entity {
+    const parent = this.parents.get(entity).entity;
+
+    if (this.roots.has(parent)) {
+      return parent;
+    }
+
+    return this.getNodeRootEntity(parent);
+  }
+
+  /** @internal */
+  private getNodeRoot(entity: Entity): UiRoot {
+    return this.roots.get(this.getNodeRootEntity(entity));
   }
 
   /**
@@ -127,21 +183,11 @@ export class DrawUi implements OnInit, RendererPlugin {
     // Update to avoid flickering.
     node.widget.update(world);
 
-    if (this.parents.has(entity)) {
-      const parent = this.nodes.get(
-        this.parents.get(entity).entity
-      );
-
-      // If position is not adjusted before element is added to the stage the element
-      // would flicker by appearing in the wrong position for a single frame.
-      this.transformChildNode(parent, node, parent.align);
-    }
-    else {
-      node.widget.view.x = node.x * this.screen.unitSize;
-      node.widget.view.y = node.y * this.screen.unitSize;
-    }
-
-    this.stage.add(node.widget.view);
+    // Add widget view to appropriate node root.
+    this
+      .getNodeRoot(entity)
+      .container
+      .addChild(node.widget.view);
   }
 
   /**
@@ -151,7 +197,7 @@ export class DrawUi implements OnInit, RendererPlugin {
    * @internal
    */
   private syncNodeViews(world: World): void {
-    for (const event of this.query.events.read(this.subscription)) {
+    for (const event of this.nodeQuery.events.read(this.nodeQuery$)) {
       const node = this.nodes.get(event.entity);
 
       if (event.isAdded) {
@@ -165,20 +211,14 @@ export class DrawUi implements OnInit, RendererPlugin {
 
   /** @inheritDoc */
   public update(world: World): void {
+    this.syncRoots.update(world);
     this.syncNodeViews(world);
 
-    for (const entity of this.query.entities) {
-      const node = this.nodes.get(entity);
+    for (const entity of this.rootQuery.entities) {
+      const root = this.roots.get(entity);
 
-      if (this.parents.has(entity)) {
-        continue;
-      }
-
-      node.widget.update(world);
-      node.updateViewPivot();
-
-      this.transformRootNode(node);
-      this.transformNodeChildren(world, entity, node, node.align);
+      this.updateRoot(root);
+      this.updateNodes(world, entity, root.align);
     }
   }
 

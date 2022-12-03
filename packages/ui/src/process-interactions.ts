@@ -1,6 +1,14 @@
-import { Graphics } from 'pixi.js';
-import { Entity, ProcessingSystem, Query, QueryBuilder, Rectangle, Storage, World } from '@heliks/tiles-engine';
-import { Interaction, UiNode } from './ui-node';
+import { Entity, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
+import { Interaction, UiRoot } from './ui-root';
+
+
+/** @internal */
+function setValue(world: World, node: UiRoot, interaction: Interaction): void {
+  if (node.interaction !== interaction) {
+    node.interaction = interaction;
+    node.interact?.(world, interaction);
+  }
+}
 
 
 /**
@@ -11,55 +19,49 @@ export class ProcessInteractions extends ProcessingSystem {
   /** Contains all entities that were recently clicked. */
   private readonly clicked = new Set<Entity>();
 
-  /** Storage for {@link UiNode} components. */
-  private nodes!: Storage<UiNode>;
+  /** Storage for {@link UiRoot} components. */
+  private roots!: Storage<UiRoot>;
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
-    return builder.contains(UiNode).build();
+    return builder
+      .contains(UiRoot)
+      .build();
   }
 
   /** @inheritDoc */
   public onInit(world: World): void {
-    this.nodes = world.storage(UiNode);
+    this.roots = world.storage(UiRoot);
   }
 
   /** @internal */
-  private setupViewInteraction(entity: Entity, node: UiNode): void {
-    node.widget.view.interactive = true;
-
-    // Graphics need to have their hit area manually set.
-    if (node.widget.view instanceof Graphics) {
-      node.widget.view.hitArea = new Rectangle(node.width, node.height, 0, 0);
-    }
-
-    node.widget.view.on('pointerdown', () => {
+  private setupViewInteraction(entity: Entity, root: UiRoot): void {
+    root.container.interactive = true;
+    root.container.on('pointerdown', () => {
       this.clicked.add(entity);
     });
   }
 
   /** @inheritDoc */
-  public update(): void {
+  public update(world: World): void {
     for (const entity of this.query.entities) {
-      const node = this.nodes.get(entity);
+      const root = this.roots.get(entity);
 
-      if (node.interactive) {
-        const view = node.widget.view;
-
-        // Register interaction if necessary.
-        if (! view.interactive) {
-          this.setupViewInteraction(entity, node);
+      if (root.interactive) {
+        // Register interactions if necessary.
+        if (! root.container.interactive) {
+          this.setupViewInteraction(entity, root);
         }
 
         // Check for clicks.
         if (this.clicked.has(entity)) {
-          node.interaction = Interaction.Clicked;
+          setValue(world, root, Interaction.Clicked);
 
           continue;
         }
       }
 
-      node.interaction = Interaction.None;
+      setValue(world, root, Interaction.None);
     }
 
     this.clicked.clear();

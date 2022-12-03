@@ -40,7 +40,11 @@ export class UiBox implements UiWidget {
    * @param height Height of the box in px.
    * @param background {@link BoxBackground}
    */
-  constructor(public width: number, public height: number, public background: BoxBackground) {}
+  constructor(
+    public width: number,
+    public height: number,
+    public background: BoxBackground
+  ) {}
 
   /** Draws the box background. */
   private drawBg(): void {
