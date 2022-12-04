@@ -3,7 +3,7 @@ import { Pivot, PIVOT_TOP_LEFT } from './pivot';
 import { World } from '@heliks/tiles-engine';
 
 
-export enum AlignNode {
+export enum UiAlign {
   /** Position of node is a world position. */
   World,
   /** Position of node is a screen position. */
@@ -24,7 +24,8 @@ export type OnInteraction = (world: World, interaction: Interaction) => unknown;
 
 /**
  * Component that is attached to entities that are containers for ui nodes. This is
- * the root of any UI element.
+ * the root of any UI element. Roots can be nested. Which means that one `UiRoot` can
+ * be the parent of another.
  *
  * The unit in which the position is measured depends on the {@link align alignment}. If
  * it is aligned to the screen, the position is measured in pixels. If it is aligned to
@@ -74,8 +75,18 @@ export class UiRoot {
   constructor(
     public x = 0,
     public y = 0,
-    public align = AlignNode.Screen
+    public align = UiAlign.Screen
   ) {}
+
+  /** Creates a {@link UiRoot} that is aligned to the screen. */
+  public static screen(x = 0, y = 0): UiRoot {
+    return new UiRoot(x, y, UiAlign.Screen);
+  }
+
+  /** Creates a {@link UiRoot} that is aligned to the world. */
+  public static world(x = 0, y = 0): UiRoot {
+    return new UiRoot(x, y, UiAlign.World);
+  }
 
   /** Shows the container. */
   public show(): this {
@@ -87,6 +98,22 @@ export class UiRoot {
   /** Hides the container. Hidden nodes will still be updated, but not drawn. */
   public hide(): this {
     this.container.visible = false;
+
+    return this;
+  }
+
+  /**
+   * Makes this root node interactive.
+   *
+   * @see interactive
+   * @see interact
+   */
+  public toInteractive(interact?: OnInteraction): this {
+    this.interactive = true;
+
+    if (interact) {
+      this.interact = interact;
+    }
 
     return this;
   }

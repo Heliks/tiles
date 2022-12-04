@@ -13,9 +13,11 @@ import {
 } from '@heliks/tiles-engine';
 import { Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
 import { UiNode } from './ui-node';
-import { AlignNode, UiRoot } from './ui-root';
+import { UiAlign, UiRoot } from './ui-root';
 import { SyncRoots } from './sync-roots';
 
+
+export type UiElementNode = UiNode | UiRoot;
 
 /**
  * Plugin for the PIXI.js renderer that draws {@link UiNode} components to the
@@ -81,18 +83,24 @@ export class DrawUi implements OnInit, RendererPlugin {
    *
    * @internal
    */
-  private updateRoot(root: UiRoot): void {
-    if (root.align === AlignNode.World) {
+  private updateRoot(entity: Entity, root: UiRoot): void {
+    if (root.align === UiAlign.World) {
       root.container.x = root.x * this.screen.unitSize;
       root.container.y = root.y * this.screen.unitSize;
 
       return;
     }
 
-    const position = this.getViewPositionFromScreenPosition(root);
+    if (this.parents.has(entity)) {
+      root.container.x = root.x;
+      root.container.y = root.y;
+    }
+    else {
+      const position = this.getViewPositionFromScreenPosition(root);
 
-    root.container.x = position.x;
-    root.container.y = position.y;
+      root.container.x = position.x;
+      root.container.y = position.y;
+    }
   }
 
   /** @internal */
@@ -126,8 +134,8 @@ export class DrawUi implements OnInit, RendererPlugin {
    *
    * @internal
    */
-  private updateNodePos(node: UiNode, align: AlignNode, parent?: UiNode): void {
-    if (align === AlignNode.World) {
+  private updateNodePos(node: UiNode, align: UiAlign, parent?: UiNode): void {
+    if (align === UiAlign.World) {
       this.updateWorldAlignedNodePos(node, parent);
     }
     else {
@@ -143,18 +151,24 @@ export class DrawUi implements OnInit, RendererPlugin {
    * be a {@link UiRoot} component owner instead. The `align` is the alignment of the
    * root node, which necessarily isn't the given parent.
    */
-  private updateNodes(world: World, entity: Entity, align: AlignNode, parent?: UiNode): void {
+  private updateNodes(world: World, entity: Entity, align: UiAlign, parent?: UiNode): void {
     const children = this.hierarchy.children.get(entity);
 
-    if (children) {
-      for (const item of children) {
-        const node = this.nodes.get(item);
+    if (! children) {
+      return;
+    }
 
-        node.widget.update(world);
-
-        this.updateNodePos(node, align, parent);
-        this.updateNodes(world, item, align, node);
+    for (const item of children) {
+      if (! this.nodes.has(item)) {
+        continue;
       }
+
+      const node = this.nodes.get(item);
+
+      node.widget.update(world);
+
+      this.updateNodePos(node, align, parent);
+      this.updateNodes(world, item, align, node);
     }
   }
 
@@ -217,7 +231,7 @@ export class DrawUi implements OnInit, RendererPlugin {
     for (const entity of this.rootQuery.entities) {
       const root = this.roots.get(entity);
 
-      this.updateRoot(root);
+      this.updateRoot(entity, root);
       this.updateNodes(world, entity, root.align);
     }
   }
