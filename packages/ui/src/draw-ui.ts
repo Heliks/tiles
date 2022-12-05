@@ -70,6 +70,11 @@ export class DrawUi implements OnInit, RendererPlugin {
 
     this.initQueries(world);
     this.syncRoots.onInit(world);
+
+    // Synchronize existing nodes.
+    for (const entity of this.nodes.entities()) {
+      this.onWidgetAdded(world, entity, this.nodes.get(entity));
+    }
   }
 
   /** @internal */
@@ -213,6 +218,8 @@ export class DrawUi implements OnInit, RendererPlugin {
   private syncNodeViews(world: World): void {
     for (const event of this.nodeQuery.events.read(this.nodeQuery$)) {
       const node = this.nodes.get(event.entity);
+
+      console.log('ADD NODE', node)
 
       if (event.isAdded) {
         this.onWidgetAdded(world, event.entity, node);
