@@ -61,14 +61,18 @@ export class SpriteRender {
   }
 
   /**
-   * Sets the sprite that should be rendered to the sprite matching the given `index` on
-   * the displays sprite sheet. Queues the component for re-rendering.
+   * Sets the index of the sprite that should be rendered. Returns `false` if that index
+   * is already set. If the sprite was changed, the component is marked as {@link dirty}.
    */
-  public setIndex(index: number): this {
+  public setIndex(index: number): boolean {
+    if (this.spriteIndex === index) {
+      return false;
+    }
+
     this.spriteIndex = index;
     this.dirty = true;
 
-    return this;
+    return true;
   }
 
   /** Flips the sprite. */
