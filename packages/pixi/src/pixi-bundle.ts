@@ -1,9 +1,8 @@
-import { Bundle, ClassType, GameBuilder, hasOnInit, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
+import { Bundle, GameBuilder, OnInit, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
-import { RendererPlugin, RendererPlugins } from './renderer-plugins';
 import { RendererSystem } from './renderer-system';
 import { Screen } from './screen';
 import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
@@ -66,45 +65,11 @@ export interface RendererBundleConfig {
  */
 export class PixiBundle implements Bundle, OnInit {
 
-  /** Plugins added to the renderer. */
-  private readonly plugins: ClassType<RendererPlugin>[] = [];
-
   /**
    * @param config Renderer configuration.
    */
   constructor(public readonly config: RendererBundleConfig) {}
 
-  /**
-   * Adds a `plugin`.
-   *
-   * Plugins essentially work like normal game systems, with the difference that they
-   * are executed by the renderer instead of the system dispatcher. This ensures that
-   * all rendering is done at the same time so that different rendering operations do
-   * not appear out of sync.
-   */
-  public plugin(plugin: ClassType<RendererPlugin>): this {
-    this.plugins.push(plugin);
-
-    return this;
-  }
-
-  /** @internal */
-  private getPluginProvider(): Provider {
-    return {
-      factory: container => {
-        const plugins = new RendererPlugins();
-
-        // Instantiate each registered plugin using the service container.
-        for (const item of this.plugins) {
-          plugins.add(container.make(item));
-        }
-
-        return plugins;
-      },
-      singleton: true,
-      token: RendererPlugins
-    };
-  }
 
   /** @internal */
   private createPIXIRenderer(): PIXI.Renderer {
@@ -162,7 +127,6 @@ export class PixiBundle implements Bundle, OnInit {
           this.config.unitSize
         )
       })
-      .provide(this.getPluginProvider())
       .provide(Camera)
       .provide(DebugDraw)
       .provide(Stage)
@@ -191,13 +155,6 @@ export class PixiBundle implements Bundle, OnInit {
 
     if (this.config.autoResize) {
       renderer.setAutoResize(true);
-    }
-
-    // Call onInit lifecycle on plugins as well.
-    for (const plugin of world.get(RendererPlugins).items) {
-      if (hasOnInit(plugin)) {
-        plugin.onInit(world);
-      }
     }
   }
 

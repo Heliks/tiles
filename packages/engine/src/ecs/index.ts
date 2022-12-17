@@ -13,7 +13,8 @@ export {
   QueryEventType,
   QueryManager,
   Storage,
-  System
+  System,
+  SystemDispatcher
 } from '@heliks/ecs';
 
 export * from './change-aware-value';

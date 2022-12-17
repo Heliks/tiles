@@ -1,7 +1,15 @@
-import { Injectable, OnInit, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
+import {
+  Injectable,
+  OnInit,
+  ProcessingSystem,
+  Query,
+  QueryBuilder,
+  RendererSystemDispatcher,
+  Storage,
+  World
+} from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Renderer } from './renderer';
-import { RendererPlugins } from './renderer-plugins';
 
 
 /** System responsible for updating the renderer. */
@@ -12,7 +20,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
   private groups!: Storage<RenderGroup>;
 
   constructor(
-    private readonly plugins: RendererPlugins,
+    private readonly systems: RendererSystemDispatcher,
     private readonly renderer: Renderer
   ) {
     super();
@@ -30,9 +38,7 @@ export class RendererSystem extends ProcessingSystem implements OnInit {
 
   /** @inheritDoc */
   public update(world: World): void {
-    for (const plugin of this.plugins.items) {
-      plugin.update(world);
-    }
+    this.systems.update(world);
 
     for (const entity of this.query.entities) {
       const group = this.groups.get(entity);

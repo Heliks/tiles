@@ -9,7 +9,6 @@ export * from './pixi-bundle';
 export * from './drawable';
 export * from './render-group';
 export * from './renderer';
-export * from './renderer-plugins';
 export * from './renderer-system';
 export * from './screen';
 export * from './screenshot';

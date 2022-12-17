@@ -1,11 +1,20 @@
 import { Container } from '@heliks/tiles-injector';
 import { ComponentType, System, World } from '../ecs';
 import { Game } from './game';
-import { ClassType } from '../types';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
-import { AddBundle, AddComponent, AddProvider, AddSystem, Task } from './tasks';
-import { Builder as Builder } from './builder';
+import {
+  AddBundle,
+  AddComponent,
+  AddProvider,
+  AddRendererSystem,
+  AddSystem,
+  RendererSystemProvider,
+  SystemProvider,
+  Task
+} from './tasks';
+import { Builder } from './builder';
+import { RendererSystem, RendererSystemDispatcher } from '../renderer';
 
 
 /** Callback for {@link OnInit} lifecycle tasks. */
@@ -60,12 +69,16 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /**
-   * Adds a system to the dispatcher and registers it on the service container. If a type
-   * is given instead, it will be instantiated with service container first.
-   */
-  public system(system: ClassType<System> | System): this {
+  /** Adds a {@link System} to the system dispatcher. */
+  public system(system: SystemProvider): this {
     this.tasks.push(new AddSystem(system));
+
+    return this;
+  }
+
+  /** Adds a {@link RendererSystem} to the {@link RendererSystemDispatcher}. */
+  public render(system: RendererSystemProvider): this {
+    this.tasks.push(new AddRendererSystem(system))
 
     return this;
   }
@@ -130,6 +143,12 @@ export class GameBuilder implements Builder {
   /** Builds the game. */
   public build(): Game {
     const game = new Game(this.container);
+
+    // Register default resources.
+    this.container
+      .instance(game.ticker)
+      .instance(game.world)
+      .instance(new RendererSystemDispatcher());
 
     this.exec(game);
     this.init(game.world);

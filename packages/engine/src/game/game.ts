@@ -42,12 +42,6 @@ export class Game {
     // Add the update function to the game ticker.
     this.ticker.add(this.update.bind(this));
 
-    // Add some system services to the global container so that modules
-    // can access them.
-    this.container.instance(
-      this.ticker,
-      this.world
-    );
 
     this.state = new StateMachine(this.world);
   }

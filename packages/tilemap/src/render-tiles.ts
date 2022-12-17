@@ -1,6 +1,16 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
+import {
+  Entity,
+  Injectable,
+  Query,
+  QueryBuilder,
+  ReactiveSystem,
+  RendererSystem,
+  Transform,
+  Vec2,
+  World
+} from '@heliks/tiles-engine';
+import { Container, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 
@@ -38,7 +48,7 @@ function render(tilemap: Tilemap): void {
  * @see Tilemap
  */
 @Injectable()
-export class RenderTiles extends ReactiveSystem implements RendererPlugin {
+export class RenderTiles extends ReactiveSystem implements RendererSystem {
 
   /** Asset storage for tilemaps. */
   public readonly cache: AssetStorage<Tilemap> = new Map();

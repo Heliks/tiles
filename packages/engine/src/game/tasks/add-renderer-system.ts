@@ -5,10 +5,14 @@ import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';
 import { Container } from '@heliks/tiles-injector';
+import { RendererSystem, RendererSystemDispatcher } from '../../renderer';
 
 
-/** Type or instance of a {@link System} that should be added to the dispatcher. */
-export type SystemProvider = Type<System> | System;
+/**
+ * Type or instance of a {@link RendererSystem} that should be added to
+ * the {@link RendererSystemDispatcher}.
+ */
+export type RendererSystemProvider = Type<RendererSystem> | RendererSystem;
 
 /**
  * Adds a system to the dispatcher and registers it on the service container. If a
@@ -16,16 +20,15 @@ export type SystemProvider = Type<System> | System;
  *
  * @see System
  */
-export class AddSystem implements Task {
+export class AddRendererSystem implements Task {
 
   /** @internal */
   private created?: System;
 
   /**
-   * @param system Type or instance of a {@link System system} that should be added
-   *  to the system dispatcher.
+   * @param system Instance or type of a renderer system.
    */
-  constructor(protected readonly system: SystemProvider) {}
+  constructor(private readonly system: RendererSystemProvider) {}
 
   /** @internal */
   private createSystemInstance(container: Container): System {
@@ -34,11 +37,14 @@ export class AddSystem implements Task {
 
   /** @inheritDoc */
   public exec(game: Game): void {
-    this.created = this.createSystemInstance(game.container);
+    const system = this.createSystemInstance(game.container);
 
-    // Bind system to the service container and add it to the system dispatcher.
-    game.container.instance(this.created);
-    game.dispatcher.add(this.created);
+    game
+      .world
+      .get(RendererSystemDispatcher)
+      .add(system);
+
+    this.created = system;
   }
 
   /** @inheritDoc */
@@ -52,12 +58,14 @@ export class AddSystem implements Task {
   private getSystemClassName(): string {
     const system = this.system as Type;
 
-    return system.name ? system.name : system.constructor.name;
+    return system.name
+      ? system.name
+      : system.constructor.name;
   }
 
   /** @internal */
   public toString(): string {
-    return `AddSystem(${this.getSystemClassName()})`;
+    return `add-renderer-system: ${this.getSystemClassName()}`;
   }
 
 }

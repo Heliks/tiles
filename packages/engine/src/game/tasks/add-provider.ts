@@ -1,12 +1,13 @@
 import {
   ClassProvider,
   FactoryProvider,
-  InstanceProvider, isFactoryProvider,
+  InstanceProvider,
+  isFactoryProvider,
   isInstanceProvider,
   Provider,
   ValueProvider
 } from '../provider';
-import { ClassType } from '../../types';
+import { Type } from '../../types';
 import { Game } from '../game';
 import { Task } from './task';
 import { Container } from '@heliks/tiles-injector';
@@ -41,7 +42,7 @@ export class AddProvider implements Task {
     let value = provider.value;
 
     if (provider.instantiate) {
-      value = container.make(provider.value as ClassType);
+      value = container.make(provider.value as Type);
     }
 
     container.bind(provider.token, value);
