@@ -70,7 +70,6 @@ export class PixiBundle implements Bundle, OnInit {
    */
   constructor(public readonly config: RendererBundleConfig) {}
 
-
   /** @internal */
   private createPIXIRenderer(): PIXI.Renderer {
     const config: Struct = {};
