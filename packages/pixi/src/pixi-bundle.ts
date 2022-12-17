@@ -9,6 +9,7 @@ import { Screen } from './screen';
 import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
 import { Overlay, Stage } from './stage';
 import { Screenshot } from './screenshot';
+import { SyncGroups } from './sync-groups';
 
 
 /** Configuration for the renderer bundle. */
@@ -168,8 +169,7 @@ export class PixiBundle implements Bundle, OnInit {
       .provide(Overlay)
       .provide(Renderer)
       .provide(Screenshot)
-      // Should run before the SpriteDisplaySystem so that sprites are updated on the
-      // same frame where the animation possibly transformed them.
+      .system(SyncGroups)
       .system(SpriteAnimationSystem)
       .system(SpriteRenderer)
       .system(RendererSystem);

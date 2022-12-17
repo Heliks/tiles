@@ -43,6 +43,15 @@ export class SpriteRender {
     return this._sprite.alpha;
   }
 
+  /** If this is set to `false`, the sprite will not be rendered. */
+  public set visible(value: boolean) {
+    this._sprite.visible = value;
+  }
+
+  public get visible(): boolean {
+    return this._sprite.visible;
+  }
+
   /**
    * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
    *  is passed the rendering of the sprite will be deferred until the asset is loaded.
@@ -89,6 +98,20 @@ export class SpriteRender {
 
     this.anchor.x = this._sprite.anchor.x;
     this.anchor.y = this._sprite.anchor.y;
+
+    return this;
+  }
+
+  /** Sets the {@link visible visibility} of this sprite to `true`. */
+  public show(): this {
+    this._sprite.visible = true;
+
+    return this;
+  }
+
+  /** Sets the {@link visible visibility} of this sprite to `false`. */
+  public hide(): this {
+    this._sprite.visible = false;
 
     return this;
   }

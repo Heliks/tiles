@@ -1,3 +1,6 @@
+export * from './sprite';
+export * from './stage';
+
 export * from './align';
 export * from './camera';
 export * from './debug-draw';
@@ -10,6 +13,5 @@ export * from './renderer-plugins';
 export * from './renderer-system';
 export * from './screen';
 export * from './screenshot';
-export * from './sprite';
-export * from './stage';
+
 export { rgb2hex } from './utils';
