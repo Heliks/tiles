@@ -171,12 +171,22 @@ describe('GameBuilder', () => {
     })
   });
 
-  it('should run a callback function during the build process', () => {
+  it('should run boot script', () => {
     const builder = new GameBuilder();
     const callback = jest.fn();
 
     builder
       .run(callback)
+      .build();
+
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('should run init script', () => {
+    const callback = jest.fn();
+
+    new GameBuilder()
+      .onInit(callback)
       .build();
 
     expect(callback).toHaveBeenCalled();

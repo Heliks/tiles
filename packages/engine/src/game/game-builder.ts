@@ -8,6 +8,12 @@ import { AddBundle, AddComponent, AddProvider, AddSystem, Task } from './tasks';
 import { Builder as Builder } from './builder';
 
 
+/** Callback for {@link OnInit} lifecycle tasks. */
+export type OnInitCallback = (world: World) => void;
+
+/** Callback for {@link GameBuilder.run} tasks. */
+export type BootCallback = (game: Game) => void;
+
 /**
  * Builder that is used to compose the game runtime.
  *
@@ -78,10 +84,23 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /** Runs a callback function during the build process. */
-  public run(callback: (game: Game) => void): this {
+  /** Adds a boot `callback` that is executed once during the build process. */
+  public run(callback: BootCallback): this {
     this.tasks.push({
       exec: callback
+    });
+
+    return this;
+  }
+
+  /**
+   * Adds a `callback` that will be called once when other {@link OnInit} lifecycle
+   * events are executed during the build process.
+   */
+  public onInit(callback: OnInitCallback): this {
+    this.tasks.push({
+      exec: () => null,
+      init: callback
     });
 
     return this;

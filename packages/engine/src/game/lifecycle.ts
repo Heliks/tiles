@@ -1,5 +1,6 @@
 import { World } from '../ecs';
 
+
 /**
  * Lifecycle event that is called after the game runtime has been successfully created
  * by the `GameBuilder`, but before the game has been started.
