@@ -1,9 +1,10 @@
-import { ComponentEventType, Entity, OnInit, Storage, Subscriber, System, World } from '@heliks/tiles-engine';
+import { ComponentEventType, Entity, Injectable, Storage, Subscriber, System, World } from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Stage } from './stage';
 
 
-export class SyncGroups implements System, OnInit {
+@Injectable()
+export class SyncGroups implements System {
 
   /** @internal */
   private groups!: Storage<RenderGroup>;
@@ -14,7 +15,7 @@ export class SyncGroups implements System, OnInit {
   constructor(private readonly stage: Stage) {}
 
   /** @inheritDoc */
-  public onInit(world: World): void {
+  public boot(world: World): void {
     this.groups = world.storage(RenderGroup);
     this.subscriber$ = this.groups.subscribe();
   }
