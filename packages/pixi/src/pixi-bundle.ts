@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
-import { RendererSystem } from './renderer-system';
+import { UpdateRenderer } from './update-renderer';
 import { Screen } from './screen';
 import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
 import { Overlay, Stage } from './stage';
@@ -135,7 +135,7 @@ export class PixiBundle implements Bundle, OnInit {
       .system(SyncGroups)
       .system(SpriteAnimationSystem)
       .system(SpriteRenderer)
-      .system(RendererSystem);
+      .system(UpdateRenderer);
   }
 
   /** @inheritDoc */

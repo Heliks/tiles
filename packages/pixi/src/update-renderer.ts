@@ -14,7 +14,7 @@ import { Renderer } from './renderer';
 
 /** System responsible for updating the renderer. */
 @Injectable()
-export class RendererSystem extends ProcessingSystem implements OnInit {
+export class UpdateRenderer extends ProcessingSystem implements OnInit {
 
   /** @internal */
   private groups!: Storage<RenderGroup>;
