@@ -1,5 +1,6 @@
 import { Bundle, GameBuilder } from '@heliks/tiles-engine';
 import { AssetLoader } from './asset-loader';
+import { Format } from './formats';
 
 
 /**
@@ -9,17 +10,38 @@ import { AssetLoader } from './asset-loader';
  */
 export class AssetsBundle implements Bundle {
 
+  /** @internal */
+  private readonly formats: Format<unknown, unknown, AssetLoader>[] = [];
+
   /**
    * @param root (optional) Root path from which assets should be loaded. The loader
    *  will prepend this to every file path that ot loads.
    */
   constructor(private readonly root = '') {}
 
+  /**
+   * Registers an asset {@link Format} to be used by the {@link AssetLoader}. Only one
+   * format per file extension is allowed..
+   *
+   * @see AssetLoader.register
+   */
+  public register(format: Format<unknown, unknown, AssetLoader>): this {
+    this.formats.push(format);
+
+    return this;
+  }
+
   /** @inheritDoc */
   public build(builder: GameBuilder): void {
+    const loader = new AssetLoader(this.root);
+
+    for (const format of this.formats) {
+      loader.register(format);
+    }
+
     builder.provide({
       token: AssetLoader,
-      value: new AssetLoader(this.root)
+      value: loader
     });
   }
 

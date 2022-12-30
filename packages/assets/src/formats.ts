@@ -11,23 +11,26 @@ export enum LoadType {
 }
 
 /**
- * An asset format.
+ * A format for an asset type.
  *
- * @typeparam D Raw data that is processed to produce `R`.
- * @typeparam R Result that this format will produce from processing data `D`.
- * @typeparam L Loader that is executing this format during [[process()]].
+ * Objects that implement this interface are used by the asset loader to load a specific
+ * asset type into its appropriate asset storage.
+ *
+ * - `D`: Raw data that is processed to produce result `R`.
+ * - `R`: Result that this format will produce from processing data `D`.
+ * - `L`: Loader that will be executing this format.
  */
 export interface Format<D, R, L = unknown> {
 
   /**
-   * Name that uniquely identifies this format. This has no technical effects and
-   * merely serves for debugging purposes.
+   * Contains a list of file extensions that are supported by this format. The extensions
+   * must be without a preceding dot.
    */
-  readonly name: string;
+  readonly extensions: string[];
 
   /**
-   * Specifies how the file should be loaded. If not specified, the asset will be
-   * loaded as text by default.
+   * Determines how the contents of the file should be loaded. If not specified, the
+   * asset will be loaded as `Text` by default.
    *
    * @see LoadType
    */
@@ -57,7 +60,7 @@ export interface Format<D, R, L = unknown> {
 export class ImageFormat implements Format<Blob, HTMLImageElement> {
 
   /** @inheritDoc */
-  public readonly name = 'format:image';
+  public readonly extensions = ['png', 'jpg', 'jpeg'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Blob;

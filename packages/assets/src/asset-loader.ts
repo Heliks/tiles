@@ -1,8 +1,13 @@
-import { Injectable, ltrim, Type } from '@heliks/tiles-engine';
+import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
 import { AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
 import { Format, LoadType } from './formats';
-import { join } from './utils';
+import { getExtension, join } from './utils';
 
+
+/**
+ * Can contain any {@link Format}.
+ */
+type AnyFormat<L> = Format<unknown, unknown, L>;
 
 /**
  * Loads assets via the fetch API.
@@ -16,10 +21,17 @@ import { join } from './utils';
 export class AssetLoader {
 
   /**
+   * @internal
+   */
+  private readonly formats: AnyFormat<AssetLoader>[] = [];
+
+  /**
    * A map that contains storages mapped to the asset type that they are storing. If an
    * asset is loaded, the loader will automatically put it in the appropriate storage
    * according to the asset type specified by the format that was used to load the
    * asset file. See: {@link Format.getAssetType}.
+   *
+   * @internal
    */
   private readonly storages = new Map<AssetType, AssetStorage<unknown>>();
 
@@ -58,13 +70,45 @@ export class AssetLoader {
   }
 
   /** @internal */
+  private match(extension: string): AnyFormat<AssetLoader> | undefined {
+    for (const format of this.formats) {
+      if (format.extensions.includes(extension)) {
+        return format;
+      }
+    }
+  }
+
+  /**
+   * Registers an asset {@link Format}.
+   *
+   * The format will be used when a file is being loaded that has an extension that
+   * matches one of the formats. There can only be one format per file extension.
+   */
+  public register(format: AnyFormat<AssetLoader>): this {
+    // Make sure the format doesn't match an extension that another format is.
+    for (const extension of format.extensions) {
+      const match = this.match(extension);
+
+      if (match) {
+        throw new Error(noIndent`
+          Extension ${extension} of format ${format.constructor.name} is already matched 
+          by existing format ${match.constructor.name}.
+        `);
+      }
+    }
+
+    this.formats.push(format);
+
+    return this;
+  }
+
+  /** @internal */
   private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
     handle.state = LoadingState.Loaded;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.storage(format.getAssetType()).set(handle, {
-      data,
-      name: format.name
+      data
     });
   }
 
@@ -76,7 +120,6 @@ export class AssetLoader {
     const handle = new Handle('');
 
     storage.set(handle, {
-      name: '',
       data
     });
 
@@ -114,14 +157,32 @@ export class AssetLoader {
     });
   }
 
+  /** @internal */
+  private getFormatFromFile(file: string): AnyFormat<AssetLoader> {
+    const extension = getExtension(file);
+
+    if (! extension) {
+      throw new Error(`File path ${file} requires an extension.`);
+    }
+
+    const format = this.match(extension);
+
+    if (! format) {
+      throw new Error(`No format found for file extension ${extension}`);
+    }
+
+    return format;
+  }
+
   /**
    * Loads a file and returns a `Handle<R>` that can be used to access the file in its
    * asset storage after it has finished loading.
    */
-  public load<D, R>(path: string, format: Format<D, R, AssetLoader>): Handle<R> {
-    const handle = new Handle(path);
+  public load<D, R>(file: string): Handle<R> {
+    const format = this.getFormatFromFile(file);
+    const handle = new Handle(file);
 
-    this.fetch(path, format).then(data => {
+    this.fetch(file, format).then(data => {
       this.complete(handle, data, format);
     });
 
@@ -132,9 +193,11 @@ export class AssetLoader {
    * Loads a file. Like {@link load} this will return a file handle that can be used to
    * access the asset, but only after the asset has finished loading.
    */
-  public async<D, R>(path: string, format: Format<D, R, AssetLoader>): Promise<Handle<R>> {
-    return this.fetch(path, format).then(data => {
-      const handle = new Handle(path);
+  public async<D, R>(file: string): Promise<Handle<R>> {
+    const format = this.getFormatFromFile(file);
+
+    return this.fetch(file, format).then(data => {
+      const handle = new Handle(file);
 
       this.complete(handle, data, format);
 
@@ -175,7 +238,7 @@ export class AssetLoader {
 
     for (const item of meta.properties) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (collection as any)[ item.key ] = this.load(item.path, item.format());
+      (collection as any)[ item.key ] = this.load(item.path);
     }
 
     return new AssetCollection(collection, meta);

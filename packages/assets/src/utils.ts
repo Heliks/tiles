@@ -1,11 +1,11 @@
 /**
- * Returns the directory in the given `path`, similar to NodeJS `__dirname()` without
+ * Returns the directory in the given `file`, similar to NodeJS `__dirname()` without
  * a trailing slash. Additional directory segments can be added via `append`.
  */
-export function getDirectory(path: string, ...append: string[]): string {
-  const directory = path.slice(0, Math.max(0, Math.max(
-    path.lastIndexOf('\\'),
-    path.lastIndexOf('/')))
+export function getDirectory(file: string, ...append: string[]): string {
+  const directory = file.slice(0, Math.max(0, Math.max(
+    file.lastIndexOf('\\'),
+    file.lastIndexOf('/')))
   );
 
   append.unshift(directory);
@@ -13,6 +13,22 @@ export function getDirectory(path: string, ...append: string[]): string {
   return append.join('/');
 }
 
+/**
+ * Returns the extension of a `file` path without the preceding dot. Returns `undefined`
+ * if no extension can be found.
+ *
+ * If the file has more than one extension, both are considered. For example, using the
+ * file path `'foo.test.json'`, the result would be `'test.json'`, not just `'json'`.
+ */
+export function getExtension(file: string): string | undefined {
+  const idx = file.indexOf('.');
+
+  if (idx > -1) {
+    return file.slice(idx + 1);
+  }
+}
+
+/** Joins all `segments` together to a path. */
 export function join(...segments: string[]): string {
   return segments.join('/');
 }

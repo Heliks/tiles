@@ -40,11 +40,6 @@ export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
 export interface Asset<T> {
   /** The assets processed data. */
   readonly data: T;
-  /**
-   * The name of the asset type. Will be inherited from the `Format` that processed
-   * this asset.
-   */
-  readonly name: string;
 }
 
 /**
