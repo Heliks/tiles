@@ -186,7 +186,7 @@ describe('GameBuilder', () => {
     const callback = jest.fn();
 
     new GameBuilder()
-      .onInit(callback)
+      .runOnInit(callback)
       .build();
 
     expect(callback).toHaveBeenCalled();

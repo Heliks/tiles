@@ -10,6 +10,23 @@ import { HasLifecycleEvents } from './lifecycle';
  * dispatcher as if they were added to the runtime as normal.
  *
  * Bundles can implement lifecycle events.
+ *
+ * ### Example
+ *
+ * The example below demonstrates a bundle that registers a provider & a system.
+ *
+ * ```ts
+ *  class MyBundle implements Bundle<GameBuilder> {
+ *
+ *    public build(builder: GameBuilder): void {
+ *      // Adds additional builder tasks.
+ *      builder
+ *        .provide(MyProvider)
+ *        .system(MySystem);
+ *    }
+ *
+ *  }
+ * ```
  */
 export interface Bundle<B extends Builder> extends HasLifecycleEvents {
 

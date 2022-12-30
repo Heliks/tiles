@@ -2,7 +2,6 @@ import 'reflect-metadata';
 
 export * from './ecs';
 export * from './game';
-export * from './renderer';
 export * from './transform';
 
 export * from './types';

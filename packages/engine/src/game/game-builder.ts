@@ -3,18 +3,9 @@ import { ComponentType, System, World } from '../ecs';
 import { Game } from './game';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
-import {
-  AddBundle,
-  AddComponent,
-  AddProvider,
-  AddRendererSystem,
-  AddSystem,
-  RendererSystemProvider,
-  SystemProvider,
-  Task
-} from './tasks';
+import { AddBundle, AddComponent, AddProvider, AddSystem, SystemProvider, Task } from './tasks';
 import { Builder } from './builder';
-import { RendererSystem, RendererSystemDispatcher } from '../renderer';
+import { Type } from '../types';
 
 
 /** Callback for {@link OnInit} lifecycle tasks. */
@@ -39,8 +30,8 @@ export class GameBuilder implements Builder {
   private readonly tasks: Task[] = [];
 
   /**
-   * @param container Service container that is used for the game runtime. All providers,
-   *  systems, etc. will be registered here.
+   * @param container Service container used by the game runtime. All providers,
+   *  systems, etc. that are added to it via this builder, will be registered here.
    */
   constructor(public readonly container: Container = new Container()) {}
 
@@ -76,13 +67,6 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /** Adds a {@link RendererSystem} to the {@link RendererSystemDispatcher}. */
-  public render(system: RendererSystemProvider): this {
-    this.tasks.push(new AddRendererSystem(system))
-
-    return this;
-  }
-
   /** Adds a `provider`. */
   public provide(provider: Provider): this {
     this.tasks.push(new AddProvider(provider));
@@ -90,9 +74,16 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /** Adds a `bundle` to the game. */
+  /**
+   * Registers a `bundle`.
+   *
+   * Bundles are a collection of builder tasks grouped together as convenience. They
+   * essentially are the modules of the game engine. See: {@link Bundle}.
+   */
   public bundle<B extends Bundle<GameBuilder>>(bundle: B): this {
-    this.tasks.push(new AddBundle(bundle, new GameBuilder(this.container)));
+    this.tasks.push(
+      new AddBundle(bundle, new GameBuilder(this.container))
+    );
 
     return this;
   }
@@ -110,7 +101,7 @@ export class GameBuilder implements Builder {
    * Adds a `callback` that will be called once when other {@link OnInit} lifecycle
    * events are executed during the build process.
    */
-  public onInit(callback: OnInitCallback): this {
+  public runOnInit(callback: OnInitCallback): this {
     this.tasks.push({
       exec: () => null,
       init: callback
@@ -119,7 +110,7 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /** @internal */
+  /** @inheritDoc */
   public exec(game: Game): void {
     for (const task of this.tasks) {
       try {
@@ -133,7 +124,7 @@ export class GameBuilder implements Builder {
     }
   }
 
-  /** @internal */
+  /** @inheritDoc */
   public init(world: World): void {
     for (const task of this.tasks) {
       task.init?.(world);
@@ -147,8 +138,7 @@ export class GameBuilder implements Builder {
     // Register default resources.
     this.container
       .instance(game.ticker)
-      .instance(game.world)
-      .instance(new RendererSystemDispatcher());
+      .instance(game.world);
 
     this.exec(game);
     this.init(game.world);
