@@ -10,7 +10,7 @@ import { Texture } from 'pixi.js';
 export class LoadTexture implements Format<Blob, Texture> {
 
   /** @inheritDoc */
-  public readonly name = 'PIXI:texture';
+  public readonly extensions = ['png', 'jpg', 'jpeg'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Blob;

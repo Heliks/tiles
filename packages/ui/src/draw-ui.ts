@@ -219,8 +219,6 @@ export class DrawUi implements OnInit, RendererPlugin {
     for (const event of this.nodeQuery.events.read(this.nodeQuery$)) {
       const node = this.nodes.get(event.entity);
 
-      console.log('ADD NODE', node)
-
       if (event.isAdded) {
         this.onWidgetAdded(world, event.entity, node);
       }

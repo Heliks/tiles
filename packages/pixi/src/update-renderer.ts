@@ -4,12 +4,12 @@ import {
   ProcessingSystem,
   Query,
   QueryBuilder,
-  RendererSystemDispatcher,
   Storage,
   World
 } from '@heliks/tiles-engine';
 import { RenderGroup } from './render-group';
 import { Renderer } from './renderer';
+import { RendererSystemDispatcher } from './renderer-system-dispatcher';
 
 
 /** System responsible for updating the renderer. */

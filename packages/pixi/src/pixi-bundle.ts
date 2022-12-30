@@ -3,12 +3,10 @@ import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
-import { UpdateRenderer } from './update-renderer';
 import { Screen } from './screen';
-import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
+import { SpriteAnimation, SpriteRender } from './sprite';
 import { Overlay, Stage } from './stage';
 import { Screenshot } from './screenshot';
-import { SyncGroups } from './sync-groups';
 
 
 /** Configuration for the renderer bundle. */
@@ -58,10 +56,11 @@ export interface RendererBundleConfig {
 }
 
 /**
- * Bundle that provides a WebGL drawing context via PIXI.JS.
+ * Bundle that provides utilities for the PIXI.js renderer.
  *
- * To ensure that rendering does not appear out of sync it is recommended that the
- * renderer plugin runs as late as possible in the system execution order.
+ * On its own, this only provides services and resources for the renderer, but does not
+ * render a stage on its own. For this, there is a separate {@link RendererHierarchy}
+ * bundle that has to be added to the game builder.
  */
 export class PixiBundle implements Bundle, OnInit {
 
@@ -131,11 +130,7 @@ export class PixiBundle implements Bundle, OnInit {
       .provide(Stage)
       .provide(Overlay)
       .provide(Renderer)
-      .provide(Screenshot)
-      .system(SyncGroups)
-      .system(SpriteAnimationSystem)
-      .system(SpriteRenderer)
-      .system(UpdateRenderer);
+      .provide(Screenshot);
   }
 
   /** @inheritDoc */

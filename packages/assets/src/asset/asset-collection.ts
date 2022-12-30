@@ -5,7 +5,7 @@ import { AssetCollectionMetadata } from './metadata';
 /**
  * An asset collection holds a collection class that contains properties which are
  * automatically loaded by the asset loader. This serves as a convenient way to load
- * a collection of assets at once.
+ * multiple assets at once.
  */
 export class AssetCollection<C> {
 

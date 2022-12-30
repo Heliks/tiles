@@ -25,7 +25,6 @@ function createSpritesheetGrid(data: SpriteSheetData): Grid {
   );
 }
 
-
 /**
  * Loads a `SpriteSheet` from a JSON format.
  *
@@ -49,7 +48,7 @@ function createSpritesheetGrid(data: SpriteSheetData): Grid {
 export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
-  public readonly name = 'PIXI:sprite-sheet';
+  public readonly extensions = ['spritesheet', 'spritesheet.json'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Json;
