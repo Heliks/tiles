@@ -1,11 +1,10 @@
 import { Container } from '@heliks/tiles-injector';
-import { ComponentType, System, World } from '../ecs';
+import { ComponentType, World } from '../ecs';
 import { Game } from './game';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
 import { AddBundle, AddComponent, AddProvider, AddSystem, SystemProvider, Task } from './tasks';
 import { Builder } from './builder';
-import { Type } from '../types';
 
 
 /** Callback for {@link OnInit} lifecycle tasks. */
@@ -60,7 +59,7 @@ export class GameBuilder implements Builder {
     return this;
   }
 
-  /** Adds a {@link System} to the system dispatcher. */
+  /** Adds a system to the system dispatcher. */
   public system(system: SystemProvider): this {
     this.tasks.push(new AddSystem(system));
 
@@ -103,7 +102,8 @@ export class GameBuilder implements Builder {
    */
   public runOnInit(callback: OnInitCallback): this {
     this.tasks.push({
-      exec: () => null,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      exec: () => {},
       init: callback
     });
 

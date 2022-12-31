@@ -20,7 +20,7 @@ function getType(item: RendererSystemProvider): Type<RendererSystem> {
 }
 
 /** @internal */
-function create(container: Container, item: RendererSystemProvider) {
+function create(container: Container, item: RendererSystemProvider): RendererSystem {
   return isType(item) ? container.make(item) : item;
 }
 

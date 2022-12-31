@@ -1,7 +1,6 @@
-import { AssetStorage } from '@heliks/tiles-assets';
 import { EventQueue, Injectable, Vec2 } from '@heliks/tiles-engine';
-import { RenderTexture } from 'pixi.js';
 import * as PIXI from 'pixi.js';
+import { RenderTexture } from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Container, Drawable } from './drawable';

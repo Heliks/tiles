@@ -99,7 +99,7 @@ export class TerrainBrush {
   }
 
   /** @internal */
-  private _updateNeighbourTile(col: number, row: number) {
+  private _updateNeighbourTile(col: number, row: number): void {
     if (this.isTerrainTile(col, row)) {
       const tileId = this.getTileId(col, row);
 

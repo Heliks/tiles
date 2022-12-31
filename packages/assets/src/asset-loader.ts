@@ -183,7 +183,7 @@ export class AssetLoader {
    * Loads a file and returns a `Handle<R>` that can be used to access the file in its
    * asset storage after it has finished loading.
    */
-  public load<D, R>(file: string): Handle<R> {
+  public load<R>(file: string): Handle<R> {
     const format = this.getFormatFromFile(file);
     const handle = new Handle(file);
 
@@ -198,7 +198,7 @@ export class AssetLoader {
    * Loads a file. Like {@link load} this will return a file handle that can be used to
    * access the asset, but only after the asset has finished loading.
    */
-  public async<D, R>(file: string): Promise<Handle<R>> {
+  public async<R>(file: string): Promise<Handle<R>> {
     const format = this.getFormatFromFile(file);
 
     return this.fetch(file, format).then(data => {

@@ -104,7 +104,7 @@ interface TerrainMasks {
 }
 
 /** @internal */
-function deserializeTerrainBit(bit: TerrainBit, masks: TerrainMasks, value?: boolean) {
+function deserializeTerrainBit(bit: TerrainBit, masks: TerrainMasks, value?: boolean): void {
   if (value !== undefined) {
     if (value) {
       masks.contains |= bit;
