@@ -1,6 +1,9 @@
 import { v4, v5 } from 'uuid';
 
 
+/** Type alias for a string in a UUID format. */
+export type UUID = string;
+
 /**
  * Namespace used to generate v5 UUIDs.
  *

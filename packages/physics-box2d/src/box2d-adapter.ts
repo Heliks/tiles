@@ -1,11 +1,12 @@
-/* eslint-disable new-cap */
 import { b2World } from '@flyover/box2d';
-import { ClassType, EventQueue, GameBuilder, Vec2 } from '@heliks/tiles-engine';
+import { EventQueue, GameBuilder, Type, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dWorld } from './box2d-world';
 import { B2_RAYCASTS, B2_WORLD } from './const';
 
+
+/* eslint-disable new-cap */
 
 export class Box2dAdapter implements PhysicsAdapter {
 
@@ -16,7 +17,7 @@ export class Box2dAdapter implements PhysicsAdapter {
   constructor(public readonly gravity = new Vec2(0, 0)) {}
 
   /** @inheritDoc */
-  public getPhysicsType(): ClassType<Box2dWorld> {
+  public getPhysicsType(): Type<Box2dWorld> {
     return Box2dWorld;
   }
 

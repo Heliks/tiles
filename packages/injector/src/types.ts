@@ -4,10 +4,10 @@
  * Fixme: This does not work for abstract classes.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ClassType<T = any> = new (...params: any[]) => T;
+export type Type<T = any> = new (...params: any[]) => T;
 
 /** Types that can be used as an injector token. */
-export type InjectorToken<T = unknown> = symbol | string | number | ClassType<T> | Function;
+export type InjectorToken<T = unknown> = symbol | string | number | Type<T> | Function;
 
 /**
  * Factory of a binding that produces a value.
@@ -39,7 +39,7 @@ export interface ImmutableContainer {
    *  will also automatically be bound by calling {@link Container.instance}.
    * @returns Instance of the target with injected dependencies.
    */
-  make<T = object>(target: ClassType<T>, params?: unknown[], bind?: boolean): T;
+  make<T = object>(target: Type<T>, params?: unknown[], bind?: boolean): T;
 
 }
 

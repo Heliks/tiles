@@ -1,6 +1,6 @@
 import { getMetadata } from './meta';
 import { SingletonBinding } from './singleton-binding';
-import { Binding, BindingFactory, ClassType, Container as Base, InjectorToken, ParamInjection } from './types';
+import { Binding, BindingFactory, Type, Container as Base, InjectorToken, ParamInjection } from './types';
 import { stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
 
@@ -33,7 +33,7 @@ export class Container implements Base {
       }
 
       this.bindings.set(
-        instance.constructor as ClassType,
+        instance.constructor as Type,
         new ValueBinding(instance)
       );
     }
@@ -106,7 +106,7 @@ export class Container implements Base {
   }
 
   /** @inheritDoc */
-  public make<T>(target: ClassType<T>, params: unknown[] = [], bind = false): T {
+  public make<T>(target: Type<T>, params: unknown[] = [], bind = false): T {
     const meta = getMetadata(target);
 
     let values = params;
