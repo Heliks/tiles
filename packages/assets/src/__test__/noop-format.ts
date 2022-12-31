@@ -1,4 +1,4 @@
-import { Format } from '../formats';
+import { Format } from '../format';
 
 
 export class NoopFormat implements Format<unknown, unknown> {

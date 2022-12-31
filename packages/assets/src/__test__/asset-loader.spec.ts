@@ -9,7 +9,7 @@ describe('AssetLoader', () => {
   it('should load collections', () => {
     class Foo {
 
-      @Load('foo.png', () => new NoopFormat())
+      @Load('foo.png')
       public foo!: Handle;
 
     }

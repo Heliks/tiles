@@ -1,4 +1,3 @@
-import { Type } from '@heliks/tiles-engine';
 import { AssetType } from './asset';
 
 
@@ -56,27 +55,3 @@ export interface Format<D, R, L = unknown> {
 
 }
 
-/** Reads a `Blob` and produces image nodes. */
-export class ImageFormat implements Format<Blob, HTMLImageElement> {
-
-  /** @inheritDoc */
-  public readonly extensions = ['png', 'jpg', 'jpeg'];
-
-  /** @inheritDoc */
-  public readonly type = LoadType.Blob;
-
-  /** @inheritDoc */
-  public getAssetType(): Type<HTMLImageElement> {
-    return HTMLImageElement;
-  }
-
-  /** @inheritDoc */
-  public process(data: Blob): HTMLImageElement {
-    const image = new Image();
-
-    image.src = URL.createObjectURL(data);
-
-    return image;
-  }
-
-}

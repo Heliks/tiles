@@ -1,6 +1,6 @@
 import { Bundle, GameBuilder } from '@heliks/tiles-engine';
 import { AssetLoader } from './asset-loader';
-import { Format } from './formats';
+import { Format } from './format';
 
 
 /**
@@ -23,9 +23,9 @@ export class AssetsBundle implements Bundle {
    * Registers an asset {@link Format} to be used by the {@link AssetLoader}. Only one
    * format per file extension is allowed..
    *
-   * @see AssetLoader.register
+   * @see AssetLoader.use
    */
-  public register(format: Format<unknown, unknown, AssetLoader>): this {
+  public use(format: Format<unknown, unknown, AssetLoader>): this {
     this.formats.push(format);
 
     return this;
@@ -36,7 +36,7 @@ export class AssetsBundle implements Bundle {
     const loader = new AssetLoader(this.root);
 
     for (const format of this.formats) {
-      loader.register(format);
+      loader.use(format);
     }
 
     builder.provide({

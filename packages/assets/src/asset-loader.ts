@@ -1,6 +1,6 @@
 import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
 import { AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
-import { Format, LoadType } from './formats';
+import { Format, LoadType } from './format';
 import { getExtension, join } from './utils';
 
 
@@ -13,14 +13,19 @@ type AnyFormat<L> = Format<unknown, unknown, L>;
  * Loads assets via the fetch API.
  *
  * This is the primary way to import assets such as sound, videos, fonts, etc. into the
- * game. The loader will put assets in appropriate storages depending on the asset type
- * specified by the format that was used to load the file. Storages for asset types can
- * be accessed via {@link storage()}.
+ * game. The loader will automatically decide which file type to load based on file
+ * extension and available {@link Format file formats}.
+ *
+ * Loaded assets will be placed in appropriate storages depending on the asset type
+ * specified by the format that was used to load it.
  */
 @Injectable()
 export class AssetLoader {
 
   /**
+   * Contains all formats known to the asset loader. All formats here are guaranteed
+   * to not have overlapping file extension mappings.
+   *
    * @internal
    */
   private readonly formats: AnyFormat<AssetLoader>[] = [];
@@ -84,7 +89,7 @@ export class AssetLoader {
    * The format will be used when a file is being loaded that has an extension that
    * matches one of the formats. There can only be one format per file extension.
    */
-  public register(format: AnyFormat<AssetLoader>): this {
+  public use(format: AnyFormat<AssetLoader>): this {
     // Make sure the format doesn't match an extension that another format is.
     for (const extension of format.extensions) {
       const match = this.match(extension);
