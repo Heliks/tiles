@@ -5,12 +5,11 @@ import {
   Query,
   QueryBuilder,
   ReactiveSystem,
-  RendererSystem,
   Transform,
   Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Container, Screen, Stage } from '@heliks/tiles-pixi';
+import { Container, RendererSystem, Screen, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 

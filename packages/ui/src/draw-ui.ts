@@ -11,7 +11,7 @@ import {
   World,
   XY
 } from '@heliks/tiles-engine';
-import { Camera, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
+import { Camera, RendererSystem, Screen, Stage } from '@heliks/tiles-pixi';
 import { UiNode } from './ui-node';
 import { UiAlign, UiRoot } from './ui-root';
 import { SyncRoots } from './sync-roots';
@@ -24,7 +24,7 @@ export type UiElementNode = UiNode | UiRoot;
  * renderer stage.
  */
 @Injectable()
-export class DrawUi implements OnInit, RendererPlugin {
+export class DrawUi implements OnInit, RendererSystem {
 
   /** @internal */
   private nodes!: Storage<UiNode>;

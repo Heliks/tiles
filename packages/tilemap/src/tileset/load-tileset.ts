@@ -168,7 +168,7 @@ function deserializeTerrainData(data: TerrainData): Terrain {
 export class LoadTileset implements Format<TilesetData, Tileset> {
 
   /** @inheritDoc */
-  public readonly name = 'load-tileset';
+  public readonly extensions = ['tileset', 'tileset.json'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Json;

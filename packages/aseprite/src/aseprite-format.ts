@@ -1,5 +1,4 @@
-import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { World } from '@heliks/tiles-engine';
+import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
@@ -24,25 +23,18 @@ function createPackedSprite(data: AsepriteFrameData): PackedSprite {
 }
 
 /**
- * Asset loader format that loads spritesheets exported by aseprite.
+ * Asset loader {@link Format} that loads spritesheets exported by aseprite. Supports
+ * both "Hash" and "Array" outputs.
  *
- * The format will always create a `PackedSpriteSheet`, regardless if the sprite sheet
- * was packed by aseprite or not.
- *
- * Supports both "Hash" and "Array" outputs.
+ * Note: This does *not* load aseprite project file types (e.g. `.aseprite` files).
  */
 export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
 
   /** @inheritDoc */
-  public readonly name = 'PIXI:aseprite';
+  public readonly extensions = ['aseprite.json'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Json;
-
-  /** Utility method that uses the `AssetLoader` to load a `SpriteSheet` from `path`. */
-  public static load(world: World, path: string): Handle<SpriteSheet> {
-    return world.get(AssetLoader).load(path, new AsepriteFormat());
-  }
 
   /** @inheritDoc */
   public getAssetType(): typeof SpriteSheet {

@@ -13,8 +13,8 @@ export class TerrainRule {
   /**
    * @param indexes Tile indexes mapped to this rule. If this rule is matched, the
    *  terrain brush will draw a random tile from this list.
-   * @param contains All {@link TerrainBit terrain bits} required to match this rule.
-   * @param excludes All {@link TerrainBit terrain bits} that are allowed to be omitted.
+   * @param contains All {@link TerrainBit terrain bits} that must be contained.
+   * @param excludes All {@link TerrainBit terrain bits} that must be excluded.
    */
   constructor(
     public readonly indexes: number[],
