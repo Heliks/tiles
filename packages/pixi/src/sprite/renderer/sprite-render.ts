@@ -53,14 +53,13 @@ export class SpriteRender {
   }
 
   /**
-   * @param spritesheet Sprite sheet used to render `sprite`. If a `Handle<SpriteSheet>`
-   *  is passed the rendering of the sprite will be deferred until the asset is loaded.
+   * @param spritesheet Asset {@link Handle} that points to a {@link Spritesheet},
    * @param spriteIndex Index of the sprite that should be rendered.
    * @param group (optional) Entity that has a `RenderGroup` component. The sprite
    *  will be added to that group instead of the stage.
    */
   constructor(
-    public spritesheet: SpriteSheet | Handle<SpriteSheet>,
+    public spritesheet: Handle<SpriteSheet>,
     public spriteIndex: number,
     public group?: Entity
   ) {

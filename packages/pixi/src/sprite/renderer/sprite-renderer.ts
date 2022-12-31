@@ -72,10 +72,7 @@ export class SpriteRenderer extends ReactiveSystem {
     // Update sprites.
     for (const entity of this.query.entities) {
       const render = displays.get(entity);
-      const sheet =
-        render.spritesheet instanceof Handle
-          ? this.storage.get(render.spritesheet)?.data
-          : render.spritesheet;
+      const sheet = this.storage.get(render.spritesheet)?.data;
 
       const sprite = render._sprite;
 

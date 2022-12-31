@@ -28,10 +28,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * the animation component. Returns `true` if the transform was successful.
    */
   protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet =
-      render.spritesheet instanceof Handle
-        ? this.storage.get(render.spritesheet)?.data
-        : render.spritesheet;
+    const sheet = this.storage.get(render.spritesheet)?.data;
 
     if (! sheet) {
       return false;
