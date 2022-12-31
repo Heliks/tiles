@@ -29,7 +29,7 @@ export interface Format<D, R, L = unknown> {
 
   /**
    * Determines how the contents of the file should be loaded. If not specified, the
-   * asset will be loaded as `Text` by default.
+   * asset will be loaded as `Json` by default.
    *
    * @see LoadType
    */

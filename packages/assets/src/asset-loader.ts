@@ -146,12 +146,12 @@ export class AssetLoader {
         case LoadType.Blob:
           stream = response.blob();
           break;
-        case LoadType.Json:
-          stream = response.json();
-          break;
         case LoadType.Text:
-        default:
           stream = response.text();
+          break;
+        case LoadType.Json:
+        default:
+          stream = response.json();
           break;
       }
 
