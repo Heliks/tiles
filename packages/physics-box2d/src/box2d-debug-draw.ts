@@ -1,5 +1,5 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
-import { Camera, DebugDraw, Renderer, RendererSystem, Screen } from '@heliks/tiles-pixi';
+import { Camera, DebugDraw, Renderer, RendererSystem } from '@heliks/tiles-pixi';
 import { Inject, Injectable, OnInit, PI_2, Subscriber } from '@heliks/tiles-engine';
 import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 
@@ -20,7 +20,6 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
     private readonly camera: Camera,
     private readonly debugDraw: DebugDraw,
     private readonly renderer: Renderer,
-    private readonly screen: Screen,
     @Inject(B2_RAYCASTS)
     private readonly raycasts: RaycastQueue,
     @Inject(B2_WORLD)
@@ -47,13 +46,13 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
     this.ctx.strokeStyle = '#ff00e5';
 
     this.ctx.moveTo(
-      (raycast.start.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.start.y - this.camera.world.y) * this.screen.unitSize
+      (raycast.start.x - this.camera.world.x) * this.camera.unitSize,
+      (raycast.start.y - this.camera.world.y) * this.camera.unitSize
     );
 
     this.ctx.lineTo(
-      (raycast.end.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.end.y - this.camera.world.y) * this.screen.unitSize
+      (raycast.end.x - this.camera.world.x) * this.camera.unitSize,
+      (raycast.end.y - this.camera.world.y) * this.camera.unitSize
     );
 
     this.ctx.stroke();
@@ -76,8 +75,8 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
 
     // Apply translate with unit size.
     this.debugDraw.translate(
-      transform.p.x * this.screen.unitSize,
-      transform.p.y * this.screen.unitSize
+      transform.p.x * this.camera.unitSize,
+      transform.p.y * this.camera.unitSize
     );
 
     // Set rotation
@@ -92,14 +91,14 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
   /** Helper method to draw the lines of a polygon. */
   protected drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[0].x * this.screen.unitSize,
-      vertices[0].y * this.screen.unitSize
+      vertices[0].x * this.camera.unitSize,
+      vertices[0].y * this.camera.unitSize
     );
 
     for (const vertex of vertices) {
       this.ctx.lineTo(
-        vertex.x * this.screen.unitSize,
-        vertex.y * this.screen.unitSize
+        vertex.x * this.camera.unitSize,
+        vertex.y * this.camera.unitSize
       );
     }
 
@@ -144,9 +143,9 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
     const ctx = this.ctx;
 
     // Apply unit size to radius and position.
-    const radius = _radius * this.screen.unitSize;
-    const cx = center.x * this.screen.unitSize;
-    const cy = center.y * this.screen.unitSize;
+    const radius = _radius * this.camera.unitSize;
+    const cx = center.x * this.camera.unitSize;
+    const cy = center.y * this.camera.unitSize;
 
     ctx.beginPath();
 

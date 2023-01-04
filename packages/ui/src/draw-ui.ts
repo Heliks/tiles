@@ -11,7 +11,7 @@ import {
   World,
   XY
 } from '@heliks/tiles-engine';
-import { Camera, RendererSystem, Screen, Stage } from '@heliks/tiles-pixi';
+import { Camera, RendererSystem, Stage } from '@heliks/tiles-pixi';
 import { UiNode } from './ui-node';
 import { UiAlign, UiRoot } from './ui-root';
 import { SyncRoots } from './sync-roots';
@@ -39,8 +39,7 @@ export class DrawUi implements OnInit, RendererSystem {
   constructor(
     private readonly camera: Camera,
     private readonly hierarchy: Hierarchy,
-    private readonly stage: Stage,
-    private readonly screen: Screen
+    private readonly stage: Stage
   ) {
     this.syncRoots = new SyncRoots(stage);
   }
@@ -79,7 +78,7 @@ export class DrawUi implements OnInit, RendererSystem {
 
   /** @internal */
   private getViewPositionFromScreenPosition(screen: XY): Vec2 {
-    return this.camera.screenToWorld(screen.x, screen.y, this._scratch).scale(this.screen.unitSize);
+    return this.camera.screenToWorld(screen.x, screen.y, this._scratch).scale(this.camera.unitSize);
   }
 
   /**
@@ -90,8 +89,8 @@ export class DrawUi implements OnInit, RendererSystem {
    */
   private updateRoot(entity: Entity, root: UiRoot): void {
     if (root.align === UiAlign.World) {
-      root.container.x = root.x * this.screen.unitSize;
-      root.container.y = root.y * this.screen.unitSize;
+      root.container.x = root.x * this.camera.unitSize;
+      root.container.y = root.y * this.camera.unitSize;
 
       return;
     }
@@ -118,8 +117,8 @@ export class DrawUi implements OnInit, RendererSystem {
       y += parent.y;
     }
 
-    node.widget.view.x = x * this.screen.unitSize;
-    node.widget.view.y = y * this.screen.unitSize;
+    node.widget.view.x = x * this.camera.unitSize;
+    node.widget.view.y = y * this.camera.unitSize;
   }
 
   /** @internal */

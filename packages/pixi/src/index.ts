@@ -12,7 +12,6 @@ export * from './renderer';
 export * from './renderer-hierarchy';
 export * from './renderer-system';
 export * from './update-renderer';
-export * from './screen';
 export * from './screenshot';
 
 export { rgb2hex } from './utils';

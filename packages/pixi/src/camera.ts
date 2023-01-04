@@ -1,5 +1,5 @@
-import { Injectable, Vec2, XY } from '@heliks/tiles-engine';
-import { Screen } from './screen';
+import { Screen, Injectable, Vec2, XY } from '@heliks/tiles-engine';
+import { RendererConfig } from './config';
 
 
 @Injectable()
@@ -17,7 +17,15 @@ export class Camera {
    */
   public readonly world = new Vec2(0, 0);
 
-  constructor(private readonly screen: Screen) {}
+
+  public get unitSize(): number {
+    return this.config.unitSize;
+  }
+
+  constructor(
+    private readonly config: RendererConfig,
+    private readonly screen: Screen
+  ) {}
 
   /** Transforms the camera position using the given `x` and `y` local position. */
   public transform(x: number, y: number): this {
@@ -40,8 +48,8 @@ export class Camera {
 
   /** @internal */
   public screenToWorld(x: number, y: number, result: XY = new Vec2()): XY {
-    const sx = (x - ((this.screen.size.x) >> 1)) / this.screen.unitSize / this.screen.scale.x;
-    const sy = (y - ((this.screen.size.y) >> 1)) / this.screen.unitSize / this.screen.scale.y;
+    const sx = (x - ((this.screen.size.x) >> 1)) / this.config.unitSize / this.screen.scale.x;
+    const sy = (y - ((this.screen.size.y) >> 1)) / this.config.unitSize / this.screen.scale.y;
 
     result.x = sx + this.world.x;
     result.y = sy + this.world.y;

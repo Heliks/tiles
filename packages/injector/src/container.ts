@@ -5,6 +5,7 @@ import { stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
 
 
+/** @inheritDoc */
 export class Container implements Base {
 
   /** Maps stuff that is bound to other stuff */
@@ -66,6 +67,11 @@ export class Container implements Base {
     }
 
     return binding.resolve(this);
+  }
+
+  /** @inheritDoc */
+  public has(token: InjectorToken): boolean {
+    return this.bindings.has(token);
   }
 
   /** @internal */

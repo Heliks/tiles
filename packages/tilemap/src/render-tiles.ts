@@ -5,11 +5,12 @@ import {
   Query,
   QueryBuilder,
   ReactiveSystem,
+  Screen,
   Transform,
   Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Container, RendererSystem, Screen, Stage } from '@heliks/tiles-pixi';
+import { Camera, Container, RendererSystem, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
 
@@ -56,10 +57,10 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
   private readonly containers = new Map<Entity, Container>();
 
   /**
-   * @param screen
-   * @param stage
+   * @param camera {@link Camera}
+   * @param stage {@link Stage}
    */
-  constructor(private readonly screen: Screen, private readonly stage: Stage) {
+  constructor(private readonly camera: Camera, private readonly stage: Stage) {
     super();
   }
 
@@ -112,8 +113,8 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
         render(tilemap);
       }
 
-      tilemap.view.x = transform.world.x * this.screen.unitSize;
-      tilemap.view.y = transform.world.y * this.screen.unitSize;
+      tilemap.view.x = transform.world.x * this.camera.unitSize;
+      tilemap.view.y = transform.world.y * this.camera.unitSize;
     }
   }
 

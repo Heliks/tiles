@@ -24,7 +24,7 @@ export class AddProvider implements Task {
 
   /** Called when this task attempts to register a `ClassProvider`. */
   public class<T>(container: Container, provider: ClassProvider<T>): void {
-    container.make(provider, [], true);
+    container.instance(container.make(provider));
   }
 
   /** Called when this task attempts to register a `FactoryProvider`. */

@@ -1,31 +1,39 @@
 import 'reflect-metadata';
+
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
-import { Entity, Storage, World as Base } from '@heliks/ecs';
+import { Entity, Storage, World as BaseWorld } from '@heliks/ecs';
 import { Type } from '../types';
 import { EntityRef } from './entity-ref';
 import { EntityBuilder } from './entity-builder';
 
-let nextId = 0;
 
-export class World extends Base implements ImmutableContainer {
-
-  public readonly id = ++nextId;
+/**
+ * @see ImmutableContainer
+ * @see World
+ */
+export class World extends BaseWorld implements ImmutableContainer {
 
   /**
-   * @param container Service container for dependency injection (DI).
+   * @param container Service {@link Container container} that manages dependency
+   *  injection for all providers, resources, etc.
    */
   constructor(public readonly container: Container) {
     super();
   }
 
   /** @inheritDoc */
-  public make<T = object>(target: Type<T>, params: unknown[] = [], bind = false): T {
-    return this.container.make<T>(target, params, bind);
+  public make<T = object>(target: Type<T>, params: unknown[] = []): T {
+    return this.container.make<T>(target, params);
   }
 
   /** @inheritDoc */
   public get<T>(token: InjectorToken<T>): T {
     return this.container.get<T>(token);
+  }
+
+  /** @inheritDoc */
+  public has(token: InjectorToken): boolean {
+    return this.container.has(token);
   }
 
   /**
