@@ -1,0 +1,20 @@
+{
+  "name": "@heliks/tiles-ai",
+  "version": "0.0.1-rc3",
+  "description": "Provides utilities for common AI tasks",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "test": "jest --config ./jest.config.js",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}

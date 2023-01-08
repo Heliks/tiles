@@ -1,4 +1,4 @@
-import { ChangeAwareValue, EventQueue, Vec2 } from '@heliks/tiles-engine';
+import { ChangeAwareValue, Entity, EntityBuilder, EventQueue, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -202,6 +202,21 @@ export class RigidBody {
     this.dirty = true;
 
     return this;
+  }
+
+  /**
+   * Returns `true` if any {@link colliders collider} collides with a collider that
+   * belongs to the given `entity`. This does not work if this body has no colliders
+   * that can physically collide with the rigid body of that entity.
+   */
+  public hasContactWith(entity: Entity): boolean {
+    for (const contact of this.contacts) {
+      if (contact.entityB === entity) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }
