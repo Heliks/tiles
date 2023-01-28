@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
-import { SpriteAnimation, SpriteRender } from './sprite';
+import { SpriteAnimation, SpriteRender, SpriteRenderSerializer } from './sprite';
 import { Overlay, Stage } from './stage';
 import { Screenshot } from './screenshot';
 import { RendererConfig } from './config';
@@ -71,7 +71,7 @@ export class PixiBundle implements Bundle, OnInit {
 
     builder
       .component(SpriteAnimation)
-      .component(SpriteRender)
+      .component(SpriteRender, new SpriteRenderSerializer())
       .provide({
         token: RendererConfig,
         value: this.config

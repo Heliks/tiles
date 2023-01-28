@@ -1,7 +1,8 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Entity, Vec2 } from '@heliks/tiles-engine';
+import { Entity, UUID, Vec2 } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteSheet } from '../sprite-sheet';
+import { ShaderMaterial } from '../../material';
 
 
 /**
@@ -14,8 +15,9 @@ export class SpriteRender {
   public readonly _sprite = new Sprite();
 
   /**
-   * Origin position of the sprite. Do not update this directly, and use the `setAnchor()`
-   * method instead.
+   * Contains the current sprite origin. Do not update directly.
+   *
+   * @see setAnchor
    */
   public anchor = new Vec2(0, 0);
 
@@ -27,6 +29,17 @@ export class SpriteRender {
 
   /** If set to `true` the sprite will be flipped on the y axis. */
   public flipY = false;
+
+  /** A {@link ShaderMaterial material} that should be applied to the sprite. */
+  public material?: ShaderMaterial;
+
+  /**
+   * Contains the material that is currently applied to the {@link _sprite}. If this
+   * diverges from the set {@link material}, the sprite filters will be updated.
+   *
+   * @internal
+   */
+  public _material?: ShaderMaterial;
 
   /** Scale factor of the sprite. */
   public scale = new Vec2(1, 1);
