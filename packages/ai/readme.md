@@ -1,1 +1,1 @@
-Package that provides utilities for common AI tasks.
+Provides utilities for common AI tasks.

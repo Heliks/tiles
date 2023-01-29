@@ -1,15 +1,5 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import {
-  Entity,
-  Injectable,
-  Query,
-  QueryBuilder,
-  ReactiveSystem,
-  Screen,
-  Transform,
-  Vec2,
-  World
-} from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Camera, Container, RendererSystem, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 

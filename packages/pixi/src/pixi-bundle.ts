@@ -10,7 +10,7 @@ import { RendererConfig } from './config';
 
 
 /** @internal */
-function checkScreenPresence(builder: GameBuilder) {
+function checkScreenPresence(builder: GameBuilder): void {
   if (! builder.container.has(Screen)) {
     throw new Error('Renderer requires a "Screen" to be present.');
   }

@@ -83,7 +83,14 @@
     "new-cap": [
       "error",
       {
-        "capIsNewExceptions": ["Injectable", "Inject", "InjectStorage", "Optional", "b2*"]
+        "capIsNewExceptions": [
+          "Ignore",
+          "Injectable",
+          "Inject",
+          "InjectStorage",
+          "Optional",
+          "b2*"
+        ]
       }
     ],
     "space-unary-ops": ["off"],

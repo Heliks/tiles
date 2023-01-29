@@ -2,29 +2,39 @@ import { ComponentType } from '@heliks/ecs';
 import { Game } from '../game';
 import { getStorageInjectorToken } from '../../ecs';
 import { Task } from './task';
+import { AddType } from './add-type';
+import { TypeSerializationStrategy } from '../../types';
 
 
-/**
- * Registers a component type and binds its component storage to the service
- * container.
- */
-export class AddComponent<C extends ComponentType, A extends C = C> implements Task {
+/** Adds a component to the game runtime. */
+export class AddComponent<C> implements Task {
 
   /**
    * @param component Component type that should be registered.
-   * @param alias (optional) If set to a component type that has a signature that is
-   *  compatible with `component`, the `component` will be registered using the same
-   *  storage as `alias`.
+   * @param strategy (optional) Custom serialization strategy.
    */
-  constructor(private readonly component: C, private readonly alias?: A) {}
+  constructor(
+    private readonly component: ComponentType<C>,
+    private readonly strategy?: TypeSerializationStrategy<C>
+  ) {}
+
+  /** @internal */
+  private registerComponentType(game: Game): void {
+    new AddType(this.component, this.strategy).exec(game);
+  }
+
+  /** @internal */
+  private registerComponentStore(game: Game): void {
+    const store = game.world.register(this.component);
+    const token = getStorageInjectorToken(this.component);
+
+    game.container.bind(token, store);
+  }
 
   /** @inheritDoc */
   public exec(game: Game): void {
-    const storage = this.alias
-      ? game.world.registerAs(this.component, this.alias)
-      : game.world.register(this.component);
-
-    game.world.container.bind(getStorageInjectorToken(this.component), storage);
+    this.registerComponentType(game);
+    this.registerComponentStore(game);
   }
 
 }

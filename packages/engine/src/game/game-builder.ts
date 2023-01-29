@@ -3,8 +3,10 @@ import { ComponentType, World } from '../ecs';
 import { Game } from './game';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
-import { AddBundle, AddComponent, AddProvider, AddSystem, SystemProvider, Task } from './tasks';
+import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
 import { Builder } from './builder';
+import { Type } from '../utils/types';
+import { TypeSerializationStrategy } from '../types';
 
 
 /** Callback for {@link OnInit} lifecycle tasks. */
@@ -37,24 +39,11 @@ export class GameBuilder implements Builder {
   /**
    * Registers a `component`.
    *
-   * Technically components don't have to be pre-registered. This additionally binds
-   * the storage that stores this component type on the service container. The storage
-   * can then be injected using the `InjectStorage()` decorator.
+   * This will automatically register the component type as a {@link type type}. You
+   * can provide a custom serialization `strategy` if the default one is not sufficient.
    */
-  public component<C extends ComponentType>(component: C): this;
-
-  /**
-   * Registers a `component`. The component will be stored using the storage of `alias`.
-   *
-   * Technically components don't have to be pre-registered. This additionally binds
-   * the storage that stores this component type on the service container. The storage
-   * can then be injected using the `InjectStorage()` decorator.
-   */
-  public component<A extends ComponentType, C extends A>(component: C, alias: A): this;
-
-  /** @internal */
-  public component(component: ComponentType, alias?: ComponentType): this {
-    this.tasks.push(new AddComponent(component, alias));
+  public component<C = unknown>(component: ComponentType<C>, strategy?: TypeSerializationStrategy<C>): this {
+    this.tasks.push(new AddComponent(component, strategy));
 
     return this;
   }
@@ -110,6 +99,22 @@ export class GameBuilder implements Builder {
     return this;
   }
 
+  /**
+   * Registers a class {@link Type type} on the {@link TypeRegistry registry} so that
+   * it can be serialized by the game engine. The constructor name will be used as the
+   * ID for the type.
+   *
+   * The default serialization strategy is able to handle most types, but it is possible
+   * to provide a custom one where this is not the case.
+   *
+   * To get access to serialization APIs, the {@link SerializationBundle} can be added.
+   */
+  public type<T>(type: Type<T>, strategy?: TypeSerializationStrategy<T>): this {
+    this.tasks.push(new AddType(type, strategy));
+
+    return this;
+  }
+
   /** @inheritDoc */
   public exec(game: Game): void {
     for (const task of this.tasks) {
@@ -134,11 +139,6 @@ export class GameBuilder implements Builder {
   /** Builds the game. */
   public build(): Game {
     const game = new Game(this.container);
-
-    // Register default resources.
-    this.container
-      .instance(game.ticker)
-      .instance(game.world);
 
     this.exec(game);
     this.init(game.world);

@@ -1,4 +1,4 @@
-import { ComponentSerializer, getTypeId, Serializer, UUID, World } from '@heliks/tiles-engine';
+import { getTypeId, TypeSerializationStrategy, UUID, World } from '@heliks/tiles-engine';
 import { AssetLoader } from '@heliks/tiles-assets';
 import { getMaterialFromId, ShaderMaterial } from '../../material';
 import { SpriteRender } from './sprite-render';
@@ -23,11 +23,11 @@ export interface SpriteRenderData {
   material?: MaterialData;
 }
 
-
 /** @internal */
 function createMaterialFromData(data: MaterialData): ShaderMaterial {
   const type = getMaterialFromId(data.uuid);
 
+  // eslint-disable-next-line new-cap
   const t = new type(data.data);
 
   t.setData(data.data)
@@ -35,14 +35,8 @@ function createMaterialFromData(data: MaterialData): ShaderMaterial {
   return t;
 }
 
-/**
- * Serializes {@link SpriteRender} components.
- *
- * @see ComponentSerializer
- * @see Serializer
- * @see SpriteRender
- */
-export class SpriteRenderSerializer implements ComponentSerializer<SpriteRender, SpriteRenderData> {
+/** Serializes {@link SpriteRender} components. */
+export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteRender, SpriteRenderData> {
 
   /** @inheritDoc */
   public deserialize(data: SpriteRenderData, world: World): SpriteRender {
@@ -89,7 +83,7 @@ export class SpriteRenderSerializer implements ComponentSerializer<SpriteRender,
       scaleX: component.scale.x,
       scaleY: component.scale.y,
       sprite: component.spriteIndex,
-      visible: component.visible,
+      visible: component.visible
     };
   }
 

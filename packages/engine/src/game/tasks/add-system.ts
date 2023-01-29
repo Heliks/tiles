@@ -1,5 +1,5 @@
 import { System } from '@heliks/ecs';
-import { Type } from '../../types';
+import { Type } from '../../utils/types';
 import { Game } from '../game';
 import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';

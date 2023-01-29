@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
 import { Entity, Storage, World as BaseWorld } from '@heliks/ecs';
-import { Type } from '../types';
+import { Type } from '../utils/types';
 import { EntityRef } from './entity-ref';
 import { EntityBuilder } from './entity-builder';
 

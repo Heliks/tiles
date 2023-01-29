@@ -1,13 +1,16 @@
 import 'reflect-metadata';
 
+// Directories
+export * from './core';
 export * from './ecs';
 export * from './game';
+export * from './serialization';
 export * from './transform';
+export * from './types';
 export * from './utils';
 
+// Files
 export * from './screen';
-export * from './types';
-
 
 // Re-export core-packages.
 export * from '@heliks/event-queue';

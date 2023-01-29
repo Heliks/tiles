@@ -6,6 +6,8 @@ import { PhysicsAdapter } from './physics-adapter';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
 import { UpdateWorld } from './update-world';
+import { RigidBody } from './rigid-body';
+import { Collider } from './collider';
 
 
 /**
@@ -40,6 +42,8 @@ export class PhysicsBundle implements Bundle {
     }
 
     builder
+      .component(RigidBody)
+      .type(Collider)
       .provide(MaterialManager)
       .bundle(this.adapter)
       .provide(this.getPhysicsProvider())

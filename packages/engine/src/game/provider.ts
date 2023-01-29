@@ -1,5 +1,5 @@
 import { BindingFactory, Container, InjectorToken } from '@heliks/tiles-injector';
-import { Type } from '../types';
+import { Type } from '../utils/types';
 
 
 /**

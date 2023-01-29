@@ -3,6 +3,7 @@ import { Container } from '@heliks/tiles-injector';
 import { World } from '../ecs';
 import { State, StateMachine } from './state';
 import { Ticker } from './ticker';
+import { TypeRegistry } from '../types';
 
 
 /**
@@ -14,36 +15,40 @@ import { Ticker } from './ticker';
  */
 export class Game {
 
+  /** Responsible for dispatching game system. This is essentially the game loop. */
+  public readonly dispatcher: SystemDispatcher;
+
+  /** State machine that executes the game state. */
+  public readonly state: StateMachine<World>;
+
   /** Ticker that executes the game loop. */
   public readonly ticker = new Ticker();
 
-  /** @see World */
+  /** Manages data types known to the application. */
+  public readonly types = new TypeRegistry();
+
+  /** World where entities exist. */
   public readonly world: World;
-
-  /** @see SystemDispatcher */
-  public readonly dispatcher: SystemDispatcher;
-
-  /**
-   * Contains the state machine that executes the game state.
-   *
-   * @see StateMachine
-   */
-  public readonly state: StateMachine<World>;
 
   /**
    * @param container Global service container. All modules and services will have
    *  access to this.
    */
   constructor(public readonly container: Container = new Container()) {
-    // Initialize entity system.
-    this.world = new World(this.container);
+    this.world      = new World(this.container);
+    this.state      = new StateMachine(this.world);
     this.dispatcher = new SystemDispatcher(this.world);
 
-    // Add the update function to the game ticker.
+    // Register game loop on ticker.
     this.ticker.add(this.update.bind(this));
 
-
-    this.state = new StateMachine(this.world);
+    // Add required bindings to service container.
+    container
+      .instance(this.dispatcher)
+      .instance(this.state)
+      .instance(this.ticker)
+      .instance(this.types)
+      .instance(this.world);
   }
 
   /**

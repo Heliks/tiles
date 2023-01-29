@@ -1,4 +1,4 @@
-import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { Injectable, ProcessingSystem, Query, QueryBuilder, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteAnimation } from './sprite-animation';

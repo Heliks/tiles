@@ -13,13 +13,6 @@ describe('GameBuilder', () => {
     class Foo {}
     class Bar {}
 
-    it('should register aliased components', () => {
-      const game = new GameBuilder().component(Foo, Bar).build();
-      const store = game.world.storage(Foo);
-
-      expect(store.type).toBe(Bar);
-    });
-
     it('should bind storages to the service container', () => {
       // Test component.
       class Foo {}

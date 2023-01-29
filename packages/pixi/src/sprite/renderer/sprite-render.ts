@@ -1,5 +1,5 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Entity, UUID, Vec2 } from '@heliks/tiles-engine';
+import { Entity, Vec2 } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteSheet } from '../sprite-sheet';
 import { ShaderMaterial } from '../../material';

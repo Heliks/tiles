@@ -28,6 +28,12 @@ importers:
       ts-jest: 29.0.0_avoqbs4x2yhgzrnavpiszqhaye
       typescript: 4.8.4
 
+  packages/ai:
+    specifiers:
+      typescript: ^4.7.4
+    devDependencies:
+      typescript: 4.8.4
+
   packages/aseprite:
     specifiers:
       '@heliks/tiles-assets': workspace:^

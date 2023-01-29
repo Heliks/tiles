@@ -1,6 +1,6 @@
 import { ComponentType, Storage } from '@heliks/ecs';
 import { Inject, InjectorToken } from '@heliks/tiles-injector';
-import { Type } from '../types';
+import { Type } from '../utils/types';
 
 
 /** Returns an injector token for the given `component` type. */

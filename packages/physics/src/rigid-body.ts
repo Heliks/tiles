@@ -1,4 +1,4 @@
-import { ChangeAwareValue, Entity, EntityBuilder, EventQueue, Vec2 } from '@heliks/tiles-engine';
+import { ChangeAwareValue, Entity, EventQueue, Ignore, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -36,6 +36,7 @@ export class RigidBody {
    * rigid body. The `entityA` (`colliderA`...) properties is guaranteed to contain the
    * information to this body.
    */
+  @Ignore()
   public readonly contacts: ColliderContact[] = [];
 
   /**
@@ -51,6 +52,7 @@ export class RigidBody {
    * If this flag is set to `true`, the entire rigid body will be re-build on the next
    * frame. Some changes to the rigid body require this to take effect.
    */
+  @Ignore()
   public dirty = true;
 
   // Todo: Document
@@ -85,18 +87,22 @@ export class RigidBody {
    * If set to an event queue, contact events that include a collider that is attached
    * to this rigid body, will be emitted here.
    */
+  @Ignore()
   public onContact?: EventQueue<ContactEvent>;
 
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
 
   /** @internal */
+  @Ignore()
   public readonly _force = new ChangeAwareValue(new Vec2());
 
   /** @internal */
+  @Ignore()
   public readonly _position = new ChangeAwareValue(new Vec2(0, 0));
 
   /** @internal */
+  @Ignore()
   public readonly _velocity = new ChangeAwareValue(new Vec2(0, 0));
 
   /**
