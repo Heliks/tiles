@@ -1,14 +1,14 @@
-import { Game } from './game';
+import { App } from './app';
 import { World } from '../ecs';
 
 
 export interface Builder {
 
-  /** Executes the builder on the given `game` instance. */
-  exec(game: Game): void;
+  /** Executes the builder on the given `app` instance. */
+  exec(app: App): void;
 
   /** Calls the onInit lifecycle on all registered tasks. */
-  init(game: World): void;
+  init(world: World): void;
 
 }
 

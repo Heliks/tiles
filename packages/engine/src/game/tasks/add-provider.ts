@@ -8,7 +8,7 @@ import {
   ValueProvider
 } from '../provider';
 import { Type } from '../../utils/types';
-import { Game } from '../game';
+import { App } from '../app';
 import { Task } from './task';
 import { Container } from '@heliks/tiles-injector';
 
@@ -54,8 +54,8 @@ export class AddProvider implements Task {
   }
 
   /** @inheritDoc */
-  public exec(game: Game): void {
-    const container = game.container;
+  public exec(app: App): void {
+    const container = app.container;
     const provider = this.provider;
 
     if (typeof provider === 'function') {

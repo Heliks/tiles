@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder } from '../game';
+import { Bundle, AppBuilder } from '../game';
 import { Circle, Grid, Rectangle, Vec2 } from '@heliks/tiles-math';
 import { SerializationBundle } from '../serialization';
 import { TransformBundle } from '../transform';
@@ -8,7 +8,7 @@ import { TransformBundle } from '../transform';
 export class CoreBundle implements Bundle {
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     builder
       .type(Grid)
       .type(Circle)

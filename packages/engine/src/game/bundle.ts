@@ -16,9 +16,9 @@ import { HasLifecycleEvents } from './lifecycle';
  * The example below demonstrates a bundle that registers a provider & a system.
  *
  * ```ts
- *  class MyBundle implements Bundle<GameBuilder> {
+ *  class MyBundle implements Bundle<AppBuilder> {
  *
- *    public build(builder: GameBuilder): void {
+ *    public build(builder: AppBuilder): void {
  *      // Adds additional builder tasks.
  *      builder
  *        .provide(MyProvider)
@@ -33,7 +33,7 @@ export interface Bundle<B extends Builder> extends HasLifecycleEvents {
   /**
    * Implementation of the bundle build logic.
    *
-   * If this bundle was added as a build task to the `GameBuilder`, this function will
+   * If this bundle was added as a build task to the `AppBuilder`, this function will
    * be called during the game runtime build process.
    */
   build(builder: B): void;

@@ -1,6 +1,6 @@
 import { Container } from '@heliks/tiles-injector';
 import { ComponentType, World } from '../ecs';
-import { Game } from './game';
+import { App } from './app';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
 import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
@@ -12,11 +12,11 @@ import { TypeSerializationStrategy } from '../types';
 /** Callback for {@link OnInit} lifecycle tasks. */
 export type OnInitCallback = (world: World) => void;
 
-/** Callback for {@link GameBuilder.run} tasks. */
+/** Callback for {@link AppBuilder.run} tasks. */
 export type BootCallback = (world: World) => void;
 
 /**
- * Builder that is used to compose the game runtime.
+ * Builder to create an {@link App}.
  *
  * The order in which builder tasks (e.g. adding providers, systems, etc.) are executed
  * is important. For example, if a system that is added before another system, it will
@@ -25,14 +25,14 @@ export type BootCallback = (world: World) => void;
  *
  * @see Task
  */
-export class GameBuilder implements Builder {
+export class AppBuilder implements Builder {
 
   /** Contains the task queue. */
   private readonly tasks: Task[] = [];
 
   /**
-   * @param container Service container used by the game runtime. All providers,
-   *  systems, etc. that are added to it via this builder, will be registered here.
+   * @param container Service container used by the app. All providers, systems,
+   *  etc. that are added to it via this builder, will be registered here.
    */
   constructor(public readonly container: Container = new Container()) {}
 
@@ -66,11 +66,11 @@ export class GameBuilder implements Builder {
    * Registers a `bundle`.
    *
    * Bundles are a collection of builder tasks grouped together as convenience. They
-   * essentially are the modules of the game engine. See: {@link Bundle}.
+   * essentially are the modules of the engine. See: {@link Bundle}.
    */
-  public bundle<B extends Bundle<GameBuilder>>(bundle: B): this {
+  public bundle<B extends Bundle<AppBuilder>>(bundle: B): this {
     this.tasks.push(
-      new AddBundle(bundle, new GameBuilder(this.container))
+      new AddBundle(bundle, new AppBuilder(this.container))
     );
 
     return this;
@@ -79,7 +79,7 @@ export class GameBuilder implements Builder {
   /** Adds a boot `callback` that is executed once during the build process. */
   public run(callback: BootCallback): this {
     this.tasks.push({
-      exec: game => callback(game.world)
+      exec: app => callback(app.world)
     });
 
     return this;
@@ -101,8 +101,8 @@ export class GameBuilder implements Builder {
 
   /**
    * Registers a class {@link Type type} on the {@link TypeRegistry registry} so that
-   * it can be serialized by the game engine. The constructor name will be used as the
-   * ID for the type.
+   * it can be serialized by the engine. The constructor name will be used as the ID
+   * for the type.
    *
    * The default serialization strategy is able to handle most types, but it is possible
    * to provide a custom one where this is not the case.
@@ -116,10 +116,10 @@ export class GameBuilder implements Builder {
   }
 
   /** @inheritDoc */
-  public exec(game: Game): void {
+  public exec(app: App): void {
     for (const task of this.tasks) {
       try {
-        task.exec(game);
+        task.exec(app);
       }
       catch (error) {
         console.error(`Failed to run task ${task}`);
@@ -136,14 +136,14 @@ export class GameBuilder implements Builder {
     }
   }
 
-  /** Builds the game. */
-  public build(): Game {
-    const game = new Game(this.container);
+  /** Builds the app. */
+  public build(): App {
+    const app = new App(this.container);
 
-    this.exec(game);
-    this.init(game.world);
+    this.exec(app);
+    this.init(app.world);
 
-    return game;
+    return app;
   }
 
 }

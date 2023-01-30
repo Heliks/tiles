@@ -1,9 +1,9 @@
 import { Bundle as BaseBundle } from './bundle';
-import { GameBuilder } from './game-builder';
+import { AppBuilder } from './app-builder';
 
 
-export * from './game';
-export * from './game-builder';
+export * from './app';
+export * from './app-builder';
 export * from './lifecycle';
 export * from './provider';
 export * from './state'
@@ -13,11 +13,11 @@ export * from './tasks';
 
 /** @see BaseBundle */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Bundle extends BaseBundle<GameBuilder> {}
+export interface Bundle extends BaseBundle<AppBuilder> {}
 
 
 /**
- * Returns a {@link GameBuilder} that is used to compose the {@link Game} runtime. This
+ * Returns a {@link AppBuilder} that is used to compose the {@link App} runtime. This
  * is the "starting point" of every game created with this engine.
  *
  * ```ts
@@ -31,6 +31,6 @@ export interface Bundle extends BaseBundle<GameBuilder> {}
  *  game.start();
  * ```
  */
-export function runtime(): GameBuilder {
-  return new GameBuilder();
+export function runtime(): AppBuilder {
+  return new AppBuilder();
 }

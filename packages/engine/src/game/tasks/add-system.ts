@@ -1,6 +1,6 @@
 import { System } from '@heliks/ecs';
-import { Type } from '../../utils/types';
-import { Game } from '../game';
+import { Type } from '../../utils';
+import { App } from '../app';
 import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';
@@ -33,12 +33,12 @@ export class AddSystem implements Task {
   }
 
   /** @inheritDoc */
-  public exec(game: Game): void {
-    this.created = this.createSystemInstance(game.container);
+  public exec(app: App): void {
+    this.created = this.createSystemInstance(app.container);
 
     // Bind system to the service container and add it to the system dispatcher.
-    game.container.instance(this.created);
-    game.dispatcher.add(this.created);
+    app.container.instance(this.created);
+    app.dispatcher.add(this.created);
   }
 
   /** @inheritDoc */

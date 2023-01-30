@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder } from '../game';
+import { Bundle, AppBuilder } from '../game';
 import { EntitySerializer } from './entity-serializer';
 import { TypeDataSerializer } from './type-data-serializer';
 
@@ -12,7 +12,7 @@ import { TypeDataSerializer } from './type-data-serializer';
 export class SerializationBundle implements Bundle {
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     builder
       .provide(TypeDataSerializer)
       .provide(EntitySerializer);

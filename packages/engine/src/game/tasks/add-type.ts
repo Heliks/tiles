@@ -1,5 +1,5 @@
 import { Task } from './task';
-import { Game } from '../game';
+import { App } from '../app';
 import { Type } from '../../utils';
 import { TypeRegistry, TypeSerializationStrategy, TypeSerializer } from '../../types';
 
@@ -27,8 +27,8 @@ export class AddType<T> implements Task {
   }
 
   /** @inheritDoc */
-  public exec(game: Game): void {
-    game.world.get(TypeRegistry).register(
+  public exec(app: App): void {
+    app.world.get(TypeRegistry).register(
       this.type,
       this.getStrategy(),
       this.getTypeName()

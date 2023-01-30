@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder, Provider } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder, Provider } from '@heliks/tiles-engine';
 import { ContactEvents } from './events';
 import { MaterialManager } from './material';
 import { Physics } from './physics';
@@ -36,7 +36,7 @@ export class PhysicsBundle implements Bundle {
   }
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     if (! this.adapter) {
       throw new Error('A physics adapter must be configured.');
     }

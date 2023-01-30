@@ -7,15 +7,28 @@ import { TypeRegistry } from '../types';
 
 
 /**
- * Game runtime that is produced by a `GameBuilder`.
+ * The game runtime. Everything related to run the game can be found here.
  *
- * Everything related to the game is stored and can be controlled via this instance.
+ * The app uses a {@link StateMachine push down state machine} (PDA) that allows to
+ * switch between game {@link State states}. This means that we need an initial state
+ * to start the app. If no state is left in the state machine stack, the app is closed.
  *
- * @see Builder
+ * ```ts
+ * class MyState implements State<World> {
+ *
+ *    public update(): void {
+ *      // Called once per frame.
+ *    }
+ *
+ * }
+ *
+ * // Start the app using "MyState".
+ * new App().start(new MyState());
+ * ```
  */
-export class Game {
+export class App {
 
-  /** Responsible for dispatching game system. This is essentially the game loop. */
+  /** Dispatches game systems. This essentially is the game loop logic. */
   public readonly dispatcher: SystemDispatcher;
 
   /** State machine that executes the game state. */
@@ -27,7 +40,7 @@ export class Game {
   /** Manages data types known to the application. */
   public readonly types = new TypeRegistry();
 
-  /** World where entities exist. */
+  /** Entity world. */
   public readonly world: World;
 
   /**
@@ -52,8 +65,8 @@ export class Game {
   }
 
   /**
-   * Updates all sub-systems of the game, e.g. systems, entities, game state. This is the
-   * game loop and called once on each frame.
+   * Updates the app. Basically, this executes the game loop. While the app is running,
+   * this is called automatically once per frame.
    */
   public update(): void {
     this.dispatcher.update();
@@ -63,15 +76,13 @@ export class Game {
     this.state.update();
   }
 
-  /**
-   * Starts the game using the given `state`.
-   */
+  /** Starts the app using the given `state`. */
   public start(state: State<World>): void {
     this.ticker.start();
     this.state.start(state);
   }
 
-  /** Stops the game. */
+  /** Stops the app. */
   public stop(): void {
     this.ticker.stop();
   }

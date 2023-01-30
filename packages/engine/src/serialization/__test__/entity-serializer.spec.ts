@@ -1,6 +1,6 @@
 import { EntitySerializer } from '../entity-serializer';
 import { World } from '../../ecs';
-import { GameBuilder } from '../../game';
+import { AppBuilder } from '../../game';
 import { NoopSerializer } from '../../types/__test__/noop-serializer';
 import { TypeRegistry } from '../../types';
 
@@ -17,7 +17,7 @@ describe('EntitySerializer', () => {
   let $bar: NoopSerializer;
 
   beforeEach(() => {
-    world = new GameBuilder().build().world;
+    world = new AppBuilder().build().world;
     serializer = new EntitySerializer(new TypeRegistry());
 
     $foo = new NoopSerializer();

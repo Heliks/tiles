@@ -1,5 +1,5 @@
 import { ComponentType } from '@heliks/ecs';
-import { Game } from '../game';
+import { App } from '../app';
 import { getStorageInjectorToken } from '../../ecs';
 import { Task } from './task';
 import { AddType } from './add-type';
@@ -19,22 +19,22 @@ export class AddComponent<C> implements Task {
   ) {}
 
   /** @internal */
-  private registerComponentType(game: Game): void {
-    new AddType(this.component, this.strategy).exec(game);
+  private registerComponentType(app: App): void {
+    new AddType(this.component, this.strategy).exec(app);
   }
 
   /** @internal */
-  private registerComponentStore(game: Game): void {
-    const store = game.world.register(this.component);
+  private registerComponentStore(app: App): void {
+    const store = app.world.register(this.component);
     const token = getStorageInjectorToken(this.component);
 
-    game.container.bind(token, store);
+    app.container.bind(token, store);
   }
 
   /** @inheritDoc */
-  public exec(game: Game): void {
-    this.registerComponentType(game);
-    this.registerComponentStore(game);
+  public exec(app: App): void {
+    this.registerComponentType(app);
+    this.registerComponentStore(app);
   }
 
 }

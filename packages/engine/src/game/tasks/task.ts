@@ -1,11 +1,8 @@
 import { World } from '../../ecs';
-import { Game } from '../game';
+import { App } from '../app';
 
 
-/**
- * Internally used by the `GameBuilder` to store meta-data about build tasks (e.g. adding
- * a system, registering a provider, etc.).
- */
+/** Implementation of a build task internally used by the {@link AppBuilder}. */
 export interface Task {
 
   /**
@@ -14,7 +11,7 @@ export interface Task {
    * This is where the logic of each build step is implemented. After executing this,
    * the tasks is considered complete and the builder will move on to the next one.
    */
-  exec(game: Game): unknown;
+  exec(app: App): unknown;
 
   /**
    * Runs initialization logic.

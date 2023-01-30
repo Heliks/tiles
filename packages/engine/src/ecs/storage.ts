@@ -34,7 +34,7 @@ function injectComponentStorageDecorator(component: ComponentType): Function {
  *  }
  *
  *  // Build the game.
- *  new GameBuilder()
+ *  new AppBuilder()
  *    .component(MyComponent)
  *    .provider(MyProvider)
  *    .build();

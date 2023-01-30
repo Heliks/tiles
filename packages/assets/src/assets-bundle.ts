@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder } from '@heliks/tiles-engine';
 import { AssetLoader } from './asset-loader';
 import { Format } from './format';
 
@@ -32,7 +32,7 @@ export class AssetsBundle implements Bundle {
   }
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     const loader = new AssetLoader(this.root);
 
     for (const format of this.formats) {

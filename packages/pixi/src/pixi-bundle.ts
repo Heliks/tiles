@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder, OnInit, Screen, Struct, World } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder, OnInit, Screen, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
@@ -10,7 +10,7 @@ import { Layers, Stage } from './layer';
 
 
 /** @internal */
-function checkScreenPresence(builder: GameBuilder): void {
+function checkScreenPresence(builder: AppBuilder): void {
   if (! builder.container.has(Screen)) {
     throw new Error('Renderer requires a "Screen" to be present.');
   }
@@ -63,7 +63,7 @@ export class PixiBundle implements Bundle, OnInit {
   }
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     checkScreenPresence(builder);
 
     // Prevents the "Thanks for using PIXI" message from showing up in the console.

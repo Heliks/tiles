@@ -1,11 +1,11 @@
 import { getStorageInjectorToken } from '../../ecs';
-import { Game } from '../game';
-import { GameBuilder } from '../game-builder';
+import { App } from '../app';
+import { AppBuilder } from '../app-builder';
 
 
-describe('GameBuilder', () => {
+describe('AppBuilder', () => {
   it('should build a game', () => {
-    expect(new GameBuilder().build()).toBeInstanceOf(Game);
+    expect(new AppBuilder().build()).toBeInstanceOf(App);
   });
 
   describe('components', () => {
@@ -18,7 +18,7 @@ describe('GameBuilder', () => {
       class Foo {}
 
       // Try to resolve storage from service container.
-      const storage = new GameBuilder()
+      const storage = new AppBuilder()
         .component(Foo)
         .build()
         .world.get(getStorageInjectorToken(Foo));
@@ -33,7 +33,7 @@ describe('GameBuilder', () => {
         update: jest.fn()
       };
 
-      const game = new GameBuilder().system(system).build();
+      const game = new AppBuilder().system(system).build();
 
       // Update all systems.
       game.dispatcher.update();
@@ -49,7 +49,7 @@ describe('GameBuilder', () => {
         onInit: jest.fn()
       };
 
-      const game = new GameBuilder().system(system).build();
+      const game = new AppBuilder().system(system).build();
 
       expect(system.onInit).toHaveBeenCalledWith(game.world);
     });
@@ -60,7 +60,7 @@ describe('GameBuilder', () => {
       class Provider1 {}
       class Provider2 {}
 
-      const container = new GameBuilder()
+      const container = new AppBuilder()
         .provide(Provider1)
         .provide(Provider2)
         .build()
@@ -71,7 +71,7 @@ describe('GameBuilder', () => {
     });
 
     it('should register value providers', () => {
-      const container = new GameBuilder()
+      const container = new AppBuilder()
         .provide({ token: '1', value: 'foo' })
         .provide({ token: '2', value: 'bar' })
         .build()
@@ -96,7 +96,7 @@ describe('GameBuilder', () => {
       }
 
       it('should be bound as factory', () => {
-        const game = new GameBuilder()
+        const game = new AppBuilder()
           .provide({
             factory,
             token: 'counter'
@@ -108,7 +108,7 @@ describe('GameBuilder', () => {
       });
 
       it('should be bound as singleton', () => {
-        const game = new GameBuilder()
+        const game = new AppBuilder()
           .provide({
             factory,
             singleton: true,
@@ -126,7 +126,7 @@ describe('GameBuilder', () => {
     it('should register provider', () => {
       class TestService {}
 
-      const game = new GameBuilder()
+      const game = new AppBuilder()
         .bundle({
           build: builder => void builder.provide(TestService)
         })
@@ -138,7 +138,7 @@ describe('GameBuilder', () => {
 
     it('should call OnInit lifecycle hook', () => {
       const init = jest.fn();
-      const game = new GameBuilder()
+      const game = new AppBuilder()
         .bundle({
           build: () => void 0,
           onInit: init
@@ -154,7 +154,7 @@ describe('GameBuilder', () => {
         onInit: jest.fn()
       };
 
-      const game = new GameBuilder()
+      const game = new AppBuilder()
         .bundle({
           build: builder => void builder.system(system)
         })
@@ -165,7 +165,7 @@ describe('GameBuilder', () => {
   });
 
   it('should run boot script', () => {
-    const builder = new GameBuilder();
+    const builder = new AppBuilder();
     const callback = jest.fn();
 
     builder
@@ -178,7 +178,7 @@ describe('GameBuilder', () => {
   it('should run init script', () => {
     const callback = jest.fn();
 
-    new GameBuilder()
+    new AppBuilder()
       .runOnInit(callback)
       .build();
 

@@ -2,7 +2,7 @@ import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { Transform } from '@heliks/ecs-transform';
 import { UpdateHierarchy } from './update-hierarchy';
 import { UpdateTransforms } from './update-transforms';
-import { Bundle, GameBuilder } from '../game';
+import { Bundle, AppBuilder } from '../game';
 
 
 /**
@@ -14,7 +14,7 @@ import { Bundle, GameBuilder } from '../game';
 export class TransformBundle implements Bundle {
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     const hierarchy = new Hierarchy();
 
     builder

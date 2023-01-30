@@ -4,7 +4,7 @@ import { RendererSystem } from './renderer-system';
 
 /**
  * Resource on which {@link RendererSystem renderer systems} will be registered when they
- * are added to the {@link GameBuilder}.
+ * are added to the {@link AppBuilder}.
  */
 export class RendererSystemDispatcher {
 

@@ -1,4 +1,4 @@
-import { Bundle, GameBuilder } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder } from '@heliks/tiles-engine';
 import { ProcessInteractions } from './process-interactions';
 
 
@@ -8,7 +8,7 @@ import { ProcessInteractions } from './process-interactions';
 export class UiBundle implements Bundle {
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     builder.system(ProcessInteractions);
   }
 
