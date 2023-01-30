@@ -86,20 +86,6 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Adds a `callback` that will be called once when other {@link OnInit} lifecycle
-   * events are executed during the build process.
-   */
-  public runOnInit(callback: OnInitCallback): this {
-    this.tasks.push({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      exec: () => {},
-      init: callback
-    });
-
-    return this;
-  }
-
-  /**
    * Registers a class {@link Type type} on the {@link TypeRegistry registry} so that
    * it can be serialized by the engine. The constructor name will be used as the ID
    * for the type.

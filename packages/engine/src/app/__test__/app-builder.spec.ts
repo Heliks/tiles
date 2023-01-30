@@ -174,14 +174,4 @@ describe('AppBuilder', () => {
 
     expect(callback).toHaveBeenCalled();
   });
-
-  it('should run init script', () => {
-    const callback = jest.fn();
-
-    new AppBuilder()
-      .runOnInit(callback)
-      .build();
-
-    expect(callback).toHaveBeenCalled();
-  });
 });
