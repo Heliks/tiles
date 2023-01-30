@@ -2,7 +2,7 @@ import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { Transform } from '@heliks/ecs-transform';
 import { UpdateHierarchy } from './update-hierarchy';
 import { UpdateTransforms } from './update-transforms';
-import { Bundle, AppBuilder } from '../game';
+import { Bundle, AppBuilder } from '../app';
 
 
 /**

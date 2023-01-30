@@ -1,4 +1,4 @@
-import { Bundle, AppBuilder } from '../game';
+import { Bundle, AppBuilder } from '../app';
 import { EntitySerializer } from './entity-serializer';
 import { TypeDataSerializer } from './type-data-serializer';
 

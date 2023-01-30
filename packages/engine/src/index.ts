@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 
 // Directories
+export * from './app';
 export * from './core';
 export * from './ecs';
-export * from './game';
 export * from './serialization';
 export * from './transform';
 export * from './types';

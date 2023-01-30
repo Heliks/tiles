@@ -1,6 +1,6 @@
 import { EntitySerializer } from '../entity-serializer';
 import { World } from '../../ecs';
-import { AppBuilder } from '../../game';
+import { AppBuilder } from '../../app';
 import { NoopSerializer } from '../../types/__test__/noop-serializer';
 import { TypeRegistry } from '../../types';
 

@@ -1,4 +1,4 @@
-import { Bundle, AppBuilder } from '../game';
+import { Bundle, AppBuilder } from '../app';
 import { Circle, Grid, Rectangle, Vec2 } from '@heliks/tiles-math';
 import { SerializationBundle } from '../serialization';
 import { TransformBundle } from '../transform';
