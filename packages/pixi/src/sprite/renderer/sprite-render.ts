@@ -1,8 +1,9 @@
 import { Handle } from '@heliks/tiles-assets';
-import { Entity, Vec2 } from '@heliks/tiles-engine';
+import { Vec2 } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteSheet } from '../sprite-sheet';
 import { ShaderMaterial } from '../../material';
+import { LayerId } from '../../layer';
 
 
 /**
@@ -45,7 +46,7 @@ export class SpriteRender {
   public scale = new Vec2(1, 1);
 
   /** @internal */
-  public _group?: Entity;
+  public _layer?: LayerId;
 
   /** The opacity of the sprite. Value from 0-1. */
   public set opacity(opacity: number) {
@@ -68,13 +69,12 @@ export class SpriteRender {
   /**
    * @param spritesheet Asset {@link Handle} that points to a {@link Spritesheet},
    * @param spriteIndex Index of the sprite that should be rendered.
-   * @param group (optional) Entity that has a `RenderGroup` component. The sprite
-   *  will be added to that group instead of the stage.
+   * @param layer (optional) Renderer layer ID.
    */
   constructor(
     public spritesheet: Handle<SpriteSheet>,
     public spriteIndex: number,
-    public group?: Entity
+    public layer?: LayerId
   ) {
     // Using the middle position instead of the top-left position will save us extra
     // calculations during the renderer update.

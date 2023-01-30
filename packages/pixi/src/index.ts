@@ -1,14 +1,13 @@
 export * from './drawable';
+export * from './layer';
 export * from './material';
 export * from './sprite';
-export * from './stage';
 
 export * from './align';
 export * from './camera';
 export * from './debug-draw';
 export * from './load-texture';
 export * from './pixi-bundle';
-export * from './render-group';
 export * from './renderer';
 export * from './renderer-hierarchy';
 export * from './renderer-system';

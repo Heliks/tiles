@@ -5,7 +5,7 @@ import { Bundle } from './bundle';
 import { Provider } from './provider';
 import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
 import { Builder } from './builder';
-import { Type } from '../utils/types';
+import { Type } from '../utils';
 import { TypeSerializationStrategy } from '../types';
 
 
@@ -13,7 +13,7 @@ import { TypeSerializationStrategy } from '../types';
 export type OnInitCallback = (world: World) => void;
 
 /** Callback for {@link GameBuilder.run} tasks. */
-export type BootCallback = (game: Game) => void;
+export type BootCallback = (world: World) => void;
 
 /**
  * Builder that is used to compose the game runtime.
@@ -79,7 +79,7 @@ export class GameBuilder implements Builder {
   /** Adds a boot `callback` that is executed once during the build process. */
   public run(callback: BootCallback): this {
     this.tasks.push({
-      exec: callback
+      exec: game => callback(game.world)
     });
 
     return this;

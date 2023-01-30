@@ -1,7 +1,6 @@
 import { Bundle, Container, GameBuilder, hasOnInit, OnInit, Type, World } from '@heliks/tiles-engine';
 import { RendererSystemDispatcher } from './renderer-system-dispatcher';
 import { UpdateRenderer } from './update-renderer';
-import { SyncGroups } from './sync-groups';
 import { SpriteAnimationSystem, SpriteRenderer } from './sprite';
 import { RendererSystem } from './renderer-system';
 
@@ -62,7 +61,6 @@ export class RendererHierarchy implements Bundle, OnInit {
       .provide({
         instance: dispatcher
       })
-      .system(SyncGroups)
       .system(SpriteAnimationSystem)
       .system(SpriteRenderer)
       .system(UpdateRenderer);

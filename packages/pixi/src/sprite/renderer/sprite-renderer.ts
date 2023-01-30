@@ -2,9 +2,9 @@ import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
-import { Stage } from '../../stage';
 import { SpriteSheet } from '../sprite-sheet';
 import { RendererConfig } from '../../config';
+import { Stage } from '../../layer';
 
 
 @Injectable()
@@ -39,32 +39,33 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
-    return builder.contains(SpriteRender).contains(Transform).build();
+    return builder
+      .contains(SpriteRender)
+      .contains(Transform)
+      .build();
   }
 
   /** @internal */
-  private insertSprite(sprite: SpriteRender): void {
-    this.stage.insert(sprite._sprite, sprite.group);
+  private insert(sprite: SpriteRender): void {
+    this.stage.add(sprite._sprite, sprite.layer);
 
-    sprite._group = sprite.group;
+    sprite._layer = sprite.layer;
   }
 
   /** @internal */
-  private updateRenderGroup(sprite: SpriteRender): void {
+  private updateLayer(sprite: SpriteRender): void {
     // Remove from current container.
     sprite._sprite.parent.removeChild(sprite._sprite);
 
-    this.insertSprite(sprite);
+    this.insert(sprite);
   }
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const render = world.storage(SpriteRender).get(entity);
 
-    console.log('ADDED', render)
-
     // Add to render group if necessary.
-    this.insertSprite(render);
+    this.insert(render);
     this.sprites.set(entity, render._sprite);
   }
 
@@ -80,8 +81,6 @@ export class SpriteRenderer extends ReactiveSystem {
   /** @internal */
   private updateMaterial(render: SpriteRender): void {
     if (render.material !== render._material) {
-      console.log('UPDATE MATERIAL')
-
       // If no material is applied, reset the sprite filters.
       render._sprite.filters = render.material ? render.material.filters() : [];
       render._material = render.material;
@@ -111,8 +110,8 @@ export class SpriteRenderer extends ReactiveSystem {
       const spritesheet = this.storage.get(render.spritesheet)?.data;
 
       // Switch render group.
-      if (render.group !== render._group) {
-        this.updateRenderGroup(render);
+      if (render.layer !== render._layer) {
+        this.updateLayer(render);
       }
 
       // Update sprite texture.

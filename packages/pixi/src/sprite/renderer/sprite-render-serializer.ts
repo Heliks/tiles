@@ -2,6 +2,7 @@ import { getTypeId, TypeSerializationStrategy, UUID, World } from '@heliks/tiles
 import { AssetLoader } from '@heliks/tiles-assets';
 import { getMaterialFromId, ShaderMaterial } from '../../material';
 import { SpriteRender } from './sprite-render';
+import { LayerId } from '../../layer';
 
 
 export interface MaterialData {
@@ -21,6 +22,7 @@ export interface SpriteRenderData {
   sprite: number;
   visible: boolean;
   material?: MaterialData;
+  layer?: LayerId;
 }
 
 /** @internal */
@@ -41,7 +43,7 @@ export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteR
   /** @inheritDoc */
   public deserialize(data: SpriteRenderData, world: World): SpriteRender {
     const handle = world.get(AssetLoader).load(data.path);
-    const sprite = new SpriteRender(handle, data.sprite);
+    const sprite = new SpriteRender(handle, data.sprite, data.layer);
 
     sprite.opacity = data.opacity;
     sprite.visible = data.visible;
@@ -77,6 +79,7 @@ export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteR
       anchorY: component.anchor.y,
       flipX: component.flipX,
       flipY: component.flipY,
+      layer: component.layer,
       material: this.serializeMaterialData(component),
       opacity: component.opacity,
       path: component.spritesheet.path,

@@ -30,3 +30,7 @@ export function createPackedArray<T>(size: number, value: T): T[] {
 
   return data;
 }
+
+export function isDefined<T>(value?: T): value is T {
+  return value !== undefined;
+}

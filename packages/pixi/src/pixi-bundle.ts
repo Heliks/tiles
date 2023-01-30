@@ -1,12 +1,12 @@
-import { Bundle, GameBuilder, OnInit, Struct, World, Screen } from '@heliks/tiles-engine';
+import { Bundle, GameBuilder, OnInit, Screen, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
 import { SpriteAnimation, SpriteRender, SpriteRenderSerializer } from './sprite';
-import { Overlay, Stage } from './stage';
 import { Screenshot } from './screenshot';
 import { RendererConfig } from './config';
+import { Layers, Stage } from './layer';
 
 
 /** @internal */
@@ -82,8 +82,8 @@ export class PixiBundle implements Bundle, OnInit {
       })
       .provide(Camera)
       .provide(DebugDraw)
+      .provide(Layers)
       .provide(Stage)
-      .provide(Overlay)
       .provide(Renderer)
       .provide(Screenshot);
   }

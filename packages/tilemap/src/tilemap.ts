@@ -1,5 +1,5 @@
-import { createPackedArray, Entity, Grid } from '@heliks/tiles-engine';
-import { Container } from '@heliks/tiles-pixi';
+import { createPackedArray, Grid } from '@heliks/tiles-engine';
+import { Container, LayerId } from '@heliks/tiles-pixi';
 import { LocalTilesetBag } from './tileset';
 
 
@@ -42,8 +42,7 @@ export class Tilemap {
   public tilesets = new LocalTilesetBag();
 
   /**
-   * Contains the display object on which the tilemap will be rendered. Will either be
-   * added directly to the stage or to a specific render group (if defined).
+   * Contains the display object on which the tilemap will be rendered.
    *
    * @internal
    */
@@ -60,9 +59,9 @@ export class Tilemap {
 
   /**
    * @param grid Grid that defines the boundaries of the tilemap.
-   * @param group (optional) Parent render group.
+   * @param layer (optional) Renderer layer ID.
    */
-  constructor(public readonly grid: Grid, public readonly group?: Entity) {
+  constructor(public readonly grid: Grid, public readonly layer?: LayerId) {
     this.data = createPackedArray(grid.size, 0);
   }
 

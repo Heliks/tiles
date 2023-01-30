@@ -1,11 +1,11 @@
-/**
- * Resource on which {@link RendererSystem renderer systems} will be registered when they
- * are added to the {@link GameBuilder}.
- */
 import { hasOnInit, World } from '@heliks/tiles-engine';
 import { RendererSystem } from './renderer-system';
 
 
+/**
+ * Resource on which {@link RendererSystem renderer systems} will be registered when they
+ * are added to the {@link GameBuilder}.
+ */
 export class RendererSystemDispatcher {
 
   /** @internal */

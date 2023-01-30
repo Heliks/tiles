@@ -4,8 +4,8 @@ import { RenderTexture } from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Container, Drawable } from './drawable';
-import { Overlay, Stage } from './stage';
 import { RendererConfig } from './config';
+import { Layers } from './layer';
 
 
 /** Event that occurs every time the renderer is resized. */
@@ -20,9 +20,9 @@ export class Renderer {
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
   /**
-   * Root container that holds all draw-ables that make up the game scene. It is not
-   * recommended to modify this directly. To add elements to the renderer use one of
-   * the dedicated stages {@link Stage} or {@link Overlay}.
+   * Root container that holds all {@link Drawable drawables} that are rendered. It's
+   * not recommended to manually add anything here. Instead, the {@link Stage} can be
+   * used to add drawables as needed.
    */
   public readonly root = new Container();
 
@@ -64,9 +64,8 @@ export class Renderer {
     public readonly camera: Camera,
     public readonly config: RendererConfig,
     public readonly debugDraw: DebugDraw,
-    public readonly overlay: Overlay,
+    public readonly layers: Layers,
     public readonly screen: Screen,
-    public readonly stage: Stage,
     public readonly renderer: PIXI.Renderer
   ) {
     this.onScreenUpdate$ = screen.events.subscribe();
@@ -78,8 +77,7 @@ export class Renderer {
     // 2. Overlay
     // 3. Debug
     this.root.addChild(
-      this.stage,
-      this.overlay,
+      this.layers.container,
       this.debugDraw.view
     );
   }
@@ -163,23 +161,19 @@ export class Renderer {
 
     this.renderer.resize(this.screen.size.x, this.screen.size.y);
 
-    // Note: Because of an issue in PIXi.JS stage and debug draw are resized directly
-    // and independently from the renderer because the "artificial" texture used
-    // inside of the debug draw will be rendered blurry otherwise.
-    this.stage.scale.set(this.screen.scale.x, this.screen.scale.y);
+    this.layers.container.scale.set(
+      this.screen.scale.x,
+      this.screen.scale.y
+    );
 
     this.debugDraw
       .resize(this.screen.size.x, this.screen.size.y)
       .scale(this.screen.scale.x, this.screen.scale.y);
-
-    // As the overlay it is fixed in size and position we can update this here instead
-    // of doing it every frame.
-    this.overlay.pivot.set(-(this.screen.size.x >> 1), -(this.screen.size.y >> 1));
   }
 
   /** @internal */
   private updateCamera(): void {
-    this.stage.pivot.set(
+    this.layers.container.pivot.set(
       (this.camera.world.x * this.config.unitSize) - this.screenSizeScaled2.x,
       (this.camera.world.y * this.config.unitSize) - this.screenSizeScaled2.y
     );
