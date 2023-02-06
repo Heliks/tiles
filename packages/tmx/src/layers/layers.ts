@@ -1,7 +1,7 @@
 import { Grid } from '@heliks/tiles-engine';
 import { GameObject, parseObject } from '../objects';
 import { getCustomProperties, Properties } from '../properties';
-import { TmxLayer, TmxLayerType, TmxObjectLayer, TmxTileLayer, TmxTilemap } from '../tmx';
+import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxTilemap } from '../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
 
@@ -69,7 +69,7 @@ export type Layer<P extends Properties = Properties> = LayerGroup<P> | ObjectLay
  * @param layer Layer data that should be parsed.
  * @see ObjectLayer
  */
-export function parseObjectLayer(layer: TmxObjectLayer): ObjectLayer {
+export function parseObjectLayer(layer: TmxObjectLayerData): ObjectLayer {
   const objects = [];
 
   for (const item of layer.objects) {
@@ -93,7 +93,7 @@ export function parseObjectLayer(layer: TmxObjectLayer): ObjectLayer {
  *  Required to parse tile layers.
  * @see TileLayer
  */
-export function parseTileLayer(layer: TmxTileLayer, chunkTileGrid: Grid): TileLayer {
+export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): TileLayer {
   const chunks = [];
 
   if (layer.chunks) {
@@ -127,13 +127,13 @@ export function parseTileLayer(layer: TmxTileLayer, chunkTileGrid: Grid): TileLa
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
  */
-export function parseLayer(map: TmxTilemap, layer: TmxLayer, chunkTileGrid: Grid): Layer {
+export function parseLayer(map: TmxTilemap, layer: TmxLayerData, chunkTileGrid: Grid): Layer {
   switch (layer.type) {
-    case TmxLayerType.Tiles:
+    case TmxLayerTypeData.Tiles:
       return parseTileLayer(layer, chunkTileGrid);
-    case TmxLayerType.Objects:
+    case TmxLayerTypeData.Objects:
       return parseObjectLayer(layer);
-    case TmxLayerType.Group:
+    case TmxLayerTypeData.Group:
       const layers = layer.layers.map(item => parseLayer(
         map,
         item,

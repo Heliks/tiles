@@ -1,8 +1,8 @@
-import { TmxHasProperties } from './utils';
+import { TmxHasPropertyData } from './utils';
 
 
 /** TMX JSON format for shapes. */
-export interface TmxShape extends TmxHasProperties {
+export interface TmxShapeData extends TmxHasPropertyData {
   ellipse?: boolean;
   height: number;
   id: number;

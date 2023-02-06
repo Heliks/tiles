@@ -3,7 +3,7 @@ import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
 import { getCustomProperties } from './properties';
 import { Tileset } from './tileset';
-import { TmxTileset, TmxTilesetTile } from './tmx';
+import { TmxTileset, TmxTileData } from './tmx';
 
 
 /** @internal */
@@ -44,7 +44,7 @@ async function loadSpritesheet(data: TmxTileset, file: string, loader: AssetLoad
  * @param tileset Tileset to which tile information should be added.
  * @param tile Tile data that should be parsed.
  */
-export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
+export function parseTile(tileset: Tileset, tile: TmxTileData): void {
   // The tileID here is actually just the tile index.. Convert it to a local ID.
   const tileId = tile.id + 1;
 

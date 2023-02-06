@@ -1,4 +1,4 @@
-import { TmxHasProperties } from './tmx';
+import { TmxHasPropertyData } from './tmx';
 
 
 /** Custom properties. */
@@ -17,7 +17,7 @@ export interface HasProperties<T extends Properties> {
  *
  * - `P`: Expected custom properties.
  */
-export function getCustomProperties<P extends Properties>(data: TmxHasProperties): P {
+export function getCustomProperties<P extends Properties>(data: TmxHasPropertyData): P {
   const props: Properties = {};
 
   if (data.properties) {

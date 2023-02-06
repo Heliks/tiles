@@ -3,7 +3,7 @@ import { ColliderShape } from '@heliks/tiles-physics';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
 import { getCustomProperties, Properties } from './properties';
 import { Shape } from './shape';
-import { TmxObject } from './tmx';
+import { TmxObjectData } from './tmx';
 import { getCustomType } from './utils';
 
 
@@ -54,7 +54,7 @@ export interface Tile<P extends Properties = Properties> extends GameObject<P, R
 }
 
 /** Creates a `Tile` from object `data`. */
-export function parseObject(data: TmxObject): GameObject {
+export function parseObject(data: TmxObjectData): GameObject {
   const rect = new Rectangle(
     data.width,
     data.height,

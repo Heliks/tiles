@@ -1,6 +1,6 @@
-import { TmxLayer } from './layer';
+import { TmxLayerData } from './layer';
 import { TmxTileset } from './tileset';
-import { TmxHasProperties } from './utils';
+import { TmxHasPropertyData } from './utils';
 
 
 /** An external tileset that must be loaded manually. */
@@ -16,20 +16,20 @@ export interface TmxEmbeddedLocalTilesetData extends TmxTileset {
 
 export type TmxLocalTilesetData = TmxExternalLocalTilesetData | TmxEmbeddedLocalTilesetData;
 
-export interface TmxEditorSettings {
+export interface TmxEditorSettingsData {
   chunksize?: {
     height: number;
     width: number;
   }
 }
 
-export interface TmxTilemap extends TmxHasProperties {
+export interface TmxTilemap extends TmxHasPropertyData {
   backgroundcolor: string;
-  editorsettings?: TmxEditorSettings;
+  editorsettings?: TmxEditorSettingsData;
   height: number;
   hexsidelength: number;
   infinite: boolean;
-  layers: TmxLayer[];
+  layers: TmxLayerData[];
   nextlayerid: number;
   nextobjectid: number;
   orientation: 'orthogonal' | 'isometric' | 'staggered' | 'hexagonal';

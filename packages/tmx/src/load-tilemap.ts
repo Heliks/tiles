@@ -131,25 +131,6 @@ async function loadTileset(data: TmxLocalTilesetData, basePath: string, loader: 
   return new LocalTileset(tileset, data.firstgid);
 }
 
-/** @internal */
-async function loadTilesets(data: TmxLocalTilesetData[], basePath: string, loader: AssetLoader): Promise<LocalTilesetBag> {
-  const tilesets = new LocalTilesetBag();
-
-  // Load all tilesets simultaneously.
-  const assets = await Promise.all(
-    data.map(
-      item => loadTileset(item, basePath, loader)
-    )
-  );
-
-  for (const asset of assets) {
-    tilesets.set(asset);
-  }
-
-  return tilesets;
-}
-
-
 /**
  * Asset loader format for TMX tile maps (`.tmj`).
  *

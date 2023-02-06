@@ -8,6 +8,6 @@ export interface TmxPropertyData {
  * An object that contains custom `TmxPropertyData`.
  * @see TmxPropertyData
  */
-export interface TmxHasProperties {
+export interface TmxHasPropertyData {
   properties?: TmxPropertyData[];
 }
