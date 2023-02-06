@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
 import { Layer } from './layers';
-import { Properties } from './properties';
+import { TmxProperties } from './tmx-properties';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
 
 
@@ -9,7 +9,7 @@ import { LocalTilesetBag } from '@heliks/tiles-tilemap';
  *
  * @see LoadTilemap
  */
-export class Tilemap<P extends Properties = Properties> {
+export class TmxTilemap<P extends TmxProperties = TmxProperties> {
 
   /** Map layers. The index of each layer is simultaneously its z position. */
   public readonly layers: Layer[] = [];

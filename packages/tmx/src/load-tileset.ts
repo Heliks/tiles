@@ -1,9 +1,9 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { getCustomProperties } from './properties';
-import { Tileset } from './tileset';
-import { TmxTileset, TmxTileData } from './tmx';
+import { getCustomProperties } from './tmx-properties';
+import { TmxTileset } from './tmx-tileset';
+import { TmxTilesetData, TmxTileData } from './tmx';
 
 
 /** @internal */
@@ -20,7 +20,7 @@ const ALIGN_LOOKUP = {
 };
 
 /** @internal */
-async function loadSpritesheet(data: TmxTileset, file: string, loader: AssetLoader): Promise<SpriteGrid> {
+async function loadSpritesheet(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<SpriteGrid> {
   // Amount of rows is not contained in the TMX format so it needs to be calculated
   // manually. The number is rounded down to cut of partial tiles.
   const grid = new Grid(
@@ -44,7 +44,7 @@ async function loadSpritesheet(data: TmxTileset, file: string, loader: AssetLoad
  * @param tileset Tileset to which tile information should be added.
  * @param tile Tile data that should be parsed.
  */
-export function parseTile(tileset: Tileset, tile: TmxTileData): void {
+export function parseTile(tileset: TmxTileset, tile: TmxTileData): void {
   // The tileID here is actually just the tile index.. Convert it to a local ID.
   const tileId = tile.id + 1;
 
@@ -88,7 +88,7 @@ export function parseTile(tileset: Tileset, tile: TmxTileData): void {
   }
 }
 
-function getAlign(data: TmxTileset): Align {
+function getAlign(data: TmxTilesetData): Align {
   let align;
 
   if (data.objectalignment) {
@@ -99,23 +99,23 @@ function getAlign(data: TmxTileset): Align {
 }
 
 /** Format to load TMX tilesets. */
-export class LoadTileset implements Format<TmxTileset, Tileset> {
+export class LoadTileset implements Format<TmxTilesetData, TmxTileset> {
 
   /** @inheritDoc */
   public readonly extensions = ['tsj'];
 
   /** @inheritDoc */
-  public getAssetType(): typeof Tileset {
-    return Tileset;
+  public getAssetType(): typeof TmxTileset {
+    return TmxTileset;
   }
 
   /** Creates a `Tileset` from `data`. */
-  public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {
+  public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<TmxTileset> {
     const align = getAlign(data);
     const sheet = await loadSpritesheet(data, file, loader);
 
 
-    const tileset = new Tileset(sheet);
+    const tileset = new TmxTileset(sheet);
 
     tileset.align = align;
 

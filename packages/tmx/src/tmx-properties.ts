@@ -2,12 +2,12 @@ import { TmxHasPropertyData } from './tmx';
 
 
 /** Custom properties. */
-export interface Properties {
+export interface TmxProperties {
   [property: string]: unknown;
 }
 
 /** Helper type that indicates a structure carries custom properties. */
-export interface HasProperties<T extends Properties> {
+export interface HasProperties<T extends TmxProperties> {
   /** Custom properties. */
   readonly properties: T;
 }
@@ -17,8 +17,8 @@ export interface HasProperties<T extends Properties> {
  *
  * - `P`: Expected custom properties.
  */
-export function getCustomProperties<P extends Properties>(data: TmxHasPropertyData): P {
-  const props: Properties = {};
+export function getCustomProperties<P extends TmxProperties>(data: TmxHasPropertyData): P {
+  const props: TmxProperties = {};
 
   if (data.properties) {
     for (const item of data.properties) {

@@ -15,7 +15,7 @@ export enum TmxTilesetAlignData {
 }
 
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TmxTileset extends TmxHasPropertyData {
+export interface TmxTilesetData extends TmxHasPropertyData {
   backgroundcolor: string;
   columns: number;
   image: string;

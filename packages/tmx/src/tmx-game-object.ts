@@ -1,8 +1,8 @@
 import { Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
-import { getCustomProperties, Properties } from './properties';
-import { Shape } from './shape';
+import { getCustomProperties, TmxProperties } from './tmx-properties';
+import { TmxShape } from './tmx-shape';
 import { TmxObjectData } from './tmx';
 import { getCustomType } from './utils';
 
@@ -14,7 +14,7 @@ import { getCustomType } from './utils';
  * @typeparam P Custom properties.
  * @typeparam S Physical shape of the game object.
  */
-export class GameObject<P extends Properties = Properties, S extends ColliderShape = ColliderShape> extends Shape<P, S> {
+export class GameObject<P extends TmxProperties = TmxProperties, S extends ColliderShape = ColliderShape> extends TmxShape<P, S> {
 
   /** If `true` the object will be flipped on the x axis. */
   public flipX = false;
@@ -48,7 +48,7 @@ export class GameObject<P extends Properties = Properties, S extends ColliderSha
  * @see GameObject
  * @typeparam P Custom properties
  */
-export interface Tile<P extends Properties = Properties> extends GameObject<P, Rectangle> {
+export interface Tile<P extends TmxProperties = TmxProperties> extends GameObject<P, Rectangle> {
   /** @inheritDoc */
   tileId: number;
 }
@@ -84,7 +84,7 @@ export function parseObject(data: TmxObjectData): GameObject {
 }
 
 /** Returns `true` if `value` is a `Tile<P>`. */
-export function isTile<P extends Properties>(value: GameObject<P>): value is Tile<P> {
+export function isTile<P extends TmxProperties>(value: GameObject<P>): value is Tile<P> {
   return !! value.tileId;
 }
 

@@ -2,9 +2,9 @@ import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { parseLayers } from './layers';
 import { LoadTileset } from './load-tileset';
-import { getCustomProperties, Properties } from './properties';
-import { Tilemap } from './tilemap';
-import { isLocalTilesetExternal, TmxLocalTilesetData, TmxTilemap } from './tmx';
+import { getCustomProperties, TmxProperties } from './tmx-properties';
+import { TmxTilemap } from './tmx-tilemap';
+import { isLocalTilesetExternal, TmxLocalTilesetData, TmxTilemapData } from './tmx';
 import { LocalTileset, LocalTilesetBag } from '@heliks/tiles-tilemap';
 
 
@@ -25,7 +25,7 @@ const TMX_DEFAULT_CHUNK_SIZE = 16;
  *
  * @internal
  */
-function getMapSize(data: TmxTilemap): Vec2 {
+function getMapSize(data: TmxTilemapData): Vec2 {
   const size = new Vec2(data.width, data.height);
 
   if (! data.infinite) {
@@ -59,7 +59,7 @@ function getMapSize(data: TmxTilemap): Vec2 {
  *
  * @internal
  */
-function getChunkLayout(data: TmxTilemap): Grid {
+function getChunkLayout(data: TmxTilemapData): Grid {
   const size = getMapSize(data);
 
   if (! data.infinite) {
@@ -92,7 +92,7 @@ function getChunkLayout(data: TmxTilemap): Grid {
  *
  * @internal
  */
-function getChunkTileLayout(data: TmxTilemap): Grid {
+function getChunkTileLayout(data: TmxTilemapData): Grid {
   let tilesX = TMX_DEFAULT_CHUNK_SIZE;
   let tilesY = TMX_DEFAULT_CHUNK_SIZE;
 
@@ -136,21 +136,21 @@ async function loadTileset(data: TmxLocalTilesetData, basePath: string, loader: 
  *
  * - `P`: Expected custom properties.
  */
-export class LoadTilemap<P extends Properties = Properties> implements Format<TmxTilemap, Tilemap<P>> {
+export class LoadTilemap<P extends TmxProperties = TmxProperties> implements Format<TmxTilemapData, TmxTilemap<P>> {
 
   /** @inheritDoc */
   public readonly extensions = ['tmj'];
 
   /** @inheritDoc */
-  public getAssetType(): typeof Tilemap {
-    return Tilemap;
+  public getAssetType(): typeof TmxTilemap {
+    return TmxTilemap;
   }
 
   /** @inheritDoc */
-  public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap<P>> {
+  public async process(data: TmxTilemapData, file: string, loader: AssetLoader): Promise<TmxTilemap<P>> {
     const basePath = getDirectory(file);
 
-    const tilemap = new Tilemap<P>(
+    const tilemap = new TmxTilemap<P>(
       new Grid(data.width, data.height, data.tilewidth, data.tileheight),
       getChunkLayout(data),
       getCustomProperties<P>(data)

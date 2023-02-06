@@ -1,5 +1,5 @@
 import { TmxLayerData } from './layer';
-import { TmxTileset } from './tileset';
+import { TmxTilesetData } from './tileset';
 import { TmxHasPropertyData } from './utils';
 
 
@@ -10,7 +10,7 @@ export interface TmxExternalLocalTilesetData {
 }
 
 /** Tileset that is directly embedded into the map data. */
-export interface TmxEmbeddedLocalTilesetData extends TmxTileset {
+export interface TmxEmbeddedLocalTilesetData extends TmxTilesetData {
   firstgid: number;
 }
 
@@ -23,7 +23,7 @@ export interface TmxEditorSettingsData {
   }
 }
 
-export interface TmxTilemap extends TmxHasPropertyData {
+export interface TmxTilemapData extends TmxHasPropertyData {
   backgroundcolor: string;
   editorsettings?: TmxEditorSettingsData;
   height: number;

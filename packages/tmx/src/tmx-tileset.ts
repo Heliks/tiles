@@ -1,7 +1,7 @@
 import { Align, SpriteAnimation, SpriteAnimationData, SpriteGrid } from '@heliks/tiles-pixi';
 import { Tileset as Base } from '@heliks/tiles-tilemap';
-import { Properties } from './properties';
-import { Shape } from './shape';
+import { TmxProperties } from './tmx-properties';
+import { TmxShape } from './tmx-shape';
 
 
 /** @internal */
@@ -10,7 +10,7 @@ function getTileAnimationName(tileId: number): string {
 }
 
 /** @inheritDoc */
-export class Tileset extends Base {
+export class TmxTileset extends Base {
 
   /**
    * Objects that use sprites from this tileset should be aligned to this alignment
@@ -20,10 +20,10 @@ export class Tileset extends Base {
   public align = Align.BottomLeft;
 
   /** Contains custom properties associated with a certain tile ID. */
-  public readonly tileProperties = new Map<number, Properties>();
+  public readonly tileProperties = new Map<number, TmxProperties>();
 
   /** Contains tile shapes, mapped to the tileId to which they belong. */
-  private readonly shapes = new Map<number, Shape[]>();
+  private readonly shapes = new Map<number, TmxShape[]>();
 
   /**
    * Returns a `SpriteAnimation` for the given tile, if any.
@@ -54,7 +54,7 @@ export class Tileset extends Base {
    * Returns all shapes that belong to the tile matching `tileId`. Returns `undefined`
    * if that tile does not have any shapes.
    */
-  public getTileShapes(tileId: number): Shape[] | undefined {
+  public getTileShapes(tileId: number): TmxShape[] | undefined {
     return this.shapes.get(tileId);
   }
 
@@ -62,7 +62,7 @@ export class Tileset extends Base {
    * Assigns shapes to the tile matching `id`. This overwrites any shapes that were
    * previously assigned to that tile.
    */
-  public setTileShapes(tileId: number, shapes: Shape[]): this {
+  public setTileShapes(tileId: number, shapes: TmxShape[]): this {
     this.shapes.set(tileId, shapes);
 
     return this;
@@ -73,7 +73,7 @@ export class Tileset extends Base {
    *
    * @typeparam P Expected format of the tile properties. This is not type safe.
    */
-  public getTileProperties<P extends Properties>(tileId: number): P | undefined {
+  public getTileProperties<P extends TmxProperties>(tileId: number): P | undefined {
     return this.tileProperties.get(tileId) as P;
   }
 
