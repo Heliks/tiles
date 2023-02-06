@@ -1,34 +1,20 @@
-import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
+import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { parseLayers } from './layers';
 import { LoadTileset } from './load-tileset';
-import { getProperties, Properties } from './properties';
+import { getCustomProperties, Properties } from './properties';
 import { Tilemap } from './tilemap';
-import { Tileset } from './tileset';
-import { TmxExternalTilemapTileset, TmxTilemap, TmxTilemapTileset } from './tmx';
+import { isLocalTilesetExternal, TmxLocalTilesetData, TmxTilemap } from './tmx';
+import { LocalTileset, LocalTilesetBag } from '@heliks/tiles-tilemap';
 
 
 /**
  * Default value for the amount of tiles that a chunk occupies. Will be used as a
  * fallback if editor-settings are not available in the provided format.
+ *
+ * @internal
  */
 const TMX_DEFAULT_CHUNK_SIZE = 16;
-
-/** @internal */
-function isExternalTileset(data: TmxTilemapTileset): data is TmxExternalTilemapTileset {
-  return (data as TmxExternalTilemapTileset).source !== undefined;
-}
-
-/** @internal */
-async function processTileset(loader: AssetLoader, basePath: string, data: TmxTilemapTileset): Promise<Tileset> {
-  const format = new LoadTileset(data.firstgid);
-
-  // If the given data is an external tileset we load it using the loader. Otherwise
-  // we can simply parse it directly.
-  return isExternalTileset(data)
-    ? loader.fetch(`${basePath}/${data.source}`, format)
-    : format.process(data, '', loader);
-}
 
 /**
  * Returns the size of the given tmx map `data` (amount of columns on x axis and
@@ -36,6 +22,8 @@ async function processTileset(loader: AssetLoader, basePath: string, data: TmxTi
  *
  * This also returns the size of "infinite maps" which according to the tiled format
  * would have a width and height of `0`.
+ *
+ * @internal
  */
 function getMapSize(data: TmxTilemap): Vec2 {
   const size = new Vec2(data.width, data.height);
@@ -69,9 +57,9 @@ function getMapSize(data: TmxTilemap): Vec2 {
  * Maps that are not "infinite" will always only have a single chunk that covers the
  * size of the whole map.
  *
- * @see Grid
+ * @internal
  */
-function getMapChunksLayout(data: TmxTilemap): Grid {
+function getChunkLayout(data: TmxTilemap): Grid {
   const size = getMapSize(data);
 
   if (! data.infinite) {
@@ -95,12 +83,14 @@ function getMapChunksLayout(data: TmxTilemap): Grid {
 }
 
 /**
- * Returns a `Grid` that describes how tiles should be arranged in a chunk.
+ * Creates a {@link Grid grid} that defines the layout of an individual chunk on a
+ * tilemap. Columns and rows define the number of tiles in each direction, while cell
+ * size represents the tile size.
  *
- * Columns and rows determine the amount of tiles in each chunk, while cell size
- * determines the tile size.
+ * Maps with a fixed size (e.g. maps that don't have the "infinite" option enabled) will
+ * always have a single chunk that covers the whole area of the map.
  *
- * For maps that are not "infinite" the chunk will always cover the whole map.
+ * @internal
  */
 function getChunkTileLayout(data: TmxTilemap): Grid {
   let tilesX = TMX_DEFAULT_CHUNK_SIZE;
@@ -127,19 +117,48 @@ function getChunkTileLayout(data: TmxTilemap): Grid {
   );
 }
 
+/** @internal */
+async function loadTileset(data: TmxLocalTilesetData, basePath: string, loader: AssetLoader): Promise<LocalTileset> {
+  const format = new LoadTileset();
+
+  // If the tileset is external, load it. Otherwise, parse it directly.
+  const tileset = await (
+    isLocalTilesetExternal(data)
+      ? loader.fetch(`${basePath}/${data.source}`, format)
+      : format.process(data, '.embedded-tileset', loader)
+  );
+
+  return new LocalTileset(tileset, data.firstgid);
+}
+
+/** @internal */
+async function loadTilesets(data: TmxLocalTilesetData[], basePath: string, loader: AssetLoader): Promise<LocalTilesetBag> {
+  const tilesets = new LocalTilesetBag();
+
+  // Load all tilesets simultaneously.
+  const assets = await Promise.all(
+    data.map(
+      item => loadTileset(item, basePath, loader)
+    )
+  );
+
+  for (const asset of assets) {
+    tilesets.set(asset);
+  }
+
+  return tilesets;
+}
+
 
 /**
- * Asset loader format for loading TMX tile maps.
+ * Asset loader format for TMX tile maps (`.tmj`).
  *
- * @typeparam P Custom properties found on tile maps.
+ * - `P`: Expected custom properties.
  */
 export class LoadTilemap<P extends Properties = Properties> implements Format<TmxTilemap, Tilemap<P>> {
 
   /** @inheritDoc */
-  public readonly name = 'tmx-tilemap';
-
-  /** @inheritDoc */
-  public readonly type = LoadType.Json;
+  public readonly extensions = ['tmj'];
 
   /** @inheritDoc */
   public getAssetType(): typeof Tilemap {
@@ -148,30 +167,28 @@ export class LoadTilemap<P extends Properties = Properties> implements Format<Tm
 
   /** @inheritDoc */
   public async process(data: TmxTilemap, file: string, loader: AssetLoader): Promise<Tilemap<P>> {
+    const basePath = getDirectory(file);
+
     const tilemap = new Tilemap<P>(
-      new Grid(
-        data.width,
-        data.height,
-        data.tilewidth,
-        data.tileheight
-      ),
-      getMapChunksLayout(data),
-      getProperties<P>(data)
+      new Grid(data.width, data.height, data.tilewidth, data.tileheight),
+      getChunkLayout(data),
+      getCustomProperties<P>(data)
     );
 
     // Load all tilesets simultaneously.
-    const tilesets = await Promise.all(
-      data.tilesets.map(item => processTileset(
-        loader,
-        getDirectory(file),
-        item
-      ))
+    const assets = await Promise.all(
+      data.tilesets.map(
+        item => loadTileset(item, basePath, loader)
+      )
     );
+
+    for (const asset of assets) {
+      tilemap.tilesets.set(asset);
+    }
 
     // Create the layout of each individual chunk. We need this to parse tile layers.
     const chunkTileGrid = getChunkTileLayout(data);
 
-    tilemap.tilesets.push(...tilesets);
     tilemap.layers.push(...parseLayers(data, chunkTileGrid));
 
     return tilemap;

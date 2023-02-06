@@ -1,7 +1,7 @@
 import { Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
-import { getProperties, Properties } from './properties';
+import { getCustomProperties, Properties } from './properties';
 import { Shape } from './shape';
 import { TmxObject } from './tmx';
 import { getCustomType } from './utils';
@@ -65,7 +65,7 @@ export function parseObject(data: TmxObject): GameObject {
   const object = new GameObject(
     data.id,
     rect,
-    getProperties(data),
+    getCustomProperties(data),
     getCustomType(data)
   );
 

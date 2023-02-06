@@ -1,13 +1,12 @@
-import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
+import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { getProperties } from './properties';
-import { parseShape } from './shape';
+import { getCustomProperties } from './properties';
 import { Tileset } from './tileset';
 import { TmxTileset, TmxTilesetTile } from './tmx';
 
 
-// Lookup to map TmxTilesetObjectAlignment values to Align values.
+/** @internal */
 const ALIGN_LOOKUP = {
   'right': Align.Right,
   'left': Align.Left,
@@ -21,8 +20,8 @@ const ALIGN_LOOKUP = {
 };
 
 /** @internal */
-async function load(data: TmxTileset, file: string, loader: AssetLoader): Promise<SpriteGrid> {
-  // Amount of rows is not contained in the tiled format so it needs to be calculated
+async function loadSpritesheet(data: TmxTileset, file: string, loader: AssetLoader): Promise<SpriteGrid> {
+  // Amount of rows is not contained in the TMX format so it needs to be calculated
   // manually. The number is rounded down to cut of partial tiles.
   const grid = new Grid(
     data.columns,
@@ -31,7 +30,9 @@ async function load(data: TmxTileset, file: string, loader: AssetLoader): Promis
     data.tileheight
   );
 
-  const texture = await loader.fetch(file, new LoadTexture());
+  // Convert tilesets relative path to absolute path.
+  const texturePath = getDirectory(file, data.image);
+  const texture = await loader.fetch(texturePath, new LoadTexture());
 
   return new SpriteGrid(grid, texture);
 }
@@ -48,6 +49,7 @@ export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
   const tileId = tile.id + 1;
 
   // Assign shapes if tile has any.
+  /*
   if (tile.objectgroup) {
     const shapes = tile
       .objectgroup
@@ -60,6 +62,7 @@ export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
 
     tileset.setTileShapes(tileId, shapes);
   }
+   */
 
   if (tile.animation) {
     const frames = [];
@@ -81,25 +84,25 @@ export function parseTile(tileset: Tileset, tile: TmxTilesetTile): void {
 
   // Assign custom properties if the tile has any.
   if (tile.properties) {
-    tileset.tileProperties.set(tileId, getProperties(tile));
+    tileset.tileProperties.set(tileId, getCustomProperties(tile));
   }
 }
 
+function getAlign(data: TmxTileset): Align {
+  let align;
+
+  if (data.objectalignment) {
+    align = ALIGN_LOOKUP[ data.objectalignment ];
+  }
+
+  return align ?? Align.BottomLeft
+}
 
 /** Format to load TMX tilesets. */
 export class LoadTileset implements Format<TmxTileset, Tileset> {
 
   /** @inheritDoc */
-  public readonly name = 'tmx-tileset';
-
-  /** @inheritDoc */
-  public readonly type = LoadType.Json;
-
-  /**
-   * @param firstId Id that should be used as the first ID of the ID range of the
-   *  tileset that is being loaded.
-   */
-  constructor(public readonly firstId = 1) {}
+  public readonly extensions = ['tsj'];
 
   /** @inheritDoc */
   public getAssetType(): typeof Tileset {
@@ -108,26 +111,21 @@ export class LoadTileset implements Format<TmxTileset, Tileset> {
 
   /** Creates a `Tileset` from `data`. */
   public async process(data: TmxTileset, file: string, loader: AssetLoader): Promise<Tileset> {
-    // Tiled uses relative paths -> convert it to the absolute image path.
-    const image = getDirectory(file, data.image);
-    const sheet = await load(data, image, loader);
+    const align = getAlign(data);
+    const sheet = await loadSpritesheet(data, file, loader);
 
-    const tileset = new Tileset(
-      sheet,
-      this.firstId,
-      data.tilewidth,
-      data.tileheight
-    );
 
-    if (data.objectalignment) {
-      tileset.objectAlign = ALIGN_LOOKUP[ data.objectalignment ] ?? Align.BottomLeft;
-    }
+    const tileset = new Tileset(sheet);
 
+    tileset.align = align;
+
+    /*
     if (data.tiles) {
       for (const tile of data.tiles) {
         parseTile(tileset, tile);
       }
     }
+     */
 
     return tileset;
   }

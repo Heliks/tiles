@@ -28,10 +28,10 @@ export class LocalTilesetBag {
   }
 
   /**
-   * Adds an existing local `tileset` to the bag.
+   * Adds an existing local `tileset`.
    *
-   * This is unsafe, as the ID range of the added tileset is not guaranteed to overlap
-   * with the ID range of an existing tileset in the bag.
+   * This method is unsafe because it does not check if the ID range of the provided
+   * local tileset overlaps with the range of another tileset.
    */
   public set(tileset: LocalTileset): this {
     this.items.push(tileset);

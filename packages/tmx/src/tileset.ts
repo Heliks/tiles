@@ -1,4 +1,4 @@
-import { Align, SpriteAnimation, SpriteAnimationData } from '@heliks/tiles-pixi';
+import { Align, SpriteAnimation, SpriteAnimationData, SpriteGrid } from '@heliks/tiles-pixi';
 import { Tileset as Base } from '@heliks/tiles-tilemap';
 import { Properties } from './properties';
 import { Shape } from './shape';
@@ -13,12 +13,11 @@ function getTileAnimationName(tileId: number): string {
 export class Tileset extends Base {
 
   /**
-   * Positions of objects that are placed via this tilesets are relative to this
-   * alignment mode. By default tiled uses the objects bottom left corner.
-   *
-   * @see Align
+   * Objects that use sprites from this tileset should be aligned to this alignment
+   * position. This also includes {@link shapes} that are placed on tiles of this
+   * tileset. The Tiled default is the bottom-left corner.
    */
-  public objectAlign = Align.BottomLeft;
+  public align = Align.BottomLeft;
 
   /** Contains custom properties associated with a certain tile ID. */
   public readonly tileProperties = new Map<number, Properties>();

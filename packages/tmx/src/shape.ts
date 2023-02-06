@@ -1,6 +1,6 @@
 import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { getProperties, HasProperties, Properties } from './properties';
+import { getCustomProperties, HasProperties, Properties } from './properties';
 import { TmxShape } from './tmx';
 import { getCustomType } from './utils';
 
@@ -44,7 +44,7 @@ export function parseShape(data: TmxShape, tileWidth: number, tileHeight: number
   return new Shape(
     data.id,
     shape,
-    getProperties(data),
+    getCustomProperties(data),
     getCustomType(data)
   );
 }

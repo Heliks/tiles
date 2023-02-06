@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
 import { GameObject, parseObject } from '../objects';
-import { getProperties, Properties } from '../properties';
+import { getCustomProperties, Properties } from '../properties';
 import { TmxLayer, TmxLayerType, TmxObjectLayer, TmxTileLayer, TmxTilemap } from '../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
@@ -80,7 +80,7 @@ export function parseObjectLayer(layer: TmxObjectLayer): ObjectLayer {
     name: layer.name,
     data: objects,
     isVisible: layer.visible,
-    properties: getProperties(layer),
+    properties: getCustomProperties(layer),
     type: LayerType.Objects
   };
 }
@@ -114,7 +114,7 @@ export function parseTileLayer(layer: TmxTileLayer, chunkTileGrid: Grid): TileLa
     name: layer.name,
     data: chunks,
     isVisible: layer.visible,
-    properties: getProperties(layer),
+    properties: getCustomProperties(layer),
     type: LayerType.Tiles
   };
 }
@@ -144,7 +144,7 @@ export function parseLayer(map: TmxTilemap, layer: TmxLayer, chunkTileGrid: Grid
         name: layer.name,
         data: layers,
         isVisible: layer.visible,
-        properties: getProperties(layer),
+        properties: getCustomProperties(layer),
         type: LayerType.Group
       };
   }

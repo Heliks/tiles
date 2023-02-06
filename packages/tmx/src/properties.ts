@@ -13,21 +13,18 @@ export interface HasProperties<T extends Properties> {
 }
 
 /**
- * Extracts the custom properties from any TMX formatted data.
+ * Parses custom properties of `data`.
  *
- * Note: Although the property format `P` can be type hinted the validity of that format
- *  is not actually guaranteed as there is no way to check this.
- *
- * @typeparam P Custom property format.
+ * - `P`: Expected custom properties.
  */
-export function getProperties<P extends Properties>(target: TmxHasProperties): P {
-  const data: Properties = {};
+export function getCustomProperties<P extends Properties>(data: TmxHasProperties): P {
+  const props: Properties = {};
 
-  if (target.properties) {
-    for (const item of target.properties) {
-      data[item.name] = item.value;
+  if (data.properties) {
+    for (const item of data.properties) {
+      props[ item.name ] = item.value;
     }
   }
 
-  return data as P;
+  return props as P;
 }

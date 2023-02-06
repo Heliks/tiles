@@ -3,8 +3,12 @@ import { Texture } from 'pixi.js';
 import { Terrain } from './terrain';
 
 
-/** Collection of tiles */
-export class Tileset {
+/**
+ * A collection of tiles
+ *
+ * - `S`: Spritesheet format
+ */
+export class Tileset<S extends SpriteSheet = SpriteSheet> {
 
   /** @internal */
   private readonly terrains = new Map<string, Terrain>();
@@ -17,7 +21,7 @@ export class Tileset {
   /**
    * @param spritesheet Spritesheet for rendering individual sprites.
    */
-  constructor(public readonly spritesheet: SpriteSheet) {}
+  constructor(public readonly spritesheet: S) {}
 
   /** Creates a {@link Sprite} from the tile located at the given tile `index`. */
   public sprite(index: number): Sprite {
