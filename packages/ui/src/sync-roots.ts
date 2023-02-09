@@ -1,10 +1,10 @@
-import { Storage, Parent, Subscriber, World, Entity, QueryEventType } from '@heliks/tiles-engine';
+import { Storage, Parent, Subscriber, World, Entity, QueryEventType, OnInit } from '@heliks/tiles-engine';
 import { Query } from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
 import { UiRoot } from './ui-root';
 
 
-export class SyncRoots {
+export class SyncRoots implements OnInit {
 
   /** @internal */
   private query!: Query;
@@ -40,7 +40,7 @@ export class SyncRoots {
         .addChild(component.container);
     }
     else {
-      this.stage.add(component.container);
+      this.stage.add(component.container, component.layer);
     }
   }
 

@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import { Pivot, PIVOT_TOP_LEFT } from './pivot';
 import { World } from '@heliks/tiles-engine';
+import { LayerId } from '@heliks/tiles-pixi';
 
 
 export enum UiAlign {
@@ -68,24 +69,28 @@ export class UiRoot {
   public pivot: Pivot = PIVOT_TOP_LEFT;
 
   /**
-   * @param x Either world or screen x-axis position, depending on {@link align}.
-   * @param y Either world or screen y-axis position, depending on {@link align}.
+   * @param x Either world or screen position along x-axis, depending on {@link align}.
+   * @param y Either world or screen position along y-axis, depending on {@link align}.
+   * @param layer Id of the renderer layer on which this root should be rendered. If not
+   *  specified, it will be rendered on the first layer that is available. If this root
+   *  is the child of another root, this setting will be ignored.
    * @param align Determines if this UI element is aligned to the world or screen.
    */
   constructor(
     public x = 0,
     public y = 0,
+    public layer?: LayerId,
     public align = UiAlign.Screen
   ) {}
 
   /** Creates a {@link UiRoot} that is aligned to the screen. */
-  public static screen(x = 0, y = 0): UiRoot {
-    return new UiRoot(x, y, UiAlign.Screen);
+  public static screen(x = 0, y = 0, layer?: LayerId): UiRoot {
+    return new UiRoot(x, y, layer, UiAlign.Screen);
   }
 
   /** Creates a {@link UiRoot} that is aligned to the world. */
-  public static world(x = 0, y = 0): UiRoot {
-    return new UiRoot(x, y, UiAlign.World);
+  public static world(x = 0, y = 0, layer?: LayerId): UiRoot {
+    return new UiRoot(x, y, layer, UiAlign.World);
   }
 
   /** Shows the container. */
