@@ -1,5 +1,5 @@
 import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
-import { AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
+import { Asset, AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
 import { Format, LoadType } from './format';
 import { getExtension, join } from './utils';
 
@@ -67,7 +67,7 @@ export class AssetLoader {
       return storage;
     }
 
-    storage = new Map();
+    storage = new AssetStorage();
 
     this.storages.set(type, storage);
 
@@ -111,24 +111,13 @@ export class AssetLoader {
   private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
     handle.state = LoadingState.Loaded;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.storage(format.getAssetType()).set(handle, {
-      data
-    });
-  }
-
-  /**
-   * Loads `data` as an asset into the given asset `storage` and returns a `Handle<D>`
-   * with which it can be accessed.
-   */
-  public data<D>(data: D, storage: AssetStorage<D>): Handle<D> {
-    const handle = new Handle('');
-
-    storage.set(handle, {
-      data
-    });
-
-    return handle;
+    this
+      .storage(format.getAssetType())
+      .set(new Asset(
+        handle.assetId,
+        handle.file,
+        data
+      ));
   }
 
   /** Fetches the contents of `file` using `format.` */
@@ -185,7 +174,7 @@ export class AssetLoader {
    */
   public load<R>(file: string): Handle<R> {
     const format = this.getFormatFromFile(file);
-    const handle = new Handle(file);
+    const handle = Handle.from(file);
 
     this.fetch(file, format).then(data => {
       this.complete(handle, data, format);
@@ -202,7 +191,7 @@ export class AssetLoader {
     const format = this.getFormatFromFile(file);
 
     return this.fetch(file, format).then(data => {
-      const handle = new Handle(file);
+      const handle = Handle.from(file);
 
       this.complete(handle, data, format);
 

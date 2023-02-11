@@ -1,4 +1,4 @@
-import { getTypeId, TypeSerializationStrategy, UUID, World } from '@heliks/tiles-engine';
+import { TypeSerializationStrategy, Uuid, UUID, World } from '@heliks/tiles-engine';
 import { AssetLoader } from '@heliks/tiles-assets';
 import { getMaterialFromId, ShaderMaterial } from '../../material';
 import { SpriteRender } from './sprite-render';
@@ -67,7 +67,8 @@ export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteR
     if (component.material) {
       return {
         data: component.material.getData(),
-        uuid: getTypeId(component.material.constructor)
+        uuid: Uuid.
+        getTypeId(component.material.constructor)
       };
     }
   }
@@ -82,7 +83,7 @@ export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteR
       layer: component.layer,
       material: this.serializeMaterialData(component),
       opacity: component.opacity,
-      path: component.spritesheet.path,
+      path: component.spritesheet.file,
       scaleX: component.scale.x,
       scaleY: component.scale.y,
       sprite: component.spriteIndex,

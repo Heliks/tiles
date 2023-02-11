@@ -1,4 +1,4 @@
-import { ClassDecoratorType, setTypeId, Type, UUID } from '@heliks/tiles-engine';
+import { ClassDecoratorType, Type, UUID, Uuid } from '@heliks/tiles-engine';
 import { ShaderMaterial } from './shader-material';
 
 
@@ -21,7 +21,7 @@ export function getMaterialFromId(id: UUID): Type<ShaderMaterial> {
  */
 export function Material(id: UUID): ClassDecoratorType<ShaderMaterial> {
   return function materialDecorator(ctor: Type<ShaderMaterial>): void {
-    setTypeId(ctor, id);
+    Uuid.setTypeId(ctor, id);
 
     MATERIAL_REGISTRY.set(id, ctor);
   }

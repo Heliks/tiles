@@ -1,8 +1,5 @@
 import { AssetLoader } from '../asset-loader';
-import { Handle } from '../asset';
-import { Load } from '../asset';
-import { uuid } from '@heliks/tiles-engine';
-import { NoopFormat } from './noop-format';
+import { Handle, Load } from '../asset';
 
 
 describe('AssetLoader', () => {
@@ -17,7 +14,7 @@ describe('AssetLoader', () => {
     const loader = new AssetLoader();
 
     // Do not actually load the assets.
-    loader.load = jest.fn().mockImplementation(() => new Handle(uuid()));
+    loader.load = jest.fn().mockImplementation(() => Handle.from('foo.png'));
 
     const collection = loader.collection(Foo);
 

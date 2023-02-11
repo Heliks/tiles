@@ -1,4 +1,5 @@
 import { noIndent } from '../tags';
+import { Uuid } from '../uuid';
 
 
 describe('noIndent', () => {
@@ -14,3 +15,12 @@ describe('noIndent', () => {
     expect(factory()).toBe('A B C D');
   });
 });
+
+
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
+console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));

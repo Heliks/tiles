@@ -1,5 +1,6 @@
-import { Circle, Rectangle, uuid } from '@heliks/tiles-engine';
+import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
+import { Uuid } from '@heliks/tiles-engine/src';
 
 
 /** A shape that can be attached to a collider to give it its physical form. */
@@ -33,7 +34,7 @@ export interface ColliderData {
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /** Unique identifier. */
-  public readonly id = uuid();
+  public readonly id = Uuid.create();
 
   /**
    * Collision group bits. If not set the groups will be inherited from the the rigid

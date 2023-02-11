@@ -1,25 +1,6 @@
-import { AbstractType, Type } from '@heliks/tiles-engine';
+import { AbstractType, Type, UUID } from '@heliks/tiles-engine';
+import { Handle } from './handle';
 
-export enum LoadingState {
-  /** Asset is currently loading. */
-  Loading,
-  /** Asset is fully loaded and can be used. */
-  Loaded
-}
-
-/** A unique pointer to an asset. */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class Handle<T = unknown> {
-
-  /** Contains the loading state of the asset to which this handle points to. */
-  public state = LoadingState.Loading;
-
-  /**
-   * @param path Path of the asset file that this handle points to.
-   */
-  constructor(public readonly path: string) {}
-
-}
 
 /**
  * Represents an asset type. This can be any kind of arbitrary class symbol as long as
@@ -33,25 +14,30 @@ export class Handle<T = unknown> {
 export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
 
 /**
- * A loaded asset
+ * A loaded asset.
  *
- * @typeparam T Asset data.
+ * - `T`: Asset type.
  */
-export interface Asset<T> {
-  /** The assets processed data. */
-  readonly data: T;
+export class Asset<T> {
+
+  /**
+   * @param id: Unique asset identifier.
+   * @param file Path to the source file from which the asset was loaded.
+   * @param data Contains the processed asset data.
+   */
+  constructor(
+    public readonly id: UUID,
+    public readonly file: string,
+    public readonly data: T
+  ) {}
+
+  /**
+   * Creates a new {@link Handle} that can be used to look up the loaded asset in its
+   * appropriate {@link AssetStorage asset storage}.
+   */
+  public handle(): Handle<T> {
+    return new Handle(this.id, this.file);
+  }
+
 }
 
-/**
- * A storage for assets.
- *
- * @typeparam T The kind of data of each asset in this storage.
- */
-export interface AssetStorage<T> {
-  /** Returns the `Asset` stored under the given handle. */
-  get(handle: Handle<T>): Asset<T> | undefined;
-  /** Returns `true` if an asset is stored under the given handle. */
-  has(handle: Handle<T>): boolean;
-  /** Stores `asset` under `handle`. */
-  set(handle: Handle<T>, asset: Asset<T>): this;
-}

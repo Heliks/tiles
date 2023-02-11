@@ -17,7 +17,6 @@ export class Camera {
    */
   public readonly world = new Vec2(0, 0);
 
-
   public get unitSize(): number {
     return this.config.unitSize;
   }

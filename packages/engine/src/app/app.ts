@@ -9,15 +9,17 @@ import { TypeRegistry } from '../types';
 /**
  * The game runtime. Everything related to run the game can be found here.
  *
- * The app uses a {@link StateMachine push down state machine} (PDA) that allows to
- * switch between game {@link State states}. This means that we need an initial state
- * to start the app. If no state is left in the state machine stack, the app is closed.
+ * The app uses a {@link StateMachine push down automation state machine} (PDA) that
+ * allows to switch between game {@link State states}. This means that an initial state
+ * is required to start the app. If no state is left in the state machine stack, the app
+ * is closed. The current app state is updated after all systems in the apps system
+ * dispatcher finished their update.
  *
  * ```ts
  * class MyState implements State<World> {
  *
  *    public update(): void {
- *      // Called once per frame.
+ *      // Called once per frame after all app systems were updated.
  *    }
  *
  * }

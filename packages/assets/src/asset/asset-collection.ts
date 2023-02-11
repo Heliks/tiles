@@ -1,4 +1,4 @@
-import { Handle, LoadingState } from './asset';
+import { Handle, LoadingState } from './handle';
 import { AssetCollectionMetadata } from './metadata';
 
 

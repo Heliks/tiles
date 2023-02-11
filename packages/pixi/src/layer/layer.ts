@@ -38,7 +38,7 @@ export class Layer {
   public sorter?: LayerSorter;
 
   /**
-   * @param id Unique ID.
+   * @param id Unique Layer ID.
    */
   constructor(public readonly id: LayerId) {}
 
