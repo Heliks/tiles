@@ -178,7 +178,7 @@ export class AssetLoader {
    * handle with which the asset can be accessed in the {@link AssetStorage}.
    */
   public data<T>(file: string, data: T): Handle<T> {
-    const handle = Handle.from(file);
+    const handle = Handle.from(normalize(file));
 
     this.complete(handle, data);
 
