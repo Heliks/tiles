@@ -1,8 +1,7 @@
-import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
-import { SpriteSheet } from '../sprite-sheet';
 import { RendererConfig } from '../../config';
 import { Stage } from '../../layer';
 
@@ -19,22 +18,17 @@ export class SpriteRenderer extends ReactiveSystem {
    */
   private sprites = new Map<Entity, Sprite>();
 
-  /** @internal */
-  private storage: AssetStorage<SpriteSheet>;
-
   /**
+   * @param storage {@see AssetStorage}
    * @param config {@see RendererConfig}
    * @param stage {@see Stage}
-   * @param loader {@see AssetLoader}
    */
   constructor(
+    private readonly storage: AssetStorage,
     private readonly config: RendererConfig,
     private readonly stage: Stage,
-    loader: AssetLoader
   ) {
     super();
-
-    this.storage = loader.storage(SpriteSheet);
   }
 
   /** @inheritDoc */

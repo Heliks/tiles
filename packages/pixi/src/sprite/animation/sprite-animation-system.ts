@@ -1,20 +1,21 @@
-import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 import { Injectable, ProcessingSystem, Query, QueryBuilder, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
 import { SpriteAnimation } from './sprite-animation';
-import { SpriteSheet } from '../sprite-sheet';
 
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
-  /** @internal */
-  private storage: AssetStorage<SpriteSheet>;
-
-  constructor(private readonly ticker: Ticker, loader: AssetLoader) {
+  /**
+   * @param assets {@see AssetStorage}
+   * @param ticker {@see Ticker}
+   */
+  constructor(
+    private readonly assets: AssetStorage,
+    private readonly ticker: Ticker
+  ) {
     super();
-
-    this.storage = loader.storage(SpriteSheet);
   }
 
   /** @inheritDoc */
@@ -24,18 +25,17 @@ export class SpriteAnimationSystem extends ProcessingSystem {
 
   /**
    * Applies the transform on the given `animation` component, using `render` to create
-   * the new animation. This function assumes that a the `transform` property is set on
+   * the new animation. This function assumes that the `transform` property is set on
    * the animation component. Returns `true` if the transform was successful.
    */
   protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet = this.storage.get(render.spritesheet)?.data;
+    const sheet = this.assets.get(render.spritesheet)?.data;
 
     if (! sheet) {
       return false;
     }
 
-    // At this point we already know that the "transform" value contains something so
-    // we can safely cast this.
+    // Safety: At this point we know that the "transform" value contains something.
     const name = animation.transform as string;
     const data = sheet.getAnimation(name);
 

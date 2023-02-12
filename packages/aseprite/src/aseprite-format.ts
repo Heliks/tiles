@@ -36,11 +36,6 @@ export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-  /** @inheritDoc */
-  public getAssetType(): typeof SpriteSheet {
-    return SpriteSheet;
-  }
-
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
     return loader.fetch(getDirectory(file, image), new LoadTexture());

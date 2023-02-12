@@ -31,47 +31,19 @@ export class AssetLoader {
   private readonly formats: AnyFormat<AssetLoader>[] = [];
 
   /**
-   * A map that contains storages mapped to the asset type that they are storing. If an
-   * asset is loaded, the loader will automatically put it in the appropriate storage
-   * according to the asset type specified by the format that was used to load the
-   * asset file. See: {@link Format.getAssetType}.
-   *
-   * @internal
+   * Root path from which assets should be loaded. The loader will prepend this to every
+   * file path that it loads.
    */
-  private readonly storages = new Map<AssetType, AssetStorage<unknown>>();
+  public root = './';
 
   /**
-   * @param root Root path from which assets should be loaded. The loader will prepend
-   *  this to every file path that it loads.
+   * @param assets Resource where loaded assets are stored.
    */
-  constructor(public root = '') {}
+  constructor(public readonly assets: AssetStorage) {}
 
   /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
   public getPath(path: string): string {
     return join(this.root, ltrim(path, '/'))
-  }
-
-  /**
-   * Returns the storage that is used to store assets that are loaded with the given
-   * file `format`. If the storage does not exist, it will be created in the process.
-   *
-   * ```ts
-   * // Returns the storage for all assets loaded with the `ImageFormat`.
-   * const storage = assets.storage(ImageFormat);
-   * ```
-   */
-  public storage<R = unknown>(type: AssetType<R>): AssetStorage<R> {
-    let storage = this.storages.get(type) as AssetStorage<R>;
-
-    if (storage) {
-      return storage;
-    }
-
-    storage = new AssetStorage();
-
-    this.storages.set(type, storage);
-
-    return storage;
   }
 
   /** @internal */
@@ -111,13 +83,11 @@ export class AssetLoader {
   private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
     handle.state = LoadingState.Loaded;
 
-    this
-      .storage(format.getAssetType())
-      .set(new Asset(
-        handle.assetId,
-        handle.file,
-        data
-      ));
+    this.assets.set(new Asset(
+      handle.assetId,
+      handle.file,
+      data
+    ));
   }
 
   /** Fetches the contents of `file` using `format.` */

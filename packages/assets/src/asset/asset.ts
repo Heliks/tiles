@@ -18,7 +18,7 @@ export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
  *
  * - `T`: Asset type.
  */
-export class Asset<T> {
+export class Asset<T = unknown> {
 
   /**
    * @param id: Unique asset identifier.

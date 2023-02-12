@@ -36,13 +36,6 @@ export interface Format<D, R, L = unknown> {
   readonly type?: LoadType;
 
   /**
-   * Returns the type of asset that is produced by this format. After the asset
-   * processing has finished, the loader will store it in the storage appropriate
-   * to this type.
-   */
-  getAssetType(): AssetType;
-
-  /**
    * Reads the given `data` and produces asset data `R`.
    *
    * @param data Raw data that should be processed by this format.

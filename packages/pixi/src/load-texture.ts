@@ -16,11 +16,6 @@ export class LoadTexture implements Format<Blob, Texture> {
   public readonly type = LoadType.Blob;
 
   /** @inheritDoc */
-  public getAssetType(): typeof Texture {
-    return Texture;
-  }
-
-  /** @inheritDoc */
   public process(data: Blob): Texture {
     const image = new Image();
 

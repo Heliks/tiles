@@ -1,6 +1,7 @@
-import { Bundle, AppBuilder } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder, World } from '@heliks/tiles-engine';
 import { AssetLoader } from './asset-loader';
 import { Format } from './format';
+import { AssetStorage } from './asset';
 
 
 /**
@@ -31,18 +32,27 @@ export class AssetsBundle implements Bundle {
     return this;
   }
 
-  /** @inheritDoc */
-  public build(builder: AppBuilder): void {
-    const loader = new AssetLoader(this.root);
+  /** @internal */
+  private setupRootPath(world: World): void {
+    world.get(AssetLoader).root = this.root;
+  }
+
+  /** @internal */
+  private setupFormats(world: World): void {
+    const loader = world.get(AssetLoader);
 
     for (const format of this.formats) {
       loader.use(format);
     }
+  }
 
-    builder.provide({
-      token: AssetLoader,
-      value: loader
-    });
+  /** @inheritDoc */
+  public build(builder: AppBuilder): void {
+    builder
+      .provide(AssetStorage)
+      .provide(AssetLoader)
+      .run(this.setupRootPath.bind(this))
+      .run(this.setupFormats.bind(this));
   }
 
 }

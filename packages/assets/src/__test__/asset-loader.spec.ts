@@ -1,5 +1,5 @@
 import { AssetLoader } from '../asset-loader';
-import { Handle, Load } from '../asset';
+import { AssetStorage, Handle, Load } from '../asset';
 
 
 describe('AssetLoader', () => {
@@ -11,7 +11,7 @@ describe('AssetLoader', () => {
 
     }
 
-    const loader = new AssetLoader();
+    const loader = new AssetLoader(new AssetStorage());
 
     // Do not actually load the assets.
     loader.load = jest.fn().mockImplementation(() => Handle.from('foo.png'));
