@@ -3,6 +3,7 @@ import { SpriteAnimationData, SpriteSheet } from './sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { SpriteGrid } from './sprite-grid';
 import { LoadTexture } from '../../load-texture';
+import { Texture } from 'pixi.js';
 
 
 /** The raw data of a sprite sheet loaded from JSON. */
@@ -55,7 +56,7 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
   public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
-    const texture = await loader.fetch(getDirectory(file, data.image), new LoadTexture());
+    const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
     const sheet = new SpriteGrid(createSpritesheetGrid(data), texture);
 
     if (data.animations) {

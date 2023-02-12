@@ -38,7 +38,7 @@ export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
 
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
-    return loader.fetch(getDirectory(file, image), new LoadTexture());
+    return loader.fetch(getDirectory(file, image));
   }
 
   /** @inheritDoc */

@@ -77,7 +77,7 @@ export class AssetLoader {
   }
 
   /** @internal */
-  private complete<D>(handle: Handle<D>, data: D): void {
+  private complete<T>(handle: Handle<T>, data: T): void {
     handle.state = LoadingState.Loaded;
 
     this.assets.set(new Asset(
@@ -87,8 +87,10 @@ export class AssetLoader {
     ));
   }
 
-  /** Fetches the contents of `file` using `format.` */
-  public fetch<D, R>(file: string, format: Format<D, R, AssetLoader>): Promise<R> {
+  /** @internal */
+  private _fetch<T>(file: string): Promise<T> {
+    const format = this.getFormatFromFile<T>(file);
+
     return fetch(this.getPath(file)).then(response => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let stream: Promise<any>;
@@ -118,8 +120,13 @@ export class AssetLoader {
     });
   }
 
+  /** Fetches the contents of `file`. */
+  public fetch<T>(file: string): Promise<T> {
+    return this._fetch(normalize(file));
+  }
+
   /** @internal */
-  private getFormatFromFile(file: string): AnyFormat<AssetLoader> {
+  private getFormatFromFile<T = unknown>(file: string): Format<unknown, T, AssetLoader> {
     const extension = getExtension(file);
 
     if (! extension) {
@@ -132,7 +139,7 @@ export class AssetLoader {
       throw new Error(`No format found for file extension ${extension}`);
     }
 
-    return format;
+    return format as Format<unknown, T, AssetLoader>;
   }
 
   /**
@@ -140,12 +147,10 @@ export class AssetLoader {
    * asset storage after it has finished loading.
    */
   public load<R>(file: string): Handle<R> {
-    const _file = normalize(file);
+    const normalized = normalize(file);
+    const handle = Handle.from(normalized);
 
-    const format = this.getFormatFromFile(_file);
-    const handle = Handle.from(_file);
-
-    this.fetch(_file, format).then(data => {
+    this._fetch(normalized).then(data => {
       this.complete(handle, data);
     });
 
@@ -157,11 +162,10 @@ export class AssetLoader {
    * access the asset, but only after the asset has finished loading.
    */
   public async<R>(file: string): Promise<Handle<R>> {
-    const _file = normalize(file);
-    const format = this.getFormatFromFile(_file);
+    const normalized = normalize(file);
 
-    return this.fetch(_file, format).then(data => {
-      const handle = Handle.from(_file);
+    return this._fetch(normalized).then(data => {
+      const handle = Handle.from(normalized);
 
       this.complete(handle, data);
 
