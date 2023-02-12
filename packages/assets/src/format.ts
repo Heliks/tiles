@@ -1,6 +1,3 @@
-import { AssetType } from './asset';
-
-
 /** Possible ways to load an asset. */
 export enum LoadType {
   ArrayBuffer,

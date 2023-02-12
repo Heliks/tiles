@@ -1,17 +1,6 @@
-import { AbstractType, Type, Uuid, UUID } from '@heliks/tiles-engine';
+import { Uuid, UUID } from '@heliks/tiles-engine';
 import { Handle } from './handle';
 
-
-/**
- * Represents an asset type. This can be any kind of arbitrary class symbol as long as
- * it uniquely correlates to a specific type of asset. The loader will use this symbol
- * as key to store the storage for assets of that type.
- *
- * For example, a renderer most likely wants to load textures. We can simply define this
- * as `AssetType<Texture>`, where `Texture` will be used as the key to access the storage
- * for that asset type.
- */
-export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
 
 /**
  * A loaded asset.

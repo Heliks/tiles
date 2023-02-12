@@ -1,5 +1,5 @@
 import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
-import { Asset, AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
+import { Asset, AssetCollection, AssetStorage, getCollectionMetadata, Handle, LoadingState } from './asset';
 import { Format, LoadType } from './format';
 import { getExtension, join, normalize } from './utils';
 
@@ -15,9 +15,6 @@ type AnyFormat<L> = Format<unknown, unknown, L>;
  * This is the primary way to import assets such as sound, videos, fonts, etc. into the
  * game. The loader will automatically decide which file type to load based on file
  * extension and available {@link Format file formats}.
- *
- * Loaded assets will be placed in appropriate storages depending on the asset type
- * specified by the format that was used to load it.
  */
 @Injectable()
 export class AssetLoader {
@@ -80,7 +77,7 @@ export class AssetLoader {
   }
 
   /** @internal */
-  private complete<D>(handle: Handle<D>, data: D, format: Format<unknown, D>): void {
+  private complete<D>(handle: Handle<D>, data: D): void {
     handle.state = LoadingState.Loaded;
 
     this.assets.set(new Asset(
@@ -149,7 +146,7 @@ export class AssetLoader {
     const handle = Handle.from(_file);
 
     this.fetch(_file, format).then(data => {
-      this.complete(handle, data, format);
+      this.complete(handle, data);
     });
 
     return handle;
@@ -166,12 +163,23 @@ export class AssetLoader {
     return this.fetch(_file, format).then(data => {
       const handle = Handle.from(_file);
 
-      this.complete(handle, data, format);
+      this.complete(handle, data);
 
       return handle;
     });
   }
 
+  /**
+   * Loads `data` into the asset storage as if it were a loaded file. Returns an asset
+   * handle with which the asset can be accessed in the {@link AssetStorage}.
+   */
+  public data<T>(file: string, data: T): Handle<T> {
+    const handle = Handle.from(file);
+
+    this.complete(handle, data);
+
+    return handle;
+  }
 
   /**
    * Creates an instance of the given asset collection `type` and autoloads all
