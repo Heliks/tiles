@@ -87,5 +87,17 @@ export class LocalTilesetBag {
     return tileset;
   }
 
+  /**
+   * Copies the contents of `bag`. This is unsafe, as the tileset ID ranges of the given
+   * bag might collide with existing ID ranges.
+   */
+  public copy(bag: LocalTilesetBag): this {
+    for (const item of bag.items) {
+      this.set(item.clone());
+    }
+
+    return this;
+  }
+
 }
 

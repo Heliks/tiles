@@ -1,8 +1,9 @@
-import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { Grid, Type } from '@heliks/tiles-engine';
+import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
+import { Grid } from '@heliks/tiles-engine';
 import { Tileset } from './tileset';
-import { LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
+import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Terrain, TerrainBit, TerrainId } from './terrain';
+import { Texture } from 'pixi.js';
 
 
 /**
@@ -83,21 +84,6 @@ export interface TilesetData {
 }
 
 /** @internal */
-async function createTilesetSpriteGrid(data: TilesetData, file: string, loader: AssetLoader): Promise<SpriteGrid> {
-  const texture = await loader.fetch(getDirectory(file, data.image), new LoadTexture());
-
-  return new SpriteGrid(
-    new Grid(
-      Math.floor(data.imageWidth / data.tileWidth),
-      Math.floor(data.imageHeight / data.tileHeight),
-      data.tileWidth,
-      data.tileHeight
-    ),
-    texture
-  );
-}
-
-/** @internal */
 interface TerrainMasks {
   contains: TerrainId;
   excludes: TerrainId;
@@ -171,16 +157,17 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
   public readonly extensions = ['tileset', 'tileset.json'];
 
   /** @inheritDoc */
-  public readonly type = LoadType.Json;
-
-  /** @inheritDoc */
-  public getAssetType(): Type<Tileset> {
-    return Tileset;
-  }
-
-  /** @inheritDoc */
   public async process(data: TilesetData, file: string, loader: AssetLoader): Promise<Tileset> {
-    const tileset = new Tileset(await createTilesetSpriteGrid(data, file, loader));
+    const grid = new Grid(
+      Math.floor(data.imageWidth / data.tileWidth),
+      Math.floor(data.imageHeight / data.tileHeight),
+      data.tileWidth,
+      data.tileHeight
+    );
+
+    const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
+    const handle = loader.data(file, new SpriteGrid(grid, texture));
+    const tileset = new Tileset(handle, grid.size);
 
     if (data.terrains) {
       for (const terrain of data.terrains) {

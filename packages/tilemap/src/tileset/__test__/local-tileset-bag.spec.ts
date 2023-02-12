@@ -1,18 +1,13 @@
 import { LocalTilesetBag } from '../local-tileset-bag';
 import { LocalTileset } from '../local-tileset';
-import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Grid } from '@heliks/tiles-engine';
-import { Texture } from 'pixi.js';
 import { Tileset } from '../tileset';
+import { createEmptyTileset } from './utils';
 
 
 describe('LocalTilesetBag', () => {
-  beforeEach(() => {
-    let spritesheet = new SpriteGrid(new Grid(10, 10, 16, 16), Texture.WHITE);
-  });
-
   function createTileset(cols: number, rows: number): Tileset {
-    return new Tileset(new SpriteGrid(new Grid(cols, rows, 16, 16), Texture.WHITE));
+    return createEmptyTileset(new Grid(cols, rows, 16, 16));
   }
 
   describe('get next first Id', () => {

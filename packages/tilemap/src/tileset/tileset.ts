@@ -1,5 +1,5 @@
-import { Sprite, SpriteSheet } from '@heliks/tiles-pixi';
-import { Texture } from 'pixi.js';
+import { Handle } from '@heliks/tiles-assets';
+import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Terrain } from './terrain';
 
 
@@ -13,25 +13,14 @@ export class Tileset<S extends SpriteSheet = SpriteSheet> {
   /** @internal */
   private readonly terrains = new Map<string, Terrain>();
 
-  /** Contains the total amount of tiles that exist on this tileset. */
-  public get size(): number {
-    return this.spritesheet.size();
-  }
-
   /**
-   * @param spritesheet Spritesheet for rendering individual sprites.
+   * @param spritesheet Handle to the {@link SpriteSheet} used by this tileset.
+   * @param size Total amount of tiles that are contained in this tileset.
    */
-  constructor(public readonly spritesheet: S) {}
-
-  /** Creates a {@link Sprite} from the tile located at the given tile `index`. */
-  public sprite(index: number): Sprite {
-    return this.spritesheet.sprite(index);
-  }
-
-  /** Creates a {@link Texture} from the tile located at the given tile `index`. */
-  public texture(index: number): Texture {
-    return this.spritesheet.texture(index);
-  }
+  constructor(
+    public readonly spritesheet: Handle<SpriteSheet>,
+    public readonly size: number
+  ) {}
 
   /** Adds a `terrain` to the tileset. */
   public addTerrain(terrain: Terrain): this {

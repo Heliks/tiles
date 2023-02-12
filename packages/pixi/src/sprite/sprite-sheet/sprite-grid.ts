@@ -3,6 +3,7 @@ import { Sprite, Texture } from 'pixi.js';
 import { cropTexture } from '../../utils';
 import { SpriteSheet } from './sprite-sheet';
 
+
 /** A sprite-sheet that sorts individuals sprites on a grid. */
 export class SpriteGrid extends SpriteSheet {
 
@@ -11,8 +12,8 @@ export class SpriteGrid extends SpriteSheet {
    * @param _texture Texture from which the sprites will be created.
    */
   constructor(
-    private readonly grid: Grid,
-    private readonly _texture: Texture
+    public readonly grid: Grid,
+    public readonly _texture: Texture
   ) {
     super();
   }

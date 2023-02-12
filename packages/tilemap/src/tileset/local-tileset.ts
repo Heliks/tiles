@@ -42,6 +42,11 @@ export class LocalTileset {
     return Boolean(id >= this.firstId && id <= this.lastId);
   }
 
+  /** Creates a clone of this tileset. */
+  public clone(): LocalTileset {
+    return new LocalTileset(this.tileset, this.firstId);
+  }
+
 }
 
 

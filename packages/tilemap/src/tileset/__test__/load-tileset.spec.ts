@@ -35,10 +35,10 @@ describe('LoadTileset', () => {
     return format.process(data, 'foo.json', loader)
   }
 
-  it('should correctly parse spritesheet size', async () => {
+  it('should correctly parse size', async () => {
     const tileset = await process(createTilesetData());
 
-    expect(tileset.spritesheet.size()).toBe(100);
+    expect(tileset.size).toBe(100);
   });
 
   describe('when deserializing terrain', () => {

@@ -1,35 +1,8 @@
+import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Camera, Container, RendererSystem, Stage } from '@heliks/tiles-pixi';
+import { Camera, Container, RendererSystem, Sprite, SpriteSheet, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
 
-
-/** @internal */
-function render(tilemap: Tilemap): void {
-  tilemap.view.removeChildren();
-
-  for (let i = 0, l = tilemap.data.length; i < l; i++) {
-    const gId = tilemap.data[i];
-
-    if (gId === 0) {
-      continue;
-    }
-
-    const pos = tilemap.grid.getPosition(i);
-    const loc = tilemap.tilesets.getFromGlobalId(gId);
-
-    const sprite = loc.tileset.sprite(
-      loc.getLocalId(gId) - 1
-    );
-
-    // The y position needs to be adjusted for tiles that are larger than the tilemap
-    // on which they are placed. Most map editors will anchor the tile at the bottom
-    // left of the grid cell, so we do the same.
-    sprite.x = pos.x;
-    sprite.y = pos.y - (sprite.height - tilemap.grid.cellHeight);
-
-    tilemap.view.addChild(sprite);
-  }
-}
 
 /**
  * Renderer plugin that draws `Tilemap` components attached to entities.
@@ -47,10 +20,17 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
   private readonly containers = new Map<Entity, Container>();
 
   /**
+   * @param assets {@link AssetStorage}
    * @param camera {@link Camera}
+   * @param loader {@link AssetLoader}
    * @param stage {@link Stage}
    */
-  constructor(private readonly camera: Camera, private readonly stage: Stage) {
+  constructor(
+    private readonly assets: AssetStorage,
+    private readonly camera: Camera,
+    private readonly loader: AssetLoader,
+    private readonly stage: Stage,
+  ) {
     super();
   }
 
@@ -67,6 +47,41 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
     this.boot(world);
   }
 
+  /** @internal */
+  private createTileSprite(tilemap: Tilemap, gId: number): Sprite {
+    const local = tilemap.tilesets.getFromGlobalId(gId);
+
+    return this
+      .assets
+      // Note: We lose the `Handle` generic here. This is a bug in typescript.
+      .resolve<SpriteSheet>(local.tileset.spritesheet)
+      .data
+      .sprite(local.getLocalIndex(gId));
+  }
+
+  /** @internal */
+  private render(tilemap: Tilemap): void {
+    tilemap.view.removeChildren();
+
+    for (let i = 0, l = tilemap.data.length; i < l; i++) {
+      const gId = tilemap.data[i];
+
+      if (gId === 0) {
+        continue;
+      }
+
+      const tilePos = tilemap.grid.getPosition(i);
+      const sprite = this.createTileSprite(tilemap, gId);
+
+      // Adjust y-axis for tiles that are larger than the cell size of the tilemap on
+      // which they are placed.
+      sprite.x = tilePos.x;
+      sprite.y = tilePos.y - (sprite.height - tilemap.grid.cellHeight);
+
+      tilemap.view.addChild(sprite);
+    }
+  }
+
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
@@ -79,7 +94,7 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
         tilemap.grid.height
       ));
 
-    render(tilemap);
+    this.render(tilemap);
 
     this.stage.add(tilemap.view, tilemap.layer);
     this.containers.set(entity, tilemap.view);
@@ -103,7 +118,7 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
       const tilemap = world.storage(Tilemap).get(entity);
 
       if (tilemap.dirty) {
-        render(tilemap);
+        this.render(tilemap);
       }
 
       tilemap.view.x = transform.world.x * this.camera.unitSize;
