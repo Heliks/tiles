@@ -1,4 +1,4 @@
-import { AbstractType, Type, UUID } from '@heliks/tiles-engine';
+import { AbstractType, Type, Uuid, UUID } from '@heliks/tiles-engine';
 import { Handle } from './handle';
 
 
@@ -30,6 +30,11 @@ export class Asset<T> {
     public readonly file: string,
     public readonly data: T
   ) {}
+
+  /** Creates a new {@link Asset} from raw `data`. */
+  public static from<T>(file: string, data: T): Asset<T> {
+    return new Asset(Uuid.create(file), file, data);
+  }
 
   /**
    * Creates a new {@link Handle} that can be used to look up the loaded asset in its

@@ -14,9 +14,23 @@ export class AssetStorage<T> {
   /** @internal */
   private readonly assets = new Map<UUID, Asset<T>>();
 
-  /** Returns the `Asset` stored under the given handle. */
+  /** Returns the {@link Asset} to which `handle` points to. */
   public get(handle: Handle<T>): Asset<T> | undefined {
     return this.assets.get(handle.assetId);
+  }
+
+  /**
+   * Returns the {@link Asset} to which `handle` points to. Throws an error if it does
+   * not point to any asset.
+   */
+  public resolve(handle: Handle<T>): Asset<T> {
+    const asset = this.get(handle);
+
+    if (! asset) {
+      throw new Error(`Invalid asset: ${handle.assetId}`);
+    }
+
+    return asset;
   }
 
   /** Returns `true` if an asset is stored under the given handle. */

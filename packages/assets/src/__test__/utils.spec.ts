@@ -1,4 +1,4 @@
-import { getDirectory, getExtension } from '../utils';
+import { getDirectory, getExtension, normalize } from '../utils';
 
 
 describe('getDirectory()', () => {
@@ -26,9 +26,37 @@ describe('getDirectory()', () => {
 
 describe('getExtension()', () => {
   it.each([
-    ['a/b/test.json', 'json'],
-    ['a/b/test.foobar.json', 'foobar.json']
+    [
+      'test.json',
+      'json'
+    ],
+    [
+      'test.foobar.json',
+      'foobar.json'
+    ],
+    [
+      'foo/bar/test.json',
+      'json'
+    ],
+    [
+      'foo/bar/test.foobar.json',
+      'foobar.json'
+    ],
+    [
+      'foo/../bar/test.json',
+      'json'
+    ],
+    [
+      'foo/../bar/test.foobar.json',
+      'foobar.json'
+    ]
   ])('should return extension of %s', (file, extension) => {
     expect(getExtension(file)).toBe(extension);
+  });
+});
+
+describe('normalize()', () => {
+  it('should resolve ".." segments', () => {
+    expect(normalize('foo/bar/../foobar')).toBe('foo/foobar');
   });
 });

@@ -1,7 +1,7 @@
 import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetStorage, AssetType, getCollectionMetadata, Handle, LoadingState } from './asset';
 import { Format, LoadType } from './format';
-import { getExtension, join } from './utils';
+import { getExtension, join, normalize } from './utils';
 
 
 /**
@@ -173,10 +173,12 @@ export class AssetLoader {
    * asset storage after it has finished loading.
    */
   public load<R>(file: string): Handle<R> {
-    const format = this.getFormatFromFile(file);
-    const handle = Handle.from(file);
+    const _file = normalize(file);
 
-    this.fetch(file, format).then(data => {
+    const format = this.getFormatFromFile(_file);
+    const handle = Handle.from(_file);
+
+    this.fetch(_file, format).then(data => {
       this.complete(handle, data, format);
     });
 
@@ -188,16 +190,18 @@ export class AssetLoader {
    * access the asset, but only after the asset has finished loading.
    */
   public async<R>(file: string): Promise<Handle<R>> {
-    const format = this.getFormatFromFile(file);
+    const _file = normalize(file);
+    const format = this.getFormatFromFile(_file);
 
-    return this.fetch(file, format).then(data => {
-      const handle = Handle.from(file);
+    return this.fetch(_file, format).then(data => {
+      const handle = Handle.from(_file);
 
       this.complete(handle, data, format);
 
       return handle;
     });
   }
+
 
   /**
    * Creates an instance of the given asset collection `type` and autoloads all
