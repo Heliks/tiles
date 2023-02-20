@@ -1,13 +1,35 @@
 import { Grid } from '@heliks/tiles-engine';
 import { GameObject, parseObject } from '../tmx-game-object';
-import { getCustomProperties, TmxProperties } from '../tmx-properties';
+import { parseCustomProperties, TmxProperties } from '../tmx-properties';
 import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxTilemapData } from '../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
+import { LayerId } from '@heliks/tiles-pixi';
+
+
+/** Internal {@link TmxProperties properties} that can occur on a {@link Layer layer}. */
+export interface LayerProperties extends TmxProperties {
+
+  /**
+   * If defined, the TMX layer will be rendered on the renderer {@link LayerId layer}
+   * using this ID. Subsequent layers will inherit this setting. For example:
+   *
+   * ```
+   *  - Layer1 with $layer 1   -> renderer layer 1
+   *  - Layer2                 -> renderer layer 1
+   *  - Layer3 with $layer 2   -> renderer layer 2
+   *  - Layer4                 -> renderer layer 2
+   *  - Layer5 with $layer 1   -> renderer layer 1
+   *  ...
+   * ```
+   */
+  $layer?: LayerId;
+
+}
 
 
 /** Available layer types. */
-export enum LayerType {
+export enum TmxLayerType {
 
   /**
    * Layer contains tiles on a tile grid.
@@ -34,14 +56,14 @@ export enum LayerType {
  *
  * @typeparam P Custom layer properties.
  */
-export type ObjectLayer<P extends TmxProperties = TmxProperties> = BaseLayer<GameObject[], LayerType.Objects, P>;
+export type ObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<GameObject[], TmxLayerType.Objects, P>;
 
 /**
  * Layer that contains tiles.
  *
  * @typeparam P Custom layer properties.
  */
-export type TileLayer<P extends TmxProperties = TmxProperties> = BaseLayer<TileChunk[], LayerType.Tiles, P>;
+export type TileLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TileChunk[], TmxLayerType.Tiles, P>;
 
 /**
  * Layer that groups multiple layers together. This counts as its own layer and can have
@@ -49,7 +71,7 @@ export type TileLayer<P extends TmxProperties = TmxProperties> = BaseLayer<TileC
  *
  * @typeparam P Custom layer properties
  */
-export type LayerGroup<P extends TmxProperties = TmxProperties> = BaseLayer<(LayerGroup | ObjectLayer | TileLayer)[], LayerType.Group, P>;
+export type LayerGroup<P extends LayerProperties = LayerProperties> = BaseLayer<(LayerGroup | ObjectLayer | TileLayer)[], TmxLayerType.Group, P>;
 
 /**
  * Any valid layer type.
@@ -60,7 +82,7 @@ export type LayerGroup<P extends TmxProperties = TmxProperties> = BaseLayer<(Lay
  *
  * @typeparam P Custom layer properties.
  */
-export type Layer<P extends TmxProperties = TmxProperties> = LayerGroup<P> | ObjectLayer<P> | TileLayer<P>;
+export type Layer<P extends LayerProperties = LayerProperties> = LayerGroup<P> | ObjectLayer<P> | TileLayer<P>;
 
 
 /**
@@ -80,8 +102,8 @@ export function parseObjectLayer(layer: TmxObjectLayerData): ObjectLayer {
     name: layer.name,
     data: objects,
     isVisible: layer.visible,
-    properties: getCustomProperties(layer),
-    type: LayerType.Objects
+    properties: parseCustomProperties(layer),
+    type: TmxLayerType.Objects
   };
 }
 
@@ -114,8 +136,8 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Ti
     name: layer.name,
     data: chunks,
     isVisible: layer.visible,
-    properties: getCustomProperties(layer),
-    type: LayerType.Tiles
+    properties: parseCustomProperties(layer),
+    type: TmxLayerType.Tiles
   };
 }
 
@@ -144,8 +166,8 @@ export function parseLayer(map: TmxTilemapData, layer: TmxLayerData, chunkTileGr
         name: layer.name,
         data: layers,
         isVisible: layer.visible,
-        properties: getCustomProperties(layer),
-        type: LayerType.Group
+        properties: parseCustomProperties(layer),
+        type: TmxLayerType.Group
       };
   }
 }

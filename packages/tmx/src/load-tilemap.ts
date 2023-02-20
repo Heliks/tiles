@@ -1,11 +1,11 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { parseLayers } from './layers';
-import { LoadTileset } from './load-tileset';
-import { getCustomProperties, TmxProperties } from './tmx-properties';
+import { parseCustomProperties, TmxProperties } from './tmx-properties';
 import { TmxTilemap } from './tmx-tilemap';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxTilemapData } from './tmx';
-import { LocalTileset, LocalTilesetBag } from '@heliks/tiles-tilemap';
+import { LocalTileset, Tileset } from '@heliks/tiles-tilemap';
+import { TmxTileset } from './tmx-tileset';
 
 
 /**
@@ -59,7 +59,7 @@ function getMapSize(data: TmxTilemapData): Vec2 {
  *
  * @internal
  */
-function getChunkLayout(data: TmxTilemapData): Grid {
+function parseChunkLayout(data: TmxTilemapData): Grid {
   const size = getMapSize(data);
 
   if (! data.infinite) {
@@ -118,17 +118,40 @@ function getChunkTileLayout(data: TmxTilemapData): Grid {
 }
 
 /** @internal */
-async function loadTileset(data: TmxLocalTilesetData, basePath: string, loader: AssetLoader): Promise<LocalTileset> {
-  const format = new LoadTileset();
+async function parseLocalTileset(loader: AssetLoader, file: string, data: TmxLocalTilesetData): Promise<LocalTileset<TmxTileset>> {
+  // Note: As of now, there is no way to serialize sprites that are created from assets
+  // without a source location. Therefore, we can not spawn objects that use sprites
+  // from embedded tilesets without completely breaking serialization.
+  if (! isLocalTilesetExternal(data)) {
+    throw new Error('Embedded Tilesets are not supported.');
+  }
 
-  // If the tileset is external, load it. Otherwise, parse it directly.
-  const tileset = await (
-    isLocalTilesetExternal(data)
-      ? loader.fetch(`${basePath}/${data.source}`, format)
-      : format.process(data, '.embedded-tileset', loader)
-  );
+  const tileset = await loader.fetch<TmxTileset>(getDirectory(file, data.source));
 
   return new LocalTileset(tileset, data.firstgid);
+}
+
+/** @internal */
+function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxTilemapData): Promise<LocalTileset<TmxTileset>[]> {
+  return Promise.all(
+    data.tilesets.map(
+      tilesetData => parseLocalTileset(loader, file, tilesetData)
+    )
+  );
+}
+
+/** @internal */
+function parseTilemap<P extends TmxProperties>(data: TmxTilemapData): TmxTilemap<P> {
+  return new TmxTilemap<P>(
+    new Grid(
+      data.width,
+      data.height,
+      data.tilewidth,
+      data.tileheight
+    ),
+    parseChunkLayout(data),
+    parseCustomProperties<P>(data)
+  );
 }
 
 /**
@@ -142,29 +165,12 @@ export class LoadTilemap<P extends TmxProperties = TmxProperties> implements For
   public readonly extensions = ['tmj'];
 
   /** @inheritDoc */
-  public getAssetType(): typeof TmxTilemap {
-    return TmxTilemap;
-  }
-
-  /** @inheritDoc */
   public async process(data: TmxTilemapData, file: string, loader: AssetLoader): Promise<TmxTilemap<P>> {
-    const basePath = getDirectory(file);
+    const tilemap = parseTilemap<P>(data);
+    const tilesets = await parseLocalTilesets(loader, file, data);
 
-    const tilemap = new TmxTilemap<P>(
-      new Grid(data.width, data.height, data.tilewidth, data.tileheight),
-      getChunkLayout(data),
-      getCustomProperties<P>(data)
-    );
-
-    // Load all tilesets simultaneously.
-    const assets = await Promise.all(
-      data.tilesets.map(
-        item => loadTileset(item, basePath, loader)
-      )
-    );
-
-    for (const asset of assets) {
-      tilemap.tilesets.set(asset);
+    for (const tileset of tilesets) {
+      tilemap.tilesets.set(tileset);
     }
 
     // Create the layout of each individual chunk. We need this to parse tile layers.

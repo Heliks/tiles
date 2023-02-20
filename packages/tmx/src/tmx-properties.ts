@@ -17,7 +17,7 @@ export interface HasProperties<T extends TmxProperties> {
  *
  * - `P`: Expected custom properties.
  */
-export function getCustomProperties<P extends TmxProperties>(data: TmxHasPropertyData): P {
+export function parseCustomProperties<P extends TmxProperties>(data: TmxHasPropertyData): P {
   const props: TmxProperties = {};
 
   if (data.properties) {

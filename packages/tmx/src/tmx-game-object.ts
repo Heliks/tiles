@@ -1,7 +1,7 @@
 import { Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
-import { getCustomProperties, TmxProperties } from './tmx-properties';
+import { parseCustomProperties, TmxProperties } from './tmx-properties';
 import { TmxShape } from './tmx-shape';
 import { TmxObjectData } from './tmx';
 import { getCustomType } from './utils';
@@ -65,7 +65,7 @@ export function parseObject(data: TmxObjectData): GameObject {
   const object = new GameObject(
     data.id,
     rect,
-    getCustomProperties(data),
+    parseCustomProperties(data),
     getCustomType(data)
   );
 
@@ -84,7 +84,7 @@ export function parseObject(data: TmxObjectData): GameObject {
 }
 
 /** Returns `true` if `value` is a `Tile<P>`. */
-export function isTile<P extends TmxProperties>(value: GameObject<P>): value is Tile<P> {
+export function isTile<P extends TmxProperties>(value: GameObject<P> | Tile): value is Tile<P> {
   return !! value.tileId;
 }
 

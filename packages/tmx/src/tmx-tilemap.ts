@@ -2,6 +2,7 @@ import { Grid } from '@heliks/tiles-engine';
 import { Layer } from './layers';
 import { TmxProperties } from './tmx-properties';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
+import { TmxTileset } from './tmx-tileset';
 
 
 /**
@@ -15,7 +16,7 @@ export class TmxTilemap<P extends TmxProperties = TmxProperties> {
   public readonly layers: Layer[] = [];
 
   /** Bag that contains all tilesets that are part of this map. */
-  public readonly tilesets = new LocalTilesetBag()
+  public readonly tilesets = new LocalTilesetBag<TmxTileset>()
 
   /**
    * @param grid Grid that represents the dimensions of the tilemap in pixels.

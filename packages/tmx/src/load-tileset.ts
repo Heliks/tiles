@@ -1,9 +1,10 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
-import { Align, LoadTexture, SpriteGrid } from '@heliks/tiles-pixi';
-import { getCustomProperties } from './tmx-properties';
+import { Align, LoadTexture, SpriteGrid, SpriteSheet } from '@heliks/tiles-pixi';
+import { parseCustomProperties } from './tmx-properties';
 import { TmxTileset } from './tmx-tileset';
-import { TmxTilesetData, TmxTileData } from './tmx';
+import { TmxTileData, TmxTilesetData } from './tmx';
+import { Texture } from 'pixi.js';
 
 
 /** @internal */
@@ -18,25 +19,6 @@ const ALIGN_LOOKUP = {
   'bottomleft': Align.BottomLeft,
   'bottomright': Align.BottomRight
 };
-
-/** @internal */
-async function loadSpritesheet(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<SpriteGrid> {
-  // Amount of rows is not contained in the TMX format so it needs to be calculated
-  // manually. The number is rounded down to cut of partial tiles.
-  const grid = new Grid(
-    data.columns,
-    Math.floor(data.imageheight / data.tileheight),
-    data.tilewidth,
-    data.tileheight
-  );
-
-  // Convert tilesets relative path to absolute path.
-  const texturePath = getDirectory(file, data.image);
-  const texture = await loader.fetch(texturePath, new LoadTexture());
-
-  return new SpriteGrid(grid, texture);
-}
-
 
 /**
  * Parses TMX tile data and adds the extracted information to the given `tileset`.
@@ -76,15 +58,17 @@ export function parseTile(tileset: TmxTileset, tile: TmxTileData): void {
       frameDuration = frameData.duration;
     }
 
+    /*
     tileset.setAnimation(tileId, {
       frames,
       frameDuration
     });
+     */
   }
 
   // Assign custom properties if the tile has any.
   if (tile.properties) {
-    tileset.tileProperties.set(tileId, getCustomProperties(tile));
+    tileset.tileProperties.set(tileId, parseCustomProperties(tile));
   }
 }
 
@@ -104,20 +88,20 @@ export class LoadTileset implements Format<TmxTilesetData, TmxTileset> {
   /** @inheritDoc */
   public readonly extensions = ['tsj'];
 
-  /** @inheritDoc */
-  public getAssetType(): typeof TmxTileset {
-    return TmxTileset;
-  }
-
   /** Creates a `Tileset` from `data`. */
   public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<TmxTileset> {
-    const align = getAlign(data);
-    const sheet = await loadSpritesheet(data, file, loader);
+    const grid = new Grid(
+      Math.floor(data.imagewidth / data.tilewidth),
+      Math.floor(data.imageheight / data.tileheight),
+      data.tilewidth,
+      data.tileheight
+    );
 
+    const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
+    const handle = loader.data(file, new SpriteGrid(grid, texture));
+    const tileset = new TmxTileset(handle, grid.size);
 
-    const tileset = new TmxTileset(sheet);
-
-    tileset.align = align;
+    tileset.align = getAlign(data);
 
     /*
     if (data.tiles) {

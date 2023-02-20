@@ -1,8 +1,9 @@
 import { TmxHasPropertyData } from './utils';
 import { TmxShapeData } from './shape';
+import { TmxObjectData } from './layer';
 
 
-export interface TmxTileData extends TmxHasPropertyData {
+export interface TmxTileData extends TmxObjectData, TmxHasPropertyData {
   animation?: {
     duration: number;
     tileid: number;
