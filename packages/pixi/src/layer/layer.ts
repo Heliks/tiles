@@ -50,10 +50,24 @@ export class Layer {
   }
 
   /** Sets the layer {@link sorter}. */
-  public sort(sorter: LayerSorter): this {
+  public sortBy(sorter: LayerSorter): this {
     this.sorter = sorter;
 
     return this;
+  }
+
+  /**
+   * Sorts the children of the layer {@link container}. Will return `false` if there
+   * is no {@link sorter} defined for this layer.
+   */
+  public sort(): boolean {
+    if (this.sorter) {
+      this.container.children.sort(this.sorter);
+
+      return true;
+    }
+
+    return false;
   }
 
 }

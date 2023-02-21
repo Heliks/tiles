@@ -1,13 +1,13 @@
+import { Vec2 } from '@heliks/tiles-engine';
 import { Rectangle as PxRectangle, Sprite, Texture } from 'pixi.js';
 import { PackedSprite } from './packed-sprite';
 import { SpriteSheet } from './sprite-sheet';
 
 
 /**
- * A packed sprite sheet is a single texture that contains multiple different sized
- * sprites, where each sprite is trimmed (packed) to its lowest possible width and
- * height. When a texture is created for a sprite, the original, "un-packed" size of
- * the sprite is restored.
+ * A {@link SpriteSheet spritesheet} that contains sprites that are packed to be reduced
+ * to their lowest possible width and height. When a {@link Texture texture} is created
+ * from this spritesheet, the original, "un-packed" size is restored.
  */
 export class PackedSpriteSheet extends SpriteSheet {
 
@@ -27,11 +27,6 @@ export class PackedSpriteSheet extends SpriteSheet {
   /** @inheritDoc */
   public size(): number {
     return this.sprites.size;
-  }
-
-  /** @inheritDoc */
-  public sprite(index: number): Sprite {
-    return new Sprite(this.texture(index));
   }
 
   /**
@@ -90,6 +85,21 @@ export class PackedSpriteSheet extends SpriteSheet {
     this.textures.set(spriteId, texture);
 
     return texture;
+  }
+
+  /** @inheritDoc */
+  public sprite(index: number): Sprite {
+    return new Sprite(this.texture(index));
+  }
+
+  /** @inheritDoc */
+  public getSpriteSize(spriteId: number): Vec2 {
+    const packed = this._getPackedSprite(spriteId);
+
+    return new Vec2(
+      packed.width,
+      packed.height
+    );
   }
 
 }

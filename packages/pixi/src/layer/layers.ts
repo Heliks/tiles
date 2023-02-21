@@ -18,24 +18,24 @@ export class Layers {
 
   /**
    * Container where the individual {@link Layer layer} containers will be rendered. The
-   * order is guaranteed to be synchronized with the {@link layers} order.
+   * order is guaranteed to be synchronized with the {@link items} order.
    */
   public readonly container = new Container();
 
   /** @internal */
-  private readonly layers: Layer[] = [];
+  public readonly items: Layer[] = [];
 
   /**
    * Returns the current index position of the {@link Layer} matching `id` in the layer
    * order. Returns `-1` if `id` does not match any layers.
    */
   public getIndex(id: LayerId): number {
-    return this.layers.findIndex(layer => layer.id === id);
+    return this.items.findIndex(layer => layer.id === id);
   }
 
   /** @internal */
   private insertAt(layer: Layer, index: number): void {
-    this.layers.splice(index, 0, layer);
+    this.items.splice(index, 0, layer);
     this.container.addChildAt(layer.container, index);
   }
 
@@ -45,7 +45,7 @@ export class Layers {
   public add(id: LayerId): Layer {
     const layer = new Layer(id);
 
-    this.layers.push(layer);
+    this.items.push(layer);
     this.container.addChild(layer.container);
 
     return layer;
@@ -86,7 +86,7 @@ export class Layers {
       throw new Error(`Unknown layer ${id}`);
     }
 
-    return this.layers[ index ];
+    return this.items[ index ];
   }
 
 
@@ -95,7 +95,7 @@ export class Layers {
    * at that index.
    */
   public getAt(index: number): Layer {
-    const layer = this.layers[ index ];
+    const layer = this.items[ index ];
 
     if (! layer) {
       throw new Error(`Invalid layer index ${index}`);

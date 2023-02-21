@@ -1,3 +1,4 @@
+import { Vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
 import { SpriteAnimation } from '../animation';
 
@@ -15,14 +16,17 @@ export abstract class SpriteSheet {
   /** @internal */
   private readonly animations = new Map<string, SpriteAnimationData>();
 
-  /** Returns the amount of sprites contained in this sprite-sheet. */
+  /** Returns the total amount of sprites in this spritesheet. */
   public abstract size(): number;
 
-  /** Creates a new `Sprite` instance from the sprite located at `index`. */
+  /** Creates a sprite {@link Texture texture}. */
+  public abstract texture(index: number): Texture;
+
+  /** Creates a {@link Sprite}. */
   public abstract sprite(index: number): Sprite;
 
-  /** Creates a new `Texture` for the sprite located at `index`. */
-  public abstract texture(index: number): Texture;
+  /** Returns the size of a sprite in pixels. */
+  public abstract getSpriteSize(spriteId: number): Vec2;
 
   /**
    * Registers an animation with `name`. Non-required data is filled with fallback values.

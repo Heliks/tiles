@@ -114,7 +114,6 @@ export class SpriteRenderer extends ReactiveSystem {
         sprite.texture = spritesheet.texture(render.spriteIndex);
       }
 
-      // Apply flip.
       render._sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
       render._sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
 

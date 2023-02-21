@@ -4,17 +4,17 @@ import { cropTexture } from '../../utils';
 import { SpriteSheet } from './sprite-sheet';
 
 
-/** A sprite-sheet that sorts individuals sprites on a grid. */
+/**
+ * A {@link SpriteSheet spritesheet} where sprites are arranged in a grid. The ID of each
+ * sprite is equivalent to the index of the cell it occupies.
+ */
 export class SpriteGrid extends SpriteSheet {
 
   /**
    * @param grid Grid layer for the sprite sheet.
    * @param _texture Texture from which the sprites will be created.
    */
-  constructor(
-    public readonly grid: Grid,
-    public readonly _texture: Texture
-  ) {
+  constructor(public readonly grid: Grid, public readonly _texture: Texture) {
     super();
   }
 
@@ -37,12 +37,9 @@ export class SpriteGrid extends SpriteSheet {
     return new Sprite(this.texture(index));
   }
 
-  /** Returns a vector of the size of each individual sprite in this sprite sheet. */
+  /** @inheritDoc */
   public getSpriteSize(): Vec2 {
-    return new Vec2(
-      this.grid.cellWidth,
-      this.grid.cellHeight
-    );
+    return new Vec2(this.grid.cellWidth, this.grid.cellHeight);
   }
 
 }

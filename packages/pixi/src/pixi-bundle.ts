@@ -6,7 +6,7 @@ import { Renderer } from './renderer';
 import { SpriteAnimation, SpriteRender, SpriteRenderSerializer } from './sprite';
 import { Screenshot } from './screenshot';
 import { RendererConfig } from './config';
-import { Layers, Stage } from './layer';
+import { Layers, SortChildren, Stage } from './layer';
 
 
 /** @internal */
@@ -85,7 +85,8 @@ export class PixiBundle implements Bundle, OnInit {
       .provide(Layers)
       .provide(Stage)
       .provide(Renderer)
-      .provide(Screenshot);
+      .provide(Screenshot)
+      .system(SortChildren);
   }
 
   /** @inheritDoc */
