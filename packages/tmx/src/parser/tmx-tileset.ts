@@ -1,7 +1,6 @@
 import { Align } from '@heliks/tiles-pixi';
 import { Tileset as Base } from '@heliks/tiles-tilemap';
-import { TmxProperties } from './tmx-properties';
-import { TmxShape } from './tmx-shape';
+import { TmxTile } from './tmx-tile';
 
 
 /** @internal */
@@ -18,11 +17,7 @@ export class TmxTileset extends Base {
    */
   public align = Align.BottomLeft;
 
-  /** Contains custom properties associated with a certain tile ID. */
-  public readonly tileProperties = new Map<number, TmxProperties>();
-
-  /** Contains tile shapes, mapped to the tileId to which they belong. */
-  private readonly shapes = new Map<number, TmxShape[]>();
-
+  /** Contains {@link TmxTile tiles} mapped to their tile ID. */
+  public readonly tiles = new Map<number, TmxTile>();
 
 }

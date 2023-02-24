@@ -1,4 +1,4 @@
-import { TmxHasPropertyData } from './tmx';
+import { TmxHasPropertyData } from '../tmx';
 
 
 /** Custom properties. */

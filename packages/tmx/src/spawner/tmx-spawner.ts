@@ -1,12 +1,21 @@
-import { TmxTileset } from '../tmx-tileset';
-import { GameObject, isTile, Tile } from '../tmx-game-object';
-import { TmxTilemap } from '../tmx-tilemap';
-import { Layer, ObjectLayer, TileLayer, TmxLayerType } from '../layers';
+import {
+  isTile,
+  Layer,
+  ObjectLayer,
+  TileLayer,
+  TmxLayerType,
+  TmxObject,
+  TmxTilemap,
+  TmxTileObject,
+  TmxTileset
+} from '../parser';
 import { Entity, EntityBuilder, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Align, LayerId, SpriteRender } from '@heliks/tiles-pixi';
 import { AssetStorage } from '@heliks/tiles-assets';
-import { TmxConfig } from '../tmx-config';
+import { TmxSpawnerConfig } from './tmx-spawner-config';
 import { Tilemap } from '@heliks/tiles-tilemap';
+import { TmxPhysicsFactory } from './tmx-physics-factory';
+
 
 /** @internal */
 function setAnchor(sprite: SpriteRender, align: Align): void {
@@ -46,15 +55,17 @@ function spawnTileLayer(world: World, map: TmxTilemap, layer: TileLayer, renderL
 
 /** Service that spawns {@link TmxTilemap maps}. */
 @Injectable()
-export class MapSpawner {
+export class TmxSpawner {
 
   /**
    * @param assets {@see AssetStorage}
    * @param config {@see TmxConfig}
+   * @param physics {@see PhysicsFactory}
    */
   constructor(
     private readonly assets: AssetStorage,
-    private readonly config: TmxConfig
+    private readonly config: TmxSpawnerConfig,
+    private readonly physics: TmxPhysicsFactory
   ) {}
 
   /** @internal */
@@ -62,22 +73,25 @@ export class MapSpawner {
     return this.assets.resolve(tileset.spritesheet).data.getSpriteSize(spriteIdx);
   }
 
-  /** @internal */
-  private getScaleFactor(tileset: TmxTileset, tile: Tile, spriteIdx: number): Vec2 {
+  /**
+   * Returns the scale factor of the sprite at the given `spriteIdx` when used for
+   * as sprite for a {@link TmxTileObject tile}.
+   */
+  public getScaleFactor(tileset: TmxTileset, obj: TmxTileObject, spriteIdx: number): Vec2 {
     const size = this.getSpriteSize(tileset, spriteIdx);
 
-    size.x = tile.data.width / size.x;
-    size.y = tile.data.height / size.y;
+    size.x = obj.shape.width / size.x;
+    size.y = obj.shape.height / size.y;
 
     return size;
   }
 
   /** @internal */
-  private createObjectSprite(tileset: TmxTileset, tile: Tile, spriteId: number, renderLayer?: LayerId): SpriteRender {
+  private createObjectSprite(tileset: TmxTileset, obj: TmxTileObject, spriteId: number, renderLayer?: LayerId): SpriteRender {
     const sprite = new SpriteRender(tileset.spritesheet, spriteId, renderLayer);
 
-    sprite.scale.copy(this.getScaleFactor(tileset, tile, spriteId));
-    sprite.flip(tile.flipX, tile.flipY);
+    sprite.scale.copy(this.getScaleFactor(tileset, obj, spriteId));
+    sprite.flip(obj.flipX, obj.flipY);
 
     // The origin position of objects is at their bottom center.
     setAnchor(sprite, tileset.align);
@@ -86,13 +100,13 @@ export class MapSpawner {
   }
 
   /** @internal */
-  private createObjectBuilder(world: World, map: TmxTilemap, obj: GameObject, renderLayer?: LayerId): EntityBuilder {
+  private createObjectBuilder(world: World, map: TmxTilemap, obj: TmxObject, renderLayer?: LayerId): EntityBuilder {
     const transform = new Transform(
       0,
       0,
       0,
-      (obj.data.x / this.config.unitSize) - (map.grid.cols / 2),
-      (obj.data.y / this.config.unitSize) - (map.grid.rows / 2)
+      (obj.shape.x / this.config.unitSize) - (map.grid.cols / 2),
+      (obj.shape.y / this.config.unitSize) - (map.grid.rows / 2)
     );
 
     const entity = world
@@ -110,6 +124,9 @@ export class MapSpawner {
           renderLayer
         )
       );
+    }
+    else {
+      entity.use(this.physics.body(obj));
     }
 
     return entity;

@@ -9,10 +9,10 @@ import { Tileset } from './tileset';
  *
  * @see LocalTileset
  */
-export class LocalTilesetBag {
+export class LocalTilesetBag<T extends Tileset = Tileset> {
 
   /** @internal */
-  public readonly items: LocalTileset[] = [];
+  public readonly items: LocalTileset<T>[] = [];
 
   /** Contains the amount of tilesets that are contained in this bag. */
   public get size(): number {
@@ -33,14 +33,14 @@ export class LocalTilesetBag {
    * This method is unsafe because it does not check if the ID range of the provided
    * local tileset overlaps with the range of another tileset.
    */
-  public set(tileset: LocalTileset): this {
+  public set(tileset: LocalTileset<T>): this {
     this.items.push(tileset);
 
     return this;
   }
 
   /** Adds `tileset` to the bag. */
-  public add(tileset: Tileset): LocalTileset {
+  public add(tileset: T): LocalTileset<T> {
     const local = new LocalTileset(tileset, this.getNextFirstId());
 
     this.items.push(local);
@@ -52,12 +52,12 @@ export class LocalTilesetBag {
    * Returns the `LocalTileset` of `tileset`, or `undefined` if the tileset is not
    * part of this bag.
    */
-  public find(tileset: Tileset): LocalTileset | undefined {
+  public find(tileset: T): LocalTileset<T> | undefined {
     return this.items.find(item => item.tileset === tileset);
   }
 
   /** Returns `true` if `tileset` is part of this bag. */
-  public has(tileset: Tileset): boolean {
+  public has(tileset: T): boolean {
     return this.items.some(item => item.tileset === tileset);
   }
 
@@ -65,7 +65,7 @@ export class LocalTilesetBag {
    * Returns the `LocalTileset` for `tileset`. If `tileset` is not yet a local tileset
    * of this bag, it will be added automatically.
    */
-  public resolve(tileset: Tileset): LocalTileset {
+  public resolve(tileset: T): LocalTileset<T> {
     const item = this.find(tileset);
 
     return item ? item : this.add(tileset);
@@ -75,7 +75,7 @@ export class LocalTilesetBag {
    * Returns the `LocalTileset` for a global tile ID. Throws an error if the ID is not
    * in range of the local tilesets in this bag.
    */
-  public getFromGlobalId(globalId: number): LocalTileset {
+  public getFromGlobalId(globalId: number): LocalTileset<T> {
     const tileset = this.items.find(
       item => item.firstId <= globalId && item.lastId >= globalId
     );
@@ -91,7 +91,7 @@ export class LocalTilesetBag {
    * Copies the contents of `bag`. This is unsafe, as the tileset ID ranges of the given
    * bag might collide with existing ID ranges.
    */
-  public copy(bag: LocalTilesetBag): this {
+  public copy(bag: LocalTilesetBag<T>): this {
     for (const item of bag.items) {
       this.set(item.clone());
     }

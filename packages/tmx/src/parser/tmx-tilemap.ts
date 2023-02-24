@@ -1,14 +1,14 @@
 import { Grid } from '@heliks/tiles-engine';
-import { Layer } from './layers';
 import { TmxProperties } from './tmx-properties';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
 import { TmxTileset } from './tmx-tileset';
+import { Layer } from './layers';
 
 
 /**
  * A TMX Tilemap.
  *
- * @see LoadTilemap
+ * @see TmxLoadTilemap
  */
 export class TmxTilemap<P extends TmxProperties = TmxProperties> {
 

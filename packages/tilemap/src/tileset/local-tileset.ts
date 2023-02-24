@@ -6,7 +6,7 @@ import { Tileset } from './tileset';
  *
  * @see Tileset
  */
-export class LocalTileset {
+export class LocalTileset<T extends Tileset = Tileset> {
 
   /** Contains the highest ID in the occupied ID range. */
   public get lastId(): number {
@@ -18,7 +18,7 @@ export class LocalTileset {
    * @param firstId Lowest possible ID in the occupied ID range.
    */
   constructor(
-    public readonly tileset: Tileset,
+    public readonly tileset: T,
     public readonly firstId: number
   ) {}
 
@@ -43,7 +43,7 @@ export class LocalTileset {
   }
 
   /** Creates a clone of this tileset. */
-  public clone(): LocalTileset {
+  public clone(): LocalTileset<T> {
     return new LocalTileset(this.tileset, this.firstId);
   }
 

@@ -1,5 +1,5 @@
 /** Resource that contains the configuration for the TMX map spawner. */
-export class TmxConfig {
+export class TmxSpawnerConfig {
 
   /**
    * @param unitSize Amount of pixels that are equivalent to one game unit.

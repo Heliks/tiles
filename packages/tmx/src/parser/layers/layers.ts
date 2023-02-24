@@ -1,7 +1,7 @@
 import { Grid } from '@heliks/tiles-engine';
-import { GameObject, parseObject } from '../tmx-game-object';
+import { parseObjectData, TmxObject } from '../tmx-object';
 import { parseCustomProperties, TmxProperties } from '../tmx-properties';
-import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxTilemapData } from '../tmx';
+import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxTilemapData } from '../../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
 import { LayerId } from '@heliks/tiles-pixi';
@@ -56,7 +56,7 @@ export enum TmxLayerType {
  *
  * @typeparam P Custom layer properties.
  */
-export type ObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<GameObject[], TmxLayerType.Objects, P>;
+export type ObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TmxObject[], TmxLayerType.Objects, P>;
 
 /**
  * Layer that contains tiles.
@@ -95,7 +95,7 @@ export function parseObjectLayer(layer: TmxObjectLayerData): ObjectLayer {
   const objects = [];
 
   for (const item of layer.objects) {
-    objects.push(parseObject(item));
+    objects.push(parseObjectData(item));
   }
 
   return {
