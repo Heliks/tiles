@@ -4,12 +4,12 @@ import {
   ObjectLayer,
   TileLayer,
   TmxLayerType,
-  TmxObject,
+  TmxObject, TmxProperties,
   TmxTilemap,
   TmxTileObject,
   TmxTileset
 } from '../parser';
-import { Entity, EntityBuilder, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { Entity, EntityBuilder, EventQueue, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { Align, LayerId, SpriteRender } from '@heliks/tiles-pixi';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
@@ -53,9 +53,21 @@ function spawnTileLayer(world: World, map: TmxTilemap, layer: TileLayer, renderL
   return entity;
 }
 
-/** Service that spawns {@link TmxTilemap maps}. */
+
+/**
+ * Service that spawns {@link TmxTilemap maps}.
+ *
+ * - `P`: Interface for custom properties that are found on spawned maps.
+ * - `T`: Subtype for tilemap that is spawned.
+ */
 @Injectable()
-export class TmxSpawner {
+export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTilemap = TmxTilemap<P>> {
+
+  /**
+   * Every time a {@link TmxTilemap map} is fully {@link spawn spawned}, it will be
+   * pushed to this event queue. This also includes maps that are re-spawned.
+   */
+  public readonly onMapSpawned = new EventQueue<T>();
 
   /**
    * @param assets {@see AssetStorage}
@@ -99,7 +111,7 @@ export class TmxSpawner {
   }
 
   /** @internal */
-  private createObjectBuilder(world: World, map: TmxTilemap, obj: TmxObject, renderLayer?: LayerId): EntityBuilder {
+  private createObjectBuilder(world: World, map: T, obj: TmxObject, renderLayer?: LayerId): EntityBuilder {
     const transform = new Transform(
       0,
       0,
@@ -132,7 +144,7 @@ export class TmxSpawner {
   }
 
   /** @internal */
-  private spawnObjectLayer(world: World, map: TmxTilemap, layer: ObjectLayer, renderLayer?: LayerId): Entity {
+  private spawnObjectLayer(world: World, map: T, layer: ObjectLayer, renderLayer?: LayerId): Entity {
     const parent = world.create(new Transform(10, 10));
 
     for (const obj of layer.data) {
@@ -143,7 +155,7 @@ export class TmxSpawner {
   }
 
   /** @internal */
-  private spawnLayer(world: World, map: TmxTilemap, layer: Layer, renderLayer?: LayerId): Entity {
+  private spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
     switch (layer.type) {
       case TmxLayerType.Tiles:
         return spawnTileLayer(world, map, layer, renderLayer);
@@ -160,7 +172,7 @@ export class TmxSpawner {
    * If a `parent` entity is given, entities that are created in the process will be
    * children of that parent.
    */
-  public spawn(world: World, map: TmxTilemap, parent?: Entity): void {
+  public spawn(world: World, map: T, parent?: Entity): void {
     let renderLayer;
 
     for (const data of map.layers) {
@@ -174,6 +186,8 @@ export class TmxSpawner {
         world.add(entity, new Parent(parent));
       }
     }
+
+    this.onMapSpawned.push(map);
   }
 
 }
