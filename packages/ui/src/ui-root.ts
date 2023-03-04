@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
-import { Pivot, PIVOT_TOP_LEFT } from './pivot';
 import { World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
+import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 
 
 export enum UiAlign {
@@ -66,7 +66,7 @@ export class UiRoot {
   public interactive = false;
 
   /** Container pivot. This does not affect the pivot of child nodes. */
-  public pivot: Pivot = PIVOT_TOP_LEFT;
+  public pivot: Pivot = PivotPreset.TOP_LEFT;
 
   /**
    * @param x Either world or screen position along x-axis, depending on {@link align}.

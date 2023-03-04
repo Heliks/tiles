@@ -1,5 +1,5 @@
 import { UiWidget } from './ui-widget';
-import { getPivotPosition, Pivot, PIVOT_TOP_LEFT } from './pivot';
+import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 
 
 /**
@@ -14,7 +14,7 @@ import { getPivotPosition, Pivot, PIVOT_TOP_LEFT } from './pivot';
 export class UiNode<W extends UiWidget = UiWidget> {
 
   /** Determines the pivot of the UI element. Default is top-left corner. */
-  public pivot: Pivot = PIVOT_TOP_LEFT;
+  public pivot: Pivot = PivotPreset.TOP_LEFT;
 
   /** Width in px. */
   public get width(): number {
@@ -37,16 +37,6 @@ export class UiNode<W extends UiWidget = UiWidget> {
    * @param y Either world or screen y-axis position, depending on {@link align}.
    */
   constructor(public readonly widget: W, public x = 0, public y = 0) {}
-
-  /** @internal */
-  public updateViewPivot(): void {
-    getPivotPosition(
-      this.pivot,
-      this.widget.view.width,
-      this.widget.view.height,
-      this.widget.view.pivot
-    );
-  }
 
   /** Sets the {@link pivot}. */
   public setPivot(pivot: Pivot): this {

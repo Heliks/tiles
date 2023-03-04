@@ -1,3 +1,4 @@
+export * from './pivot';
 export * from './random';
 
 export * from './circle';

@@ -1,9 +1,10 @@
-/** A two-dimensional vector. */
+/** Position of a point. */
 export interface XY {
   x: number;
   y: number;
 }
 
+/** A two-dimensional vector. */
 export class Vec2 implements XY {
 
   /**

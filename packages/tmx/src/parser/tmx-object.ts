@@ -60,8 +60,8 @@ export function parseObjectData(data: TmxObjectData): TmxObject {
   const shape = new Rectangle(
     data.width,
     data.height,
-    data.x + (data.width / 2),
-    data.y + (data.height / 2)
+    data.x,
+    data.y
   );
 
   let tileId;

@@ -146,7 +146,12 @@ export class DrawUi implements OnInit, RendererSystem {
       this.updateScreenAlignedNodePos(node, parent);
     }
 
-    node.updateViewPivot();
+    // Set PIXI pivot based on node pivot.
+    node.pivot.getPosition(
+      node.widget.view.width,
+      node.widget.view.height,
+      node.widget.view.pivot
+    );
   }
 
   /**

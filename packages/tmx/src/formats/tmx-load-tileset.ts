@@ -1,5 +1,5 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
-import { Grid } from '@heliks/tiles-engine';
+import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { Align, SpriteGrid } from '@heliks/tiles-pixi';
 import { TmxTileset } from '../parser';
 import { TmxTilesetData } from '../tmx';
@@ -8,27 +8,27 @@ import { parseTileData } from '../parser';
 
 
 /** @internal */
-const ALIGN_LOOKUP = {
-  'right': Align.Right,
-  'left': Align.Left,
-  'center': Align.Center,
-  'top': Align.Top,
-  'topleft': Align.TopLeft,
-  'topright': Align.TopRight,
-  'bottom': Align.Bottom,
-  'bottomleft': Align.BottomLeft,
-  'bottomright': Align.BottomRight
+const PIVOT_PRESET_LOOKUP = {
+  'right': PivotPreset.RIGHT,
+  'left': PivotPreset.LEFT,
+  'center': PivotPreset.CENTER,
+  'top': PivotPreset.TOP,
+  'topleft': PivotPreset.TOP_LEFT,
+  'topright': PivotPreset.TOP_RIGHT,
+  'bottom': PivotPreset.BOTTOM,
+  'bottomleft': PivotPreset.BOTTOM_LEFT,
+  'bottomright': PivotPreset.BOTTOM_RIGHT
 };
 
 /** @internal */
-function getAlign(data: TmxTilesetData): Align {
-  let align;
+function parsePivot(data: TmxTilesetData): Pivot {
+  let pivot;
 
   if (data.objectalignment) {
-    align = ALIGN_LOOKUP[ data.objectalignment ];
+    pivot = PIVOT_PRESET_LOOKUP[ data.objectalignment ];
   }
 
-  return align ?? Align.BottomLeft
+  return pivot ?? PivotPreset.BOTTOM_LEFT;
 }
 
 /** @internal */
@@ -57,7 +57,7 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     const handle = loader.data(file, spritesheet);
     const tileset = new TmxTileset(handle, grid.size);
 
-    tileset.align = getAlign(data);
+    tileset.pivot = parsePivot(data);
 
     if (data.tiles) {
       for (const tileData of data.tiles) {

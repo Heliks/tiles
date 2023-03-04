@@ -91,10 +91,9 @@ export class TmxSpawner {
     const sprite = new SpriteRender(tileset.spritesheet, spriteId, renderLayer);
 
     sprite.scale.copy(this.getScaleFactor(tileset, obj, spriteId));
-    sprite.flip(obj.flipX, obj.flipY);
 
-    // The origin position of objects is at their bottom center.
-    setAnchor(sprite, tileset.align);
+    sprite.flip(obj.flipX, obj.flipY);
+    sprite.setAnchor(tileset.pivot.x, tileset.pivot.y);
 
     return sprite;
   }

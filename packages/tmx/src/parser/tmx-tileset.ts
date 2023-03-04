@@ -1,17 +1,17 @@
-import { Align } from '@heliks/tiles-pixi';
+import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { Tileset } from '@heliks/tiles-tilemap';
 import { TmxTile } from './tmx-tile';
-
 
 
 /** @inheritDoc */
 export class TmxTileset extends Tileset {
 
   /**
-   * Sprites created from this tileset should use this alignment setting as their pivot
-   * position. By default, tiled uses the bottom-left corner for sprite pivots.
+   * When an object is using a sprite from this tileset, this {@link Pivot} should be
+   * used by the sprite as an anchor. By default, they are aligned based on their
+   * bottom-left corner.
    */
-  public align = Align.BottomLeft;
+  public pivot: Pivot = PivotPreset.BOTTOM_LEFT;
 
   /**
    * Contains {@link TmxTile tiles} mapped to the index it occupies on the tileset.
