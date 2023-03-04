@@ -1,15 +1,11 @@
 import { Align } from '@heliks/tiles-pixi';
-import { Tileset as Base } from '@heliks/tiles-tilemap';
+import { Tileset } from '@heliks/tiles-tilemap';
 import { TmxTile } from './tmx-tile';
 
 
-/** @internal */
-function getTileAnimationName(tileId: number): string {
-  return `tile-${tileId}-default`;
-}
 
 /** @inheritDoc */
-export class TmxTileset extends Base {
+export class TmxTileset extends Tileset {
 
   /**
    * Sprites created from this tileset should use this alignment setting as their pivot
@@ -17,7 +13,12 @@ export class TmxTileset extends Base {
    */
   public align = Align.BottomLeft;
 
-  /** Contains {@link TmxTile tiles} mapped to their tile ID. */
+  /**
+   * Contains {@link TmxTile tiles} mapped to the index it occupies on the tileset.
+   *
+   * Note: Tiled only creates tile objects for tiles with properties, animations, shapes
+   * etc., hence why not all tiles in a tileset have an entry here.
+   */
   public readonly tiles = new Map<number, TmxTile>();
 
 }

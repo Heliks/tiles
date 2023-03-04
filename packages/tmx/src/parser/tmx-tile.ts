@@ -1,22 +1,19 @@
 import { HasProperties, parseCustomProperties, TmxProperties } from './tmx-properties';
 import { parseGeometryData, TmxGeometry } from './tmx-geometry';
 import { TmxTileset } from './tmx-tileset';
-import { TmxTileData } from '../tmx';
+import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
+import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
 
 
-export interface TmxAnimationFrame {
-  tileId: number;
-  duration: number;
-}
 
 /** A tile that can occur on a {@link TmxTileset tileset}.*/
 export interface TmxTile<P extends TmxProperties = TmxProperties> extends HasProperties<P> {
 
-  /** Contains animations mapped to their animation name. */
-  readonly animation?: TmxAnimationFrame[];
+  /** Contains {@link SpriteAnimationFrames} if the tile is animated. */
+  readonly animation?: SpriteAnimationFrames;
 
-  /** Unique Tile ID. */
-  readonly id: number;
+  /** Index the tile occupies on the tileset. */
+  readonly index: number;
 
   /**
    * Contains {@link TmxGeometry geometry} that is attached to this tile via the Tiled
@@ -24,6 +21,29 @@ export interface TmxTile<P extends TmxProperties = TmxProperties> extends HasPro
    */
   readonly geometry?: TmxGeometry[];
 
+}
+
+/** @internal */
+function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrames {
+  const frames = [];
+
+  // Todo: As of now, spritesheet animations can not have durations for individual
+  //  frames. Therefore, we determine the longest frame and use it for all others.
+  let frameDuration = 0;
+
+  for (const frame of data) {
+    // Note: This tile ID is actually a tile index.
+    frames.push(frame.tileid);
+
+    if (frame.duration > frameDuration) {
+      frameDuration = frame.duration;
+    }
+  }
+
+  return {
+    frameDuration,
+    frames
+  };
 }
 
 /** Parses {@link TmxTileData}. */
@@ -38,18 +58,13 @@ export function parseTileData(tileset: TmxTileset, data: TmxTileData): TmxTile {
   let animation;
 
   if (data.animation) {
-    animation = data.animation.map(frame => {
-      return {
-        duration: frame.duration,
-        tileId: frame.tileid
-      };
-    })
+    animation = parseTileAnimation(data.animation);
   }
 
   return {
     // Note: Tiled is inconsistent with what is an ID and what is an index... In this
-    // case, this is actually an index. Convert it to make it consistent.
-    id: data.id + 1,
+    // case, this is actually an index.
+    index: data.id,
     properties: parseCustomProperties(data),
     animation,
     geometry

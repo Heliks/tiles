@@ -1,6 +1,7 @@
 import { createPackedArray, Grid } from '@heliks/tiles-engine';
 import { Container, LayerId } from '@heliks/tiles-pixi';
 import { LocalTilesetBag } from './tileset';
+import { AnimatedSprite } from 'pixi.js';
 
 
 /**
@@ -47,6 +48,15 @@ export class Tilemap {
    * @internal
    */
   public readonly view = new Container();
+
+  /**
+   * Contains {@link AnimatedSprite animated sprites} that need to be updated by the
+   * tilemap renderer. This has to be done manually because we do not use the internal
+   * PIXI ticker to update the renderer.
+   *
+   * @internal
+   */
+  public readonly _animations: AnimatedSprite[] = [];
 
   /** The opacity of the tilemap. Value from 0-1. */
   public set opacity(opacity: number) {

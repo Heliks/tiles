@@ -10,6 +10,14 @@ import { Terrain } from './terrain';
  */
 export class Tileset<S extends SpriteSheet = SpriteSheet> {
 
+  /**
+   * Contains tile indexes mapped to the name of an animation on {@link spritesheet}
+   * that should be played when the tile is rendered on a {@link Tilemap}.
+   *
+   * @internal
+   */
+  private readonly animations = new Map<number, string>();
+
   /** @internal */
   private readonly terrains = new Map<string, Terrain>();
 
@@ -45,6 +53,24 @@ export class Tileset<S extends SpriteSheet = SpriteSheet> {
     }
 
     return terrain;
+  }
+
+  /**
+   * Returns the name of the {@link spritesheet} animation that should be played when
+   * a tile index is added to a {@link Tilemap}.
+   */
+  public getAnimationName(tileIdx: number): string | undefined {
+    return this.animations.get(tileIdx);
+  }
+
+  /**
+   * Assigns the {@link spritesheet} animation `name` to a tile index. Tiles that have an
+   * animation assigned will be automatically animated when added to a {@link Tilemap}.
+   */
+  public setAnimationName(tileIdx: number, name: string): this {
+    this.animations.set(tileIdx, name);
+
+    return this;
   }
 
 }

@@ -1,10 +1,10 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
 import { Align, SpriteGrid } from '@heliks/tiles-pixi';
-import { TmxTileset } from '../parser/tmx-tileset';
+import { TmxTileset } from '../parser';
 import { TmxTilesetData } from '../tmx';
 import { Texture } from 'pixi.js';
-import { parseTileData } from '../parser/tmx-tile';
+import { parseTileData } from '../parser';
 
 
 /** @internal */
@@ -20,7 +20,7 @@ const ALIGN_LOOKUP = {
   'bottomright': Align.BottomRight
 };
 
-
+/** @internal */
 function getAlign(data: TmxTilesetData): Align {
   let align;
 
@@ -29,6 +29,11 @@ function getAlign(data: TmxTilesetData): Align {
   }
 
   return align ?? Align.BottomLeft
+}
+
+/** @internal */
+function getTileAnimationName(tileIdx: number): string {
+  return `TileAnimation${tileIdx}`;
 }
 
 /** Format to load TMX tilesets. */
@@ -47,7 +52,9 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     );
 
     const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const handle = loader.data(file, new SpriteGrid(grid, texture));
+    const spritesheet = new SpriteGrid(grid, texture);
+
+    const handle = loader.data(file, spritesheet);
     const tileset = new TmxTileset(handle, grid.size);
 
     tileset.align = getAlign(data);
@@ -56,10 +63,16 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
       for (const tileData of data.tiles) {
         const tile = parseTileData(tileset, tileData);
 
-        tileset.tiles.set(tile.id, tile);
+        if (tile.animation) {
+          const name = getTileAnimationName(tile.index);
+
+          spritesheet.setAnimation(name, tile.animation);
+          tileset.setAnimationName(tile.index, name);
+        }
+
+        tileset.tiles.set(tile.index, tile);
       }
     }
-
 
     return tileset;
   }

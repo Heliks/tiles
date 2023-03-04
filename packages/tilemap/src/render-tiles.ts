@@ -1,7 +1,19 @@
 import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
-import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Camera, Container, RendererSystem, Sprite, SpriteSheet, Stage } from '@heliks/tiles-pixi';
+import {
+  Entity,
+  Injectable,
+  Query,
+  QueryBuilder,
+  ReactiveSystem,
+  Ticker,
+  Transform,
+  Vec2,
+  World
+} from '@heliks/tiles-engine';
+import { Camera, Container, RendererSystem, SpriteSheet, Stage } from '@heliks/tiles-pixi';
 import { Tilemap } from './tilemap';
+import { AnimatedSprite, Sprite } from 'pixi.js';
+import { LocalTileset } from './tileset';
 
 
 /**
@@ -24,12 +36,14 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
    * @param camera {@link Camera}
    * @param loader {@link AssetLoader}
    * @param stage {@link Stage}
+   * @param ticker {@link Ticker}
    */
   constructor(
     private readonly assets: AssetStorage,
     private readonly camera: Camera,
     private readonly loader: AssetLoader,
     private readonly stage: Stage,
+    private readonly ticker: Ticker
   ) {
     super();
   }
@@ -48,20 +62,36 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
   }
 
   /** @internal */
-  private createTileSprite(tilemap: Tilemap, gId: number): Sprite {
-    const local = tilemap.tilesets.getFromGlobalId(gId);
+  private createAnimatedSprite(local: LocalTileset, name: string): AnimatedSprite {
+    const spritesheet = this.assets.resolve(local.tileset.spritesheet).data;
+    const animation = spritesheet.getAnimation(name);
 
+    return new AnimatedSprite(
+      animation.frames.map(frame => {
+        const texture = spritesheet.texture(frame);
+
+        return {
+          texture,
+          time: animation.frameDuration ?? 100
+        };
+      })
+    )
+  }
+
+  /** @internal */
+  private createStaticSprite(local: LocalTileset, tileIdx: number): Sprite {
     return this
       .assets
       // Note: We lose the `Handle` generic here. This is a bug in typescript.
       .resolve<SpriteSheet>(local.tileset.spritesheet)
       .data
-      .sprite(local.getLocalIndex(gId));
+      .sprite(tileIdx);
   }
 
   /** @internal */
   private render(tilemap: Tilemap): void {
     tilemap.view.removeChildren();
+    tilemap._animations.length = 0;
 
     for (let i = 0, l = tilemap.data.length; i < l; i++) {
       const gId = tilemap.data[i];
@@ -70,8 +100,24 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
         continue;
       }
 
+      let sprite;
+
+      const local = tilemap.tilesets.getFromGlobalId(gId);
+      const index = local.getLocalIndex(gId);
+
+      const animation = local.tileset.getAnimationName(index);
+
+      if (animation) {
+        sprite = this.createAnimatedSprite(local, animation);
+        sprite.play();
+
+        tilemap._animations.push(sprite);
+      }
+      else {
+        sprite = this.createStaticSprite(local, index);
+      }
+
       const tilePos = tilemap.grid.getPosition(i);
-      const sprite = this.createTileSprite(tilemap, gId);
 
       // Adjust y-axis for tiles that are larger than the cell size of the tilemap on
       // which they are placed.
@@ -80,6 +126,8 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
 
       tilemap.view.addChild(sprite);
     }
+
+    tilemap.dirty = false;
   }
 
   /** @inheritDoc */
@@ -109,6 +157,13 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
     }
   }
 
+  /** @internal */
+  private updateTileAnimations(tilemap: Tilemap): void {
+    for (const sprite of tilemap._animations) {
+      sprite.update(this.ticker.getDeltaSeconds());
+    }
+  }
+
   /** @inheritDoc */
   public update(world: World): void {
     super.update(world);
@@ -123,6 +178,8 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
 
       tilemap.view.x = transform.world.x * this.camera.unitSize;
       tilemap.view.y = transform.world.y * this.camera.unitSize;
+
+      this.updateTileAnimations(tilemap);
     }
   }
 

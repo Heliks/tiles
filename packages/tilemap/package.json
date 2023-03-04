@@ -3,13 +3,15 @@
   "peerDependencies": {
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
-    "@heliks/tiles-pixi": "workspace:^"
+    "@heliks/tiles-pixi": "workspace:^",
+    "pixi.js": "^5.3.3"
   },
   "description": "Tilemap Module",
   "devDependencies": {
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
     "@heliks/tiles-pixi": "workspace:^",
+    "pixi.js": "^5.3.3",
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.7.4"
   },
