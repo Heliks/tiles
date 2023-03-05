@@ -25,6 +25,11 @@ export interface LayerProperties extends TmxProperties {
    */
   $layer?: LayerId;
 
+  /**
+   * If set to `true`, this layer will be ignored when its map is spawned.
+   */
+  $skip?: boolean;
+
 }
 
 

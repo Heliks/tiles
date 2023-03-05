@@ -1,4 +1,4 @@
-import { Type } from '../../utils/types';
+import { Type } from '../../utils';
 import { TypeSerializationStrategy } from '../type-serialization-strategy';
 
 

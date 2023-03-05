@@ -1,8 +1,7 @@
-import { Struct } from '../utils/types';
+import { Struct } from '../utils';
 import { Entity, EntityBuilder, World } from '../ecs';
-import { isIgnored } from '../types/ignore';
+import { isIgnored, TypeRegistry } from '../types';
 import { Injectable } from '@heliks/tiles-injector';
-import { TypeRegistry } from '../types';
 
 
 /**

@@ -2,7 +2,7 @@ import { HasProperties, TmxProperties } from '../tmx-properties';
 
 
 /** @internal */
-export abstract class BaseLayer<D, T, P extends TmxProperties = TmxProperties> implements HasProperties<P> {
+export class BaseLayer<D, T, P extends TmxProperties = TmxProperties> implements HasProperties<P> {
 
   /**
    * @param name Custom layer name.

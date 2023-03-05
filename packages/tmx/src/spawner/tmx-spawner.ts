@@ -155,7 +155,7 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTi
   }
 
   /** @internal */
-  private spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
+  public spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
     switch (layer.type) {
       case TmxLayerType.Tiles:
         return spawnTileLayer(world, map, layer, renderLayer);
@@ -176,6 +176,10 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTi
     let renderLayer;
 
     for (const data of map.layers) {
+      if (data.properties.$skip) {
+        continue;
+      }
+
       if (data.properties.$layer) {
         renderLayer = data.properties.$layer;
       }

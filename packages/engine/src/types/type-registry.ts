@@ -1,6 +1,5 @@
-
 import { TypeSerializationStrategy } from './type-serialization-strategy';
-import { Type } from '../utils/types';
+import { Type } from '../utils';
 
 
 /** The entry of a {@link Type} that is registered on the {@link TypeRegistry}. */

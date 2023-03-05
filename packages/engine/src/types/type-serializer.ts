@@ -1,4 +1,4 @@
-import { Struct, Type } from '../utils/types';
+import { Struct, Type } from '../utils';
 import { isIgnored } from './ignore';
 import { World } from '../ecs';
 import { deserializeTypeData, isTypeData, serializeTypeValue } from './type-data';
