@@ -8,7 +8,7 @@ import { Terrain } from './terrain';
  *
  * - `S`: Spritesheet format
  */
-export class Tileset<S extends SpriteSheet = SpriteSheet> {
+export class Tileset {
 
   /**
    * Contains tile indexes mapped to the name of an animation on {@link spritesheet}

@@ -1,6 +1,6 @@
 import { UiWidget } from '../ui-widget';
 import { Sprite } from 'pixi.js';
-import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
+import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { World } from '@heliks/tiles-engine';
 

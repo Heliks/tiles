@@ -2,7 +2,6 @@ import { Grid, Struct } from '@heliks/tiles-engine';
 import { SpriteAnimationFrames, SpriteSheet } from './sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { SpriteGrid } from './sprite-grid';
-import { LoadTexture } from '../../load-texture';
 import { Texture } from 'pixi.js';
 
 

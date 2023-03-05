@@ -26,7 +26,7 @@ export class SpriteRenderer extends ReactiveSystem {
   constructor(
     private readonly storage: AssetStorage,
     private readonly config: RendererConfig,
-    private readonly stage: Stage,
+    private readonly stage: Stage
   ) {
     super();
   }

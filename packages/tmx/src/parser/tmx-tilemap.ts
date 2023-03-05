@@ -29,7 +29,7 @@ export class TmxTilemap<P extends TmxProperties = TmxProperties> {
   constructor(
     public readonly grid: Grid,
     public readonly chunkLayout: Grid,
-    public readonly properties: P,
+    public readonly properties: P
   ) {}
 
 }

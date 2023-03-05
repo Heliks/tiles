@@ -15,22 +15,16 @@ export class TmxPhysicsFactory {
 
   /** Creates a {@link Collider} from {@link TmxGeometry}. */
   public collider(geometry: TmxGeometry, scale: XY = new Vec2(1, 1)): Collider {
-    let x = geometry.shape.x;
-    let y = geometry.shape.y;
+    const x = geometry.shape.x;
+    const y = geometry.shape.y;
 
-    let shape;
+    const shape = geometry.shape.copy();
 
-    if (geometry.shape instanceof Rectangle) {
-      shape = geometry
-        .shape
-        .copy()
-        .scale(scale);
+    if (shape instanceof Rectangle) {
+      shape.scale(scale);
     }
     else {
-      shape = geometry
-        .shape
-        .copy()
-        .scale(Math.max(scale.x, scale.y))
+      shape.scale(Math.max(scale.x, scale.y))
     }
 
     shape.scale(1 / this.config.unitSize);

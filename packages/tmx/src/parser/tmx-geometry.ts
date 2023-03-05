@@ -26,17 +26,12 @@ export interface TmxGeometry<
 
 /** Parses {@link TmxShapeData shape data} and converts it to a {@link TmxGeometry}. */
 export function parseGeometryData(data: TmxShapeData): TmxGeometry {
-  let shape;
-
-  if (data.ellipse) {
+  const shape = data.ellipse
     // Note: The physics engine does not support ellipsis. Use the larger of two sides
     // as the radius and convert it to a circle. This works for shapes that are actual
     // circles too, as Tiled internally treats them the same as ellipsis.
-    shape = new Circle(Math.max(data.width, data.height) / 2, data.x, data.y);
-  }
-  else {
-    shape = new Rectangle(data.width, data.height, data.x, data.y);
-  }
+    ? new Circle(Math.max(data.width, data.height) / 2, data.x, data.y)
+    : new Rectangle(data.width, data.height, data.x, data.y);
 
   return {
     id: data.id,

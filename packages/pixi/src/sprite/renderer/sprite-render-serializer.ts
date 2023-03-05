@@ -67,8 +67,7 @@ export class SpriteRenderSerializer implements TypeSerializationStrategy<SpriteR
     if (component.material) {
       return {
         data: component.material.getData(),
-        uuid: Uuid.
-        getTypeId(component.material.constructor)
+        uuid: Uuid.getTypeId(component.material.constructor)
       };
     }
   }

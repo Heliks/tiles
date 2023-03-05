@@ -1,5 +1,5 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet } from '@heliks/tiles-pixi';
+import { PackedSprite, PackedSpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 

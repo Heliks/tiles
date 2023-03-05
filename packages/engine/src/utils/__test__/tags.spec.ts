@@ -15,12 +15,3 @@ describe('noIndent', () => {
     expect(factory()).toBe('A B C D');
   });
 });
-
-
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));
-console.log('UUID', Uuid.stringify(new TextEncoder().encode('Hallo Welt')));

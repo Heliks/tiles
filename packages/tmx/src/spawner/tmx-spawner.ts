@@ -4,33 +4,19 @@ import {
   ObjectLayer,
   TileLayer,
   TmxLayerType,
-  TmxObject, TmxProperties,
+  TmxObject,
+  TmxProperties,
   TmxTilemap,
   TmxTileObject,
   TmxTileset
 } from '../parser';
 import { Entity, EntityBuilder, EventQueue, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Align, LayerId, SpriteRender } from '@heliks/tiles-pixi';
+import { LayerId, SpriteRender } from '@heliks/tiles-pixi';
 import { AssetStorage } from '@heliks/tiles-assets';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
 
-
-/** @internal */
-function setAnchor(sprite: SpriteRender, align: Align): void {
-  switch (align) {
-    case Align.Center: sprite.setAnchor(0.5, 0.5); break;
-    case Align.Left: sprite.setAnchor(0, 0.5); break;
-    case Align.Right: sprite.setAnchor(1, 0.5); break;
-    case Align.Top: sprite.setAnchor(0.5, 0); break;
-    case Align.TopLeft: sprite.setAnchor(0, 0); break;
-    case Align.TopRight: sprite.setAnchor(1, 0); break;
-    case Align.Bottom: sprite.setAnchor(0.5, 1); break;
-    case Align.BottomLeft: sprite.setAnchor(0, 1); break;
-    case Align.BottomRight: sprite.setAnchor(1, 1); break;
-  }
-}
 
 /** @internal */
 function spawnTileLayer(world: World, map: TmxTilemap, layer: TileLayer, renderLayer?: LayerId): Entity {
@@ -131,7 +117,8 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTi
       entity.use(
         this.createObjectSprite(
           tileset.tileset,
-          obj, tileId - 1,
+          obj,
+          tileId - 1,
           renderLayer
         )
       );
