@@ -5,12 +5,8 @@ import { TmxTileset } from './tmx-tileset';
 import { Layer } from './layers';
 
 
-/**
- * A TMX Tilemap.
- *
- * @see TmxLoadTilemap
- */
-export class TmxTilemap<P extends TmxProperties = TmxProperties> {
+/** Map asset created from {@link TmxMapData} when a map file is loaded. */
+export class TmxMapAsset<P extends TmxProperties = TmxProperties> {
 
   /** Map layers. The index of each layer is simultaneously its z position. */
   public readonly layers: Layer[] = [];
@@ -20,9 +16,7 @@ export class TmxTilemap<P extends TmxProperties = TmxProperties> {
 
   /**
    * @param grid Grid that represents the dimensions of the tilemap in pixels.
-   * @param chunkLayout Grid on which the chunks of this map are arranged.
-   *
-   * Grid that arranges map chunks. Columns and rows determine amount
+   * @param chunkLayout Grid that arranges map chunks. Columns and rows determine amount
    *  of chunks in each direction, cell size determines amount of tiles in each chunk.
    * @param properties Custom properties.
    */

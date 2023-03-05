@@ -23,7 +23,7 @@ export interface TmxEditorSettingsData {
   }
 }
 
-export interface TmxTilemapData extends TmxHasPropertyData {
+export interface TmxMapData extends TmxHasPropertyData {
   backgroundcolor: string;
   editorsettings?: TmxEditorSettingsData;
   height: number;

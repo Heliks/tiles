@@ -1,7 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
-import { parseCustomProperties, parseLayers, TmxProperties, TmxTilemap, TmxTileset } from '../parser';
-import { isLocalTilesetExternal, TmxLocalTilesetData, TmxTilemapData } from '../tmx';
+import { parseCustomProperties, parseLayers, TmxProperties, TmxMapAsset, TmxTileset } from '../parser';
+import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 import { LocalTileset } from '@heliks/tiles-tilemap';
 
 
@@ -22,7 +22,7 @@ const TMX_DEFAULT_CHUNK_SIZE = 16;
  *
  * @internal
  */
-function getMapSize(data: TmxTilemapData): Vec2 {
+function getMapSize(data: TmxMapData): Vec2 {
   const size = new Vec2(data.width, data.height);
 
   if (! data.infinite) {
@@ -56,7 +56,7 @@ function getMapSize(data: TmxTilemapData): Vec2 {
  *
  * @internal
  */
-function parseChunkLayout(data: TmxTilemapData): Grid {
+function parseChunkLayout(data: TmxMapData): Grid {
   const size = getMapSize(data);
 
   if (! data.infinite) {
@@ -89,7 +89,7 @@ function parseChunkLayout(data: TmxTilemapData): Grid {
  *
  * @internal
  */
-function getChunkTileLayout(data: TmxTilemapData): Grid {
+function getChunkTileLayout(data: TmxMapData): Grid {
   let tilesX = TMX_DEFAULT_CHUNK_SIZE;
   let tilesY = TMX_DEFAULT_CHUNK_SIZE;
 
@@ -129,7 +129,7 @@ async function parseLocalTileset(loader: AssetLoader, file: string, data: TmxLoc
 }
 
 /** @internal */
-function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxTilemapData): Promise<LocalTileset<TmxTileset>[]> {
+function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData): Promise<LocalTileset<TmxTileset>[]> {
   return Promise.all(
     data.tilesets.map(
       tilesetData => parseLocalTileset(loader, file, tilesetData)
@@ -138,8 +138,8 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxTilemapD
 }
 
 /** @internal */
-function parseTilemap<P extends TmxProperties>(data: TmxTilemapData): TmxTilemap<P> {
-  return new TmxTilemap<P>(
+function parseTilemap<P extends TmxProperties>(data: TmxMapData): TmxMapAsset<P> {
+  return new TmxMapAsset<P>(
     new Grid(
       data.width,
       data.height,
@@ -156,13 +156,13 @@ function parseTilemap<P extends TmxProperties>(data: TmxTilemapData): TmxTilemap
  *
  * - `P`: Expected custom properties.
  */
-export class TmxLoadTilemap<P extends TmxProperties = TmxProperties> implements Format<TmxTilemapData, TmxTilemap<P>> {
+export class TmxLoadTilemap<P extends TmxProperties = TmxProperties> implements Format<TmxMapData, TmxMapAsset<P>> {
 
   /** @inheritDoc */
   public readonly extensions = ['tmj'];
 
   /** @inheritDoc */
-  public async process(data: TmxTilemapData, file: string, loader: AssetLoader): Promise<TmxTilemap<P>> {
+  public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<TmxMapAsset<P>> {
     const tilemap = parseTilemap<P>(data);
     const tilesets = await parseLocalTilesets(loader, file, data);
 

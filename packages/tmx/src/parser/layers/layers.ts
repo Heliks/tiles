@@ -1,7 +1,7 @@
 import { Grid } from '@heliks/tiles-engine';
 import { parseObjectData, TmxObject } from '../tmx-object';
 import { parseCustomProperties, TmxProperties } from '../tmx-properties';
-import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxTilemapData } from '../../tmx';
+import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxMapData } from '../../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
 import { LayerId } from '@heliks/tiles-pixi';
@@ -154,7 +154,7 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Ti
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
  */
-export function parseLayer(map: TmxTilemapData, layer: TmxLayerData, chunkTileGrid: Grid): Layer {
+export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: Grid): Layer {
   switch (layer.type) {
     case TmxLayerTypeData.Tiles:
       return parseTileLayer(layer, chunkTileGrid);
@@ -182,7 +182,7 @@ export function parseLayer(map: TmxTilemapData, layer: TmxLayerData, chunkTileGr
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
  */
-export function parseLayers(data: TmxTilemapData, chunkTileGrid: Grid): Layer[] {
+export function parseLayers(data: TmxMapData, chunkTileGrid: Grid): Layer[] {
   const layers = [];
 
   for (const layer of data.layers) {

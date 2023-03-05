@@ -1,9 +1,9 @@
-import { TmxTilemap } from '../parser';
+import { TmxMapAsset } from '../parser';
 import { Handle } from '@heliks/tiles-assets';
 
 
 /**
- * Component that can be attached to an entity to display a {@link TmxTilemap}.
+ * Component that can be attached to an entity to display a {@link TmxMapAsset}.
  *
  * When the tilemap asset has finished loading, a hierarchy of entities is created to
  * compose the map. This hierarchy is always a child of the owner of this component.
@@ -21,9 +21,9 @@ export class TmxSpawnMap {
   public dirty = true;
 
   /**
-   * @param handle Asset handle of the {@link TmxTilemap} asset.
+   * @param handle Asset handle of the {@link TmxMapAsset} asset.
    */
-  constructor(public handle?: Handle<TmxTilemap>) {}
+  constructor(public handle?: Handle<TmxMapAsset>) {}
 
 }
 

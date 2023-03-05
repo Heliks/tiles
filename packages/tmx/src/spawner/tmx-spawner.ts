@@ -6,7 +6,7 @@ import {
   TmxLayerType,
   TmxObject,
   TmxProperties,
-  TmxTilemap,
+  TmxMapAsset,
   TmxTileObject,
   TmxTileset
 } from '../parser';
@@ -19,7 +19,7 @@ import { TmxPhysicsFactory } from './tmx-physics-factory';
 
 
 /** @internal */
-function spawnTileLayer(world: World, map: TmxTilemap, layer: TileLayer, renderLayer?: LayerId): Entity {
+function spawnTileLayer(world: World, map: TmxMapAsset, layer: TileLayer, renderLayer?: LayerId): Entity {
   const entity = world.create(new Transform());
 
   for (const chunk of layer.data) {
@@ -41,16 +41,16 @@ function spawnTileLayer(world: World, map: TmxTilemap, layer: TileLayer, renderL
 
 
 /**
- * Service that spawns {@link TmxTilemap maps}.
+ * Service that spawns {@link TmxMapAsset maps}.
  *
  * - `P`: Interface for custom properties that are found on spawned maps.
  * - `T`: Subtype for tilemap that is spawned.
  */
 @Injectable()
-export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTilemap = TmxTilemap<P>> {
+export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMapAsset = TmxMapAsset<P>> {
 
   /**
-   * Every time a {@link TmxTilemap map} is fully {@link spawn spawned}, it will be
+   * Every time a {@link TmxMapAsset map} is fully {@link spawn spawned}, it will be
    * pushed to this event queue. This also includes maps that are re-spawned.
    */
   public readonly onMapSpawned = new EventQueue<T>();
@@ -154,7 +154,7 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxTi
   }
 
   /**
-   * Spawns a {@link TmxTilemap map}.
+   * Spawns a {@link TmxMapAsset map}.
    *
    * If a `parent` entity is given, entities that are created in the process will be
    * children of that parent.

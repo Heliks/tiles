@@ -3,7 +3,7 @@ import { runtime, World } from '@heliks/tiles-engine';
 import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
 import { TmxSpawnerConfig } from '../tmx-spawner-config';
 import { TmxPhysicsFactory } from '../tmx-physics-factory';
-import { TmxTilemap } from '../../parser';
+import { TmxMapAsset } from '../../parser';
 import { TmxLoadTilemap } from '../../formats';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -28,7 +28,7 @@ describe('TmxSpawner', () => {
     spawner = world.get(TmxSpawner);
   });
 
-  function load(file: string): Promise<TmxTilemap> {
+  function load(file: string): Promise<TmxMapAsset> {
     const path = join(__dirname, file);
     const data = JSON.parse(
       readFileSync(path).toString()
