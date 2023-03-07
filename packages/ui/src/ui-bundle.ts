@@ -1,5 +1,7 @@
-import { Bundle, AppBuilder } from '@heliks/tiles-engine';
+import { AppBuilder, Bundle } from '@heliks/tiles-engine';
 import { ProcessInteractions } from './process-interactions';
+import { FlexCompositor, Style } from './flex';
+import { UiNode } from './ui-node';
 
 
 /**
@@ -9,7 +11,11 @@ export class UiBundle implements Bundle {
 
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
-    builder.system(ProcessInteractions);
+    builder
+      .component(Style)
+      .component(UiNode)
+      .provide(FlexCompositor)
+      .system(ProcessInteractions);
   }
 
 }

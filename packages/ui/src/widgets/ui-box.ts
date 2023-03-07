@@ -73,7 +73,7 @@ export class UiBox implements UiWidget {
     this.view.clear();
 
     // Sets the pivot to be the center of the box.
-    this.view.pivot.set(this.width >> 1, this.height >> 1);
+    // this.view.pivot.set(this.width >> 1, this.height >> 1);
 
     this.drawBg();
 

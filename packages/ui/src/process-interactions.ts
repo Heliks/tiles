@@ -1,9 +1,9 @@
 import { Entity, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
-import { Interaction, UiRoot } from './ui-root';
+import { Interaction, UiNode } from './ui-node';
 
 
 /** @internal */
-function setValue(world: World, node: UiRoot, interaction: Interaction): void {
+function setValue(world: World, node: UiNode, interaction: Interaction): void {
   if (node.interaction !== interaction) {
     node.interaction = interaction;
     node.interact?.(world, interaction);
@@ -19,23 +19,23 @@ export class ProcessInteractions extends ProcessingSystem {
   /** Contains all entities that were recently clicked. */
   private readonly clicked = new Set<Entity>();
 
-  /** Storage for {@link UiRoot} components. */
-  private roots!: Storage<UiRoot>;
+  /** Storage for {@link UiNode} components. */
+  private roots!: Storage<UiNode>;
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
     return builder
-      .contains(UiRoot)
+      .contains(UiNode)
       .build();
   }
 
   /** @inheritDoc */
   public onInit(world: World): void {
-    this.roots = world.storage(UiRoot);
+    this.roots = world.storage(UiNode);
   }
 
   /** @internal */
-  private setupViewInteraction(entity: Entity, root: UiRoot): void {
+  private setupViewInteraction(entity: Entity, root: UiNode): void {
     root.container.interactive = true;
     root.container.on('pointerdown', () => {
       this.clicked.add(entity);

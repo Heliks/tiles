@@ -1,10 +1,10 @@
 import { Storage, Parent, Subscriber, World, Entity, QueryEventType, OnInit } from '@heliks/tiles-engine';
 import { Query } from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
-import { UiRoot } from './ui-root';
+import { UiNode } from './ui-node';
 
 
-export class SyncRoots implements OnInit {
+export class SyncNodes implements OnInit {
 
   /** @internal */
   private query!: Query;
@@ -21,14 +21,14 @@ export class SyncRoots implements OnInit {
   public onInit(world: World): void {
     this.query = world
       .query()
-      .contains(UiRoot)
+      .contains(UiNode)
       .build();
 
     this.subscription = this.query.events.subscribe();
   }
 
   /** @internal */
-  private add(parents: Storage<Parent>, roots: Storage<UiRoot>, entity: Entity): void {
+  private add(parents: Storage<Parent>, roots: Storage<UiNode>, entity: Entity): void {
     const component = roots.get(entity);
 
     if (parents.has(entity)) {
@@ -45,7 +45,7 @@ export class SyncRoots implements OnInit {
   }
 
   /** @internal */
-  private remove(roots: Storage<UiRoot>, entity: Entity): void {
+  private remove(roots: Storage<UiNode>, entity: Entity): void {
     const root = roots.get(entity);
 
     root.container.parent?.removeChild(root.container);
@@ -53,7 +53,7 @@ export class SyncRoots implements OnInit {
 
   /** @inheritDoc */
   public update(world: World): void {
-    const roots = world.storage(UiRoot);
+    const roots = world.storage(UiNode);
     const parents = world.storage(Parent);
 
     for (const event of this.query.events.read(this.subscription)) {

@@ -132,6 +132,8 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
+    console.log('ADD TILEMAP')
+
     const tilemap = world.storage(Tilemap).get(entity);
 
     // Move tilemap anchor to center.
@@ -150,6 +152,8 @@ export class RenderTiles extends ReactiveSystem implements RendererSystem {
 
   /** @inheritDoc */
   public onEntityRemoved(world: World, entity: Entity): void {
+    console.log('DROP TILEMAP')
+
     const container = this.containers.get(entity);
 
     if (container) {

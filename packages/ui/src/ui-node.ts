@@ -1,42 +1,159 @@
-import { UiWidget } from './ui-widget';
+import { Container } from 'pixi.js';
+import { World } from '@heliks/tiles-engine';
+import { LayerId } from '@heliks/tiles-pixi';
 import { Pivot, PivotPreset } from '@heliks/tiles-engine';
+import { UiWidget } from './ui-widget';
 
+
+/** Defines the context to which {@link UiNode nodes} are aligned to. */
+export enum UiAlign {
+  World,
+  Screen
+}
+
+export enum Interaction {
+  None,
+  Clicked
+}
 
 /**
- * Component that renders a UI node on the entity to which it is attached to. The entity
- * must be a child of an entity with a {@link UiRoot} component or another node.
+ * Callback function for when a node interaction changes.
+ */
+export type OnInteraction = (world: World, interaction: Interaction) => unknown;
+
+/**
+ * Component that is attached to entities that are UI nodes. This is the lowest level
+ * building block for higher level UI component composition.
  *
- * The alignment of UI nodes depend on the alignment of the ui root of which they are
- * a child of. So are the units in which positions are measured. If the root is aligned
- * to the screen, they are measured in pixels. If aligned to the world, they are measured
- * in in-game units instead.
+ * The unit in which the position is measured depends on the {@link align alignment}. If
+ * it is aligned to the screen, the position is measured in pixels. If it is aligned to
+ * the world, it is measured in game units instead. Width and height are always measured
+ * in pixels.
+ *
+ * If this node is a child of another node, the alignment is always inherited from the
+ * parent, which means that it's not possible to render a child on screen while its
+ * parent is rendered in the world.
+ *
+ * - `W`: Kind of widget that can be attached to this node.
  */
 export class UiNode<W extends UiWidget = UiWidget> {
 
-  /** Determines the pivot of the UI element. Default is top-left corner. */
+  /**
+   * Container where the display objects of ui nodes that are children of this root
+   * will be rendered in.
+   */
+  public readonly container = new Container();
+
+  /**
+   * If set, will be called when the {@link interaction} of this widget changes.
+   *
+   * @see interactive
+   * @see interaction
+   */
+  public interact?: OnInteraction;
+
+  /**
+   * Contains the current user interaction with this UI element. If interactions are
+   * disabled the interaction will always be `Interaction.None`.
+   *
+   * @see interactive
+   */
+  public interaction = Interaction.None;
+
+  /**
+   * If set to `true`, user interactions (a.E. click, hover, etc.) will be enabled for
+   * this widget. The current interaction can be read from {@link interaction}.
+   */
+  public interactive = false;
+
+  /** Node pivot. This does not affect the pivot of child nodes. */
   public pivot: Pivot = PivotPreset.TOP_LEFT;
 
-  /** Width in px. */
-  public get width(): number {
-    return this.widget.view.width;
+  /** @internal */
+  public _widget?: W;
+
+  /**
+   * @param x Either world or screen position along x-axis, depending on {@link align}.
+   * @param y Either world or screen position along y-axis, depending on {@link align}.
+   * @param layer Id of the renderer layer on which this root should be rendered. If not
+   *  specified, it will be rendered on the first layer that is available. If this root
+   *  is the child of another root, this setting will be ignored.
+   * @param align Determines if this UI element is aligned to the world or screen.
+   */
+  constructor(
+    public x = 0,
+    public y = 0,
+    public layer?: LayerId,
+    public align = UiAlign.Screen
+  ) {}
+
+  public static use<W extends UiWidget>(widget: W, x = 0, y = 0): UiNode<W> {
+    const root = new UiNode<W>(x, y);
+
+    root.setWidget(widget);
+
+    return root;
   }
 
-  /** Height in px. */
-  public get height(): number {
-    return this.widget.view.height;
+  /** Creates a {@link UiNode} that is aligned to the screen. */
+  public static screen(x = 0, y = 0, layer?: LayerId): UiNode {
+    return new UiNode(x, y, layer, UiAlign.Screen);
   }
 
-  /** Contains `true` if the node is visible. */
-  public get isVisible(): boolean {
-    return this.widget.view.visible;
+  /** Creates a {@link UiNode} that is aligned to the world. */
+  public static world(x = 0, y = 0, layer?: LayerId): UiNode {
+    return new UiNode(x, y, layer, UiAlign.World);
+  }
+
+  /** Shows the container. */
+  public show(): this {
+    this.container.visible = true;
+
+    return this;
+  }
+
+  /** Hides the container. Hidden nodes will still be updated, but not drawn. */
+  public hide(): this {
+    this.container.visible = false;
+
+    return this;
+  }
+
+  /** Attaches a {@link UiWidget} to this node. */
+  public setWidget(widget: W): this {
+    // Remove previous widget from container.
+    if (this._widget) {
+      this.container.removeChild(this._widget.view);
+    }
+
+    this._widget = widget;
+
+    // Always at the widget as the first child of the container.
+    this.container.addChild(widget.view);
+
+    return this;
+  }
+
+  /** Returns the {@link UiWidget widget} that is attached to this node, if any. */
+  public getWidget(): W | undefined {
+    return this._widget;
   }
 
   /**
-   * @param widget The widget that should be renderer by this node.
-   * @param x Either world or screen x-axis position, depending on {@link align}.
-   * @param y Either world or screen y-axis position, depending on {@link align}.
+   * Makes this root node interactive.
+   *
+   * @see interactive
+   * @see interact
    */
-  constructor(public readonly widget: W, public x = 0, public y = 0) {}
+  public toInteractive(interact?: OnInteraction): this {
+    this.interactive = true;
+
+    if (interact) {
+      this.interact = interact;
+    }
+
+    return this;
+  }
 
   /** Sets the {@link pivot}. */
   public setPivot(pivot: Pivot): this {
@@ -45,18 +162,5 @@ export class UiNode<W extends UiWidget = UiWidget> {
     return this;
   }
 
-  /** Shows the node if it was previously hidden. */
-  public show(): this {
-    this.widget.view.visible = true;
-
-    return this;
-  }
-
-  /** Hides the UI node. Hidden nodes will still be updated, but not drawn. */
-  public hide(): this {
-    this.widget.view.visible = false;
-
-    return this;
-  }
-
 }
+
