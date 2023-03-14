@@ -4,7 +4,7 @@ import { AppBuilder } from '../app-builder';
 
 
 describe('AppBuilder', () => {
-  it('should build a game', () => {
+  it('should build a app', () => {
     expect(new AppBuilder().build()).toBeInstanceOf(App);
   });
 
@@ -28,15 +28,15 @@ describe('AppBuilder', () => {
   });
 
   describe('systems', () => {
-    it('should add game systems to the system dispatcher', () => {
+    it('should add app systems to the system dispatcher', () => {
       const system = {
         update: jest.fn()
       };
 
-      const game = new AppBuilder().system(system).build();
+      const app = new AppBuilder().system(system).build();
 
       // Update all systems.
-      game.dispatcher.update();
+      app.dispatcher.update(app.world);
 
       // If the system was added correctly the dispatcher should've
       // also called update() on the test system.
@@ -49,9 +49,9 @@ describe('AppBuilder', () => {
         onInit: jest.fn()
       };
 
-      const game = new AppBuilder().system(system).build();
+      const app = new AppBuilder().system(system).build();
 
-      expect(system.onInit).toHaveBeenCalledWith(game.world);
+      expect(system.onInit).toHaveBeenCalledWith(app.world);
     });
   });
 
@@ -96,19 +96,19 @@ describe('AppBuilder', () => {
       }
 
       it('should be bound as factory', () => {
-        const game = new AppBuilder()
+        const app = new AppBuilder()
           .provide({
             factory,
             token: 'counter'
           })
           .build();
 
-        expect(game.container.get('counter')).toBe(1);
-        expect(game.container.get('counter')).toBe(2);
+        expect(app.container.get('counter')).toBe(1);
+        expect(app.container.get('counter')).toBe(2);
       });
 
       it('should be bound as singleton', () => {
-        const game = new AppBuilder()
+        const app = new AppBuilder()
           .provide({
             factory,
             singleton: true,
@@ -116,8 +116,8 @@ describe('AppBuilder', () => {
           })
           .build();
 
-        expect(game.container.get('counter')).toBe(1);
-        expect(game.container.get('counter')).toBe(1);
+        expect(app.container.get('counter')).toBe(1);
+        expect(app.container.get('counter')).toBe(1);
       });
     });
   });
@@ -126,26 +126,26 @@ describe('AppBuilder', () => {
     it('should register provider', () => {
       class TestService {}
 
-      const game = new AppBuilder()
+      const app = new AppBuilder()
         .bundle({
           build: builder => void builder.provide(TestService)
         })
         .build();
 
       // Check if the service provided via TestModule exists on the service container.
-      expect(game.container.get(TestService)).toBeInstanceOf(TestService);
+      expect(app.container.get(TestService)).toBeInstanceOf(TestService);
     });
 
     it('should call OnInit lifecycle hook', () => {
       const init = jest.fn();
-      const game = new AppBuilder()
+      const app = new AppBuilder()
         .bundle({
           build: () => void 0,
           onInit: init
         })
         .build();
 
-      expect(init).toHaveBeenCalledWith(game.world);
+      expect(init).toHaveBeenCalledWith(app.world);
     });
 
     it('should call OnInit lifecycle hook on system provided by module', () => {
@@ -154,13 +154,13 @@ describe('AppBuilder', () => {
         onInit: jest.fn()
       };
 
-      const game = new AppBuilder()
+      const app = new AppBuilder()
         .bundle({
           build: builder => void builder.system(system)
         })
         .build();
 
-      expect(system.onInit).toHaveBeenCalledWith(game.world);
+      expect(system.onInit).toHaveBeenCalledWith(app.world);
     })
   });
 

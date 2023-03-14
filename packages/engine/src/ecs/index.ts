@@ -12,6 +12,8 @@ export {
   QueryEvent,
   QueryEventType,
   QueryManager,
+  Schedule,
+  ScheduleId,
   Storage,
   System,
   SystemDispatcher

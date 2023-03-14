@@ -1,12 +1,23 @@
 import { Container } from '@heliks/tiles-injector';
 import { ComponentType, World } from '../ecs';
-import { App } from './app';
+import { App, AppSchedule } from './app';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
-import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
+import {
+  AddBundle,
+  AddComponent,
+  AddProvider,
+  AddSchedule,
+  AddSystem,
+  AddType,
+  RegistrationInstruction,
+  SystemProvider,
+  Task
+} from './tasks';
 import { Builder } from './builder';
 import { Type } from '../utils';
 import { TypeSerializationStrategy } from '../types';
+import { ScheduleId } from '@heliks/ecs';
 
 
 /** Callback for {@link OnInit} lifecycle tasks. */
@@ -39,8 +50,9 @@ export class AppBuilder implements Builder {
   /**
    * Registers a `component`.
    *
-   * This will automatically register the component type as a {@link type type}. You
-   * can provide a custom serialization `strategy` if the default one is not sufficient.
+   * This will automatically register the component type as a {@link type type}. A
+   * custom {@link TypeSerializationStrategy serialization strategy} can be provided
+   * if the default one is not sufficient
    */
   public component<C = unknown>(component: ComponentType<C>, strategy?: TypeSerializationStrategy<C>): this {
     this.tasks.push(new AddComponent(component, strategy));
@@ -48,9 +60,55 @@ export class AppBuilder implements Builder {
     return this;
   }
 
-  /** Adds a system to the system dispatcher. */
-  public system(system: SystemProvider): this {
-    this.tasks.push(new AddSystem(system));
+  /**
+   * Adds an ECS {@link SystemProvider system} to the dispatcher.
+   *
+   * The schedule to which the system will be added to can be specified via the given
+   * schedule {@link ScheduleId id}. The system can either be an instance or a class
+   * type. If it is the latter, the system will be instantiated using the service
+   * container before it is added.
+   */
+  public system(system: SystemProvider, schedule: ScheduleId = AppSchedule.Update): this {
+    this.tasks.push(new AddSystem(system, schedule));
+
+    return this;
+  }
+
+  /**
+   * Adds a schedule with the given {@link ScheduleId} to the system dispatcher.
+   *
+   * ```ts
+   *  const CUSTOM_SCHEDULE = Symbol();
+   *
+   *  class Foo implements System {
+   *    // ...
+   *  }
+   *
+   *  dispatcher
+   *    // Add the custom schedule
+   *    .schedule(CUSTOM_SCHEDULE)
+   *    // Add system to custom schedule.
+   *    .system(Foo, CUSTOM_SCHEDULE)
+   * ```
+   *
+   * The position where the schedule is inserted can be controlled by using `before()`
+   * and `after()` registration utilities:
+   *
+   * ```ts
+   * enum CustomSchedule {
+   *   Foo,
+   *   Bar
+   * }
+   *
+   * // Add "CustomSchedule.Bar" schedule after `AppSchedule.Update`.
+   * dispatcher.schedule(after(CustomSchedule.Bar, AppSchedule.Update));
+   *
+   * // Add "CustomSchedule.Foo" schedule before `CustomSchedule.Bar`.
+   * dispatcher.schedule(before(CustomSchedule.Foo, CustomSchedule.Bar));
+   * ```
+   */
+  public schedule(schedule: RegistrationInstruction<ScheduleId>): this {
+    this.tasks.push(new AddSchedule(schedule));
 
     return this;
   }

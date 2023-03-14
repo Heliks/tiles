@@ -1,4 +1,4 @@
-import { System } from '@heliks/ecs';
+import { Schedule, ScheduleId, System } from '@heliks/ecs';
 import { Type } from '../../utils';
 import { App } from '../app';
 import { World } from '../../ecs';
@@ -11,53 +11,69 @@ import { Container } from '@heliks/tiles-injector';
 export type SystemProvider = Type<System> | System;
 
 /**
- * Adds a system to the dispatcher and registers it on the service container. If a
- * system type is given instead, it will be instantiated with service container first.
+ * Adds a {@link System system} to a {@link Schedule}.
  *
- * @see System
+ * The system can either be an instance or a class type. If it is the latter, the system
+ * will be instantiated using the service container.
  */
 export class AddSystem implements Task {
 
   /** @internal */
-  private created?: System;
+  private instance?: System;
 
   /**
-   * @param system Type or instance of a {@link System system} that should be added
-   *  to the system dispatcher.
+   * @param system The ECS {@link System} that should be added to the dispatcher.
+   * @param schedule Id of the schedule to which the system should be added.
    */
-  constructor(protected readonly system: SystemProvider) {}
+  constructor(
+    private readonly system: SystemProvider,
+    private readonly schedule: ScheduleId
+  ) {}
 
   /** @internal */
   private createSystemInstance(container: Container): System {
     return typeof this.system === 'function' ? container.make(this.system) : this.system;
   }
 
-  /** @inheritDoc */
-  public exec(app: App): void {
-    this.created = this.createSystemInstance(app.container);
+  /** @internal */
+  private getSchedule(app: App): Schedule {
+    const schedule = app.dispatcher.get(this.schedule);
 
-    // Bind system to the service container and add it to the system dispatcher.
-    app.container.instance(this.created);
-    app.dispatcher.add(this.created);
-  }
-
-  /** @inheritDoc */
-  public init(world: World): void {
-    if (this.created && hasOnInit(this.created)) {
-      this.created.onInit(world);
+    if (! schedule) {
+      throw new Error(`Invalid schedule: ${this.schedule.toString()}`);
     }
+
+    return schedule;
   }
 
   /** @internal */
   private getSystemClassName(): string {
     const system = this.system as Type;
 
-    return system.name ? system.name : system.constructor.name;
+    return system.name
+      ? system.name
+      : system.constructor.name;
   }
 
   /** @internal */
   public toString(): string {
     return `AddSystem(${this.getSystemClassName()})`;
+  }
+
+  /** @inheritDoc */
+  public exec(app: App): void {
+    this.instance = this.createSystemInstance(app.container);
+
+    app.container.instance(this.instance);
+
+    this.getSchedule(app).add(this.instance);
+  }
+
+  /** @inheritDoc */
+  public init(world: World): void {
+    if (this.instance && hasOnInit(this.instance)) {
+      this.instance.onInit(world);
+    }
   }
 
 }

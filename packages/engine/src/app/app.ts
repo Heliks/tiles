@@ -7,6 +7,16 @@ import { TypeRegistry } from '../types';
 
 
 /**
+ * Default {@link SystemDispatcher dispatcher} schedules.
+ *
+ * Will always be added to the dispatcher when a new {@link App} is created.
+ */
+export enum AppSchedule {
+  Update = 'app:update',
+  PostUpdate = 'app:update'
+}
+
+/**
  * The game runtime. Everything related to run the game can be found here.
  *
  * The app uses a {@link StateMachine push down automation state machine} (PDA) that
@@ -50,9 +60,12 @@ export class App {
    *  access to this.
    */
   constructor(public readonly container: Container = new Container()) {
-    this.world      = new World(this.container);
-    this.state      = new StateMachine(this.world);
-    this.dispatcher = new SystemDispatcher(this.world);
+    this.world = new World(this.container);
+    this.state = new StateMachine(this.world);
+
+    this.dispatcher = new SystemDispatcher();
+    this.dispatcher.add(AppSchedule.Update);
+    this.dispatcher.add(AppSchedule.PostUpdate)
 
     // Register game loop on ticker.
     this.ticker.add(this.update.bind(this));
@@ -71,7 +84,7 @@ export class App {
    * this is called automatically once per frame.
    */
   public update(): void {
-    this.dispatcher.update();
+    this.dispatcher.update(this.world);
 
     // Updates the world. E.g. entities, components.
     this.world.update();
@@ -80,6 +93,8 @@ export class App {
 
   /** Starts the app using the given `state`. */
   public start(state: State<World>): void {
+    this.dispatcher.boot(this.world);
+
     this.ticker.start();
     this.state.start(state);
   }
