@@ -51,30 +51,30 @@ export class DrawUi implements OnInit, RendererSystem {
   }
 
   /** @internal */
-  private updateNodePosition(entity: Entity, root: UiNode): void {
+  private updateNodePosition(entity: Entity, node: UiNode): void {
     // Set PIXI pivot based on node pivot.
-    root.pivot.getPosition(
-      root.container.width,
-      root.container.height,
-      root.container.pivot
+    node.pivot.getPosition(
+      node.container.width,
+      node.container.height,
+      node.container.pivot
     );
 
-    if (root.align === UiAlign.World) {
-      root.container.x = root.x * this.camera.unitSize;
-      root.container.y = root.y * this.camera.unitSize;
+    if (node.align === UiAlign.World) {
+      node.container.x = node.x * this.camera.unitSize;
+      node.container.y = node.y * this.camera.unitSize;
 
       return;
     }
 
     if (this.parents.has(entity)) {
-      root.container.x = root.x;
-      root.container.y = root.y;
+      node.container.x = node.x;
+      node.container.y = node.y;
     }
     else {
-      const position = this.getViewPositionFromScreenPosition(root);
+      const position = this.getViewPositionFromScreenPosition(node);
 
-      root.container.x = position.x;
-      root.container.y = position.y;
+      node.container.x = position.x;
+      node.container.y = position.y;
     }
   }
 
@@ -83,11 +83,11 @@ export class DrawUi implements OnInit, RendererSystem {
     this.syncRoots.update(world);
 
     for (const entity of this.query.entities) {
-      const root = this.nodes.get(entity);
+      const node = this.nodes.get(entity);
 
-      this.updateNodePosition(entity, root);
+      this.updateNodePosition(entity, node);
 
-      root._widget?.update(world, entity);
+      node._widget?.update(world, entity);
     }
 
     this.layout.update();

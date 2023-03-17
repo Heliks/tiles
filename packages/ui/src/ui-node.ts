@@ -1,8 +1,9 @@
 import { Container } from 'pixi.js';
-import { World } from '@heliks/tiles-engine';
+import { EventQueue, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { UiWidget } from './ui-widget';
+import { Interaction, InteractionEvent } from './interaction-event';
 
 
 /** Defines the context to which {@link UiNode nodes} are aligned to. */
@@ -11,15 +12,7 @@ export enum UiAlign {
   Screen
 }
 
-export enum Interaction {
-  None,
-  Clicked
-}
 
-/**
- * Callback function for when a node interaction changes.
- */
-export type OnInteraction = (world: World, interaction: Interaction) => unknown;
 
 /**
  * Component that is attached to entities that are UI nodes. This is the lowest level
@@ -45,14 +38,6 @@ export class UiNode<W extends UiWidget = UiWidget> {
   public readonly container = new Container();
 
   /**
-   * If set, will be called when the {@link interaction} of this widget changes.
-   *
-   * @see interactive
-   * @see interaction
-   */
-  public interact?: OnInteraction;
-
-  /**
    * Contains the current user interaction with this UI element. If interactions are
    * disabled the interaction will always be `Interaction.None`.
    *
@@ -65,6 +50,12 @@ export class UiNode<W extends UiWidget = UiWidget> {
    * this widget. The current interaction can be read from {@link interaction}.
    */
   public interactive = false;
+
+  /**
+   * Receives an event every time the {@link interaction} of this node changes. Events
+   * are propagated through event queues of parent nodes (event bubbling).
+   */
+  public onInteract = new EventQueue<InteractionEvent>();
 
   /** Node pivot. This does not affect the pivot of child nodes. */
   public pivot: Pivot = PivotPreset.TOP_LEFT;
@@ -145,12 +136,8 @@ export class UiNode<W extends UiWidget = UiWidget> {
    * @see interactive
    * @see interact
    */
-  public toInteractive(interact?: OnInteraction): this {
+  public toInteractive(): this {
     this.interactive = true;
-
-    if (interact) {
-      this.interact = interact;
-    }
 
     return this;
   }

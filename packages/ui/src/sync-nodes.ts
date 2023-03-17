@@ -28,13 +28,13 @@ export class SyncNodes implements OnInit {
   }
 
   /** @internal */
-  private add(parents: Storage<Parent>, roots: Storage<UiNode>, entity: Entity): void {
-    const component = roots.get(entity);
+  private add(parents: Storage<Parent>, nodes: Storage<UiNode>, entity: Entity): void {
+    const component = nodes.get(entity);
 
     if (parents.has(entity)) {
       const parent = parents.get(entity).entity;
 
-      roots
+      nodes
         .get(parent)
         .container
         .addChild(component.container);
@@ -53,16 +53,16 @@ export class SyncNodes implements OnInit {
 
   /** @inheritDoc */
   public update(world: World): void {
-    const roots = world.storage(UiNode);
+    const nodes = world.storage(UiNode);
     const parents = world.storage(Parent);
 
     for (const event of this.query.events.read(this.subscription)) {
       switch (event.type) {
         case QueryEventType.Added:
-          this.add(parents, roots, event.entity);
+          this.add(parents, nodes, event.entity);
           break;
         case QueryEventType.Removed:
-          this.remove(roots, event.entity);
+          this.remove(nodes, event.entity);
           break;
       }
     }
