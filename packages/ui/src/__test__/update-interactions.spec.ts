@@ -1,23 +1,23 @@
-import { ProcessInteractions } from '../process-interactions';
+import { UpdateInteractions } from '../update-interactions';
 import { Entity, runtime, World } from '@heliks/tiles-engine';
 import { UiNode } from '../ui-node';
 import { Parent } from '@heliks/tiles-engine';
 import { Interaction, InteractionEvent } from '../interaction-event';
 
 
-describe('ProcessInteractions', () => {
-  let system: ProcessInteractions;
+describe('UpdateInteractions', () => {
+  let system: UpdateInteractions;
   let world: World;
 
   beforeEach(() => {
     world = runtime()
       .component(UiNode)
       .component(Parent)
-      .system(ProcessInteractions)
+      .system(UpdateInteractions)
       .build()
       .world;
 
-    system = world.get(ProcessInteractions);
+    system = world.get(UpdateInteractions);
 
     // Fixme: https://trello.com/c/JZxxJwm9/82
     system.boot(world);

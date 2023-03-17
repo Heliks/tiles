@@ -9,7 +9,7 @@ import { Parent } from '@heliks/tiles-engine';
  *
  * @see UiNode.interaction
  */
-export class ProcessInteractions extends ProcessingSystem {
+export class UpdateInteractions extends ProcessingSystem {
 
   /**
    * Keeps track of entities on which the pointer is pressing down on.

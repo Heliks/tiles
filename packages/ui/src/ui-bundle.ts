@@ -1,5 +1,5 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
-import { ProcessInteractions } from './process-interactions';
+import { UpdateInteractions } from './update-interactions';
 import { FlexCompositor, Style } from './flex';
 import { UiNode } from './ui-node';
 
@@ -15,7 +15,7 @@ export class UiBundle implements Bundle {
       .component(Style)
       .component(UiNode)
       .provide(FlexCompositor)
-      .system(ProcessInteractions);
+      .system(UpdateInteractions);
   }
 
 }
