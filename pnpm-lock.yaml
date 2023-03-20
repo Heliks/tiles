@@ -63,7 +63,7 @@ importers:
   packages/engine:
     specifiers:
       '@heliks/ecs': 0.2.4-rc-12
-      '@heliks/ecs-hierarchy': ^0.2.1
+      '@heliks/ecs-hierarchy': 0.2.2-rc1
       '@heliks/ecs-transform': ^0.2.1
       '@heliks/event-queue': ^0.2.2
       '@heliks/tiles-injector': workspace:^
@@ -74,8 +74,8 @@ importers:
       uuid: 8.3.2
     dependencies:
       '@heliks/ecs': 0.2.4-rc-12
-      '@heliks/ecs-hierarchy': 0.2.1_5cxngrunkvauqzre24itwcqnta
-      '@heliks/ecs-transform': 0.2.1_evqx4t77uha56kupysclfrn7sm
+      '@heliks/ecs-hierarchy': 0.2.2-rc1_5cxngrunkvauqzre24itwcqnta
+      '@heliks/ecs-transform': 0.2.1_hvnwqzqapoqiv5fuerphwjtfke
       '@heliks/event-queue': 0.2.2
       '@heliks/tiles-injector': link:../injector
       '@heliks/tiles-math': link:../math
@@ -550,17 +550,17 @@ packages:
       '@types/systemjs': 0.20.8
     dev: false
 
-  /@heliks/ecs-hierarchy/0.2.1_5cxngrunkvauqzre24itwcqnta:
-    resolution: {integrity: sha512-A2oDOGYRLJlWc1C2rd1vCezV9BssMubVb1j3V5hOR6d5RVp2kR4Fao6wWYRxyfrJ+vzK9N1jVUoGICpA+HmVlA==}
+  /@heliks/ecs-hierarchy/0.2.2-rc1_5cxngrunkvauqzre24itwcqnta:
+    resolution: {integrity: sha512-c4/3KDvZW3ZMM8L7x4wLyd1iFa5JmUU2imqoUO0VXExludbbOCzNCckQ8HWPP8JvAYObvDmV9fJ3gu/XiLbfGQ==}
     peerDependencies:
-      '@heliks/ecs': ^0.2.0-rc01
+      '@heliks/ecs': ^0.2.4-rc-12
       '@heliks/event-queue': ^0.2.2
     dependencies:
       '@heliks/ecs': 0.2.4-rc-12
       '@heliks/event-queue': 0.2.2
     dev: false
 
-  /@heliks/ecs-transform/0.2.1_evqx4t77uha56kupysclfrn7sm:
+  /@heliks/ecs-transform/0.2.1_hvnwqzqapoqiv5fuerphwjtfke:
     resolution: {integrity: sha512-+vudbgKZR0EqTU7JQO0GMVvb5/oqiYWhV2ZfG59f9QZpFdXWvhr5pEaWboy4D4yTwwwMuk2j42yAihrWfoLbqQ==}
     peerDependencies:
       '@heliks/ecs': ^0.2.1
@@ -568,7 +568,7 @@ packages:
       '@heliks/event-queue': ^0.2.2
     dependencies:
       '@heliks/ecs': 0.2.4-rc-12
-      '@heliks/ecs-hierarchy': 0.2.1_5cxngrunkvauqzre24itwcqnta
+      '@heliks/ecs-hierarchy': 0.2.2-rc1_5cxngrunkvauqzre24itwcqnta
       '@heliks/event-queue': 0.2.2
     dev: false
 

@@ -51,8 +51,6 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     return true;
   }
 
-  public r = 0;
-
   /** @inheritDoc */
   public update(world: World): void {
     const animations = world.storage(SpriteAnimation);

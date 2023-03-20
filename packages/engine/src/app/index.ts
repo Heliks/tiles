@@ -8,6 +8,7 @@ export * from './lifecycle';
 export * from './provider';
 export * from './state'
 export * from './ticker';
+export * from './timer';
 
 export * from './tasks';
 
