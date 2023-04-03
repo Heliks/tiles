@@ -25,10 +25,10 @@ export class Size {
 
   /**
    * Converts a {@link SizeUnit.Percent percentage} size to a pixel value based on
-   * an arbitrary `total` size.
+   * an arbitrary available `space`.
    */
-  public toPx(total = 0): number {
-    return this.unit === SizeUnit.Px ? this.value : total * this.value;
+  public toPx(space = 0): number {
+    return this.unit === SizeUnit.Px ? this.value : space * this.value;
   }
 
 }
