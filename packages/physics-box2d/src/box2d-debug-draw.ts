@@ -1,12 +1,12 @@
 import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
-import { Camera, DebugDraw, Renderer, RendererSystem } from '@heliks/tiles-pixi';
-import { Inject, Injectable, OnInit, PI_2, Subscriber } from '@heliks/tiles-engine';
+import { Camera, DebugDraw, Renderer } from '@heliks/tiles-pixi';
+import { Inject, Injectable, OnInit, PI_2, Subscriber, System } from '@heliks/tiles-engine';
 import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 
 /* eslint-disable new-cap */
 
 @Injectable()
-export class Box2dDebugDraw extends b2Draw implements OnInit, RendererSystem {
+export class Box2dDebugDraw extends b2Draw implements OnInit, System {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {

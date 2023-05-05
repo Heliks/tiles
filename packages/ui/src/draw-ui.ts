@@ -1,5 +1,5 @@
 import { Entity, Injectable, OnInit, Parent, Query, Storage, Vec2, World, XY } from '@heliks/tiles-engine';
-import { Camera, RendererSystem, Stage } from '@heliks/tiles-pixi';
+import { Camera, Stage } from '@heliks/tiles-pixi';
 import { UiAlign, UiNode } from './ui-node';
 import { SyncNodes } from './sync-nodes';
 import { FlexCompositor, ApplyStyles } from './flex';
@@ -10,7 +10,7 @@ import { FlexCompositor, ApplyStyles } from './flex';
  * renderer stage.
  */
 @Injectable()
-export class DrawUi implements OnInit, RendererSystem {
+export class DrawUi implements OnInit {
 
   /** @internal */
   private nodes!: Storage<UiNode>;

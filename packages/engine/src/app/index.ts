@@ -6,6 +6,7 @@ export * from './app';
 export * from './app-builder';
 export * from './lifecycle';
 export * from './provider';
+export * from './schedule-builder';
 export * from './state'
 export * from './ticker';
 export * from './timer';

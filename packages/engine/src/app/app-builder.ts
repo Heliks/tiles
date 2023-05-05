@@ -3,6 +3,7 @@ import { ComponentType, World } from '../ecs';
 import { App, AppSchedule } from './app';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
+import { ScheduleBuilder } from './schedule-builder';
 import {
   AddBundle,
   AddComponent,
@@ -47,6 +48,13 @@ export class AppBuilder implements Builder {
    */
   constructor(public readonly container: Container = new Container()) {}
 
+  /** @inheritDoc */
+  public task(task: Task): this {
+    this.tasks.push(task);
+
+    return this;
+  }
+
   /**
    * Registers a `component`.
    *
@@ -75,7 +83,7 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Adds a schedule with the given {@link ScheduleId} to the system dispatcher.
+   * Adds a system {@link ScheduleId schedule} to the dispatcher.
    *
    * ```ts
    *  const CUSTOM_SCHEDULE = Symbol();
@@ -85,32 +93,40 @@ export class AppBuilder implements Builder {
    *  }
    *
    *  dispatcher
-   *    // Add the custom schedule
-   *    .schedule(CUSTOM_SCHEDULE)
-   *    // Add system to custom schedule.
-   *    .system(Foo, CUSTOM_SCHEDULE)
-   * ```
-   *
-   * The position where the schedule is inserted can be controlled by using `before()`
-   * and `after()` registration utilities:
-   *
-   * ```ts
-   * enum CustomSchedule {
-   *   Foo,
-   *   Bar
-   * }
-   *
-   * // Add "CustomSchedule.Bar" schedule after `AppSchedule.Update`.
-   * dispatcher.schedule(after(CustomSchedule.Bar, AppSchedule.Update));
-   *
-   * // Add "CustomSchedule.Foo" schedule before `CustomSchedule.Bar`.
-   * dispatcher.schedule(before(CustomSchedule.Foo, CustomSchedule.Bar));
+   *    .schedule(CUSTOM_SCHEDULE)      // Add the custom schedule
+   *    .system(Foo, CUSTOM_SCHEDULE)   // Add system to custom schedule.
    * ```
    */
-  public schedule(schedule: RegistrationInstruction<ScheduleId>): this {
-    this.tasks.push(new AddSchedule(schedule));
+  public schedule(schedule: ScheduleId): AppBuilder;
 
-    return this;
+  /**
+   * Adds a system {@link ScheduleId schedule} to the dispatcher.
+   *
+   * The position where the new schedule should be inserted can be controlled with the
+   * returned {@link ScheduleBuilder}.
+   *
+   * ```ts
+   *  enum CustomSchedule {
+   *    Foo,
+   *    Bar
+   *  }
+   *
+   *  // Add "CustomSchedule.Bar" schedule after `AppSchedule.Update`.
+   *  dispatcher
+   *    .schedule()
+   *    .after(CustomSchedule.Bar, AppSchedule.Update);
+   *
+   *  // Add "CustomSchedule.Foo" schedule before `CustomSchedule.Bar`.
+   *  dispatcher
+   *    .schedule()
+   *    .before(CustomSchedule.Foo, CustomSchedule.Bar);
+   * ```
+   */
+  public schedule(): ScheduleBuilder<AppBuilder>;
+
+  /** @internal */
+  public schedule(schedule?: ScheduleId): ScheduleBuilder<AppBuilder> | AppBuilder {
+    return schedule === undefined ? new ScheduleBuilder(this) : this;
   }
 
   /** Adds a `provider`. */

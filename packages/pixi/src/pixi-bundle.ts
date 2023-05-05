@@ -1,12 +1,13 @@
-import { Bundle, AppBuilder, OnInit, Screen, Struct, World } from '@heliks/tiles-engine';
+import { Bundle, AppBuilder, OnInit, Screen, Struct, World, AppSchedule, after } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { Camera } from './camera';
 import { DebugDraw } from './debug-draw';
 import { Renderer } from './renderer';
-import { SpriteAnimation, SpriteRender, SpriteRenderSerializer } from './sprite';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteRenderSerializer } from './sprite';
 import { Screenshot } from './screenshot';
 import { RendererConfig } from './config';
 import { Layers, SortChildren, Stage } from './layer';
+import { UpdateRenderer } from './update-renderer';
 
 
 /** @internal */
@@ -16,13 +17,12 @@ function checkScreenPresence(builder: AppBuilder): void {
   }
 }
 
-/**
- * Bundle that provides utilities for the PIXI.js renderer.
- *
- * On its own, this only provides services and resources for the renderer, but does not
- * render a stage on its own. For this, there is a separate {@link RendererHierarchy}
- * bundle that has to be added to the game builder.
- */
+export enum RendererSchedule {
+  Update,
+  Render
+}
+
+/** Bundle that provides a WebGL rendering context via the PIXI.js library. */
 export class PixiBundle implements Bundle, OnInit {
 
   /**
@@ -69,6 +69,8 @@ export class PixiBundle implements Bundle, OnInit {
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();
 
+    console.log(builder.schedule())
+
     builder
       .component(SpriteAnimation)
       .component(SpriteRender, new SpriteRenderSerializer())
@@ -86,7 +88,12 @@ export class PixiBundle implements Bundle, OnInit {
       .provide(Stage)
       .provide(Renderer)
       .provide(Screenshot)
-      .system(SortChildren);
+      .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
+      .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
+      .system(SortChildren)
+      .system(SpriteAnimationSystem, RendererSchedule.Update)
+      .system(SpriteRenderer, RendererSchedule.Update)
+      .system(UpdateRenderer, RendererSchedule.Render);
   }
 
   /** @inheritDoc */

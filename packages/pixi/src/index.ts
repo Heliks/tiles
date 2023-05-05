@@ -9,8 +9,6 @@ export * from './debug-draw';
 export * from './load-texture';
 export * from './pixi-bundle';
 export * from './renderer';
-export * from './renderer-hierarchy';
-export * from './renderer-system';
 export * from './update-renderer';
 export * from './screenshot';
 

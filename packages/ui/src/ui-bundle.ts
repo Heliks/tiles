@@ -1,4 +1,6 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
+import { RendererSchedule } from '@heliks/tiles-pixi';
+import { DrawUi } from './draw-ui';
 import { UpdateInteractions } from './update-interactions';
 import { FlexCompositor, Style } from './flex';
 import { UiNode } from './ui-node';
@@ -15,7 +17,8 @@ export class UiBundle implements Bundle {
       .component(Style)
       .component(UiNode)
       .provide(FlexCompositor)
-      .system(UpdateInteractions);
+      .system(UpdateInteractions)
+      .system(DrawUi, RendererSchedule.Update);
   }
 
 }

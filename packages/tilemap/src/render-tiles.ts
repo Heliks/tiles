@@ -10,9 +10,9 @@ import {
   Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Camera, Container, RendererSystem, SpriteSheet, Stage } from '@heliks/tiles-pixi';
-import { Tilemap } from './tilemap';
+import { Camera, Container, SpriteSheet, Stage } from '@heliks/tiles-pixi';
 import { AnimatedSprite, Sprite } from 'pixi.js';
+import { Tilemap } from './tilemap';
 import { LocalTileset } from './tileset';
 
 
@@ -22,7 +22,7 @@ import { LocalTileset } from './tileset';
  * @see Tilemap
  */
 @Injectable()
-export class RenderTiles extends ReactiveSystem implements RendererSystem {
+export class RenderTiles extends ReactiveSystem {
 
   /**
    * Entities mapped to their PIXI.js display object.
