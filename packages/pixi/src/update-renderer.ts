@@ -1,4 +1,4 @@
-import { Injectable, System, World } from '@heliks/tiles-engine';
+import { Injectable, System } from '@heliks/tiles-engine';
 import { Renderer } from './renderer';
 
 
@@ -9,8 +9,9 @@ export class UpdateRenderer implements System {
   constructor(private readonly renderer: Renderer) {}
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     this.renderer.update();
+    this.renderer.debugDraw.clear();
   }
 
 }
