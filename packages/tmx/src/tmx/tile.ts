@@ -1,5 +1,5 @@
 import { TmxHasPropertyData } from './utils';
-import { TmxShapeData } from './shape';
+import { TmxGeometryData } from './geometry';
 import { TmxObjectData } from './layer';
 
 
@@ -13,6 +13,6 @@ export interface TmxTileData extends TmxObjectData, TmxHasPropertyData {
   /** Note: This is actually the tile index, not the ID. */
   id: number;
   objectgroup?: {
-    objects: TmxShapeData[]
+    objects: TmxGeometryData[]
   }
 }

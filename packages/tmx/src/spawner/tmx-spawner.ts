@@ -1,21 +1,21 @@
+import { AssetStorage } from '@heliks/tiles-assets';
+import { Entity, EntityBuilder, EventQueue, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { LayerId, SpriteRender } from '@heliks/tiles-pixi';
+import { Tilemap } from '@heliks/tiles-tilemap';
 import {
   isTile,
   Layer,
   ObjectLayer,
   TileLayer,
   TmxLayerType,
+  TmxMapAsset,
   TmxObject,
   TmxProperties,
-  TmxMapAsset,
   TmxTileObject,
   TmxTileset
 } from '../parser';
-import { Entity, EntityBuilder, EventQueue, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { LayerId, SpriteRender } from '@heliks/tiles-pixi';
-import { AssetStorage } from '@heliks/tiles-assets';
-import { TmxSpawnerConfig } from './tmx-spawner-config';
-import { Tilemap } from '@heliks/tiles-tilemap';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
+import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /** @internal */
@@ -98,17 +98,10 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
 
   /** @internal */
   private createObjectBuilder(world: World, map: T, obj: TmxObject, renderLayer?: LayerId): EntityBuilder {
-    const transform = new Transform(
-      0,
-      0,
-      0,
-      (obj.shape.x / this.config.unitSize) - (map.grid.cols / 2),
-      (obj.shape.y / this.config.unitSize) - (map.grid.rows / 2)
-    );
+    let x = obj.shape.x;
+    let y = obj.shape.y;
 
-    const entity = world
-      .builder()
-      .use(transform);
+    const entity = world.builder();
 
     if (isTile(obj)) {
       const tileset = map.tilesets.getFromGlobalId(obj.tileId);
@@ -126,6 +119,13 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
     else {
       entity.use(this.physics.body(obj));
     }
+
+    // The object position we received from tiled is relative to the top left corner
+    // of the map. Re-align position to world space & apply unit size.
+    x = (x / this.config.unitSize) - (map.grid.cols / 2);
+    y = (y / this.config.unitSize) - (map.grid.rows / 2);
+
+    entity.use(new Transform(0, 0, 0, x, y));
 
     return entity;
   }

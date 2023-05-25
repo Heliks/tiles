@@ -1,9 +1,9 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
+import { Texture } from 'pixi.js';
 import { parseTileData, TmxTileset } from '../parser';
 import { TmxTilesetData } from '../tmx';
-import { Texture } from 'pixi.js';
 
 
 /** @internal */

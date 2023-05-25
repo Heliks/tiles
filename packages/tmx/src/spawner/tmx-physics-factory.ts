@@ -1,7 +1,7 @@
-import { TmxGeometry } from '../parser';
 import { Injectable, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
-import { TmxSpawnerConfig } from './tmx-spawner-config';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
+import { TmxGeometry } from '../parser';
+import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /** Creates physics components from {@link TmxGeometry Tiled geometry}. */

@@ -1,10 +1,10 @@
+import { PivotPreset, Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { parseCustomProperties, TmxProperties } from './tmx-properties';
-import { TmxGeometry } from './tmx-geometry';
-import { Rectangle } from '@heliks/tiles-engine';
 import { TmxObjectData } from '../tmx';
-import { hasFlag, parseGID, TmxGIDFlag } from './gid';
 import { parseCustomType } from './custom-type';
+import { hasFlag, parseGID, TmxGIDFlag } from './gid';
+import { parseGeometryData, TmxGeometry } from './tmx-geometry';
+import { parseCustomProperties, TmxProperties } from './tmx-properties';
 
 
 /**
@@ -16,10 +16,7 @@ import { parseCustomType } from './custom-type';
 export type TmxGeometryObject<P extends TmxProperties = TmxProperties, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S>;
 
 /**
- * A freely placed object created from a tile.
- *
- * A game object that occurs in an {@link ObjectLayer object layer}. This can either be
- * a tile or a freely placed shape.
+ * A freely placed object that uses a tile as its sprite.
  *
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
@@ -57,12 +54,12 @@ export function isTile<P extends TmxProperties>(value: TmxObject<P>): value is T
 
 /** Parses {@link TmxObjectData} and produces a {@link TmxObject}. */
 export function parseObjectData(data: TmxObjectData): TmxObject {
-  const shape = new Rectangle(
-    data.width,
-    data.height,
-    data.x,
-    data.y
-  );
+  if (! data.gid) {
+    return parseGeometryData(data, PivotPreset.CENTER);
+  }
+
+  // Objects that are not freely placed shapes are always rectangles.
+  const shape = new Rectangle(data.width, data.height, data.x, data.y);
 
   let tileId;
 

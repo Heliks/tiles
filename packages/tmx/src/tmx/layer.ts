@@ -1,3 +1,4 @@
+import { TmxGeometryData } from './geometry';
 import { TmxHasPropertyData } from './utils';
 
 
@@ -42,17 +43,8 @@ interface TmxFiniteTileLayerData extends TmxBaseLayerData {
 
 export type TmxTileLayerData = TmxFiniteTileLayerData | TmxInfiniteTileLayerData;
 
-export interface TmxObjectData extends TmxHasPropertyData {
+export interface TmxObjectData extends TmxGeometryData, TmxHasPropertyData {
   gid?: number;
-  height: number;
-  id: number;
-  name: string;
-  rotation: number;
-  type: string;
-  visible: boolean;
-  width: number;
-  x: number;
-  y: number;
 }
 
 /** JSON format for object layers. */

@@ -1,8 +1,8 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
-import { parseCustomProperties, parseLayers, TmxProperties, TmxMapAsset, TmxTileset } from '../parser';
-import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 import { LocalTileset } from '@heliks/tiles-tilemap';
+import { parseCustomProperties, parseLayers, TmxMapAsset, TmxProperties, TmxTileset } from '../parser';
+import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
 
 /**

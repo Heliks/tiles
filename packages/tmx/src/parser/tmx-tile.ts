@@ -5,7 +5,6 @@ import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
 
 
-
 /** A tile that can occur on a {@link TmxTileset tileset}.*/
 export interface TmxTile<P extends TmxProperties = TmxProperties> extends HasProperties<P> {
 
