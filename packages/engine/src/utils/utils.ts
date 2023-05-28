@@ -31,6 +31,23 @@ export function createPackedArray<T>(size: number, value: T): T[] {
   return data;
 }
 
+/** Randomizes the contents of an array. */
+export function shuffle<T>(array: T[]): T[] {
+  let r;
+  let t;
+
+  // Simple Durstenfeld shuffle.
+  for (let i = array.length - 1; i > 0; i--) {
+    r = Math.floor(Math.random() * (i + 1));
+    t = array[i];
+
+    array[i] = array[r];
+    array[r] = t;
+  }
+
+  return array;
+}
+
 export function isDefined<T>(value?: T): value is T {
   return value !== undefined;
 }

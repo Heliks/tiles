@@ -56,12 +56,4 @@ export class Camera {
     return result;
   }
 
-  /**
-   * Converts a world `position` to a position on the screen. This modifies the
-   * original input.
-   */
-  public toScreenPosition(): Vec2 {
-    throw new Error('Todo');
-  }
-
 }

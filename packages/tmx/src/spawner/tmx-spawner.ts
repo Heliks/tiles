@@ -14,14 +14,14 @@ import {
   TmxTileObject,
   TmxTileset
 } from '../parser';
+import { TmxLayerRoot } from './tmx-layer-root';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
+import { TmxSpawnMap } from './tmx-spawn-map';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /** @internal */
-function spawnTileLayer(world: World, map: TmxMapAsset, layer: TileLayer, renderLayer?: LayerId): Entity {
-  const entity = world.create(new Transform());
-
+function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: TileLayer, renderLayer?: LayerId): void {
   for (const chunk of layer.data) {
     const tilemap = new Tilemap(chunk.grid, renderLayer);
 
@@ -35,8 +35,6 @@ function spawnTileLayer(world: World, map: TmxMapAsset, layer: TileLayer, render
       .use(new Transform())
       .build();
   }
-
-  return entity;
 }
 
 
@@ -131,26 +129,37 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
   }
 
   /** @internal */
-  private spawnObjectLayer(world: World, map: T, layer: ObjectLayer, renderLayer?: LayerId): Entity {
-    const parent = world.create(new Transform(10, 10));
-
+  private spawnObjectLayer(world: World, root: Entity, map: T, layer: ObjectLayer, renderLayer?: LayerId): Entity {
     for (const obj of layer.data) {
-      this.createObjectBuilder(world, map, obj, renderLayer).use(new Parent(parent)).build();
+      this.createObjectBuilder(world, map, obj, renderLayer).use(new Parent(root)).build();
     }
 
-    return parent;
+    return root;
   }
 
   /** @internal */
   public spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
+    const entity = world.create(
+      new Transform(0, 0),
+
+      new TmxLayerRoot(
+      layer.name
+    ));
+
+    console.log('SPAWNED LAYER', entity)
+
     switch (layer.type) {
       case TmxLayerType.Tiles:
-        return spawnTileLayer(world, map, layer, renderLayer);
+        spawnTileLayer(world, entity, map, layer, renderLayer);
+        break;
       case TmxLayerType.Objects:
-        return this.spawnObjectLayer(world, map, layer, renderLayer);
+        this.spawnObjectLayer(world, entity, map, layer, renderLayer);
+        break;
       default:
         throw new Error(`Unsupported layer type ${layer.type}`);
     }
+
+    return entity;
   }
 
   /**
@@ -173,8 +182,16 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
 
       const entity = this.spawnLayer(world, map, data, renderLayer);
 
-      if (parent) {
+      if (parent !== undefined) {
+        // Set layer root as child of parent entity.
         world.add(entity, new Parent(parent));
+
+        // Add entity to spawner layers.
+        world
+          .storage(TmxSpawnMap)
+          .get(parent)
+          .layers
+          .push(entity);
       }
     }
 

@@ -1,5 +1,6 @@
-import { TmxMapAsset } from '../parser';
 import { Handle } from '@heliks/tiles-assets';
+import { Entity } from '@heliks/tiles-engine';
+import { TmxMapAsset } from '../parser';
 
 
 /**
@@ -21,9 +22,17 @@ export class TmxSpawnMap {
   public dirty = true;
 
   /**
+   * Contains all layer root entities that were spawned by this map spawner. Each entity
+   * is guaranteed to have a {@link TmxLayerRoot} component.
+   */
+  public readonly layers: Entity[] = [];
+
+  /**
    * @param handle Asset handle of the {@link TmxMapAsset} asset.
    */
   constructor(public handle?: Handle<TmxMapAsset>) {}
+
+
 
 }
 
