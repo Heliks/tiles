@@ -139,14 +139,11 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
 
   /** @internal */
   public spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
-    const entity = world.create(
-      new Transform(0, 0),
-
-      new TmxLayerRoot(
-      layer.name
-    ));
-
-    console.log('SPAWNED LAYER', entity)
+    const entity = world
+      .builder()
+      .use(new TmxLayerRoot(layer.name))
+      .use(new Transform(0, 0))
+      .build();
 
     switch (layer.type) {
       case TmxLayerType.Tiles:
