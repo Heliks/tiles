@@ -10,6 +10,9 @@ import { Terrain } from './terrain';
  */
 export class Tileset {
 
+  /** Custom name assigned to the tileset. */
+  public name?: string;
+
   /**
    * Contains tile indexes mapped to the name of an animation on {@link spritesheet}
    * that should be played when the tile is rendered on a {@link Tilemap}.

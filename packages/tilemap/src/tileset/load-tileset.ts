@@ -72,6 +72,9 @@ export interface TilesetData {
   /** Height of the tileset spritesheet image in px. */
   imageHeight: number;
 
+  /** Custom name that can be assigned to the tileset. */
+  name?: string;
+
   /** Contains terrain definitions, if any. */
   terrains?: TerrainData[];
 
@@ -165,8 +168,15 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
       data.tileHeight
     );
 
-    const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const handle = loader.data(file, new SpriteGrid(grid, texture));
+    const texturePath = getDirectory(file, data.image);
+    const texture = await loader.fetch<Texture>(texturePath);
+
+    // Manually create the sprite grid from texture.
+    const handle = loader.data(texturePath, new SpriteGrid(
+      grid,
+      texture
+    ));
+
     const tileset = new Tileset(handle, grid.size);
 
     if (data.terrains) {
@@ -174,6 +184,8 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
         tileset.addTerrain(deserializeTerrainData(terrain));
       }
     }
+
+    tileset.name = data.name;
 
     return tileset;
   }

@@ -1,11 +1,7 @@
 import { Tileset } from './tileset';
 
 
-/**
- * Maps a tileset to a global ID range.
- *
- * @see Tileset
- */
+/** Maps a {@link Tileset tileset} to a global ID range. */
 export class LocalTileset<T extends Tileset = Tileset> {
 
   /** Contains the highest ID in the occupied ID range. */
@@ -17,10 +13,7 @@ export class LocalTileset<T extends Tileset = Tileset> {
    * @param tileset Tileset that is mapped to the ID range.
    * @param firstId Lowest possible ID in the occupied ID range.
    */
-  constructor(
-    public readonly tileset: T,
-    public readonly firstId: number
-  ) {}
+  constructor(public readonly tileset: T, public readonly firstId: number) {}
 
   /** Converts a local tile ID to a global one. */
   public getGlobalId(localId: number): number {

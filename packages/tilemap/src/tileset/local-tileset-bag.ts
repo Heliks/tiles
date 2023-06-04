@@ -2,6 +2,10 @@ import { LocalTileset } from './local-tileset';
 import { Tileset } from './tileset';
 
 
+function getFromName(item: LocalTileset) {
+
+}
+
 /**
  * Bag that stores `Tileset` items as `LocalTileset`.
  *
@@ -97,6 +101,14 @@ export class LocalTilesetBag<T extends Tileset = Tileset> {
     }
 
     return this;
+  }
+
+  /**
+   * Returns the first {@link LocalTileset local tileset} where the tileset matches
+   * the given `name`.
+   */
+  public getFromName(name: string): LocalTileset | undefined {
+    return this.items.find(item => item.tileset.name === name);
   }
 
 }
