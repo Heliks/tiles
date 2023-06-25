@@ -2,26 +2,20 @@ import { Struct } from '../utils';
 import { Entity, EntityBuilder, World } from '../ecs';
 import { isIgnored, TypeRegistry } from '../types';
 import { Injectable } from '@heliks/tiles-injector';
+import { SerializationQuery } from './serialization-query';
+import { EntityData, EntitySerializer as BaseEntitySerializer } from './types';
 
 
-/**
- * Serialized entity data that is stringify-able via `JSON.stringify()`. Each key in
- * this object is the namespace of a component.
- */
-export type EntityData = Struct;
-
-/**
- * Serializes entities.
- */
+/** @inheritDoc */
 @Injectable()
-export class EntitySerializer {
+export class EntitySerializer implements BaseEntitySerializer {
 
   /**
    * @param types {@see TypeRegistry}
    */
   constructor(public readonly types: TypeRegistry) {}
 
-  /** Serializes the given `entity` and all of its components. */
+  /** @inheritDoc */
   public serialize(world: World, entity: Entity): EntityData {
     const data: EntityData = {};
 
@@ -40,7 +34,7 @@ export class EntitySerializer {
     return data;
   }
 
-  /** De-serializes `data` into an `EntityBuilder`. */
+  /** @inheritDoc */
   public deserialize(world: World, data: EntityData): EntityBuilder {
     const builder = world.builder();
 
@@ -53,6 +47,11 @@ export class EntitySerializer {
     }
 
     return builder;
+  }
+
+  /** Returns a {@link SerializationQuery}. */
+  public query(world: World): SerializationQuery {
+    return new SerializationQuery(world, this);
   }
 
 }
