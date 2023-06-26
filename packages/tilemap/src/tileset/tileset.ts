@@ -1,17 +1,26 @@
 import { Handle } from '@heliks/tiles-assets';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Terrain } from './terrain';
+import { CustomTile } from './custom-tile';
 
 
 /**
  * A collection of tiles
  *
- * - `S`: Spritesheet format
+ * ## Custom Tiles
+ *
+ * Tiles that are customized will have a {@link CustomTile} instance mapped to their tile
+ * index. Tiles without any customization, do not.
+ *
+ * - `T`: Format for custom tile properties
  */
-export class Tileset {
+export class Tileset<T = unknown> {
 
   /** Custom name assigned to the tileset. */
   public name?: string;
+
+  /** Contains custom tiles, mapped to the tile index that they occupy on the tileset. */
+  public readonly tiles = new Map<number, CustomTile<T>>;
 
   /**
    * Contains tile indexes mapped to the name of an animation on {@link spritesheet}
@@ -32,6 +41,11 @@ export class Tileset {
     public readonly spritesheet: Handle<SpriteSheet>,
     public readonly size: number
   ) {}
+
+  /** Returns the {@link CustomTile} that occupies the given tile `index`, if any. */
+  public tile(index: number): CustomTile<T> | undefined {
+    return this.tiles.get(index);
+  }
 
   /** Adds a `terrain` to the tileset. */
   public addTerrain(terrain: Terrain): this {

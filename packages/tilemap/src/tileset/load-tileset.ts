@@ -1,5 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
+import { CustomProperties, CustomPropertiesData, extractCustomProperties, parseCustomProperties } from '../properties';
+import { CustomTile } from './custom-tile';
 import { Tileset } from './tileset';
 import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Terrain, TerrainBit, TerrainId } from './terrain';
@@ -56,6 +58,11 @@ export interface TerrainData {
   tiles: TerrainTileData[];
 }
 
+export interface TileData {
+  index: number;
+  props?: CustomPropertiesData;
+}
+
 /**
  * Serialize-able data structure for tilesets.
  *
@@ -77,6 +84,8 @@ export interface TilesetData {
 
   /** Contains terrain definitions, if any. */
   terrains?: TerrainData[];
+
+  tiles?: TileData[];
 
   /** Width of each individual tile in px. */
   tileWidth: number;
@@ -179,13 +188,22 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
 
     const tileset = new Tileset(handle, grid.size);
 
+    tileset.name = data.name;
+
     if (data.terrains) {
       for (const terrain of data.terrains) {
         tileset.addTerrain(deserializeTerrainData(terrain));
       }
     }
 
-    tileset.name = data.name;
+    if (data.tiles) {
+      for (const tileData of data.tiles) {
+        tileset.tiles.set(tileData.index, new CustomTile(
+          tileData.index,
+          extractCustomProperties(tileData)
+        ));
+      }
+    }
 
     return tileset;
   }

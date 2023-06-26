@@ -1,19 +1,29 @@
-import { LoadTileset, TilesetData } from '../load-tileset';
-import { Texture } from 'pixi.js';
 import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
-import { Tileset } from '../tileset';
+import { Texture } from 'pixi.js';
+import { CustomPropertyType } from '../../properties';
+import { LoadTileset, TilesetData } from '../load-tileset';
 import { Terrain, TerrainBit } from '../terrain';
+import { Tileset } from '../tileset';
 
 
 /** @internal */
-function createTilesetData(): TilesetData {
-  return {
+function createTilesetData(append?: Partial<TilesetData>): TilesetData {
+  let data = {
     image: 'foo.png',
     tileWidth: 16,
     tileHeight: 16,
     imageWidth: 160,
     imageHeight: 160
   };
+
+  if (append) {
+    data = {
+      ...data,
+      ...append
+    };
+  }
+
+  return data;
 }
 
 describe('LoadTileset', () => {
@@ -88,6 +98,30 @@ describe('LoadTileset', () => {
         contains: Terrain.createId(TerrainBit.North, TerrainBit.South),
         excludes: Terrain.createId(TerrainBit.East, TerrainBit.West),
       });
+    });
+  });
+
+  describe('when deserializing custom tiles', () => {
+    it('should deserialize tile properties', async () => {
+      const data = createTilesetData({
+        tiles: [
+          {
+            index: 0,
+            props: [
+              { name: 'foo', type: CustomPropertyType.Boolean, value: true },
+              { name: 'bar', type: CustomPropertyType.Boolean, value: false }
+            ]
+          }
+        ]
+      });
+
+      const tileset = await process(data);
+      const tile = tileset.tiles.get(0);
+
+      expect(tile?.props).toMatchObject({
+        foo: true,
+        bar: false
+      })
     });
   });
 });
