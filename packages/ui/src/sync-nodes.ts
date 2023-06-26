@@ -1,10 +1,22 @@
-import { Storage, Parent, Subscriber, World, Entity, QueryEventType, OnInit } from '@heliks/tiles-engine';
-import { Query } from '@heliks/tiles-engine';
+import {
+  Entity,
+  InjectStorage,
+  OnInit,
+  Parent,
+  Query,
+  QueryEventType,
+  Storage,
+  Subscriber,
+  System,
+  World
+} from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
+import { Injectable } from '@heliks/tiles-engine';
 import { UiNode } from './ui-node';
 
 
-export class SyncNodes implements OnInit {
+@Injectable()
+export class SyncNodes implements OnInit, System {
 
   /** @internal */
   private query!: Query;
@@ -13,9 +25,17 @@ export class SyncNodes implements OnInit {
   private subscription!: Subscriber;
 
   /**
+   * @param parents Storage for {@link Parent} components.
+   * @param uiNodes Storage for {@link UiNode} components.
    * @param stage Renderer stage.
    */
-  constructor(private readonly stage: Stage) {}
+  constructor(
+    @InjectStorage(Parent)
+    private parents: Storage<Parent>,
+    @InjectStorage(UiNode)
+    private uiNodes: Storage<UiNode>,
+    private readonly stage: Stage
+  ) {}
 
   /** @inheritDoc */
   public onInit(world: World): void {

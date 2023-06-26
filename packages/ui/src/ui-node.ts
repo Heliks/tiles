@@ -1,9 +1,9 @@
-import { Container } from 'pixi.js';
-import { EventQueue, World } from '@heliks/tiles-engine';
+import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
-import { Pivot, PivotPreset } from '@heliks/tiles-engine';
-import { UiWidget } from './ui-widget';
+import { Container } from 'pixi.js';
 import { Interaction, InteractionEvent } from './interaction-event';
+import { Node, Style } from './layout';
+import { UiWidget } from './ui-widget';
 
 
 /** Defines the context to which {@link UiNode nodes} are aligned to. */
@@ -11,7 +11,6 @@ export enum UiAlign {
   World,
   Screen
 }
-
 
 
 /**
@@ -57,6 +56,13 @@ export class UiNode<W extends UiWidget = UiWidget> {
    */
   public onInteract = new EventQueue<InteractionEvent>();
 
+  /**
+   * Layout {@link Node node}. Used for layout calculations when the UI node is part of
+   * a formatting context. (e.g. applies a {@link Style stylesheet} to its children, or
+   * has one applied via its parent).
+   */
+  public readonly layout: Node;
+
   /** Node pivot. This does not affect the pivot of child nodes. */
   public pivot: Pivot = PivotPreset.TOP_LEFT;
 
@@ -64,36 +70,32 @@ export class UiNode<W extends UiWidget = UiWidget> {
   public _widget?: W;
 
   /**
-   * @param x Either world or screen position along x-axis, depending on {@link align}.
-   * @param y Either world or screen position along y-axis, depending on {@link align}.
    * @param layer Id of the renderer layer on which this root should be rendered. If not
    *  specified, it will be rendered on the first layer that is available. If this root
    *  is the child of another root, this setting will be ignored.
    * @param align Determines if this UI element is aligned to the world or screen.
+   * @param style (optional) Style properties that should be applied to the node layout.
    */
   constructor(
-    public x = 0,
-    public y = 0,
     public layer?: LayerId,
-    public align = UiAlign.Screen
-  ) {}
+    public align = UiAlign.Screen,
+    style?: Partial<Style>
+  ) {
+    this.layout = new Node(style);
+  }
 
-  public static use<W extends UiWidget>(widget: W, x = 0, y = 0): UiNode<W> {
-    const root = new UiNode<W>(x, y);
-
-    root.setWidget(widget);
-
-    return root;
+  public static use<W extends UiWidget>(widget: W): UiNode<W> {
+    return new UiNode<W>().setWidget(widget);
   }
 
   /** Creates a {@link UiNode} that is aligned to the screen. */
-  public static screen(x = 0, y = 0, layer?: LayerId): UiNode {
-    return new UiNode(x, y, layer, UiAlign.Screen);
+  public static screen(layer?: LayerId, style?: Partial<Style>): UiNode {
+    return new UiNode(layer, UiAlign.Screen, style);
   }
 
   /** Creates a {@link UiNode} that is aligned to the world. */
-  public static world(x = 0, y = 0, layer?: LayerId): UiNode {
-    return new UiNode(x, y, layer, UiAlign.World);
+  public static world(layer?: LayerId, style?: Partial<Style>): UiNode {
+    return new UiNode(layer, UiAlign.World, style);
   }
 
   /** Shows the container. */

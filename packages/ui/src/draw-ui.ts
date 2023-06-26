@@ -1,8 +1,6 @@
-import { Entity, Injectable, OnInit, Parent, Query, Storage, Vec2, World, XY } from '@heliks/tiles-engine';
-import { Camera, Stage } from '@heliks/tiles-pixi';
+import { Entity, Injectable, OnInit, Parent, Query, Storage, System, Vec2, World, XY } from '@heliks/tiles-engine';
+import { Camera } from '@heliks/tiles-pixi';
 import { UiAlign, UiNode } from './ui-node';
-import { SyncNodes } from './sync-nodes';
-import { FlexCompositor, ApplyStyles } from './flex';
 
 
 /**
@@ -10,24 +8,17 @@ import { FlexCompositor, ApplyStyles } from './flex';
  * renderer stage.
  */
 @Injectable()
-export class DrawUi implements OnInit {
+export class DrawUi implements OnInit, System {
 
   /** @internal */
   private nodes!: Storage<UiNode>;
   private parents!: Storage<Parent>;
   private query!: Query;
   private _scratch = new Vec2();
-  private readonly syncRoots: SyncNodes;
-  private readonly layout: ApplyStyles;
 
   constructor(
-    private readonly camera: Camera,
-    private readonly compositor: FlexCompositor,
-    private readonly stage: Stage
-  ) {
-    this.layout = new ApplyStyles(compositor);
-    this.syncRoots = new SyncNodes(stage);
-  }
+    private readonly camera: Camera
+  ) {}
 
   /** @inheritDoc */
   public onInit(world: World): void {
@@ -37,16 +28,13 @@ export class DrawUi implements OnInit {
     this.query = world
       .query()
       .contains(UiNode)
-      .build()
-
-    this.syncRoots.onInit(world);
-
-    this.layout.boot(world);
-    this.layout.onInit(world);
+      .build();
   }
 
   /** @internal */
   private getViewPositionFromScreenPosition(screen: XY): Vec2 {
+    // console.log('SCREEN', screen.x, screen.y)
+
     return this.camera.screenToWorld(screen.x, screen.y, this._scratch).scale(this.camera.unitSize);
   }
 
@@ -60,37 +48,43 @@ export class DrawUi implements OnInit {
     );
 
     if (node.align === UiAlign.World) {
-      node.container.x = node.x * this.camera.unitSize;
-      node.container.y = node.y * this.camera.unitSize;
+      // node.container.x = node.layout.pos.x * this.camera.unitSize;
+      // node.container.y = node.layout.pos.y * this.camera.unitSize;
 
       return;
     }
 
     if (this.parents.has(entity)) {
-      node.container.x = node.x;
-      node.container.y = node.y;
+      const f = this.camera as any;
+
+      // Todo
+      node.container.x = node.layout.pos.x;
+      node.container.y = node.layout.pos.y;
     }
     else {
-      const position = this.getViewPositionFromScreenPosition(node);
+      const position = this.getViewPositionFromScreenPosition(node.layout.pos);
 
       node.container.x = position.x;
       node.container.y = position.y;
     }
+
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    this.syncRoots.update(world);
-
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
       this.updateNodePosition(entity, node);
 
+      // let x = node.layout.constants.offset.main;
+
+      // const c = this.camera.screenToWorld(0, 0, this._scratch);
+
+      // node.container.x = c.x;
+
       node._widget?.update(world, entity);
     }
-
-    this.layout.update();
   }
 
 }

@@ -1,4 +1,4 @@
-export * from './flex';
+export * from './layout';
 export * from './widgets';
 
 export * from './border-style';
