@@ -1,8 +1,8 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
-import { Texture } from 'pixi.js';
-import { parseTileData, TmxTileset } from '../parser';
+import { Sprite, Texture } from 'pixi.js';
+import { parseCustomProperties, parseTileData, TmxTileset, TmxTilesetProps } from '../parser';
 import { TmxTilesetData } from '../tmx';
 
 
@@ -35,6 +35,21 @@ function getTileAnimationName(tileIdx: number): string {
   return `TileAnimation${tileIdx}`;
 }
 
+/** @internal */
+function createSpriteGrid(grid: Grid, texture: Texture, props: TmxTilesetProps): SpriteGrid {
+  const spritesheet = new SpriteGrid(grid, texture);
+
+  if (props.$animations) {
+    const animations = JSON.parse(props.$animations);
+
+    for (const animation of animations) {
+      spritesheet.setAnimation(animation.name, animation);
+    }
+  }
+
+  return spritesheet;
+}
+
 /** Format to load TMX tilesets. */
 export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
 
@@ -51,10 +66,10 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     );
 
     const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const spritesheet = new SpriteGrid(grid, texture);
-
+    const props = parseCustomProperties<TmxTilesetProps>(data);
+    const spritesheet = createSpriteGrid(grid, texture, props)
     const handle = loader.data(file, spritesheet);
-    const tileset = new TmxTileset(handle, grid.size);
+    const tileset = new TmxTileset(handle, grid.size, props);
 
     tileset.pivot = parsePivot(data);
 

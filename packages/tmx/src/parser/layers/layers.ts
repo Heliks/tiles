@@ -7,7 +7,7 @@ import { TileChunk } from './tile-chunk';
 import { LayerId } from '@heliks/tiles-pixi';
 
 
-/** Internal {@link TmxProperties properties} that can occur on a {@link Layer layer}. */
+/** Internal {@link TmxProperties properties} that can occur on a {@link TmxLayer layer}. */
 export interface LayerProperties extends TmxProperties {
 
   /**
@@ -38,19 +38,19 @@ export enum TmxLayerType {
 
   /**
    * Layer contains tiles on a tile grid.
-   * @see TileLayer
+   * @see TmxTileLayer
    */
   Tiles,
 
   /**
    * Layer contains freely placed objects.
-   * @see ObjectLayer
+   * @see TmxObjectLayer
    */
   Objects,
 
   /**
    * Layer is a group that contains other layers.
-   * @see LayerGroup
+   * @see TmxLayerGroup
    */
   Group
 
@@ -61,14 +61,14 @@ export enum TmxLayerType {
  *
  * @typeparam P Custom layer properties.
  */
-export type ObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TmxObject[], TmxLayerType.Objects, P>;
+export type TmxObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TmxObject[], TmxLayerType.Objects, P>;
 
 /**
  * Layer that contains tiles.
  *
  * @typeparam P Custom layer properties.
  */
-export type TileLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TileChunk[], TmxLayerType.Tiles, P>;
+export type TmxTileLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TileChunk[], TmxLayerType.Tiles, P>;
 
 /**
  * Layer that groups multiple layers together. This counts as its own layer and can have
@@ -76,27 +76,27 @@ export type TileLayer<P extends LayerProperties = LayerProperties> = BaseLayer<T
  *
  * @typeparam P Custom layer properties
  */
-export type LayerGroup<P extends LayerProperties = LayerProperties> = BaseLayer<(LayerGroup | ObjectLayer | TileLayer)[], TmxLayerType.Group, P>;
+export type TmxLayerGroup<P extends LayerProperties = LayerProperties> = BaseLayer<(TmxLayerGroup | TmxObjectLayer | TmxTileLayer)[], TmxLayerType.Group, P>;
 
 /**
  * Any valid layer type.
  *
- * @see LayerGroup
- * @see ObjectLayer
- * @see TileLayer
+ * @see TmxLayerGroup
+ * @see TmxObjectLayer
+ * @see TmxTileLayer
  *
  * @typeparam P Custom layer properties.
  */
-export type Layer<P extends LayerProperties = LayerProperties> = LayerGroup<P> | ObjectLayer<P> | TileLayer<P>;
+export type TmxLayer<P extends LayerProperties = LayerProperties> = TmxLayerGroup<P> | TmxObjectLayer<P> | TmxTileLayer<P>;
 
 
 /**
  * Parses a TMX tile `layer`.
  *
  * @param layer Layer data that should be parsed.
- * @see ObjectLayer
+ * @see TmxObjectLayer
  */
-export function parseObjectLayer(layer: TmxObjectLayerData): ObjectLayer {
+export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
   const objects = [];
 
   for (const item of layer.objects) {
@@ -118,9 +118,9 @@ export function parseObjectLayer(layer: TmxObjectLayerData): ObjectLayer {
  * @param layer Layer data that should be parsed.
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
- * @see TileLayer
+ * @see TmxTileLayer
  */
-export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): TileLayer {
+export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): TmxTileLayer {
   const chunks = [];
 
   if (layer.chunks) {
@@ -154,7 +154,7 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Ti
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
  */
-export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: Grid): Layer {
+export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: Grid): TmxLayer {
   switch (layer.type) {
     case TmxLayerTypeData.Tiles:
       return parseTileLayer(layer, chunkTileGrid);
@@ -182,7 +182,7 @@ export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: 
  * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
  *  Required to parse tile layers.
  */
-export function parseLayers(data: TmxMapData, chunkTileGrid: Grid): Layer[] {
+export function parseLayers(data: TmxMapData, chunkTileGrid: Grid): TmxLayer[] {
   const layers = [];
 
   for (const layer of data.layers) {

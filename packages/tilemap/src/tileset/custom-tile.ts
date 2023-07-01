@@ -1,3 +1,4 @@
+/** Contains information about custom properties of a tile. */
 export class CustomTile<P> {
 
   /**

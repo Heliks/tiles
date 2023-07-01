@@ -2,14 +2,14 @@ import { Grid } from '@heliks/tiles-engine';
 import { TmxProperties } from './tmx-properties';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
 import { TmxTileset } from './tmx-tileset';
-import { Layer } from './layers';
+import { TmxLayer } from './layers';
 
 
 /** Map asset created from {@link TmxMapData} when a map file is loaded. */
 export class TmxMapAsset<P extends TmxProperties = TmxProperties> {
 
   /** Map layers. The index of each layer is simultaneously its z position. */
-  public readonly layers: Layer[] = [];
+  public readonly layers: TmxLayer[] = [];
 
   /** Bag that contains all tilesets that are part of this map. */
   public readonly tilesets = new LocalTilesetBag<TmxTileset>()

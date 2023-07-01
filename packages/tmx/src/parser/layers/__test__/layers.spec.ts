@@ -1,5 +1,5 @@
 import { Grid } from '@heliks/tiles-engine';
-import { LayerGroup, TmxLayerType, parseLayer } from '../layers';
+import { TmxLayerGroup, TmxLayerType, parseLayer } from '../layers';
 
 
 describe('Layers', () => {
@@ -10,7 +10,7 @@ describe('Layers', () => {
       map,
       map.layers[1],
       new Grid(0, 0, 0, 0)
-    ) as LayerGroup;
+    ) as TmxLayerGroup;
 
     expect(layer.type).toBe(TmxLayerType.Group);
     expect(layer.data.length).toBe(2);

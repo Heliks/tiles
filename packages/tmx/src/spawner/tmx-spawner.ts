@@ -1,19 +1,9 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { Entity, EntityBuilder, EventQueue, Injectable, Parent, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { LayerId, SpriteRender } from '@heliks/tiles-pixi';
+import { Entity, EventQueue, Injectable, Parent, Transform, World } from '@heliks/tiles-engine';
+import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import {
-  isTile,
-  Layer,
-  ObjectLayer,
-  TileLayer,
-  TmxLayerType,
-  TmxMapAsset,
-  TmxObject,
-  TmxProperties,
-  TmxTileObject,
-  TmxTileset
-} from '../parser';
+import { TmxLayer, TmxLayerType, TmxMapAsset, TmxObject, TmxObjectLayer, TmxProperties, TmxTileLayer } from '../parser';
+import { TmxObjectType, TmxObjectTypes } from './objects';
 import { TmxLayerRoot } from './tmx-layer-root';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
 import { TmxSpawnMap } from './tmx-spawn-map';
@@ -21,7 +11,7 @@ import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /** @internal */
-function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: TileLayer, renderLayer?: LayerId): void {
+function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: TmxTileLayer, renderLayer?: LayerId): void {
   for (const chunk of layer.data) {
     const tilemap = new Tilemap(chunk.grid, renderLayer);
 
@@ -57,91 +47,49 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
    * @param assets {@see AssetStorage}
    * @param config {@see TmxConfig}
    * @param physics {@see PhysicsFactory}
+   * @param types {@see TmxObjectTypes}
    */
   constructor(
     private readonly assets: AssetStorage,
     private readonly config: TmxSpawnerConfig,
-    private readonly physics: TmxPhysicsFactory
+    private readonly physics: TmxPhysicsFactory,
+    private readonly types: TmxObjectTypes
   ) {}
 
-  /** @internal */
-  private getSpriteSize(tileset: TmxTileset, spriteIdx: number): Vec2 {
-    return this.assets.resolve(tileset.spritesheet).data.getSpriteSize(spriteIdx);
-  }
+  /** Returns the appropriate {@link TmxObjectType} for the given `obj`. */
+  private getObjectType(world: World, obj: TmxObject): TmxObjectType {
+    if (obj.type) {
+      const type = this.types.items.get(obj.type);
 
-  /**
-   * Returns the scale factor of the sprite at the given `spriteIdx` when used for
-   * as sprite for a {@link TmxTileObject tile}.
-   */
-  public getScaleFactor(tileset: TmxTileset, obj: TmxTileObject, spriteIdx: number): Vec2 {
-    const size = this.getSpriteSize(tileset, spriteIdx);
-
-    size.x = obj.shape.width / size.x;
-    size.y = obj.shape.height / size.y;
-
-    return size;
-  }
-
-  /** @internal */
-  private createObjectSprite(tileset: TmxTileset, obj: TmxTileObject, spriteId: number, renderLayer?: LayerId): SpriteRender {
-    const sprite = new SpriteRender(tileset.spritesheet, spriteId, renderLayer);
-
-    sprite.scale.copy(this.getScaleFactor(tileset, obj, spriteId));
-
-    sprite.flip(obj.flipX, obj.flipY);
-    sprite.setAnchor(tileset.pivot.x, tileset.pivot.y);
-
-    return sprite;
-  }
-
-  /** @internal */
-  private createObjectBuilder(world: World, map: T, obj: TmxObject, renderLayer?: LayerId): EntityBuilder {
-    let x = obj.shape.x;
-    let y = obj.shape.y;
-
-    const entity = world.builder();
-
-    if (isTile(obj)) {
-      const tileset = map.tilesets.getFromGlobalId(obj.tileId);
-      const tileId  = tileset.getLocalId(obj.tileId);
-
-      entity.use(
-        this.createObjectSprite(
-          tileset.tileset,
-          obj,
-          tileId - 1,
-          renderLayer
-        )
-      );
-    }
-    else {
-      entity.use(this.physics.body(obj));
+      if (type) {
+        return type;
+      }
     }
 
-    // The object position we received from tiled is relative to the top left corner
-    // of the map. Re-align position to world space & apply unit size.
-    x = (x / this.config.unitSize) - (map.grid.cols / 2);
-    y = (y / this.config.unitSize) - (map.grid.rows / 2);
-
-    entity.use(new Transform(0, 0, 0, x, y));
-
-    return entity;
+    return this.types.def;
   }
 
   /** @internal */
-  private spawnObjectLayer(world: World, root: Entity, map: T, layer: ObjectLayer, renderLayer?: LayerId): Entity {
+  private spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer, renderLayer?: LayerId): Entity {
     for (const obj of layer.data) {
-      this.createObjectBuilder(world, map, obj, renderLayer).use(new Parent(root)).build();
+      const type = this.getObjectType(world, obj);
+      const entity = world.builder();
+
+      type.compose(world, entity, map, layer, obj);
+
+      entity
+        .use(new Parent(root))
+        .build();
     }
 
     return root;
   }
 
   /** @internal */
-  public spawnLayer(world: World, map: T, layer: Layer, renderLayer?: LayerId): Entity {
+  public spawnLayer(world: World, map: T, layer: TmxLayer, renderLayer?: LayerId): Entity {
     const entity = world
       .builder()
-      .use(new TmxLayerRoot(layer.name))
+      .use(new TmxLayerRoot(layer))
       .use(new Transform(0, 0))
       .build();
 

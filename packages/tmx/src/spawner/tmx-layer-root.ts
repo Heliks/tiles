@@ -1,4 +1,4 @@
-import { Layer } from '../parser';
+import { TmxLayer } from '../parser';
 
 
 /**
@@ -8,8 +8,8 @@ import { Layer } from '../parser';
 export class TmxLayerRoot {
 
   /**
-   * @param source The {@link Layer TMX layer} that was spawned on this entity.
+   * @param source The {@link TmxLayer TMX layer} that was spawned on this entity.
    */
-  constructor(public readonly source: Layer) {}
+  constructor(public readonly source: TmxLayer) {}
 
 }

@@ -13,8 +13,9 @@ import { CustomTile } from './custom-tile';
  * index. Tiles without any customization, do not.
  *
  * - `T`: Format for custom tile properties
+ * - `C`: Type of custom tiles found on this tileset.
  */
-export class Tileset<T = unknown> {
+export class Tileset<T = unknown, C extends CustomTile<T> = CustomTile<T>> {
 
   /** Custom name assigned to the tileset. */
   public name?: string;
