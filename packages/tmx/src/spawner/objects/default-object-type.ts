@@ -45,17 +45,29 @@ export class DefaultObjectType implements TmxObjectType {
   }
 
   /** @internal */
-  private createSpriteRender(map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxTileObject): SpriteRender {
+  private composeTileObject(map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxTileObject, entity: EntityBuilder): void {
     const local = map.tilesets.getFromGlobalId(obj.tileId);
-    const spriteId = local.getLocalIndex(obj.tileId);
-    const sprite = new SpriteRender(local.tileset.spritesheet, spriteId, layer.properties.$layer);
 
-    sprite.scale.copy(this.getScaleFactor(local.tileset, obj, spriteId));
+    const tileIdx = local.getLocalIndex(obj.tileId);
+    const tile = local.tileset.tile(tileIdx);
+    const scale = this.getScaleFactor(local.tileset, obj, tileIdx);
+    const size = this.getSpriteSize(local.tileset, tileIdx);
 
-    return sprite.flip(obj.flipX, obj.flipY).setAnchor(
+    // If we have viable geometry, attach a rigid body to the tile.
+    if (tile && tile.shapes && tile.shapes.length > 0) {
+      entity.use(this.physics.tile(size.x, size.y, tile.shapes, local.tileset.pivot));
+    }
+
+    // Create the tile sprite.
+    const sprite = new SpriteRender(local.tileset.spritesheet, tileIdx, layer.properties.$layer);
+
+    sprite.scale.copy(scale);
+    sprite.flip(obj.flipX, obj.flipY).setAnchor(
       local.tileset.pivot.x,
       local.tileset.pivot.y
     );
+
+    entity.use(sprite);
   }
 
   /** @inheritDoc */
@@ -64,10 +76,12 @@ export class DefaultObjectType implements TmxObjectType {
     let y = obj.shape.y;
 
     if (isTile(obj)) {
-      entity.use(this.createSpriteRender(map, layer, obj));
+      this.composeTileObject(map, layer, obj, entity);
     }
     else {
-      entity.use(this.physics.body(obj));
+      // If the object is just free floating geometry, treat the object geometry as
+      // the rigid body itself.
+      entity.use(this.physics.shape(obj));
     }
 
     // The object position we received from tiled is relative to the top left corner
@@ -77,5 +91,6 @@ export class DefaultObjectType implements TmxObjectType {
 
     entity.use(new Transform(0, 0, 0, x, y));
   }
+
 
 }

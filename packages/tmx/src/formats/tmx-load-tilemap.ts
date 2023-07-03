@@ -152,7 +152,24 @@ function parseTilemap<P extends TmxProperties>(data: TmxMapData): TmxMapAsset<P>
 }
 
 /**
- * Asset loader format for TMX tile maps (`.tmj`).
+ * Asset loader format to parse Tiled `.tmj` tile-maps.
+ *
+ * ## Tilesets
+ *
+ * The format will automatically load tilesets that are attached to the map. For this,
+ * the {@link TmxLoadTileset `.tsj` format} is used.
+ *
+ * ## Shapes
+ *
+ * To be consistent with other engine modules all shape positions are converted so that
+ * the shape pivot is the shape center. By default tiled uses the top-left corner as
+ * shape pivot.
+ *
+ * ### Ellipses
+ *
+ * The engine does not support elliptic shapes, hence why all ellipses are converted
+ * to circles. The circle radius will be calculated from the larger of the two sides of
+ * the ellipsis.
  *
  * - `P`: Expected custom properties.
  */

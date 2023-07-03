@@ -16,10 +16,19 @@ export class TmxCustomTile<P = unknown> extends CustomTile<P> {
   public animation?: SpriteAnimationFrames;
 
   /**
-   * Contains {@link TmxGeometry geometry} that is attached to this tile via the Tiled
-   * collision editor.
+   * Contains {@link TmxGeometry geometry} that is extracted from custom shapes added to
+   * the tile via the tiled collision editor.
    */
-  public geometry?: TmxGeometry[];
+  public shapes?: TmxGeometry[];
+
+  /**
+   * @param width Unscaled tile width in px. Inherited from the parent tileset.
+   * @param height Unscaled tile height in px. Inherited from the parent tileset.
+   * @param pivot Unscaled tile h
+   * @param index Index that the tile occupies on the tileset.
+   * @param props Custom properties.
+   */
+  // constructor(public readonly width: number, public readonly height: number, public readonly pivot: Pivot, index: number, props: P) {}
 
 }
 
@@ -57,7 +66,7 @@ export function parseTileData(tileset: TmxTileset, data: TmxTileData): TmxCustom
 
   // Parse shapes, if any.
   if (data.objectgroup) {
-    tile.geometry = data.objectgroup.objects.map(item => parseGeometryData(item));
+    tile.shapes = data.objectgroup.objects.map(item => parseGeometryData(item));
   }
 
   return tile;

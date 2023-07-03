@@ -21,7 +21,7 @@ export class Tileset<T = unknown, C extends CustomTile<T> = CustomTile<T>> {
   public name?: string;
 
   /** Contains custom tiles, mapped to the tile index that they occupy on the tileset. */
-  public readonly tiles = new Map<number, CustomTile<T>>;
+  public readonly tiles = new Map<number, C>;
 
   /**
    * Contains tile indexes mapped to the name of an animation on {@link spritesheet}
@@ -44,7 +44,7 @@ export class Tileset<T = unknown, C extends CustomTile<T> = CustomTile<T>> {
   ) {}
 
   /** Returns the {@link CustomTile} that occupies the given tile `index`, if any. */
-  public tile(index: number): CustomTile<T> | undefined {
+  public tile(index: number): C | undefined {
     return this.tiles.get(index);
   }
 

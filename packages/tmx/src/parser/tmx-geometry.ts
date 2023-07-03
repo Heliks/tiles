@@ -26,9 +26,24 @@ export interface TmxGeometry<
 
 /** @internal */
 function createShape(data: TmxGeometryData): ColliderShape {
-  return data.ellipse
-    ? new Circle(Math.max(data.width, data.height) / 2, data.x, data.y)
-    : new Rectangle(data.width, data.height, data.x, data.y);
+  if (data.ellipse) {
+    // We do not support ellipses, hence why we convert them to circles. Calculate the
+    // radius based on the larger of the two sides of the ellipsis.
+    const radius = Math.max(data.width, data.height) / 2;
+
+    return new Circle(
+      radius,
+      data.x + radius,
+      data.y + radius
+    );
+  }
+
+  return new Rectangle(
+    data.width,
+    data.height,
+    data.x + (data.width / 2),
+    data.y + (data.height / 2)
+  );
 }
 
 /**
@@ -44,12 +59,14 @@ function createShape(data: TmxGeometryData): ColliderShape {
 export function parseGeometryData(data: TmxGeometryData, pivot?: Pivot): TmxGeometry {
   const shape = createShape(data);
 
+  /*
   if (pivot) {
     pivot.getPosition(data.width, data.height, shape);
 
     shape.x += data.x;
     shape.y += data.y;
   }
+   */
 
   return {
     id: data.id,

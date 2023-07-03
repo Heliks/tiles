@@ -50,7 +50,11 @@ function createSpriteGrid(grid: Grid, texture: Texture, props: TmxTilesetProps):
   return spritesheet;
 }
 
-/** Format to load TMX tilesets. */
+/**
+ * Asset loader format to parse Tiled `.tsj` tilemaps.
+ *
+ * @see TmxLoadTilemap
+ */
 export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
 
   /** @inheritDoc */
