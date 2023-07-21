@@ -17,10 +17,11 @@ export interface ColliderData {
   material?: MaterialId;
 
   /**
-   * If set to `true` the collider will act as a sensor. Sensors will detect collisions
-   * but won't produce any responses and can only collide when one of the colliding
-   * bodies is dynamic. E.g. when attached to a kinematic body a sensor won't detect
-   * collisions with a static or another kinematic body.
+   * If set to `true` the collider will act as a sensor. Sensors detect collisions but
+   * don't produce a collision response. They can only collide when one of the colliding
+   * {@link RigidBody bodies} is {@link RigidBodyType.Dynamic dynamic}. This means that
+   * when attached to a {@link RigidBodyType.Kinematic kinematic} body, the sensor will
+   * not detect collisions with {@link RigidBodyType.Static} or other kinematic bodies.
    */
   sensor: boolean;
 

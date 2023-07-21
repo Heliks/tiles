@@ -1,12 +1,12 @@
-import { Bundle, AppBuilder, OnInit, Screen, Struct, World, AppSchedule, after } from '@heliks/tiles-engine';
+import { AppBuilder, AppSchedule, Bundle, OnInit, Screen, Struct, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { Camera } from './camera';
-import { DebugDraw } from './debug-draw';
-import { Renderer } from './renderer';
-import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteRenderSerializer } from './sprite';
-import { Screenshot } from './screenshot';
+import { CameraBundle } from './camera';
 import { RendererConfig } from './config';
+import { DebugDraw } from './debug-draw';
 import { Layers, SortChildren, Stage } from './layer';
+import { Renderer } from './renderer';
+import { Screenshot } from './screenshot';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteRenderSerializer } from './sprite';
 import { UpdateRenderer } from './update-renderer';
 
 
@@ -82,7 +82,7 @@ export class PixiBundle implements Bundle, OnInit {
         token: PIXI.Renderer,
         value: this.createPIXIRenderer()
       })
-      .provide(Camera)
+      .bundle(new CameraBundle())
       .provide(DebugDraw)
       .provide(Layers)
       .provide(Stage)

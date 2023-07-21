@@ -1,10 +1,10 @@
+export * from './camera';
 export * from './drawable';
 export * from './layer';
 export * from './material';
 export * from './sprite';
 
 export * from './align';
-export * from './camera';
 export * from './debug-draw';
 export * from './load-texture';
 export * from './pixi-bundle';

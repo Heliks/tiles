@@ -1,10 +1,9 @@
+import { Injectable, Screen, Vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
-import { Injectable, Vec2, Screen } from '@heliks/tiles-engine';
-import { hex2rgb } from './utils';
-import { Camera } from './camera';
 import { Align } from './align';
+import { Camera } from './camera';
 import { RendererConfig } from './config';
-
+import { hex2rgb } from './utils';
 
 
 /**
