@@ -13,6 +13,7 @@
     "unicorn"
   ],
   "rules": {
+    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-function-return-type": [
       "warn",
       {
@@ -28,8 +29,6 @@
         }
       }
     ],
-    "unicorn/prefer-dom-node-remove": "off",
-    "unicorn/numeric-separators-style": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "block-spacing": "error",
     "brace-style": ["error", "stroustrup"],
@@ -94,11 +93,14 @@
       }
     ],
     "space-unary-ops": ["off"],
+    "unicorn/prefer-dom-node-remove": "off",
+    "unicorn/numeric-separators-style": "off",
     "unicorn/no-fn-reference-in-iterator": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/prefer-math-trunc": "off",
-    "@typescript-eslint/ban-types": "off",
-    "unicorn/prefer-node-remove": "off"
+    "unicorn/prefer-node-remove": "off",
+    "unicorn/no-array-reduce": "off",
+    "unicorn/no-array-callback-reference": "off"
   }
 }

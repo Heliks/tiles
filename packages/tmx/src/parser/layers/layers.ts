@@ -1,14 +1,14 @@
 import { Grid } from '@heliks/tiles-engine';
 import { parseObjectData, TmxObject } from '../tmx-object';
-import { parseCustomProperties, TmxProperties } from '../tmx-properties';
+import { parseCustomProperties } from '../tmx-properties';
 import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxMapData } from '../../tmx';
 import { BaseLayer } from './base-layer';
 import { TileChunk } from './tile-chunk';
 import { LayerId } from '@heliks/tiles-pixi';
 
 
-/** Internal {@link TmxProperties properties} that can occur on a {@link TmxLayer layer}. */
-export interface LayerProperties extends TmxProperties {
+/** Internal that can occur on a {@link TmxLayer layer}. */
+export interface LayerProperties {
 
   /**
    * If defined, the TMX layer will be rendered on the renderer {@link LayerId layer}

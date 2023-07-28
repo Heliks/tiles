@@ -55,9 +55,6 @@ export class DrawUi implements OnInit, System {
     }
 
     if (this.parents.has(entity)) {
-      const f = this.camera as any;
-
-      // Todo
       node.container.x = node.layout.pos.x;
       node.container.y = node.layout.pos.y;
     }

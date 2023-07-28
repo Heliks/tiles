@@ -2,10 +2,6 @@ import { LocalTileset } from './local-tileset';
 import { Tileset } from './tileset';
 
 
-function getFromName(item: LocalTileset) {
-
-}
-
 /**
  * Bag that stores `Tileset` items as `LocalTileset`.
  *

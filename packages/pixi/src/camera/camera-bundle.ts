@@ -5,7 +5,8 @@ import { CameraEffects } from './camera-effects';
 
 export class CameraBundle implements Bundle {
 
-  build(app: AppBuilder): void {
+  /** @inheritDoc */
+  public build(app: AppBuilder): void {
     app
       .provide(Camera)
       .system(CameraEffects);

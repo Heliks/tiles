@@ -12,10 +12,9 @@ import { CustomTile } from './custom-tile';
  * Tiles that are customized will have a {@link CustomTile} instance mapped to their tile
  * index. Tiles without any customization, do not.
  *
- * - `T`: Format for custom tile properties
  * - `C`: Type of custom tiles found on this tileset.
  */
-export class Tileset<T = unknown, C extends CustomTile<T> = CustomTile<T>> {
+export class Tileset<C extends CustomTile = CustomTile> {
 
   /** Custom name assigned to the tileset. */
   public name?: string;
@@ -44,8 +43,8 @@ export class Tileset<T = unknown, C extends CustomTile<T> = CustomTile<T>> {
   ) {}
 
   /** Returns the {@link CustomTile} that occupies the given tile `index`, if any. */
-  public tile(index: number): C | undefined {
-    return this.tiles.get(index);
+  public tile<R extends C>(index: number): R | undefined {
+    return this.tiles.get(index) as R;
   }
 
   /** Adds a `terrain` to the tileset. */

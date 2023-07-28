@@ -15,10 +15,7 @@ import { TmxMapAsset } from '../parser';
  */
 export class TmxSpawnMap {
 
-  /**
-   * If set to `true`, the map will be reloaded. Deleting all child entities of the owner
-   * of this component and re-creating the map scene.
-   */
+  /** If set to `true`, the map will be re-created on the next frame. */
   public dirty = true;
 
   /**
@@ -31,8 +28,6 @@ export class TmxSpawnMap {
    * @param handle Asset handle of the {@link TmxMapAsset} asset.
    */
   constructor(public handle?: Handle<TmxMapAsset>) {}
-
-
 
 }
 

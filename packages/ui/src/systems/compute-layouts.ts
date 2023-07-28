@@ -8,7 +8,7 @@ import {
   Screen,
   Storage
 } from '@heliks/tiles-engine';
-import { compute, Rect, Unit } from '../layout';
+import { compute, Rect } from '../layout';
 import { UiNode } from '../ui-node';
 
 

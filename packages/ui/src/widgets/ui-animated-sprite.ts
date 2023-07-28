@@ -49,6 +49,8 @@ export class UiAnimatedSprite implements UiWidget {
 
   /** @internal */
   private setFrameIndex(spritesheet: SpriteSheet, frame: number): void {
+    // Safety: Frames are always set before this function is called.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.view.texture = spritesheet.texture( this.frames!.frames[ frame ] )
     this.frame = frame;
   }

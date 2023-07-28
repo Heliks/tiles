@@ -1,28 +1,15 @@
+import { ScheduleId } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
 import { ComponentType, World } from '../ecs';
+import { TypeSerializationStrategy } from '../types';
+import { Type } from '../utils';
 import { App, AppSchedule } from './app';
+import { Builder } from './builder';
 import { Bundle } from './bundle';
 import { Provider } from './provider';
 import { ScheduleBuilder } from './schedule-builder';
-import {
-  AddBundle,
-  AddComponent,
-  AddProvider,
-  AddSchedule,
-  AddSystem,
-  AddType,
-  RegistrationInstruction,
-  SystemProvider,
-  Task
-} from './tasks';
-import { Builder } from './builder';
-import { Type } from '../utils';
-import { TypeSerializationStrategy } from '../types';
-import { ScheduleId } from '@heliks/ecs';
+import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
 
-
-/** Callback for {@link OnInit} lifecycle tasks. */
-export type OnInitCallback = (world: World) => void;
 
 /** Callback for {@link AppBuilder.run} tasks. */
 export type BootCallback = (world: World) => void;

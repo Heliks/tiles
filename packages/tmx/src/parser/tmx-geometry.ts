@@ -1,8 +1,8 @@
+import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { HasProperties, parseCustomProperties, TmxProperties } from './tmx-properties';
-import { HasCustomType, parseCustomType } from './custom-type';
 import { TmxGeometryData } from '../tmx';
-import { Circle, Pivot, Rectangle } from '@heliks/tiles-engine';
+import { HasCustomType, parseCustomType } from './custom-type';
+import { HasProperties, parseCustomProperties } from './tmx-properties';
 
 
 /**
@@ -12,12 +12,13 @@ import { Circle, Pivot, Rectangle } from '@heliks/tiles-engine';
  * - `P`: Custom properties.
  * - `S`: Geometric shape.
  */
-export interface TmxGeometry<
-  P extends TmxProperties = TmxProperties,
-  S extends ColliderShape = ColliderShape> extends HasProperties<P>, HasCustomType {
+export interface TmxGeometry<P = unknown, S extends ColliderShape = ColliderShape> extends HasProperties<P>, HasCustomType {
 
   /** Unique identifier. */
   readonly id: number;
+
+  /** Custom name. */
+  readonly name: string;
 
   /** Geometrical shape. */
   readonly shape: S;
@@ -46,32 +47,13 @@ function createShape(data: TmxGeometryData): ColliderShape {
   );
 }
 
-/**
- * Parses {@link TmxGeometryData geometry data}.
- *
- * Tiled internally treats all geometrical shapes as rectangles anchored at their own
- * top left corner. If a {@link Pivot} is specified, the position of the parsed shape
- * is modified as if the internal rectangle were anchored at that pivot instead.
- *
- * Ellipsis are converted to circles, where the larger of the two sides of the ellipsis
- * will be the circle radius.
- */
-export function parseGeometryData(data: TmxGeometryData, pivot?: Pivot): TmxGeometry {
-  const shape = createShape(data);
-
-  /*
-  if (pivot) {
-    pivot.getPosition(data.width, data.height, shape);
-
-    shape.x += data.x;
-    shape.y += data.y;
-  }
-   */
-
+/** Parses {@link TmxGeometryData geometry data}. */
+export function parseGeometryData(data: TmxGeometryData): TmxGeometry {
   return {
     id: data.id,
+    name: data.name,
     properties: parseCustomProperties(data),
-    shape,
+    shape: createShape(data),
     type: parseCustomType(data)
   };
 }

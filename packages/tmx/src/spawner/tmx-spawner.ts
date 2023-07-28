@@ -2,8 +2,9 @@ import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, EventQueue, Injectable, Parent, Transform, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { TmxLayer, TmxLayerType, TmxMapAsset, TmxObject, TmxObjectLayer, TmxProperties, TmxTileLayer } from '../parser';
+import { TmxLayer, TmxLayerType, TmxMapAsset, TmxObject, TmxObjectLayer, TmxTileLayer } from '../parser';
 import { TmxObjectType, TmxObjectTypes } from './objects';
+import { TmxMapObject } from './objects/tmx-map-object';
 import { TmxLayerRoot } from './tmx-layer-root';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
 import { TmxSpawnMap } from './tmx-spawn-map';
@@ -35,7 +36,7 @@ function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: T
  * - `T`: Subtype for tilemap that is spawned.
  */
 @Injectable()
-export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMapAsset = TmxMapAsset<P>> {
+export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
 
   /**
    * Every time a {@link TmxMapAsset map} is fully {@link spawn spawned}, it will be
@@ -73,7 +74,10 @@ export class TmxSpawner<P extends TmxProperties = TmxProperties, T extends TmxMa
   private spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer, renderLayer?: LayerId): Entity {
     for (const obj of layer.data) {
       const type = this.getObjectType(world, obj);
-      const entity = world.builder();
+
+      const entity = world
+        .builder()
+        .use(new TmxMapObject(obj.id, obj.name));
 
       type.compose(world, entity, map, layer, obj);
 

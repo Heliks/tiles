@@ -103,7 +103,7 @@ export class UpdateInteractions extends ProcessingSystem {
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 

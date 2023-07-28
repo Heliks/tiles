@@ -102,7 +102,7 @@ function getLineAt(idx: number, constants: Constants): Line {
  * @see determineBaseSize
  */
 export function collectLines(node: Node, space: Rect): Line[] {
-  let available = space.main(node.constants.isRow);
+  const available = space.main(node.constants.isRow);
 
   let lineIdx = 0;
   let nodeIdx = 0;

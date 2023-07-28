@@ -7,7 +7,7 @@ import { TmxTileset } from './tmx-tileset';
 
 
 /** @inheritDoc */
-export class TmxCustomTile<P = unknown> extends CustomTile<P> {
+export class TmxCustomTile<P = unknown, S = unknown> extends CustomTile<P> {
 
   /**
    * If this tile is animated, contains the {@link SpriteAnimationFrames} required to
@@ -19,16 +19,7 @@ export class TmxCustomTile<P = unknown> extends CustomTile<P> {
    * Contains {@link TmxGeometry geometry} that is extracted from custom shapes added to
    * the tile via the tiled collision editor.
    */
-  public shapes?: TmxGeometry[];
-
-  /**
-   * @param width Unscaled tile width in px. Inherited from the parent tileset.
-   * @param height Unscaled tile height in px. Inherited from the parent tileset.
-   * @param pivot Unscaled tile h
-   * @param index Index that the tile occupies on the tileset.
-   * @param props Custom properties.
-   */
-  // constructor(public readonly width: number, public readonly height: number, public readonly pivot: Pivot, index: number, props: P) {}
+  public shapes?: TmxGeometry<S>[];
 
 }
 

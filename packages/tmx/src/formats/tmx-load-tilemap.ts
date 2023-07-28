@@ -1,7 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { parseCustomProperties, parseLayers, TmxMapAsset, TmxProperties, TmxTileset } from '../parser';
+import { parseCustomProperties, parseLayers, TmxMapAsset, TmxTileset } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
 
@@ -138,7 +138,7 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData)
 }
 
 /** @internal */
-function parseTilemap<P extends TmxProperties>(data: TmxMapData): TmxMapAsset<P> {
+function parseTilemap<P = unknown>(data: TmxMapData): TmxMapAsset<P> {
   return new TmxMapAsset<P>(
     new Grid(
       data.width,
@@ -173,7 +173,7 @@ function parseTilemap<P extends TmxProperties>(data: TmxMapData): TmxMapAsset<P>
  *
  * - `P`: Expected custom properties.
  */
-export class TmxLoadTilemap<P extends TmxProperties = TmxProperties> implements Format<TmxMapData, TmxMapAsset<P>> {
+export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, TmxMapAsset<P>> {
 
   /** @inheritDoc */
   public readonly extensions = ['tmj'];

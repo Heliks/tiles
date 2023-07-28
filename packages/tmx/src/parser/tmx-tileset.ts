@@ -3,9 +3,9 @@ import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Tileset } from '@heliks/tiles-tilemap';
 import { TmxCustomTile } from './tmx-custom-tile';
-import { TmxProperties } from './tmx-properties';
+import { HasProperties } from './tmx-properties';
 
-export interface TmxTilesetProps extends TmxProperties {
+export interface TmxTilesetProps {
 
   /**
    * Contains a stringified JSON array of sprite animations.
@@ -31,7 +31,7 @@ export interface TmxTilesetProps extends TmxProperties {
 }
 
 /** @inheritDoc */
-export class TmxTileset<T = unknown, P extends TmxTilesetProps = TmxTilesetProps> extends Tileset<T, TmxCustomTile<T>> {
+export class TmxTileset<P = unknown, T extends TmxCustomTile = TmxCustomTile> extends Tileset<T> {
 
   /**
    * When an object is using a sprite from this tileset, this {@link Pivot} should be

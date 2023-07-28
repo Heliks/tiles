@@ -1,11 +1,11 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid } from '@heliks/tiles-engine';
-import { CustomProperties, CustomPropertiesData, extractCustomProperties, parseCustomProperties } from '../properties';
-import { CustomTile } from './custom-tile';
-import { Tileset } from './tileset';
 import { SpriteGrid } from '@heliks/tiles-pixi';
-import { Terrain, TerrainBit, TerrainId } from './terrain';
 import { Texture } from 'pixi.js';
+import { CustomPropertiesData, extractCustomProperties } from '../properties';
+import { CustomTile } from './custom-tile';
+import { Terrain, TerrainBit, TerrainId } from './terrain';
+import { Tileset } from './tileset';
 
 
 /**

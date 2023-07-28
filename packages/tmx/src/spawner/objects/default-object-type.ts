@@ -1,8 +1,17 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { EntityBuilder, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '@heliks/tiles-pixi';
-import { isTile, TmxMapAsset, TmxObject, TmxObjectLayer, TmxTileObject, TmxTileset } from '../../parser';
-import { TmxPhysicsFactory } from '../tmx-physics-factory';
+import {
+  isTile,
+  TmxCustomTile,
+  TmxGeometryObject,
+  TmxMapAsset,
+  TmxObject,
+  TmxObjectLayer,
+  TmxTileObject,
+  TmxTileset
+} from '../../parser';
+import { ColliderProps, TmxPhysicsFactory } from '../tmx-physics-factory';
 import { TmxSpawnerConfig } from '../tmx-spawner-config';
 import { TmxObjectType } from './tmx-object-types';
 
@@ -49,7 +58,7 @@ export class DefaultObjectType implements TmxObjectType {
     const local = map.tilesets.getFromGlobalId(obj.tileId);
 
     const tileIdx = local.getLocalIndex(obj.tileId);
-    const tile = local.tileset.tile(tileIdx);
+    const tile = local.tileset.tile<TmxCustomTile<unknown, ColliderProps>>(tileIdx);
     const scale = this.getScaleFactor(local.tileset, obj, tileIdx);
     const size = this.getSpriteSize(local.tileset, tileIdx);
 
@@ -81,7 +90,7 @@ export class DefaultObjectType implements TmxObjectType {
     else {
       // If the object is just free floating geometry, treat the object geometry as
       // the rigid body itself.
-      entity.use(this.physics.shape(obj));
+      entity.use(this.physics.shape(obj as TmxGeometryObject<ColliderProps>));
     }
 
     // The object position we received from tiled is relative to the top left corner

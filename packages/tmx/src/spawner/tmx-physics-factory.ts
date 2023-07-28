@@ -4,6 +4,23 @@ import { TmxGeometry } from '../parser';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
+/**
+ * Properties found on shape {@link TmxGeometry geometry} that is supposed to be
+ * parsed to a {@link Collider collider}
+ */
+export interface ColliderProps {
+
+  /** If `true`, the collider will be made into a {@link Collider.sensor sensor}. */
+  sensor?: boolean;
+
+  /** @see RigidBody.group */
+  group?: number;
+
+  /** @see RigidBody.mask */
+  mask?: number;
+
+}
+
 /** Creates physics components from {@link TmxGeometry Tiled geometry}. */
 @Injectable()
 export class TmxPhysicsFactory {
@@ -14,7 +31,7 @@ export class TmxPhysicsFactory {
   constructor(public readonly config: TmxSpawnerConfig) {}
 
   /** @internal */
-  private collider(geometry: TmxGeometry, scale: XY): Collider {
+  private collider(geometry: TmxGeometry<ColliderProps>, scale: XY): Collider {
     const shape = geometry.shape.copy();
 
     // Apply scale factor.
@@ -28,7 +45,13 @@ export class TmxPhysicsFactory {
     // Scale shape size & position by configured unit size.
     shape.scale(1 / this.config.unitSize);
 
-    return new Collider(shape);
+    const collider = new Collider(shape);
+
+    collider.sensor = Boolean(geometry.properties.sensor);
+    collider.group = geometry.properties.group;
+    collider.mask = geometry.properties.mask;
+
+    return collider;
   }
 
   /**
@@ -41,7 +64,7 @@ export class TmxPhysicsFactory {
    * @param pivot Tile pivot ("objectalignment") of the tiles parent tileset.
    * @param scale Scale factor.
    */
-  public tile(width: number, height: number, shapes: TmxGeometry[], pivot: Pivot, scale = new Vec2(1, 1)) {
+  public tile(width: number, height: number, shapes: TmxGeometry<ColliderProps>[], pivot: Pivot, scale = new Vec2(1, 1)) {
     const body = new RigidBody();
 
     for (const item of shapes) {
@@ -65,7 +88,7 @@ export class TmxPhysicsFactory {
    * always 0/0. This is because we assume that the entity to which the rigid body will
    * be attached to, is positioned with a {@link Transform} component.
    */
-  public shape(geometry: TmxGeometry, scale = new Vec2(1, 1)): RigidBody {
+  public shape(geometry: TmxGeometry<ColliderProps>, scale = new Vec2(1, 1)): RigidBody {
     const collider = this.collider(geometry, scale);
 
     collider.shape.x = 0;

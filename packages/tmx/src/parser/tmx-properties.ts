@@ -1,15 +1,11 @@
+import { Struct } from '@heliks/tiles-engine';
 import { TmxHasPropertyData } from '../tmx';
 
 
-/** Custom properties. */
-export interface TmxProperties {
-  [property: string]: unknown;
-}
-
 /** Helper type that indicates a structure carries custom properties. */
-export interface HasProperties<T extends TmxProperties> {
+export interface HasProperties<P = unknown> {
   /** Custom properties. */
-  readonly properties: T;
+  readonly properties: P;
 }
 
 /**
@@ -17,8 +13,8 @@ export interface HasProperties<T extends TmxProperties> {
  *
  * - `P`: Expected custom properties.
  */
-export function parseCustomProperties<P extends TmxProperties>(data: TmxHasPropertyData): P {
-  const props: TmxProperties = {};
+export function parseCustomProperties<P = unknown>(data: TmxHasPropertyData): P {
+  const props: Struct = {};
 
   if (data.properties) {
     for (const item of data.properties) {

@@ -1,7 +1,6 @@
-import { Struct } from '../utils';
+import { Injectable } from '@heliks/tiles-injector';
 import { Entity, EntityBuilder, World } from '../ecs';
 import { isIgnored, TypeRegistry } from '../types';
-import { Injectable } from '@heliks/tiles-injector';
 import { SerializationQuery } from './serialization-query';
 import { EntityData, EntitySerializer as BaseEntitySerializer } from './types';
 

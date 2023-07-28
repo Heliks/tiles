@@ -1,10 +1,10 @@
-import { PivotPreset, Rectangle } from '@heliks/tiles-engine';
+import { Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { TmxObjectData } from '../tmx';
 import { parseCustomType } from './custom-type';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
 import { parseGeometryData, TmxGeometry } from './tmx-geometry';
-import { parseCustomProperties, TmxProperties } from './tmx-properties';
+import { parseCustomProperties } from './tmx-properties';
 
 
 /**
@@ -13,7 +13,7 @@ import { parseCustomProperties, TmxProperties } from './tmx-properties';
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
  */
-export type TmxGeometryObject<P extends TmxProperties = TmxProperties, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S>;
+export type TmxGeometryObject<P = unknown, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S>;
 
 /**
  * A freely placed object that uses a tile as its sprite.
@@ -21,7 +21,7 @@ export type TmxGeometryObject<P extends TmxProperties = TmxProperties, S extends
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
  */
-export interface TmxTileObject<P extends TmxProperties = TmxProperties> extends TmxGeometry<P, Rectangle> {
+export interface TmxTileObject<P = unknown> extends TmxGeometry<P, Rectangle> {
 
   /** If set to `true`, the sprite of the object will be flipped along the x-axis. */
   flipX: boolean;
@@ -40,7 +40,7 @@ export interface TmxTileObject<P extends TmxProperties = TmxProperties> extends 
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
  */
-export type TmxObject<P extends TmxProperties = TmxProperties, S extends ColliderShape = ColliderShape> = TmxGeometryObject<P, S> | TmxTileObject<P>;
+export type TmxObject<P = unknown, S extends ColliderShape = ColliderShape> = TmxGeometryObject<P, S> | TmxTileObject<P>;
 
 /**
  * Returns `true` if `value` is a {@link TmxTileObject}.
@@ -48,14 +48,14 @@ export type TmxObject<P extends TmxProperties = TmxProperties, S extends Collide
  * @see TmxShapeObject
  * @see TmxTileObject
  */
-export function isTile<P extends TmxProperties>(value: TmxObject<P>): value is TmxTileObject<P> {
+export function isTile<P = unknown>(value: TmxObject<P>): value is TmxTileObject<P> {
   return !! (value as TmxTileObject).tileId;
 }
 
 /** Parses {@link TmxObjectData} and produces a {@link TmxObject}. */
 export function parseObjectData(data: TmxObjectData): TmxObject {
   if (! data.gid) {
-    return parseGeometryData(data, PivotPreset.CENTER);
+    return parseGeometryData(data);
   }
 
   // Objects that are not freely placed shapes are always rectangles.
@@ -75,6 +75,7 @@ export function parseObjectData(data: TmxObjectData): TmxObject {
 
   return {
     id: data.id,
+    name: data.name,
     properties: parseCustomProperties(data),
     type: parseCustomType(data),
     flipX,

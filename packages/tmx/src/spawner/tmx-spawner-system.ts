@@ -36,13 +36,11 @@ export class TmxSpawnerSystem extends ProcessingSystem {
         const map = this.assets.get(spawner.handle)?.data;
 
         // Map is loaded.
-        if (map) {
-          if (spawner.dirty) {
-            this.spawner.spawn(world, map, entity);
+        if (map && spawner.dirty) {
+          this.spawner.spawn(world, map, entity);
 
-            // Update is done.
-            spawner.dirty = false;
-          }
+          // Update is done.
+          spawner.dirty = false;
         }
       }
     }
