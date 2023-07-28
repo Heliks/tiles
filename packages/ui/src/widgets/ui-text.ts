@@ -1,4 +1,5 @@
 import { Text } from 'pixi.js';
+import { Rect, Size } from '../layout';
 import { UiWidget } from '../ui-widget';
 
 
@@ -16,14 +17,10 @@ export class UiText implements UiWidget {
   });
 
   /** @inheritDoc */
-  public get width(): number {
-    return this.view.width;
-  }
-
-  /** @inheritDoc */
-  public get height(): number {
-    return this.view.height;
-  }
+  public readonly size = new Rect(
+    Size.px(0),
+    Size.px(0)
+  );
 
   public set font(font: string) {
     this.view.style.fontFamily = font;
@@ -49,6 +46,9 @@ export class UiText implements UiWidget {
     this.view.style.fill = this.color;
     this.view.style.fontSize = this.fontSize;
     this.view.text = this.value;
+
+    this.size.width.value = this.view.width;
+    this.size.height.value = this.view.height;
   }
 
 }

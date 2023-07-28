@@ -84,8 +84,8 @@ export class UiNode<W extends UiWidget = UiWidget> {
     this.layout = new Node(style);
   }
 
-  public static use<W extends UiWidget>(widget: W): UiNode<W> {
-    return new UiNode<W>().setWidget(widget);
+  public static use<W extends UiWidget>(widget: W, style?: Partial<Style>): UiNode<W> {
+    return new UiNode<W>(undefined, undefined, style).setWidget(widget);
   }
 
   /** Creates a {@link UiNode} that is aligned to the screen. */

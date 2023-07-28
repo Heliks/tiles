@@ -212,40 +212,41 @@ function distributeRemainingCrossSpace(lines: Line[], space: Rect, constants: Co
   }
 }
 
-function distributeRemainingSpace(lines: Line[], space: Rect, constants: Constants): void {
-  // First pass: Determine available cross space.
-  let usedCrossSpace = 0;
+/**
+ * Distributes remaining space to all flex items of the provided flex lines.
+ *
+ * @param lines Flex lines in which remaining space should be distributed among its nodes.
+ * @param space Total available space.
+ * @param constants Computed constants of the flex container.
+ */
+export function distributeAvailableSpace(lines: Line[], space: Rect, constants: Constants): void {
+  let mainSpaceInUse = 0;
+  let crossSpaceInUse = 0;
 
   for (const line of lines) {
-    usedCrossSpace += line.size.cross(constants.isRow);
-  }
-
-  const availableCrossSpace = space.cross(constants.isRow) - usedCrossSpace;
-
-  // Second pass: Distribute remaining space.
-  let c = 0;
-
-  for (const line of lines) {
-    // Calculate free space to distribute.
     const freeMainSpace = space.main(constants.isRow) - line.size.main(constants.isRow);
     const availableCrossSpace = space.cross(constants.isRow);
 
-    let used = 0;
+    mainSpaceInUse = 0;
 
-    for (const node of line.nodes) {
-      const freeCrossSpace = availableCrossSpace - node.size.cross(constants.isRow);
+    for (const child of line.nodes) {
+      const freeCrossSpace = availableCrossSpace - child.size.cross(constants.isRow);
+      const mainPos = calculateAlignOffset(freeMainSpace, constants.justify) + mainSpaceInUse;
+      const crossPos = calculateAlignOffset(freeCrossSpace, constants.align) + crossSpaceInUse;
 
-      // node.constants.offset.main = calculateAlignOffset(freeMainSpace, constants.justify) + used;
-      // node.constants.offset.cross = calculateAlignOffset(freeCrossSpace, constants.align) + c;
-      node.constants.offset.main = calculateAlignOffset(freeMainSpace, constants.justify) + used;
-      node.constants.offset.cross = calculateAlignOffset(freeCrossSpace, constants.align) + c;
+      if (constants.isRow) {
+        child.pos.x = mainPos;
+        child.pos.y = crossPos;
+      }
+      else {
+        child.pos.x = crossPos;
+        child.pos.y = mainPos;
+      }
 
-      used += node.size.main(constants.isRow);
-
-      // used++;
+      mainSpaceInUse += child.size.main(constants.isRow);
     }
 
-    c += line.size.cross(constants.isRow);
+    crossSpaceInUse += line.size.cross(constants.isRow);
   }
 }
 
@@ -288,17 +289,8 @@ export function compute(node: Node, space: Rect) {
   node.size.width = node.constants.size.width!;
   node.size.height = node.constants.size.height!;
 
-  distributeRemainingSpace(lines, node.size, node.constants);
+  distributeAvailableSpace(lines, node.size, node.constants);
   // distributeRemainingCrossSpace(lines, node.size, node.constants);
-
-  if (node.constants.isRow) {
-    node.pos.x = node.constants.offset.main;
-    node.pos.y = node.constants.offset.cross;
-  }
-  else {
-    node.pos.x = node.constants.offset.cross;
-    node.pos.y = node.constants.offset.main;
-  }
 
   // Todo: This is not really in line with the spec, but we can set this here because
   //  currently all items participate in baseline alignment.

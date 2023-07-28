@@ -64,7 +64,6 @@ export class DrawUi implements OnInit, System {
       node.container.x = position.x;
       node.container.y = position.y;
     }
-
   }
 
   /** @inheritDoc */

@@ -1,9 +1,11 @@
+import { Vec2 } from '../../../../math/src';
 import {
   calculateLineCrossSizes,
   collectLines,
   compute,
   determineAvailableSpace,
   determineContainerMainSize,
+  distributeAvailableSpace,
   setupConstants
 } from '../algo';
 import { Constants } from '../constants';
@@ -11,7 +13,7 @@ import { Line } from '../line';
 import { Node } from '../node';
 import { Rect } from '../rect';
 import { Size } from '../size';
-import { AlignContent, FlexDirection } from '../style';
+import { FlexDirection, isRow } from '../style';
 
 
 /** @internal */
@@ -23,6 +25,10 @@ function setupItemNodes(root: Node, width: number, height: number, amount: numbe
 
     root.add(node);
   }
+}
+
+function createRectNode(width: number, height: number) {
+  return new Node({ size: new Rect(Size.px(width), Size.px(height)) })
 }
 
 describe('determineAvailableSpace()', () => {
@@ -200,7 +206,6 @@ describe('determineContainerMainSize()', () => {
 });
 
 describe('calculateLineCrossSizes()', () => {
-
   it('should set cross size to container size if container is single line', () => {
     const constants = new Constants();
     const line = new Line();
@@ -215,39 +220,90 @@ describe('calculateLineCrossSizes()', () => {
 
     expect(cross).toBe(50);
   });
+});
+
+describe('distributeAvailableSpace()', () => {
+  it.each([
+    {
+      direction: FlexDirection.Row,
+      positions: {
+        childA: new Vec2(0, 0),
+        childB: new Vec2(25, 0)
+      }
+    },
+    {
+      direction: FlexDirection.Column,
+      positions: {
+        childA: new Vec2(0, 0),
+        childB: new Vec2(0, 25)
+      }
+    }
+  ])('should distribute space in flex direction $direction', data => {
+    const childA = createRectNode(25, 25);
+    const childB = createRectNode(25, 25);
+
+    const line = new Line()
+      .add(childA)
+      .add(childB);
+
+    const constants = new Constants();
+
+    constants.isRow = isRow(data.direction)
+
+    distributeAvailableSpace([ line ], new Rect(200, 200), constants);
+
+    expect(childA.pos).toMatchObject(data.positions.childA);
+    expect(childB.pos).toMatchObject(data.positions.childA);
+  });
 
 });
 
-describe('compute', () => {
 
+describe('compute', () => {
   it('foo', () => {
-    const node = new Node({
+    const container = new Node({
       // justify: AlignContent.Center,
-      wrap: true,
+      // wrap: true,
       size: new Rect<Size>(
         Size.percent(1),
-        Size.auto()
+        Size.percent(1)
       )
     });
 
-    const childA = new Node({
+    const wrapper1 = new Node({
+      direction: FlexDirection.Row,
       size: new Rect(
-        Size.px(50),
-        Size.px(50)
+        Size.px(180),
+        Size.px(144)
       )
     });
 
-    const childB = new Node({
+    const wrapper2 = new Node({
+      direction: FlexDirection.Column,
       size: new Rect(
-        Size.px(50),
-        Size.px(50)
+        Size.px(180),
+        Size.px(144)
       )
-    })
+    });
 
+    const child1A = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+    const child1B = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
 
-    node.add(childA);
-    node.add(childB);
+    const child2A = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+    const child2B = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
 
-    compute(node, new Rect(150, 250));
+    container
+      .add(wrapper1)
+      .add(wrapper2);
+
+    wrapper1
+      .add(child1A)
+      .add(child1B);
+
+    wrapper2
+      .add(child2A)
+      .add(child2B);
+
+    compute(container, new Rect(180, 320));
   });
 });

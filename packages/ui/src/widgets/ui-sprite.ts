@@ -42,6 +42,8 @@ export class UiSprite implements UiWidget {
 
       this.size.width.value = this.view.texture.width;
       this.size.height.value = this.view.texture.height;
+
+      console.log(this.size.width.value)
     }
   }
 
