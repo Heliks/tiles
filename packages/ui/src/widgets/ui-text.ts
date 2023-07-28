@@ -36,9 +36,9 @@ export class UiText implements UiWidget {
   /**
    * @param value The text that should be rendered.
    * @param color Color in which the text should be rendered.
-   * @param size Font size in px.
+   * @param fontSize Font size in px.
    */
-  constructor(public value: string, public color = 0x000000, public size = 10) {
+  constructor(public value: string, public color = 0x000000, public fontSize = 10) {
     this.view.text = value;
     this.view.resolution = 4;
     this.view.style.fontFamily = UiText.defaultFont;
@@ -47,7 +47,7 @@ export class UiText implements UiWidget {
   /** @inheritDoc */
   public update(): void {
     this.view.style.fill = this.color;
-    this.view.style.fontSize = this.size;
+    this.view.style.fontSize = this.fontSize;
     this.view.text = this.value;
   }
 

@@ -75,15 +75,17 @@ export class DrawUi implements OnInit, System {
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
+      if (node._widget) {
+        node._widget.update(world, entity);
+
+        // Ui nodes with a widget can project their content size directly onto the layout
+        // node, overwriting the existing style.
+        if (node._widget?.size) {
+          node.layout.style.size = node._widget.size;
+        }
+      }
+
       this.updateNodePosition(entity, node);
-
-      // let x = node.layout.constants.offset.main;
-
-      // const c = this.camera.screenToWorld(0, 0, this._scratch);
-
-      // node.container.x = c.x;
-
-      node._widget?.update(world, entity);
     }
   }
 

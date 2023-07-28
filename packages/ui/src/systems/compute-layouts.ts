@@ -8,13 +8,16 @@ import {
   Screen,
   Storage
 } from '@heliks/tiles-engine';
-import { compute, Rect } from '../layout';
+import { compute, Rect, Unit } from '../layout';
 import { UiNode } from '../ui-node';
 
 
 /** Computes UI node {@link UiNode.layout layouts}. */
 @Injectable()
 export class ComputeLayouts extends ProcessingSystem {
+
+  /** Available screen space. */
+  private space = new Rect(0, 0);
 
   constructor(
     @InjectStorage(UiNode)
@@ -36,13 +39,10 @@ export class ComputeLayouts extends ProcessingSystem {
 
   /** @inheritDoc */
   public update(): void {
-    for (const entity of this.query.entities) {
-      const node = this.nodes.get(entity);
+    this.space.set(this.screen.resolution.x, this.screen.resolution.y);
 
-      compute(node.layout, new Rect(
-        this.screen.resolution.x,
-        this.screen.resolution.y
-      ));
+    for (const entity of this.query.entities) {
+      compute(this.nodes.get(entity).layout, this.space);
     }
   }
 

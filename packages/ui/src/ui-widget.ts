@@ -1,5 +1,6 @@
 import { Drawable } from '@heliks/tiles-pixi';
 import { Entity, World } from '@heliks/tiles-engine';
+import { Rect, Size } from './layout';
 
 
 /** Implementation of an UI widget. */
@@ -11,6 +12,14 @@ export interface UiWidget {
    * still be disabled directly on the component.
    */
   readonly interactive?: boolean;
+
+  /**
+   * Intrinsic size of the widget.
+   *
+   * If set, the widget will project this size onto the layout of the {@link Node} to
+   * which it is attached to by overwriting its {@link StyleSheet style-sheet}.
+   */
+  readonly size?: Rect<Size>;
 
   /**
    * Contains the {@link Drawable} for this widget.

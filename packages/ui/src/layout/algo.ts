@@ -130,33 +130,6 @@ export function collectLines(node: Node, space: Rect): Line[] {
     line.add(child);
 
     nodeIdx++;
-
-
-    // If the container is single-line, collect all items into a single line. Otherwise,
-    // starting from the first uncollected item, collect consecutive items one by one
-    // until the first time that the next collected item would not fit into the container
-    // main size. If the very first uncollected item wouldn't fit, collect just it into
-    // the line.
-    /*
-    if (line.nodes.length > 0 && node.constants.wrap && (used + main) >= available) {
-      lineIdx++;
-
-      // If next line is cached, reset it.
-      node.constants.lines[lineIdx]?.reset();
-
-      used = 0;
-    }
-    else {
-      line.add(child);
-
-
-      used += main;
-
-      line.size.setMain(node.constants.isRow, used);
-
-      nodeIdx++;
-    }
-     */
   }
 
 
