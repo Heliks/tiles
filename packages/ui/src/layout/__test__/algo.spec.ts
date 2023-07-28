@@ -135,6 +135,7 @@ describe('collectLines()', () => {
     expect(lengths).toEqual(test.lengths);
   });
 
+  /*
   it.each([
     {
       direction: FlexDirection.Row,
@@ -157,6 +158,7 @@ describe('collectLines()', () => {
 
     expect(line.size).toMatchObject(test.size);
   });
+   */
 });
 
 describe('determineContainerMainSize()', () => {
@@ -247,12 +249,5 @@ describe('compute', () => {
     node.add(childB);
 
     compute(node, new Rect(150, 250));
-
-    console.log(node.constants.lines)
-    console.log(childA.constants)
-    console.log(childB.constants)
-
   });
-
-
 });

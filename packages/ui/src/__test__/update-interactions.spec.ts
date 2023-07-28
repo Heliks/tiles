@@ -38,7 +38,7 @@ describe('UpdateInteractions', () => {
 
     describe('pointer down interactions', () => {
       it('should be triggered', () => {
-        system.down(entity).update(world);
+        system.down(entity).update();
 
         expect(node.interaction).toBe(Interaction.Down);
       });
@@ -46,7 +46,7 @@ describe('UpdateInteractions', () => {
       it('should fire an event', () => {
         const subscriber = node.onInteract.subscribe();
 
-        system.down(entity).update(world);
+        system.down(entity).update();
 
         const event = node.onInteract.next(subscriber);
 
@@ -57,11 +57,11 @@ describe('UpdateInteractions', () => {
     describe('pointer up interactions', () => {
       beforeEach(() => {
         // Node needs to be pressed before it can be released.
-        system.down(entity).update(world);
+        system.down(entity).update();
       });
 
       it('should be triggered', () => {
-        system.up(entity).update(world);
+        system.up(entity).update();
 
         expect(node.interaction).toBe(Interaction.Up);
       });
@@ -69,7 +69,7 @@ describe('UpdateInteractions', () => {
       it('should fire an event', () => {
         const subscriber = node.onInteract.subscribe();
 
-        system.up(entity).update(world);
+        system.up(entity).update();
 
         const event = node.onInteract.next(subscriber);
 
@@ -91,7 +91,7 @@ describe('UpdateInteractions', () => {
 
       system
         .down(entity)
-        .update(world);
+        .update();
 
       // Fetch event that is supposed to be bubble up the chain.
       const event = nodeB.onInteract.next(subscriber);
