@@ -19,7 +19,12 @@ export class Constants {
   public isRow = true;
   public readonly lines: Line[] = [];
   public readonly offset = new Point();
+
+  public readonly margin = new Rect(0, 0);
+
   public readonly size = new Rect<Maybe<number>>(undefined, undefined);
+  public readonly outerSize = new Rect(0, 0)
+
   public readonly space = new Rect(0, 0);
   public wrap = false;
 

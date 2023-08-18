@@ -51,17 +51,58 @@ export enum AlignContent {
   End
 }
 
+/** Array that contains margins for each side of a box. */
+export type MarginStyle = [top: number, right: number, bottom: number, left: number];
+
 export interface Style {
-  /** Defines how content items are aligned along the cross axis. */
+
+  /**
+   * Aligns flex items along the cross axis of the current line of the flex container.
+   *
+   * @see justify
+   */
   align: AlignContent;
-  /** Use column or row layout. */
+
+  /**
+   * The direction property specifies how flex items are placed in the flex container,
+   * by setting the direction of the flex container’s main axis. This determines the
+   * direction in which flex items are laid out.
+   */
   direction: FlexDirection;
-  /** Defines how content items are aligned along the main axis. */
+
+  /**
+   * Aligns flex items along the main axis of the current line of the flex container.
+   *
+   * @see align
+   */
   justify: AlignContent;
-  /** Sets the node size. */
+
+  /**
+   * Margins surround the border edge of a node, providing spacing between node. The
+   * margin property specifies the thickness of the margin area of a box.
+   */
+  margin: MarginStyle;
+
+  /**
+   * Defines the size of the node.
+   *
+   * This size is calculated as if the node had the CSS property `box-sizing` set
+   * to "border-box".
+   */
   size: Rect<Size>;
-  /** If `true`, elements will wrap if they would overflow their parent container. */
+
+  /**
+   * Controls weither the flex-container is single-line or multi-line.
+   *
+   * A single-line flex container lays out all of its children in a single line, even if
+   * that would cause its contents to overflow.
+   *
+   * A multi-line container breaks its flex items across multiple lines. When additional
+   * lines are created, they are stacked along the cross axis. Every line contains at
+   * least one flex item, unless the flex container itself is completely empty.
+   */
   wrap: boolean;
+
 }
 
 /** @internal */
@@ -70,6 +111,7 @@ export function getStyle(style: Partial<Style>): Style {
     align: AlignContent.Start,
     direction: FlexDirection.Row,
     justify: AlignContent.Start,
+    margin: [0, 0, 0, 0],
     size: new Rect(
       Size.auto(),
       Size.auto()

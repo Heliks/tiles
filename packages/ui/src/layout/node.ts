@@ -1,6 +1,7 @@
 import { Vec2 } from '@heliks/tiles-engine';
 import { Constants } from './constants';
 import { Rect } from './rect';
+import { Size } from './size';
 import { getStyle, Style } from './style';
 
 let id = 0;
@@ -50,6 +51,12 @@ export class Node {
     }
 
     return this;
+  }
+
+  public static rect(width: Size, height: Size): Node {
+    return new Node({
+      size: new Rect(width, height)
+    });
   }
 
 }

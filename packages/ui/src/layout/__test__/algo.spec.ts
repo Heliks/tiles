@@ -3,6 +3,7 @@ import {
   calculateLineCrossSizes,
   collectLines,
   compute,
+  computeOuterNodeSize,
   determineAvailableSpace,
   determineContainerMainSize,
   distributeAvailableSpace,
@@ -13,7 +14,7 @@ import { Line } from '../line';
 import { Node } from '../node';
 import { Rect } from '../rect';
 import { Size } from '../size';
-import { FlexDirection, isRow } from '../style';
+import { FlexDirection, isRow, Style } from '../style';
 
 
 /** @internal */
@@ -27,8 +28,20 @@ function setupItemNodes(root: Node, width: number, height: number, amount: numbe
   }
 }
 
-function createRectNode(width: number, height: number) {
-  return new Node({ size: new Rect(Size.px(width), Size.px(height)) })
+function createTestNode(width: number, height: number, style: Partial<Style> = {}): Node {
+  const node = new Node({
+    size: new Rect(Size.px(width), Size.px(height)),
+    ...style
+  });
+
+  setupConstants(node);
+
+  node.size.width = width;
+  node.size.height = height;
+
+  computeOuterNodeSize(node);
+
+  return node;
 }
 
 describe('determineAvailableSpace()', () => {
@@ -54,6 +67,18 @@ describe('determineAvailableSpace()', () => {
     determineAvailableSpace(node, space);
 
     expect(node.constants.space).toMatchObject(space);
+  });
+
+  it('should take container margin into account', () => {
+    const node = new Node({
+      margin: [10, 5, 10, 5]
+    });
+
+    // Sums horizontal & vertical margins.
+    setupConstants(node);
+    determineAvailableSpace(node, new Rect(200, 200));
+
+    expect(node.constants.space).toMatchObject(new Rect(190, 180));
   });
 });
 
@@ -132,13 +157,35 @@ describe('collectLines()', () => {
     });
 
     setupConstants(root);
-    setupItemNodes(root, 50, 50, test.items);
+
+    for (let i = 0; i < test.items; i++) {
+      root.add(createTestNode(50, 50));
+    }
 
     // Get the length of each flex line.
     const lines = collectLines(root, test.space);
     const lengths = lines.map(line => line.nodes.length);
 
     expect(lengths).toEqual(test.lengths);
+  });
+
+  it('should take outer size into account when collecting the flex line', () => {
+    const node = new Node({
+      wrap: true
+    });
+
+    setupConstants(node);
+
+    // Create three nodes. Based on their defined size they should all fit into the
+    // same line. However, with a margin applied, their outer size grows where only
+    // two items should fit into the same line.
+    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
+    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
+    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
+
+    const lines = collectLines(node, new Rect(75, 75));
+
+    expect(lines).toHaveLength(2);
   });
 
   /*
@@ -223,6 +270,14 @@ describe('calculateLineCrossSizes()', () => {
 });
 
 describe('distributeAvailableSpace()', () => {
+  let constants: Constants;
+  let line: Line;
+
+  beforeEach(() => {
+    constants = new Constants();
+    line = new Line();
+  });
+
   it.each([
     {
       direction: FlexDirection.Row,
@@ -239,23 +294,45 @@ describe('distributeAvailableSpace()', () => {
       }
     }
   ])('should distribute space in flex direction $direction', data => {
-    const childA = createRectNode(25, 25);
-    const childB = createRectNode(25, 25);
+    const childA = createTestNode(25, 25);
+    const childB = createTestNode(25, 25);
 
-    const line = new Line()
+    line
       .add(childA)
       .add(childB);
-
-    const constants = new Constants();
 
     constants.isRow = isRow(data.direction)
 
     distributeAvailableSpace([ line ], new Rect(200, 200), constants);
 
     expect(childA.pos).toMatchObject(data.positions.childA);
-    expect(childB.pos).toMatchObject(data.positions.childA);
+    expect(childB.pos).toMatchObject(data.positions.childB);
   });
 
+  it('should distribute margins for column layouts', () => {
+    const childA = createTestNode(25, 25, {
+      margin: [5, 5, 5, 5]
+    });
+
+    const childB = createTestNode(25, 25, {
+      margin: [0, 0, 0, 5]
+    });
+
+    const space = new Rect(200, 200);
+
+    // compute children to determine their inner & outer sizes.
+    compute(childA, space);
+    compute(childB, space);
+
+    line.add(childA).add(childB);
+
+    constants.isRow = true;
+
+    distributeAvailableSpace([ line ], new Rect(200, 200), constants);
+
+    expect(childA.pos).toMatchObject(new Vec2(5, 5));
+    expect(childB.pos).toMatchObject(new Vec2(40, 0));
+  });
 });
 
 
@@ -270,40 +347,30 @@ describe('compute', () => {
       )
     });
 
-    const wrapper1 = new Node({
-      direction: FlexDirection.Row,
-      size: new Rect(
-        Size.px(180),
-        Size.px(144)
-      )
+    const outer = new Node({
+      direction: FlexDirection.Row
     });
 
-    const wrapper2 = new Node({
-      direction: FlexDirection.Column,
-      size: new Rect(
-        Size.px(180),
-        Size.px(144)
-      )
-    });
+    for (let i = 0; i < 2; i++) {
+      const wrapper = new Node({
+        direction: FlexDirection.Column,
+        margin: [0, 5, 0, 5]
+      });
 
-    const child1A = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
-    const child1B = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+      const childA = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+      const childB = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
 
-    const child2A = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
-    const child2B = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+      wrapper.add(childA);
+      wrapper.add(childB);
 
-    container
-      .add(wrapper1)
-      .add(wrapper2);
+      outer.add(wrapper);
+    }
 
-    wrapper1
-      .add(child1A)
-      .add(child1B);
-
-    wrapper2
-      .add(child2A)
-      .add(child2B);
+    container.add(outer);
 
     compute(container, new Rect(180, 320));
+
+    // console.log(outer.children[0].children[0].pos)
+    // console.log(outer.children[1].children[1].pos)
   });
 });

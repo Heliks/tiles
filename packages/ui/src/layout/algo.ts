@@ -8,8 +8,8 @@ import { calculateAlignOffset, isRow } from './style';
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-available */
 export function determineAvailableSpace(node: Node, space: Rect): Rect {
-  node.constants.space.width = node.style.size.width.resolve(space.width, space.width);
-  node.constants.space.height = node.style.size.height.resolve(space.height, space.height);
+  node.constants.space.width = node.style.size.width.resolve(space.width, space.width) - node.constants.margin.width;
+  node.constants.space.height = node.style.size.height.resolve(space.height, space.height) - node.constants.margin.height;
 
   return node.constants.space;
 }
@@ -21,6 +21,9 @@ export function setupConstants(node: Node): void {
   node.constants.align = node.style.align;
   node.constants.size.width = undefined;
   node.constants.size.height = undefined;
+
+  node.constants.margin.width = node.style.margin[1] + node.style.margin[3];
+  node.constants.margin.height = node.style.margin[0] + node.style.margin[2];
 
   for (const line of node.constants.lines) {
     line.reset();
@@ -111,9 +114,9 @@ export function collectLines(node: Node, space: Rect): Line[] {
   while (nodeIdx < node.children.length) {
     const child = node.children[nodeIdx];
     const line = getLineAt(lineIdx, node.constants);
+    const main = child.constants.outerSize.main(node.constants.isRow);
 
-    const main = child.size.main(node.constants.isRow);
-
+    // Calculate the size of the line as if the node was added to it.
     const newLineMainSize = line.size.main(node.constants.isRow) + main;
 
     // If the container is single-line, collect all items into a single line. Otherwise,
@@ -231,23 +234,29 @@ export function distributeAvailableSpace(lines: Line[], space: Rect, constants: 
 
     for (const child of line.nodes) {
       const freeCrossSpace = availableCrossSpace - child.size.cross(constants.isRow);
+
       const mainPos = calculateAlignOffset(freeMainSpace, constants.justify) + mainSpaceInUse;
       const crossPos = calculateAlignOffset(freeCrossSpace, constants.align) + crossSpaceInUse;
 
       if (constants.isRow) {
-        child.pos.x = mainPos;
-        child.pos.y = crossPos;
+        child.pos.x = mainPos + child.style.margin[3];
+        child.pos.y = crossPos + child.style.margin[0];
       }
       else {
-        child.pos.x = crossPos;
-        child.pos.y = mainPos;
+        child.pos.x = crossPos + child.style.margin[3];
+        child.pos.y = mainPos + child.style.margin[0];
       }
 
-      mainSpaceInUse += child.size.main(constants.isRow);
+      mainSpaceInUse += child.constants.outerSize.main(constants.isRow);
     }
 
     crossSpaceInUse += line.size.cross(constants.isRow);
   }
+}
+
+export function computeOuterNodeSize(node: Node): void {
+  node.constants.outerSize.width = node.size.width + node.constants.margin.width;
+  node.constants.outerSize.height = node.size.width + node.constants.margin.height;
 }
 
 export function compute(node: Node, space: Rect) {
@@ -288,6 +297,8 @@ export function compute(node: Node, space: Rect) {
   // Safety: At this point both width and height should be set.
   node.size.width = node.constants.size.width!;
   node.size.height = node.constants.size.height!;
+
+  computeOuterNodeSize(node);
 
   distributeAvailableSpace(lines, node.size, node.constants);
   // distributeRemainingCrossSpace(lines, node.size, node.constants);
