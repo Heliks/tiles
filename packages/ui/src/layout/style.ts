@@ -54,6 +54,7 @@ export enum AlignContent {
 /** Array that contains margins for each side of a box. */
 export type MarginStyle = [top: number, right: number, bottom: number, left: number];
 
+/** Available styling options. */
 export interface Style {
 
   /**
@@ -106,7 +107,7 @@ export interface Style {
 }
 
 /** @internal */
-export function getStyle(style: Partial<Style>): Style {
+export function computeStyleSheet(style: Partial<Style> = {}): Style {
   return {
     align: AlignContent.Start,
     direction: FlexDirection.Row,

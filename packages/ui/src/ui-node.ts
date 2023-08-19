@@ -2,7 +2,8 @@ import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Container } from 'pixi.js';
 import { Interaction, InteractionEvent } from './interaction-event';
-import { Node, Style } from './layout';
+import { Node } from './layout';
+import { Style } from './style';
 import { UiWidget } from './ui-widget';
 
 
@@ -29,6 +30,15 @@ export enum UiAlign {
  * - `W`: Kind of widget that can be attached to this node.
  */
 export class UiNode<W extends UiWidget = UiWidget> {
+
+  /**
+   * List of class names.
+   *
+   * Similar to CSS class selectors, these classes are supposed to be used to select
+   * or identify specific kinds of nodes. They do not add any kind of functionality or
+   * behavior on their own.
+   */
+  public readonly classList = new Set<string>();
 
   /**
    * Container where the display objects of ui nodes that are children of this root
@@ -76,11 +86,7 @@ export class UiNode<W extends UiWidget = UiWidget> {
    * @param align Determines if this UI element is aligned to the world or screen.
    * @param style (optional) Style properties that should be applied to the node layout.
    */
-  constructor(
-    public layer?: LayerId,
-    public align = UiAlign.Screen,
-    style?: Partial<Style>
-  ) {
+  constructor(public layer?: LayerId, public align = UiAlign.Screen, style?: Partial<Style>) {
     this.layout = new Node(style);
   }
 
