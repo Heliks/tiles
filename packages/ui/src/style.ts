@@ -15,7 +15,8 @@ export interface Style extends BaseStyle {
   layer?: LayerId;
 
   /**
-   * Specifies if the node should be aligned to the screen or the game world.
+   * Specifies if the node should be aligned to the screen or the game world. If the node
+   * is the child of another node, this setting will be ignored.
    *
    * @see UiAlign
    */

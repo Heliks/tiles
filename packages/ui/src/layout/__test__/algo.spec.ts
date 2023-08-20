@@ -1,9 +1,9 @@
 import { Vec2 } from '../../../../math/src';
 import {
   calculateLineCrossSizes,
+  calculateOuterNodeSize,
   collectLines,
   compute,
-  computeOuterNodeSize,
   determineAvailableSpace,
   determineContainerMainSize,
   distributeAvailableSpace,
@@ -39,7 +39,7 @@ function createTestNode(width: number, height: number, style: Partial<Style> = {
   node.size.width = width;
   node.size.height = height;
 
-  computeOuterNodeSize(node);
+  calculateOuterNodeSize(node);
 
   return node;
 }
@@ -267,6 +267,41 @@ describe('calculateLineCrossSizes()', () => {
 
     expect(cross).toBe(50);
   });
+});
+
+describe('calculateOuterSize()', () => {
+  it('should compute the outer size of a node', () => {
+    const node = new Node();
+
+    node.size.width = 10;
+    node.size.height = 20;
+
+    const outer = calculateOuterNodeSize(node);
+
+    expect(outer).toMatchObject({
+      width: 10,
+      height: 20
+    });
+  });
+
+  it('should take margin into account', () => {
+    const node = new Node({
+      margin: [1, 2, 3, 4]
+    });
+
+    node.size.width = 10;
+    node.size.height = 20;
+
+    setupConstants(node);
+
+    const outer = calculateOuterNodeSize(node);
+
+    expect(outer).toMatchObject({
+      width: 16,
+      height: 24
+    });
+  });
+
 });
 
 describe('distributeAvailableSpace()', () => {

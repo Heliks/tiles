@@ -15,16 +15,21 @@ export function determineAvailableSpace(node: Node, space: Rect): Rect {
 }
 
 export function setupConstants(node: Node): void {
-  node.constants.isRow = isRow(node.style.direction);
-  node.constants.wrap = node.style.wrap;
-  node.constants.justify = node.style.justify;
   node.constants.align = node.style.align;
+  node.constants.justify = node.style.justify;
+  node.constants.wrap = node.style.wrap;
+
+  node.constants.isRow = isRow(node.style.direction);
+
+  // Completely reset size, needs to be determined by the algorithm.
   node.constants.size.width = undefined;
   node.constants.size.height = undefined;
 
+  // Compute horizontal + vertical margins.
   node.constants.margin.width = node.style.margin[1] + node.style.margin[3];
   node.constants.margin.height = node.style.margin[0] + node.style.margin[2];
 
+  // Reset cached flex lines.
   for (const line of node.constants.lines) {
     line.reset();
   }
@@ -254,9 +259,11 @@ export function distributeAvailableSpace(lines: Line[], space: Rect, constants: 
   }
 }
 
-export function computeOuterNodeSize(node: Node): void {
+export function calculateOuterNodeSize(node: Node): Rect {
   node.constants.outerSize.width = node.size.width + node.constants.margin.width;
-  node.constants.outerSize.height = node.size.width + node.constants.margin.height;
+  node.constants.outerSize.height = node.size.height + node.constants.margin.height;
+
+  return node.constants.outerSize;
 }
 
 export function compute(node: Node, space: Rect) {
@@ -298,7 +305,7 @@ export function compute(node: Node, space: Rect) {
   node.size.width = node.constants.size.width!;
   node.size.height = node.constants.size.height!;
 
-  computeOuterNodeSize(node);
+  calculateOuterNodeSize(node);
 
   distributeAvailableSpace(lines, node.size, node.constants);
   // distributeRemainingCrossSpace(lines, node.size, node.constants);
