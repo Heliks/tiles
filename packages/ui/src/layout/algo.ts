@@ -237,11 +237,14 @@ export function distributeAvailableSpace(lines: Line[], space: Rect, constants: 
 
     mainSpaceInUse = 0;
 
-    for (const child of line.nodes) {
+    for (let i = 0, l = line.nodes.length; i < l; i++) {
+      const child = line.nodes[i];
+      const first = i === 0;
+
       const freeCrossSpace = availableCrossSpace - child.size.cross(constants.isRow);
 
-      const mainPos = calculateAlignOffset(freeMainSpace, constants.justify) + mainSpaceInUse;
-      const crossPos = calculateAlignOffset(freeCrossSpace, constants.align) + crossSpaceInUse;
+      const mainPos = calculateAlignOffset(freeMainSpace, l, first, constants.justify) + mainSpaceInUse;
+      const crossPos = calculateAlignOffset(freeCrossSpace, l, first, constants.align) + crossSpaceInUse;
 
       if (constants.isRow) {
         child.pos.x = mainPos + child.style.margin[3];

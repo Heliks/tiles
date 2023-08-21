@@ -2,7 +2,7 @@ import { Handle } from '@heliks/tiles-assets';
 import { Entity, EntityBuilder } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { Style } from './layout';
+import { FlexDirection, Style } from './layout';
 import { UiNode } from './ui-node';
 import { UiWidget } from './ui-widget';
 import { UiSprite, UiText, UiTexture } from './widgets';
@@ -128,6 +128,22 @@ export class UiComposer {
    */
   public exit(): UiComposer {
     return this.parent ? this.parent : this;
+  }
+
+  /**
+   * Creates a node that is laid out as a {@link FlexDirection.Column column} and
+   * instantly moves {@link into} that node.
+   */
+  public column(style?: Partial<Style>): UiComposer {
+    return this.node({ direction: FlexDirection.Column, ...style }).into();
+  }
+
+  /**
+   * Creates a node that is laid out as a {@link FlexDirection.Row row} and instantly
+   * moves {@link into} that node.
+   */
+  public row(style?: Partial<Style>): UiComposer {
+    return this.node({ direction: FlexDirection.Row, ...style }).into();
   }
 
   /**

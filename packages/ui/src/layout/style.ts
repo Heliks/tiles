@@ -48,7 +48,25 @@ export enum AlignContent {
   /** Pack items around the center. */
   Center,
   /** Pack items around the end. */
-  End
+  End,
+  /**
+   * Each flex item will have remaining free space distributed equally to both of their
+   * edges. I.e., the gap between the edge of the first & last item and the start / end
+   * edge of the flex container, is exactly half of the gap between each item.
+   */
+  SpaceAround,
+  /**
+   * The first and last items are aligned with the edges of the container. The remaining
+   * free space is distributed evenly. If the leftover space is negative, or there is
+   * only a single item on the line, this value is treated as {@link AlignContent.Start}.
+   */
+  SpaceBetween,
+  /**
+   * Each flex item will have the same amount of space distributed to them on both of
+   * their edges. I.e., the gap between the container edge and the first & last item
+   * is exactly the same as the gap between each item.
+   */
+  SpaceEvenly
 }
 
 /** Array that contains margins for each side of a box. */
@@ -122,7 +140,7 @@ export function computeStyleSheet(style: Partial<Style> = {}): Style {
   };
 }
 
-export function calculateAlignOffset(space: number, align: AlignContent): number {
+export function calculateAlignOffset(space: number, items: number, first: boolean, align: AlignContent): number {
   switch (align) {
     case AlignContent.Start:
       return 0;
@@ -130,6 +148,12 @@ export function calculateAlignOffset(space: number, align: AlignContent): number
       return space / 2;
     case AlignContent.End:
       return space;
+    case AlignContent.SpaceAround:
+      return first ? (space / items) / 2 : space / items;
+    case AlignContent.SpaceBetween:
+      return first ? 0 : space / (items - 1);
+    case AlignContent.SpaceEvenly:
+      return space / (items + 1);
   }
 }
 
