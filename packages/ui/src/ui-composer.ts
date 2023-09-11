@@ -41,13 +41,6 @@ export class UiComposer {
     private readonly parent?: UiComposer
   ) {}
 
-  /** Adds `className` to the {@link UiNode.classList class list} of the composed UI node. */
-  public class(className: string): this {
-    this.uiNode.classList.add(className);
-
-    return this;
-  }
-
   /** Makes the composed UI hierarchy interactive. */
   public listen(): this {
     this.uiNode.interactive = true;
@@ -79,12 +72,12 @@ export class UiComposer {
 
   /** Adds a node to the composition. */
   public node(style?: Partial<Style>): this {
-    return this.child(new UiNode(undefined, undefined, style));
+    return this.child(new UiNode(style));
   }
 
   /** Adds a node with a {@link UiWidget widget} to the composition. */
   public widget(widget: UiWidget, style?: Partial<Style>): this {
-    return this.child(new UiNode(undefined, undefined, style).setWidget(widget));
+    return this.child(new UiNode(style).setWidget(widget));
   }
 
   /** Shorthand for adding a {@link widget} child with a {@link UiSprite} widget. */

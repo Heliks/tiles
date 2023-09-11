@@ -12,19 +12,22 @@ describe('EntitySerializer', () => {
   let world: World;
   let serializer: EntitySerializer;
 
-  // Serializers for Foo and Bar component.
-  let $foo: NoopSerializer;
-  let $bar: NoopSerializer;
+  let _serializers: {
+    foo: NoopSerializer;
+    bar: NoopSerializer;
+  };
 
   beforeEach(() => {
     world = new AppBuilder().build().world;
     serializer = new EntitySerializer(new TypeRegistry());
 
-    $foo = new NoopSerializer();
-    $bar = new NoopSerializer();
+    _serializers = {
+      foo: new NoopSerializer(),
+      bar: new NoopSerializer()
+    }
 
-    serializer.types.register(Foo, $foo, 'foo');
-    serializer.types.register(Bar, $bar, 'bar');
+    serializer.types.register(Foo, _serializers.foo, 'foo');
+    serializer.types.register(Bar, _serializers.bar, 'bar');
   });
 
   it('should serialize an entity', () => {
@@ -34,12 +37,12 @@ describe('EntitySerializer', () => {
       .use(new Bar())
       .build();
 
-    $foo.serialize = jest.fn().mockReturnValue({
+    _serializers.foo.serialize = jest.fn().mockReturnValue({
       foo: true,
       bar: false
     });
 
-    $bar.serialize = jest.fn().mockReturnValue({
+    _serializers.bar.serialize = jest.fn().mockReturnValue({
       foo: false,
       bar: true
     });
@@ -68,8 +71,8 @@ describe('EntitySerializer', () => {
       bar: true
     };
 
-    $foo.deserialize = jest.fn().mockReturnValue(foo);
-    $bar.deserialize = jest.fn().mockReturnValue(bar);
+    _serializers.foo.deserialize = jest.fn().mockReturnValue(foo);
+    _serializers.bar.deserialize = jest.fn().mockReturnValue(bar);
 
     const entity = serializer
       .deserialize(world, data)
@@ -84,5 +87,15 @@ describe('EntitySerializer', () => {
       hasFoo: true,
       hasBar: true
     });
+  });
+
+  it('should extract components from entity data', () => {
+    _serializers.foo.deserialize.mockReturnValue(new Foo());
+
+    const components = serializer.extract(world, {
+      foo: true
+    });
+
+    expect(components.find(Foo)).toBeInstanceOf(Foo);
   });
 });

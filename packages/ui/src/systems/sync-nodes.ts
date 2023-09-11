@@ -1,5 +1,6 @@
 import {
   Entity,
+  Injectable,
   InjectStorage,
   OnInit,
   Parent,
@@ -11,8 +12,7 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
-import { Injectable } from '@heliks/tiles-engine';
-import { UiNode } from './ui-node';
+import { UiNode } from '../ui-node';
 
 
 @Injectable()
@@ -60,7 +60,7 @@ export class SyncNodes implements OnInit, System {
         .addChild(component.container);
     }
     else {
-      this.stage.add(component.container, component.layer);
+      this.stage.add(component.container, component.style.layer);
     }
   }
 

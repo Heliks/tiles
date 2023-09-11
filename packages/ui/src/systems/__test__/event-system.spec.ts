@@ -1,23 +1,22 @@
-import { UpdateInteractions } from '../update-interactions';
-import { Entity, runtime, World } from '@heliks/tiles-engine';
-import { UiNode } from '../ui-node';
-import { Parent } from '@heliks/tiles-engine';
-import { Interaction, InteractionEvent } from '../interaction-event';
+import { Entity, Parent, runtime, World } from '@heliks/tiles-engine';
+import { UiNode, UiNodeInteraction } from '../../ui-node';
+import { UiEvent } from '../../ui-event';
+import { EventSystem } from '../event-system';
 
 
-describe('UpdateInteractions', () => {
-  let system: UpdateInteractions;
+describe('EventSystem', () => {
+  let system: EventSystem;
   let world: World;
 
   beforeEach(() => {
     world = runtime()
       .component(UiNode)
       .component(Parent)
-      .system(UpdateInteractions)
+      .system(EventSystem)
       .build()
       .world;
 
-    system = world.get(UpdateInteractions);
+    system = world.get(EventSystem);
 
     // Fixme: https://trello.com/c/JZxxJwm9/82
     system.boot(world);
@@ -40,7 +39,7 @@ describe('UpdateInteractions', () => {
       it('should be triggered', () => {
         system.down(entity).update();
 
-        expect(node.interaction).toBe(Interaction.Down);
+        expect(node.interaction).toBe(UiNodeInteraction.Down);
       });
 
       it('should fire an event', () => {
@@ -50,7 +49,7 @@ describe('UpdateInteractions', () => {
 
         const event = node.onInteract.next(subscriber);
 
-        expect(event).toMatchObject(new InteractionEvent(entity, Interaction.Down));
+        expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Down));
       });
     });
 
@@ -63,7 +62,7 @@ describe('UpdateInteractions', () => {
       it('should be triggered', () => {
         system.up(entity).update();
 
-        expect(node.interaction).toBe(Interaction.Up);
+        expect(node.interaction).toBe(UiNodeInteraction.Up);
       });
 
       it('should fire an event', () => {
@@ -73,7 +72,7 @@ describe('UpdateInteractions', () => {
 
         const event = node.onInteract.next(subscriber);
 
-        expect(event).toMatchObject(new InteractionEvent(entity, Interaction.Up));
+        expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Up));
       });
     });
 
@@ -96,8 +95,7 @@ describe('UpdateInteractions', () => {
       // Fetch event that is supposed to be bubble up the chain.
       const event = nodeB.onInteract.next(subscriber);
 
-      expect(event).toMatchObject(new InteractionEvent(entity, Interaction.Down));
+      expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Down));
     });
   });
-
 });

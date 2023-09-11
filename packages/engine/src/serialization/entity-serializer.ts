@@ -1,6 +1,7 @@
 import { Injectable } from '@heliks/tiles-injector';
 import { Entity, EntityBuilder, World } from '../ecs';
 import { isIgnored, TypeRegistry } from '../types';
+import { ComponentList } from './component-list';
 import { SerializationQuery } from './serialization-query';
 import { EntityData, EntitySerializer as BaseEntitySerializer } from './types';
 
@@ -46,6 +47,25 @@ export class EntitySerializer implements BaseEntitySerializer {
     }
 
     return builder;
+  }
+
+  /**
+   * Deserializes the given entity `data` and extracts all components found in that data
+   * set. Unlike {@link deserialize}, this does not create an {@link Entity entity} in
+   * the process.
+   */
+  public extract(world: World, data: EntityData): ComponentList {
+    const components = new ComponentList();
+
+    for (const namespace in data) {
+      const { strategy } = this.types.entry(namespace);
+
+      components.add(
+        strategy.deserialize(data[namespace], world) as object
+      );
+    }
+
+    return components;
   }
 
   /** Returns a {@link SerializationQuery}. */

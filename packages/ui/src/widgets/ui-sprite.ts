@@ -27,10 +27,7 @@ export class UiSprite implements UiWidget {
    * @param spritesheet Spritesheet from which the sprite textures will be created.
    * @param spriteIndex Index of the sprite that should be displayed.
    */
-  constructor(
-    public spritesheet: Handle<SpriteSheet>,
-    public spriteIndex: number
-  ) {}
+  constructor(public spritesheet: Handle<SpriteSheet>, public spriteIndex: number) {}
 
   /** @inheritDoc */
   public update(world: World): void {
@@ -42,8 +39,6 @@ export class UiSprite implements UiWidget {
 
       this.size.width.value = this.view.texture.width;
       this.size.height.value = this.view.texture.height;
-
-      console.log(this.size.width.value)
     }
   }
 

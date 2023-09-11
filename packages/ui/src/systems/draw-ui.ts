@@ -1,6 +1,7 @@
 import { Entity, Injectable, OnInit, Parent, Query, Storage, System, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Camera } from '@heliks/tiles-pixi';
-import { UiAlign, UiNode } from './ui-node';
+import { DisplayContext } from '../style';
+import { UiNode } from '../ui-node';
 
 
 /**
@@ -47,7 +48,7 @@ export class DrawUi implements OnInit, System {
       node.container.pivot
     );
 
-    if (node.align === UiAlign.World) {
+    if (node.style.context === DisplayContext.World) {
       // node.container.x = node.layout.pos.x * this.camera.unitSize;
       // node.container.y = node.layout.pos.y * this.camera.unitSize;
 

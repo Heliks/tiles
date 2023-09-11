@@ -1,7 +1,6 @@
-import { Entity, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
-import { UiNode } from './ui-node';
-import { Interaction, InteractionEvent } from './interaction-event';
-import { Parent } from '@heliks/tiles-engine';
+import { Entity, Parent, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
+import { UiNode, UiNodeInteraction } from '../ui-node';
+import { UiEvent } from '../ui-event';
 
 
 /**
@@ -9,7 +8,7 @@ import { Parent } from '@heliks/tiles-engine';
  *
  * @see UiNode.interaction
  */
-export class UpdateInteractions extends ProcessingSystem {
+export class EventSystem extends ProcessingSystem {
 
   /**
    * Keeps track of entities on which the pointer is pressing down on.
@@ -44,7 +43,7 @@ export class UpdateInteractions extends ProcessingSystem {
   }
 
   /** @internal */
-  private pushInteractionEvent(entity: Entity, node: UiNode, event: InteractionEvent): void {
+  private pushInteractionEvent(entity: Entity, node: UiNode, event: UiEvent): void {
     node.onInteract.push(event);
 
     // Bubble events.
@@ -58,18 +57,18 @@ export class UpdateInteractions extends ProcessingSystem {
   }
 
   /** @internal */
-  private setInteraction(target: Entity, node: UiNode, interaction: Interaction): void {
+  private setInteraction(target: Entity, node: UiNode, interaction: UiNodeInteraction): void {
     if (interaction !== node.interaction) {
       node.interaction = interaction;
 
-      const event = new InteractionEvent(target, interaction);
+      const event = new UiEvent(target, interaction);
 
       this.pushInteractionEvent(target, node, event);
     }
   }
 
   /**
-   * Sets the {@link UiNode node} of `target` as "{@link Interaction.Down down}". The
+   * Sets the {@link UiNode node} of `target` as "{@link UiNodeInteraction.Down down}". The
    * change requires a frame tick before it takes effect.
    */
   public down(target: Entity): this {
@@ -79,8 +78,8 @@ export class UpdateInteractions extends ProcessingSystem {
   }
 
   /**
-   * Sets the {@link UiNode node} of `target` as {@link Interaction.Up up}. This only
-   * works if the entity was {@link Interaction.Down down} before. The change requires
+   * Sets the {@link UiNode node} of `target` as {@link UiNodeInteraction.Up up}. This only
+   * works if the entity was {@link UiNodeInteraction.Down down} before. The change requires
    * a frame tick before it takes effect.
    */
   public up(target: Entity): this {
@@ -118,20 +117,20 @@ export class UpdateInteractions extends ProcessingSystem {
       }
 
       if (this._down.has(entity)) {
-        this.setInteraction(entity, node, Interaction.Down);
+        this.setInteraction(entity, node, UiNodeInteraction.Down);
 
         continue;
       }
 
       // When node is not pressed, but still has the interaction, the press was released
       // on this frame.
-      if (node.interaction === Interaction.Down) {
-        this.setInteraction(entity, node, Interaction.Up);
+      if (node.interaction === UiNodeInteraction.Down) {
+        this.setInteraction(entity, node, UiNodeInteraction.Up);
 
         continue;
       }
 
-      this.setInteraction(entity, node, Interaction.None);
+      this.setInteraction(entity, node, UiNodeInteraction.None);
     }
   }
 

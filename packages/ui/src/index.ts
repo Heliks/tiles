@@ -6,14 +6,12 @@ import { UiNode } from './ui-node';
 export * from './layout';
 export * from './widgets';
 
-export * from './border-style';
-export * from './draw-ui';
-export * from './interaction-event';
+export * from './systems/draw-ui';
 export * from './ui-bundle';
 export * from './ui-composer';
+export * from './ui-event';
 export * from './ui-node';
 export * from './ui-widget';
-export * from './update-interactions';
 
 
 /**
@@ -22,7 +20,7 @@ export * from './update-interactions';
  * @see UiComposer
  */
 export function composeUi(world: World, style: Partial<Style> = {}): UiComposer {
-  const component = new UiNode(style.layer, style.space, style);
+  const component = new UiNode(style);
 
   return new UiComposer(world.builder().use(component), component);
 }

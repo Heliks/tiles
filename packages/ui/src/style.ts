@@ -1,10 +1,25 @@
 import { LayerId } from '@heliks/tiles-pixi';
 import { Style as BaseStyle } from './layout';
-import { UiAlign } from './ui-node';
 
+
+/** Defines the context to which {@link UiNode nodes} are aligned to. */
+export enum DisplayContext {
+  /** Ui elements are aligned to the in-game world. All pixel values are treated as game-units. */
+  World,
+  /** Ui elements are aligned to the screen. */
+  Screen
+}
 
 /** @inheritDoc */
 export interface Style extends BaseStyle {
+
+  /**
+   * Specifies the context in which the node should be rendered. If the node is the child
+   * of another node, this setting will be ignored.
+   *
+   * @see DisplayContext
+   */
+  context?: DisplayContext;
 
   /**
    * Id of the renderer {@link LayerId layer} where the node should be rendered.
@@ -13,13 +28,5 @@ export interface Style extends BaseStyle {
    * is the child of another node, this setting will be ignored.
    */
   layer?: LayerId;
-
-  /**
-   * Specifies if the node should be aligned to the screen or the game world. If the node
-   * is the child of another node, this setting will be ignored.
-   *
-   * @see UiAlign
-   */
-  space?: UiAlign;
 
 }
