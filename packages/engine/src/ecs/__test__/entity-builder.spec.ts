@@ -1,6 +1,7 @@
 import { Storage, World } from '@heliks/ecs';
+import { Parent } from '@heliks/ecs-hierarchy';
 import { EntityBuilder } from '../entity-builder';
-import { HierarchySystem, Parent } from '@heliks/ecs-hierarchy';
+
 
 describe('EntityBuilder', () => {
   let builder: EntityBuilder;
@@ -12,10 +13,7 @@ describe('EntityBuilder', () => {
     world = new World();
 
     parents = world.storage(Parent);
-    builder = new EntityBuilder(
-      world.create(),
-      world
-    );
+    builder = new EntityBuilder(world, world.insert());
   });
 
   it('should create child entities', () => {

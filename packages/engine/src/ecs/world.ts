@@ -1,10 +1,10 @@
-import 'reflect-metadata';
+import { Entity, Storage, World as BaseWorld } from '@heliks/ecs';
 
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
-import { Entity, Storage, World as BaseWorld } from '@heliks/ecs';
+import 'reflect-metadata';
 import { Type } from '../utils';
-import { EntityRef } from './entity-ref';
 import { EntityBuilder } from './entity-builder';
+import { EntityRef } from './entity-ref';
 
 
 /**
@@ -19,6 +19,11 @@ export class World extends BaseWorld implements ImmutableContainer {
    */
   constructor(public readonly container: Container) {
     super();
+  }
+
+  /** @inheritDoc */
+  public create(): EntityBuilder {
+    return new EntityBuilder(this, this.insert());
   }
 
   /** @inheritDoc */
@@ -56,11 +61,6 @@ export class World extends BaseWorld implements ImmutableContainer {
   /** Returns a reference to the given `entity`. */
   public reference<C = unknown>(entity: Entity): EntityRef {
     return new EntityRef<C>(this, entity);
-  }
-
-  /** @inheritDoc */
-  public builder(): EntityBuilder {
-    return new EntityBuilder(this.create(), this);
   }
 
 }

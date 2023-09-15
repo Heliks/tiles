@@ -36,7 +36,7 @@ export class EntitySerializer implements BaseEntitySerializer {
 
   /** @inheritDoc */
   public deserialize(world: World, data: EntityData): EntityBuilder {
-    const builder = world.builder();
+    const builder = world.create();
 
     for (const namespace in data) {
       const { strategy } = this.types.entry(namespace);

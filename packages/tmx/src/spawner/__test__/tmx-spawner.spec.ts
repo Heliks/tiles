@@ -1,12 +1,13 @@
-import { TmxSpawner } from '../tmx-spawner';
-import { runtime, World } from '@heliks/tiles-engine';
 import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
-import { TmxSpawnerConfig } from '../tmx-spawner-config';
-import { TmxPhysicsFactory } from '../tmx-physics-factory';
-import { TmxMapAsset } from '../../parser';
-import { TmxLoadTilemap } from '../../formats';
+import { runtime, World } from '@heliks/tiles-engine';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { TmxLoadTilemap } from '../../formats';
+import { TmxMapAsset } from '../../parser';
+import { TmxObjectTypes } from '../objects';
+import { TmxPhysicsFactory } from '../tmx-physics-factory';
+import { TmxSpawner } from '../tmx-spawner';
+import { TmxSpawnerConfig } from '../tmx-spawner-config';
 
 
 describe('TmxSpawner', () => {
@@ -20,6 +21,7 @@ describe('TmxSpawner', () => {
         token: TmxSpawnerConfig,
         value: new TmxSpawnerConfig(16)
       })
+      .provide(TmxObjectTypes)
       .provide(TmxPhysicsFactory)
       .provide(TmxSpawner)
       .build()

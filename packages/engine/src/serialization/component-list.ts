@@ -52,7 +52,7 @@ export class ComponentList {
    * list to it.
    */
   public entity(world: World): Entity {
-    return world.create(...this.items);
+    return world.insert(...this.items);
   }
 
 }

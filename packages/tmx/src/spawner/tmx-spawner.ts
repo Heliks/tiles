@@ -20,7 +20,7 @@ function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: T
     tilemap.setAll(chunk.data);
 
     world
-      .builder()
+      .create()
       .use(tilemap)
       .use(new Parent(entity))
       .use(new Transform())
@@ -76,7 +76,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
       const type = this.getObjectType(world, obj);
 
       const entity = world
-        .builder()
+        .create()
         .use(new TmxMapObject(obj.id, obj.name));
 
       type.compose(world, entity, map, layer, obj);
@@ -92,7 +92,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
   /** @internal */
   public spawnLayer(world: World, map: T, layer: TmxLayer, renderLayer?: LayerId): Entity {
     const entity = world
-      .builder()
+      .create()
       .use(new TmxLayerRoot(layer))
       .use(new Transform(0, 0))
       .build();

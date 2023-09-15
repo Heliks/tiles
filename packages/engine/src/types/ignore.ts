@@ -40,7 +40,7 @@ export function isIgnored<T, K = keyof T>(component: T, property?: K): boolean {
  *
  *  }
  *
- *  const entity = world.create(
+ *  const entity = world.insert(
  *    new Foo(),
  *    new Bar()
  *  );

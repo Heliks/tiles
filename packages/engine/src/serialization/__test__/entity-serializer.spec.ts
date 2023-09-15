@@ -1,8 +1,8 @@
-import { EntitySerializer } from '../entity-serializer';
-import { World } from '../../ecs';
 import { AppBuilder } from '../../app';
-import { NoopSerializer } from '../../types/__test__/noop-serializer';
+import { World } from '../../ecs';
 import { TypeRegistry } from '../../types';
+import { NoopSerializer } from '../../types/__test__/noop-serializer';
+import { EntitySerializer } from '../entity-serializer';
 
 
 class Foo {}
@@ -32,7 +32,7 @@ describe('EntitySerializer', () => {
 
   it('should serialize an entity', () => {
     const entity = world
-      .builder()
+      .create()
       .use(new Foo())
       .use(new Bar())
       .build();

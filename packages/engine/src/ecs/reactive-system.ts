@@ -1,4 +1,5 @@
-import { Entity, QueryEvent, Subscriber, World } from '@heliks/ecs';
+import { Entity, QueryEvent, World } from '@heliks/ecs';
+import { Subscriber } from '@heliks/event-queue';
 import { ProcessingSystem } from './processing-system';
 
 
