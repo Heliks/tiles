@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1-rc3",
   "publishConfig": {
-    "registry": "http://193.31.26.163:4873/"
+      "registry": "http://193.31.26.163:4873/"
   },
   "devDependencies": {
     "@types/jest": "29.0.1",

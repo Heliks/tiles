@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "uuid": "8.3.2",
-    "@heliks/ecs": "0.2.4-rc-12",
-    "@heliks/ecs-hierarchy": "0.2.2-rc1",
-    "@heliks/ecs-transform": "^0.2.1",
-    "@heliks/event-queue": "^0.2.2",
+    "@heliks/ecs": "0.3.0-rc2",
+    "@heliks/ecs-hierarchy": "0.3.0-rc2",
+    "@heliks/ecs-transform": "0.3.0-rc2",
+    "@heliks/event-queue": "0.3.0-rc.3",
     "@heliks/tiles-injector": "workspace:^",
     "@heliks/tiles-math": "workspace:^",
     "reflect-metadata": "^0.1.13"

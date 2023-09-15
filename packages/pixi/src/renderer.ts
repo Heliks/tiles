@@ -2,9 +2,9 @@ import { EventQueue, Injectable, Screen, ScreenEvent, Subscriber, Vec2 } from '@
 import * as PIXI from 'pixi.js';
 import { RenderTexture } from 'pixi.js';
 import { Camera } from './camera';
+import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
 import { Container, Drawable } from './drawable';
-import { RendererConfig } from './config';
 import { Layers } from './layer';
 
 
@@ -48,7 +48,7 @@ export class Renderer {
   private readonly screenSizeScaled2 = new Vec2(0, 0);
 
   /** @internal */
-  private readonly onScreenUpdate$: Subscriber;
+  private readonly onScreenUpdate$: Subscriber<ScreenEvent>;
 
   /** Contains the renderers height in px. */
   public get height(): number {
@@ -203,7 +203,7 @@ export class Renderer {
    * once on each frame by the [[RendererSystem]].
    */
   public update(): void {
-    for (const event of this.screen.events.read(this.onScreenUpdate$)) {
+    for (const event of this.onScreenUpdate$.read()) {
       if (event === ScreenEvent.Resize) {
         this.onScreenResize();
       }

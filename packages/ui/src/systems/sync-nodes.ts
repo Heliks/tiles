@@ -5,6 +5,7 @@ import {
   OnInit,
   Parent,
   Query,
+  QueryEvent,
   QueryEventType,
   Storage,
   Subscriber,
@@ -22,7 +23,7 @@ export class SyncNodes implements OnInit, System {
   private query!: Query;
 
   /** @internal */
-  private subscription!: Subscriber;
+  private subscription!: Subscriber<QueryEvent>;
 
   /**
    * @param parents Storage for {@link Parent} components.
@@ -76,7 +77,7 @@ export class SyncNodes implements OnInit, System {
     const nodes = world.storage(UiNode);
     const parents = world.storage(Parent);
 
-    for (const event of this.query.events.read(this.subscription)) {
+    for (const event of this.subscription.read()) {
       switch (event.type) {
         case QueryEventType.Added:
           this.add(parents, nodes, event.entity);
