@@ -1,6 +1,6 @@
 import { Entity, Parent, runtime, World } from '@heliks/tiles-engine';
-import { UiNode, UiNodeInteraction } from '../../ui-node';
 import { UiEvent } from '../../ui-event';
+import { UiNode, UiNodeInteraction } from '../../ui-node';
 import { EventSystem } from '../event-system';
 
 
@@ -30,7 +30,7 @@ describe('EventSystem', () => {
       node = new UiNode();
       node.interactive = true;
 
-      entity = world.create(node);
+      entity = world.insert(node);
 
       world.update();
     });
@@ -47,7 +47,7 @@ describe('EventSystem', () => {
 
         system.down(entity).update();
 
-        const event = node.onInteract.next(subscriber);
+        const event = subscriber.next();
 
         expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Down));
       });
@@ -70,7 +70,7 @@ describe('EventSystem', () => {
 
         system.up(entity).update();
 
-        const event = node.onInteract.next(subscriber);
+        const event = subscriber.next();
 
         expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Up));
       });
@@ -80,8 +80,8 @@ describe('EventSystem', () => {
       const nodeB = new UiNode();
 
       // Define hierarchy: parentA > parentB > Node
-      const parentA = world.create(new UiNode());
-      const parentB = world.create(nodeB, new Parent(parentA));
+      const parentA = world.insert(new UiNode());
+      const parentB = world.insert(nodeB, new Parent(parentA));
 
       world.add(entity, new Parent(parentB));
 
@@ -93,7 +93,7 @@ describe('EventSystem', () => {
         .update();
 
       // Fetch event that is supposed to be bubble up the chain.
-      const event = nodeB.onInteract.next(subscriber);
+      const event = subscriber.next();
 
       expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Down));
     });
