@@ -27,7 +27,9 @@ export class UiSprite implements UiWidget {
    * @param spritesheet Spritesheet from which the sprite textures will be created.
    * @param spriteIndex Index of the sprite that should be displayed.
    */
-  constructor(public spritesheet: Handle<SpriteSheet>, public spriteIndex: number) {}
+  constructor(public spritesheet: Handle<SpriteSheet>, public spriteIndex: number) {
+    this.view.visible = false;
+  }
 
   /** Updates the displayed sprite. */
   public set(spritesheet: Handle<SpriteSheet>, spriteIndex: number): this {
@@ -42,7 +44,9 @@ export class UiSprite implements UiWidget {
     const asset = world.get(AssetStorage).get(this.spritesheet);
 
     if (asset && this.currentIndex !== this.spriteIndex) {
+      this.view.visible = true;
       this.view.texture = asset.data.texture(this.spriteIndex);
+
       this.currentIndex = this.spriteIndex;
 
       this.size.width.value = this.view.texture.width;

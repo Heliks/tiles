@@ -72,15 +72,7 @@ export class DrawUi implements OnInit, System {
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
-      if (node._widget) {
-        node._widget.update(world, entity);
 
-        // Ui nodes with a widget can project their content size directly onto the layout
-        // node, overwriting the existing style.
-        if (node._widget?.size) {
-          node.layout.style.size = node._widget.size;
-        }
-      }
 
       this.updateNodePosition(entity, node);
     }

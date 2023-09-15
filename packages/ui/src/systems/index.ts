@@ -3,3 +3,4 @@ export * from './draw-ui';
 export * from './compute-layouts';
 export * from './sync-nodes';
 export * from './event-system';
+export * from './update-widgets';
