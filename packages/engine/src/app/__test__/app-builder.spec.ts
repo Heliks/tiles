@@ -72,8 +72,8 @@ describe('AppBuilder', () => {
 
     it('should register value providers', () => {
       const container = new AppBuilder()
-        .provide({ token: '1', value: 'foo' })
-        .provide({ token: '2', value: 'bar' })
+        .provide('1', 'foo')
+        .provide('2', 'bar')
         .build()
         .container;
 
@@ -96,25 +96,14 @@ describe('AppBuilder', () => {
       }
 
       it('should be bound as factory', () => {
-        const app = new AppBuilder()
-          .provide({
-            factory,
-            token: 'counter'
-          })
-          .build();
+        const app = new AppBuilder().factory('counter', factory).build();
 
         expect(app.container.get('counter')).toBe(1);
         expect(app.container.get('counter')).toBe(2);
       });
 
       it('should be bound as singleton', () => {
-        const app = new AppBuilder()
-          .provide({
-            factory,
-            singleton: true,
-            token: 'counter'
-          })
-          .build();
+        const app = new AppBuilder().singleton('counter', factory).build();
 
         expect(app.container.get('counter')).toBe(1);
         expect(app.container.get('counter')).toBe(1);

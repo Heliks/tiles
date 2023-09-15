@@ -1,6 +1,6 @@
 import { getMetadata } from './meta';
 import { SingletonBinding } from './singleton-binding';
-import { Binding, BindingFactory, Type, Container as Base, InjectorToken, ParamInjection } from './types';
+import { Binding, Container as Base, InjectorToken, ParamInjection, Type, ValueFactory } from './types';
 import { stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
 
@@ -43,14 +43,14 @@ export class Container implements Base {
   }
 
   /** @inheritDoc */
-  public singleton<T = unknown>(token: InjectorToken, resolver: BindingFactory<T, Container>): this {
-    this.bindings.set(token, new SingletonBinding(resolver));
+  public singleton<T = unknown>(token: InjectorToken, factory: ValueFactory<T, Container>): this {
+    this.bindings.set(token, new SingletonBinding(factory));
 
     return this;
   }
 
   /** @inheritDoc */
-  public factory<T = unknown>(token: InjectorToken, factory: BindingFactory<T, Container>): this {
+  public factory<T = unknown>(token: InjectorToken, factory: ValueFactory<T, Container>): this {
     this.bindings.set(token, {
       resolve: factory
     });

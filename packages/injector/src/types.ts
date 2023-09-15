@@ -7,18 +7,28 @@
 export type Type<T = any> = new (...params: any[]) => T;
 
 /**
- * An injector token is a unique value or type to which something is bound via the
- * service {@link Container}. Most commonly this will be a {@link Type}.
+ * Value that acts as a unique identifier within a {@link Container service container}.
+ *
+ * The service container accepts most values as tokens. If they are already used by
+ * another binding, they are overwritten.
+ *
+ * - `T`: Type of value that is bound to this token. This only works when the token
+ *  is a class {@link Type constructor}.
  */
 export type InjectorToken<T = unknown> = symbol | string | number | Type<T> | Function;
 
 /**
- * Factory of a binding that produces a value.
+ * Factory that creates a value when the {@link Container service container} resolves
+ * the token to which it is bound to.
  *
- * - `T`: Type of value produced by this factory.
- * - `C`: Service {@link Container container} type.
+ * Factories come in two variants: Factories and singletons. Factories create a value
+ * each time their token is resolved. Singleton factories create a value once when the
+ * token to which they are bound to is resolved for the first time.
+ *
+ * - `T`: Type of the value that is produced by this factory.
+ * - `C`: Service {@link Container container} calling this factory.
  */
-export type BindingFactory<T, C = Container> = (container: C) => T;
+export type ValueFactory<T, C> = (container: C) => T;
 
 /**
  * Immutable version of a service {@link Container}.
@@ -97,7 +107,7 @@ export interface Container extends ImmutableContainer {
    *  console.log(container.get(token)); // => 1
    * ```
    */
-  singleton<T>(token: InjectorToken<T>, factory: BindingFactory<T>): this;
+  singleton<T>(token: InjectorToken<T>, factory: ValueFactory<T, Container>): this;
 
   /**
    * Binds a `factory` that is resolved every time that `token` is requested from the
@@ -116,7 +126,7 @@ export interface Container extends ImmutableContainer {
    * console.log(container.get(token)); // 2
    * ```
    */
-  factory<T>(token: InjectorToken<T>, factory: BindingFactory<T>): this;
+  factory<T>(token: InjectorToken<T>, factory: ValueFactory<T, Container>): this;
 
   /**
    * Merges the given `container` into this one.

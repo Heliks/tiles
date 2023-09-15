@@ -5,7 +5,6 @@ import { Parent } from '@heliks/ecs-hierarchy';
 /** Factory to create a child entity. */
 export type ChildFactory<B extends Base> = (builder: B) => void;
 
-
 /** @inheritDoc*/
 export class EntityBuilder extends Base {
 

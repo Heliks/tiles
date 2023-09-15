@@ -1,41 +1,57 @@
 import { SystemDispatcher } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
 import { World } from '../ecs';
+import { TypeRegistry } from '../types';
 import { State, StateMachine } from './state';
 import { Ticker } from './ticker';
-import { TypeRegistry } from '../types';
 
 
 /**
- * Default {@link SystemDispatcher dispatcher} schedules.
- *
- * Will always be added to the dispatcher when a new {@link App} is created.
+ * {@link SystemDispatcher System dispatcher} schedules used internally. These schedules
+ * will always be present when a new {@link App game runtime} is created.
  */
 export enum AppSchedule {
+
+  /**
+   * Normal update schedule where most game systems should run.
+   *
+   * If a system relies on data from other systems, the {@link PostUpdate} schedule or
+   * a custom schedule should be used instead.
+   */
   Update = 'app:update',
+
+  /**
+   * Runs after the {@link Update} schedule. System that rely on data from other systems
+   * to have finished their computation should run here.
+   */
   PostUpdate = 'app:update'
+
 }
 
 /**
- * The game runtime. Everything related to run the game can be found here.
+ * Game runtime. Everything related to run the game can be found here.
  *
- * The app uses a {@link StateMachine push down automation state machine} (PDA) that
- * allows to switch between game {@link State states}. This means that an initial state
- * is required to start the app. If no state is left in the state machine stack, the app
- * is closed. The current app state is updated after all systems in the apps system
- * dispatcher finished their update.
+ * The runtime works with a {@link StateMachine push down automation state machine},
+ * which means that an initial state is required to start the game. If no state is
+ * left in the state machine, the runtime is stopped automatically.
+ *
+ * #### state.ts
  *
  * ```ts
- * class MyState implements State<World> {
- *
+ *  class MyState implements State<World> {
  *    public update(): void {
- *      // Called once per frame after all app systems were updated.
+ *      console.log('Hello World');
  *    }
+ *  }
+ * ```
  *
- * }
+ * #### index.ts
  *
- * // Start the app using "MyState".
- * new App().start(new MyState());
+ * ```ts
+ *  import { MyState } from './state';
+ *
+ *  // Start the game runtime using `MyState`.
+ *  new App().start(new MyState());
  * ```
  */
 export class App {
@@ -80,8 +96,9 @@ export class App {
   }
 
   /**
-   * Updates the app. Basically, this executes the game loop. While the app is running,
-   * this is called automatically once per frame.
+   * Updates the app. Basically, this executes the game loop.
+   *
+   * While the app is running, this is called automatically once per frame.
    */
   public update(): void {
     this.dispatcher.update(this.world);

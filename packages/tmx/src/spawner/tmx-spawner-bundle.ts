@@ -66,14 +66,8 @@ export class TmxSpawnerBundle implements Bundle {
   public build(builder: AppBuilder): void {
     builder
       .component(TmxSpawnMap)
-      .provide({
-        token: TmxSpawnerConfig,
-        value: new TmxSpawnerConfig(this.unitSize)
-      })
-      .provide({
-        token: TmxObjectTypes,
-        factory: this.createObjectTypeRegistry.bind(this)
-      })
+      .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
+      .singleton(TmxObjectTypes, this.createObjectTypeRegistry.bind(this))
       .provide(TmxPhysicsFactory)
       .provide(TmxSpawner)
       .system(TmxSpawnerSystem);

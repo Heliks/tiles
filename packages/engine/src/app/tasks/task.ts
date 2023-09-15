@@ -11,7 +11,7 @@ export interface Task {
    * This is where the logic of each build step is implemented. After executing this,
    * the tasks is considered complete and the builder will move on to the next one.
    */
-  exec(app: App): unknown;
+  exec(app: App): void;
 
   /**
    * Runs initialization logic.
@@ -20,7 +20,7 @@ export interface Task {
    * executed. Additional initialization logic, like calling the `OnInit` lifecycle,
    * can be implemented here.
    */
-  init?(world: World): unknown;
+  init?(world: World): void;
 
 }
 

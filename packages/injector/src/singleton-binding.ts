@@ -1,4 +1,4 @@
-import { Binding, BindingFactory, Container } from './types';
+import { Binding, Container, ValueFactory } from './types';
 
 
 export class SingletonBinding<T, C extends Container> implements Binding<T> {
@@ -9,7 +9,7 @@ export class SingletonBinding<T, C extends Container> implements Binding<T> {
   /**
    * @param factory
    */
-  constructor(protected factory: BindingFactory<T, C>) {}
+  constructor(protected factory: ValueFactory<T, C>) {}
 
   /**
    * Generates a value from the ``factory`` once. Each subsequent call will

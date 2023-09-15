@@ -17,10 +17,7 @@ describe('TmxSpawner', () => {
   beforeEach(() => {
     world = runtime()
       .bundle(new AssetsBundle())
-      .provide({
-        token: TmxSpawnerConfig,
-        value: new TmxSpawnerConfig(16)
-      })
+      .provide(TmxSpawnerConfig, new TmxSpawnerConfig(16))
       .provide(TmxObjectTypes)
       .provide(TmxPhysicsFactory)
       .provide(TmxSpawner)

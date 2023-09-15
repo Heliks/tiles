@@ -74,22 +74,18 @@ export class PixiBundle implements Bundle, OnInit {
     builder
       .component(SpriteAnimation)
       .component(SpriteRender, new SpriteRenderSerializer())
-      .provide({
-        token: RendererConfig,
-        value: this.config
-      })
-      .provide({
-        token: PIXI.Renderer,
-        value: this.createPIXIRenderer()
-      })
+      .provide(RendererConfig, this.config)
+      .provide(PIXI.Renderer, this.createPIXIRenderer())
       .bundle(new CameraBundle())
       .provide(DebugDraw)
       .provide(Layers)
       .provide(Stage)
       .provide(Renderer)
       .provide(Screenshot)
-      .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
-      .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
+      .schedule()
+        .after(RendererSchedule.Update, AppSchedule.PostUpdate)
+      .schedule()
+        .after(RendererSchedule.Render, RendererSchedule.Update)
       .system(SortChildren)
       .system(SpriteAnimationSystem, RendererSchedule.Update)
       .system(SpriteRenderer, RendererSchedule.Update)

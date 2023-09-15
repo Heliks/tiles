@@ -1,28 +1,36 @@
 import { ScheduleId } from '@heliks/ecs';
-import { Container } from '@heliks/tiles-injector';
+import { Container, InjectorToken, ValueFactory } from '@heliks/tiles-injector';
 import { ComponentType, World } from '../ecs';
 import { TypeSerializationStrategy } from '../types';
 import { Type } from '../utils';
 import { App, AppSchedule } from './app';
 import { Builder } from './builder';
 import { Bundle } from './bundle';
-import { Provider } from './provider';
 import { ScheduleBuilder } from './schedule-builder';
-import { AddBundle, AddComponent, AddProvider, AddSystem, AddType, SystemProvider, Task } from './tasks';
+import {
+  AddBundle,
+  AddComponent,
+  AddFactory,
+  AddService,
+  AddSystem,
+  AddType,
+  AddValue,
+  SystemProvider,
+  Task
+} from './tasks';
 
 
 /** Callback for {@link AppBuilder.run} tasks. */
 export type BootCallback = (world: World) => void;
 
+
 /**
- * Builder to create an {@link App}.
+ * Composes the {@link App game runtime}.
  *
- * The order in which builder tasks (e.g. adding providers, systems, etc.) are executed
- * is important. For example, if a system that is added before another system, it will
- * also be registered on the dispatcher first. Providers that use dependency injection
- * can only inject symbols that were provided before.
- *
- * @see Task
+ * The order in which things ({@link provide resources}, {@link system systems}, etc.)
+ * are added is important. For example, if `SystemA` is added before `SystemB`, `SystemB`
+ * will not be available to `SystemA`, since `SystemB` did not yet exist when `SystemA`
+ * was added to the runtime.
  */
 export class AppBuilder implements Builder {
 
@@ -116,9 +124,75 @@ export class AppBuilder implements Builder {
     return schedule === undefined ? new ScheduleBuilder(this) : this;
   }
 
-  /** Adds a `provider`. */
-  public provide(provider: Provider): this {
-    this.tasks.push(new AddProvider(provider));
+  /**
+   * Registers a {@link ValueFactory singleton} on the game's service container.
+   *
+   * The singleton will be called when the service container attempts to resolve the
+   * {@link InjectorToken token} to which it is bound to for the first time. The value
+   * that it returns will be injected. Further attempts to resolve that token will inject
+   * the same value that was returned on that first call.
+   */
+  public singleton(token: InjectorToken, factory: ValueFactory<unknown, Container>): this {
+    this.tasks.push(new AddFactory(token, true, factory));
+
+    return this;
+  }
+
+  /**
+   * Registers a {@link ValueFactory factory} on the game's service container.
+   *
+   * The factory will be called every time when the service container attempts to
+   * resolve the {@link InjectorToken token} to which they are bound to. The value
+   * they return, is the value the container will inject.
+   */
+  public factory(token: InjectorToken, factory: ValueFactory<unknown, Container>): this {
+    this.tasks.push(new AddFactory(token, false, factory));
+
+    return this;
+  }
+
+  /**
+   * Instantiates the given class type of a resource and registers it on the game's
+   * service container.
+   *
+   * This can be used to create global services or data structs that can be accessed
+   * by other systems or resources.
+   *
+   * ```ts
+   *  class TimePassed {
+   *    public ms = 0;
+   *  }
+   *
+   *  class CountTime implements System {
+   *    public update(world: World): void {
+   *      world.get(TimePassed).ms += world.get(Ticker).delta;
+   *    }
+   *  }
+   *
+   *  const app = new AppBuilder().provide(TimePassed).system(CountTime).build();
+   * ```
+   */
+  public provide(resource: Type): this;
+
+  /**
+   * Binds the given `value` to `token` on the game's service container.
+   *
+   * ```ts
+   *  const app = new AppBuilder().provide('foo', 'bar').build();
+   *  const msg = app.world.get('foo');
+   *
+   *  console.log(msg); // => "bar"
+   * ```
+   */
+  public provide(token: InjectorToken, value: unknown): this;
+
+  /** @internal */
+  public provide(token: InjectorToken | Type, value?: unknown): this {
+    this.tasks.push(
+      value === undefined
+        ? new AddService(token as Type, false)
+        : new AddValue(token, value)
+    );
 
     return this;
   }

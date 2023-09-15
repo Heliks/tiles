@@ -1,11 +1,10 @@
-import { Bundle as BaseBundle } from './bundle';
 import { AppBuilder } from './app-builder';
+import { Bundle as BaseBundle } from './bundle';
 
 
 export * from './app';
 export * from './app-builder';
 export * from './lifecycle';
-export * from './provider';
 export * from './schedule-builder';
 export * from './state'
 export * from './ticker';

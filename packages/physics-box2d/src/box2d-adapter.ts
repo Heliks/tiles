@@ -1,5 +1,5 @@
 import { b2World } from '@flyover/box2d';
-import { EventQueue, AppBuilder, Type, Vec2 } from '@heliks/tiles-engine';
+import { AppBuilder, EventQueue, Type, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dWorld } from './box2d-world';
@@ -27,14 +27,8 @@ export class Box2dAdapter implements PhysicsAdapter {
     const world = new b2World(this.gravity);
 
     builder
-      .provide({
-        token: B2_RAYCASTS,
-        value: new EventQueue()
-      })
-      .provide({
-        token: B2_WORLD,
-        value: world
-      })
+      .provide(B2_RAYCASTS, new EventQueue())
+      .provide(B2_WORLD, world)
       .provide(Box2dBodyFactory);
   }
 
