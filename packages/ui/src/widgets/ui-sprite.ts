@@ -29,6 +29,14 @@ export class UiSprite implements UiWidget {
    */
   constructor(public spritesheet: Handle<SpriteSheet>, public spriteIndex: number) {}
 
+  /** Updates the displayed sprite. */
+  public set(spritesheet: Handle<SpriteSheet>, spriteIndex: number): this {
+    this.spritesheet = spritesheet;
+    this.spriteIndex = spriteIndex;
+
+    return this;
+  }
+
   /** @inheritDoc */
   public update(world: World): void {
     const asset = world.get(AssetStorage).get(this.spritesheet);

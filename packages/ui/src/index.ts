@@ -3,6 +3,7 @@ import { Style } from './style';
 import { UiComposer } from './ui-composer';
 import { UiNode } from './ui-node';
 
+
 export * from './layout';
 export * from './widgets';
 
@@ -22,5 +23,5 @@ export * from './ui-widget';
 export function composeUi(world: World, style: Partial<Style> = {}): UiComposer {
   const component = new UiNode(style);
 
-  return new UiComposer(world.builder().use(component), component);
+  return new UiComposer(world, world.insert(component), component);
 }

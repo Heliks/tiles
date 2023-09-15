@@ -98,7 +98,7 @@ export class UiNode<W extends UiWidget = UiWidget> {
   }
 
   /** Attaches a {@link UiWidget} to this node. */
-  public setWidget(widget: W): this {
+  public setWidget(widget: W): UiNode<W> {
     // Remove previous widget from container.
     if (this._widget) {
       this.container.removeChild(this._widget.view);
