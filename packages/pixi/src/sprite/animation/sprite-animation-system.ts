@@ -29,7 +29,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * the animation component. Returns `true` if the transform was successful.
    */
   protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet = this.assets.get(render.spritesheet)?.data;
+    const sheet = this.assets.get(render.spritesheet);
 
     if (! sheet) {
       return false;

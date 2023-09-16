@@ -27,7 +27,7 @@ export class UiTexture implements UiWidget {
 
   /** @internal */
   private resolveTextureUpdate(world: World): Texture | undefined {
-    return this.texture instanceof Handle ? world.get(AssetStorage).get(this.texture)?.data : this.texture;
+    return this.texture instanceof Handle ? world.get(AssetStorage).get(this.texture) : this.texture;
   }
 
   /**

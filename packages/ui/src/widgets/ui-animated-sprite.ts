@@ -65,13 +65,13 @@ export class UiAnimatedSprite implements UiWidget {
 
     if (this.animation !== this.playing) {
       this.playing = this.animation;
-      this.frames = asset.data.getAnimation(this.animation);
+      this.frames = asset.getAnimation(this.animation);
 
       this.timer.duration = this.frames.frameDuration ?? 100;
       this.timer.reset();
 
       // Apply first frame of animation to sprite.
-      this.setFrameIndex(asset.data, 0);
+      this.setFrameIndex(asset, 0);
     }
 
     // No animation playing right now.
@@ -85,10 +85,10 @@ export class UiAnimatedSprite implements UiWidget {
       const frameIdx = this.frame + 1;
 
       if (frameIdx === this.frames.frames.length) {
-        this.setFrameIndex(asset.data, 0);
+        this.setFrameIndex(asset, 0);
       }
       else {
-        this.setFrameIndex(asset.data, frameIdx);
+        this.setFrameIndex(asset, frameIdx);
       }
     }
   }

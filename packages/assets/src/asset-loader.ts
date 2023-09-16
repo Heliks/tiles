@@ -1,5 +1,5 @@
-import { Injectable, ltrim, noIndent, Type } from '@heliks/tiles-engine';
-import { Asset, AssetCollection, AssetStorage, getCollectionMetadata, Handle, LoadingState } from './asset';
+import { Injectable, ltrim, noIndent, Type, Uuid } from '@heliks/tiles-engine';
+import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
 import { Format, LoadType } from './format';
 import { getExtension, join, normalize } from './utils';
 
@@ -76,19 +76,8 @@ export class AssetLoader {
     return this;
   }
 
-  /** @internal */
-  private complete<T>(handle: Handle<T>, data: T): void {
-    handle.state = LoadingState.Loaded;
-
-    this.assets.set(new Asset(
-      handle.assetId,
-      handle.file,
-      data
-    ));
-  }
-
-  /** @internal */
-  private _fetch<T>(file: string): Promise<T> {
+  /** Fetches the contents of `file`. */
+  public fetch<T>(file: string): Promise<T> {
     const format = this.getFormatFromFile<T>(file);
 
     return fetch(this.getPath(file)).then(response => {
@@ -120,11 +109,6 @@ export class AssetLoader {
     });
   }
 
-  /** Fetches the contents of `file`. */
-  public fetch<T>(file: string): Promise<T> {
-    return this._fetch(normalize(file));
-  }
-
   /** @internal */
   private getFormatFromFile<T = unknown>(file: string): Format<unknown, T, AssetLoader> {
     const extension = getExtension(file);
@@ -143,34 +127,67 @@ export class AssetLoader {
   }
 
   /**
+   * Returns the {@link Asset} for `file`. If it does not exist, it will be created.
+   *
+   * @internal
+   */
+  private getAsset(file: string): Asset {
+    const normalized = normalize(file);
+    const assetId = Uuid.create(normalized);
+
+    let asset = this.assets.getAsset(assetId);
+
+    if (asset) {
+      return asset;
+    }
+
+    asset = new Asset(assetId, normalized);
+
+    this.assets.set(asset);
+
+    return asset;
+  }
+
+  /**
+   * Fetches the file content for the given `asset`.
+   *
+   * @internal
+   */
+  private async fetchAssetData(asset: Asset): Promise<void> {
+    // Check if asset is already loaded (or in the process of being loaded).
+    if (asset.state !== AssetState.Pending) {
+      return;
+    }
+
+    asset.state = AssetState.Loading;
+    asset.data = await this.fetch(asset.file);
+    asset.state = AssetState.Loaded;
+  }
+
+  /**
    * Loads a file and returns a `Handle<R>` that can be used to access the file in its
    * asset storage after it has finished loading.
    */
   public load<R>(file: string): Handle<R> {
-    const normalized = normalize(file);
-    const handle = Handle.from(normalized);
+    const asset = this.getAsset(file);
 
-    this._fetch(normalized).then(data => {
-      this.complete(handle, data);
-    });
+    // Load asynchronously in background.
+    // noinspection JSIgnoredPromiseFromCall
+    this.fetchAssetData(asset);
 
-    return handle;
+    return asset.handle();
   }
 
   /**
    * Loads a file. Like {@link load} this will return a file handle that can be used to
    * access the asset, but only after the asset has finished loading.
    */
-  public async<R>(file: string): Promise<Handle<R>> {
-    const normalized = normalize(file);
+  public async async<R>(file: string): Promise<Handle<R>> {
+    const asset = this.getAsset(file);
 
-    return this._fetch(normalized).then(data => {
-      const handle = Handle.from(normalized);
+    await this.fetchAssetData(asset);
 
-      this.complete(handle, data);
-
-      return handle;
-    });
+    return asset.handle();
   }
 
   /**
@@ -178,11 +195,11 @@ export class AssetLoader {
    * handle with which the asset can be accessed in the {@link AssetStorage}.
    */
   public data<T>(file: string, data: T): Handle<T> {
-    const handle = Handle.from(normalize(file));
+    const asset = this.getAsset(file);
 
-    this.complete(handle, data);
+    asset.data = data;
 
-    return handle;
+    return asset.handle();
   }
 
   /**
@@ -221,7 +238,7 @@ export class AssetLoader {
       (collection as any)[ item.key ] = this.load(item.path);
     }
 
-    return new AssetCollection(collection, meta);
+    return new AssetCollection(this.assets, collection, meta);
   }
 
 }

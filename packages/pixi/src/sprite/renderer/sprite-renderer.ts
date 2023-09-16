@@ -101,7 +101,7 @@ export class SpriteRenderer extends ReactiveSystem {
       const render = displays.get(entity);
       const sprite = render._sprite;
 
-      const spritesheet = this.storage.get(render.spritesheet)?.data;
+      const spritesheet = this.storage.get(render.spritesheet);
 
       // Switch render group.
       if (render.layer !== render._layer) {

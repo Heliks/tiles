@@ -45,7 +45,7 @@ export class UiSprite implements UiWidget {
 
     if (asset && this.currentIndex !== this.spriteIndex) {
       this.view.visible = true;
-      this.view.texture = asset.data.texture(this.spriteIndex);
+      this.view.texture = asset.texture(this.spriteIndex);
 
       this.currentIndex = this.spriteIndex;
 

@@ -1,19 +1,9 @@
-import { Uuid } from "@heliks/tiles-engine";
+import { Uuid } from '@heliks/tiles-engine';
 
-
-export enum LoadingState {
-  /** Asset is currently loading. */
-  Loading,
-  /** Asset is fully loaded and can be used. */
-  Loaded
-}
 
 /** A unique pointer to an asset. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class Handle<T = unknown> {
-
-  /** Contains the loading state of the asset to which this handle points to. */
-  public state = LoadingState.Loading;
 
   /**
    * @param assetId Id of the asset that this handle points towards.

@@ -1,4 +1,6 @@
-import { Handle, LoadingState } from './handle';
+import { AssetState } from './asset';
+import { AssetStorage } from './asset-storage';
+import { Handle } from './handle';
 import { AssetCollectionMetadata } from './metadata';
 
 
@@ -10,10 +12,12 @@ import { AssetCollectionMetadata } from './metadata';
 export class AssetCollection<C> {
 
   /**
+   * @param storage Asset storage.
    * @param data Object with which the collection was created.
    * @param meta Collection metadata.
    */
   constructor(
+    public readonly storage: AssetStorage,
     public readonly data: C,
     public readonly meta: AssetCollectionMetadata<C>
   ) {}
@@ -23,7 +27,7 @@ export class AssetCollection<C> {
     for (const property of this.meta.properties) {
       const handle = this.data[ property.key ] as Handle;
 
-      if (handle.state !== LoadingState.Loaded) {
+      if (this.storage.getAsset(handle.assetId)?.state !== AssetState.Loaded) {
         return false;
       }
     }

@@ -11,35 +11,40 @@ import { Handle } from './handle';
 export class AssetStorage {
 
   /** @internal */
-  private readonly assets = new Map<UUID, Asset>();
+  private readonly _assets = new Map<UUID, Asset>();
+
+  /** Returns the {@link Asset asset} that is stored under `id`. */
+  public getAsset(id: UUID): Asset | undefined {
+    return this._assets.get(id);
+  }
 
   /** Returns the {@link Asset} to which `handle` points to. */
-  public get<T>(handle: Handle<T>): Asset<T> | undefined {
-    return this.assets.get(handle.assetId) as Asset<T>;
+  public get<T>(handle: Handle<T>): T | undefined {
+    return this._assets.get(handle.assetId)?.data as T;
   }
 
   /**
    * Returns the {@link Asset} to which `handle` points to. Throws an error if it does
    * not point to any asset.
    */
-  public resolve<T>(handle: Handle<T>): Asset<T> {
-    const asset = this.get(handle);
+  public resolve<T>(handle: Handle<T>): T {
+    const data = this.get<T>(handle);
 
-    if (! asset) {
+    if (! data) {
       throw new Error(`Invalid asset: ${handle.assetId}`);
     }
 
-    return asset;
+    return data;
   }
 
   /** Returns `true` if an asset is stored under the given handle. */
   public has(handle: Handle): boolean {
-    return this.assets.has(handle.assetId);
+    return this._assets.has(handle.assetId);
   }
 
   /** Stores `asset` under `handle`. */
   public set(asset: Asset): this {
-    this.assets.set(asset.id, asset);
+    this._assets.set(asset.id, asset);
 
     return this;
   }

@@ -63,7 +63,7 @@ export class RenderTiles extends ReactiveSystem {
 
   /** @internal */
   private createAnimatedSprite(local: LocalTileset, name: string): AnimatedSprite {
-    const spritesheet = this.assets.resolve(local.tileset.spritesheet).data;
+    const spritesheet = this.assets.resolve(local.tileset.spritesheet);
     const animation = spritesheet.getAnimation(name);
 
     return new AnimatedSprite(
@@ -84,7 +84,6 @@ export class RenderTiles extends ReactiveSystem {
       .assets
       // Note: We lose the `Handle` generic here. This is a bug in typescript.
       .resolve<SpriteSheet>(local.tileset.spritesheet)
-      .data
       .sprite(tileIdx);
   }
 

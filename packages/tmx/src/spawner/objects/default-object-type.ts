@@ -37,7 +37,7 @@ export class DefaultObjectType implements TmxObjectType {
 
   /** @internal */
   private getSpriteSize(tileset: TmxTileset, spriteIdx: number): Vec2 {
-    return this.assets.resolve(tileset.spritesheet).data.getSpriteSize(spriteIdx);
+    return this.assets.resolve(tileset.spritesheet).getSpriteSize(spriteIdx);
   }
 
   /**
