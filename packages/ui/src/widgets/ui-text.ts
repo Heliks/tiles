@@ -1,4 +1,3 @@
-import { World } from '@heliks/tiles-engine';
 import { Text } from 'pixi.js';
 import { Rect, Size } from '../layout';
 import { UiWidget } from '../ui-widget';
@@ -42,7 +41,7 @@ export class UiText implements UiWidget {
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     this.view.text = this.value;
     this.size.width.value = this.view.width;
     this.size.height.value = this.view.height;

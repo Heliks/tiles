@@ -71,7 +71,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
   }
 
   /** @internal */
-  private spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer, renderLayer?: LayerId): Entity {
+  private spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer): Entity {
     for (const obj of layer.data) {
       const type = this.getObjectType(world, obj);
 
@@ -102,7 +102,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
         spawnTileLayer(world, entity, map, layer, renderLayer);
         break;
       case TmxLayerType.Objects:
-        this.spawnObjectLayer(world, entity, map, layer, renderLayer);
+        this.spawnObjectLayer(world, entity, map, layer);
         break;
       default:
         throw new Error(`Unsupported layer type ${layer.type}`);

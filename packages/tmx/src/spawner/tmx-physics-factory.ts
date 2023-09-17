@@ -64,7 +64,7 @@ export class TmxPhysicsFactory {
    * @param pivot Tile pivot ("objectalignment") of the tiles parent tileset.
    * @param scale Scale factor.
    */
-  public tile(width: number, height: number, shapes: TmxGeometry<ColliderProps>[], pivot: Pivot, scale = new Vec2(1, 1)) {
+  public tile(width: number, height: number, shapes: TmxGeometry<ColliderProps>[], pivot: Pivot, scale = new Vec2(1, 1)): RigidBody {
     const body = new RigidBody();
 
     for (const item of shapes) {

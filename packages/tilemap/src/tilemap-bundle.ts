@@ -1,4 +1,4 @@
-import { AppBuilder, Bundle, World } from '@heliks/tiles-engine';
+import { AppBuilder, Bundle } from '@heliks/tiles-engine';
 import { RendererSchedule } from '@heliks/tiles-pixi';
 import { RenderTiles } from './render-tiles';
 

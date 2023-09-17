@@ -28,7 +28,7 @@ export class UpdateWidgets extends ProcessingSystem {
 
         // Widgets can project their content size directly onto the layout node,
         // overwriting the existing style.
-        if (node._widget.size) {
+        if (node._widget.size > 0) {
           node.layout.style.size = node._widget.size;
         }
       }

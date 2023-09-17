@@ -3,7 +3,7 @@ import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Tileset } from '@heliks/tiles-tilemap';
 import { TmxCustomTile } from './tmx-custom-tile';
-import { HasProperties } from './tmx-properties';
+
 
 export interface TmxTilesetProps {
 

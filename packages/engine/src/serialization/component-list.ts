@@ -19,6 +19,8 @@ export class ComponentList {
    * the list successfully.
    */
   public add(component: object): boolean {
+    // Safety: False positive eslint rule.
+    // eslint-disable-next-line unicorn/prefer-array-some
     if (this.find(component.constructor as ComponentType)) {
       return false;
     }

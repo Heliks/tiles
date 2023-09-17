@@ -68,13 +68,9 @@ export class DrawUi implements OnInit, System {
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
+  public update(): void {
     for (const entity of this.query.entities) {
-      const node = this.nodes.get(entity);
-
-
-
-      this.updateNodePosition(entity, node);
+      this.updateNodePosition(entity, this.nodes.get(entity));
     }
   }
 
