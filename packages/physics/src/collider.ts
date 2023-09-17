@@ -1,6 +1,6 @@
 import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
-import { Uuid } from '@heliks/tiles-engine/src';
+import { Uuid } from '@heliks/tiles-engine';
 
 
 /** A shape that can be attached to a collider to give it its physical form. */
