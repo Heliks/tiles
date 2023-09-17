@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-math",
-  "version": "0.0.1-rc3",
+  "version": "0.0.1-rc4",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
