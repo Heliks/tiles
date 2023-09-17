@@ -77,7 +77,6 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       }
 
       // Calculate the next frame index based on the effective frame duration.
-      // eslint-disable-next-line unicorn/prefer-math-trunc
       const nextFrame = (animation.elapsedTime / (animation.frameDuration / animation.speed))
         % animation.frames.length | 0;
 

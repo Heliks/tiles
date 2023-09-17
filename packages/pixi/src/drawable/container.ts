@@ -111,10 +111,8 @@ export class Container<T extends Drawable = Drawable> extends BaseContainer impl
 
     // Find the lowest possible x and y values. DON'T use sort() here because that would
     // destroy the render order of the container.
-    /* eslint-disable unicorn/no-array-reduce */
     const minX = children.reduce<number>((val, item) => val > item.x ? item.x : val, Number.POSITIVE_INFINITY);
     const minY = children.reduce<number>((val, item) => val > item.y ? item.y : val, Number.POSITIVE_INFINITY);
-    /* eslint-enable unicorn/no-array-reduce */
 
     for (const child of children) {
       child.x -= minX;
