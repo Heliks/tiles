@@ -69,23 +69,19 @@ export class PixiBundle implements Bundle, OnInit {
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();
 
-    console.log(builder.schedule())
-
     builder
       .component(SpriteAnimation)
       .component(SpriteRender, new SpriteRenderSerializer())
+      .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
+      .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
       .provide(RendererConfig, this.config)
       .provide(PIXI.Renderer, this.createPIXIRenderer())
+      .provide(Layers)
       .bundle(new CameraBundle())
       .provide(DebugDraw)
-      .provide(Layers)
       .provide(Stage)
       .provide(Renderer)
       .provide(Screenshot)
-      .schedule()
-      .after(RendererSchedule.Update, AppSchedule.PostUpdate)
-      .schedule()
-      .after(RendererSchedule.Render, RendererSchedule.Update)
       .system(SortChildren)
       .system(SpriteAnimationSystem, RendererSchedule.Update)
       .system(SpriteRenderer, RendererSchedule.Update)

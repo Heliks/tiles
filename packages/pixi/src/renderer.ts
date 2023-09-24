@@ -1,7 +1,6 @@
-import { EventQueue, Injectable, Screen, ScreenEvent, Subscriber, Vec2 } from '@heliks/tiles-engine';
+import { EventQueue, Injectable, Screen, ScreenEvent, Subscriber } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { RenderTexture } from 'pixi.js';
-import { Camera } from './camera';
 import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
 import { Container, Drawable } from './drawable';
@@ -34,19 +33,6 @@ export class Renderer {
    */
   private isAutoResizeEnabled = false;
 
-  /**
-   * Contains half of the screen size *scaled* to the screen scale. We cache this
-   * here so we don't have to do this calculation on every frame. This is updated
-   * every time when screen is re-scaled.
-   *
-   * @see Screen.size
-   * @see Screen.scale
-   * @see updateCamera
-   *
-   * @internal
-   */
-  private readonly screenSizeScaled2 = new Vec2(0, 0);
-
   /** @internal */
   private readonly onScreenUpdate$: Subscriber<ScreenEvent>;
 
@@ -61,7 +47,6 @@ export class Renderer {
   }
 
   constructor(
-    public readonly camera: Camera,
     public readonly config: RendererConfig,
     public readonly debugDraw: DebugDraw,
     public readonly layers: Layers,
@@ -156,27 +141,11 @@ export class Renderer {
 
   /** Applies `screen` dimensions to the renderer. */
   private updateRendererDimensions(): void {
-    this.screenSizeScaled2.x = (this.screen.size.x / this.screen.scale.x) >> 1;
-    this.screenSizeScaled2.y = (this.screen.size.y / this.screen.scale.y) >> 1;
-
     this.renderer.resize(this.screen.size.x, this.screen.size.y);
-
-    this.layers.container.scale.set(
-      this.screen.scale.x,
-      this.screen.scale.y
-    );
 
     this.debugDraw
       .resize(this.screen.size.x, this.screen.size.y)
       .scale(this.screen.scale.x, this.screen.scale.y);
-  }
-
-  /** @internal */
-  private updateCamera(): void {
-    this.layers.container.pivot.set(
-      (this.camera.world.x * this.config.unitSize) - this.screenSizeScaled2.x,
-      (this.camera.world.y * this.config.unitSize) - this.screenSizeScaled2.y
-    );
   }
 
   /**
@@ -207,10 +176,6 @@ export class Renderer {
       if (event === ScreenEvent.Resize) {
         this.onScreenResize();
       }
-    }
-
-    if (this.camera.enabled) {
-      this.updateCamera();
     }
 
     this.debugDraw.texture.update();

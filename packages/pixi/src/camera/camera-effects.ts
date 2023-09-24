@@ -1,41 +1,67 @@
-import { Injectable, System, World } from '@heliks/tiles-engine';
+import { Type, World } from '@heliks/tiles-engine';
 import { Camera } from './camera';
 
 
+/**
+ * An effect that modifies {@link Camera camera} values over a period of time.
+ *
+ * @see CameraEffects
+ */
 export interface CameraEffect {
 
-  /** Called once when the camera effect starts. */
+  /**
+   * Implementation for startup logic.
+   *
+   * Called once when the camera effect first becomes active.
+   */
   start?(world: World, camera: Camera): void;
 
   /**
-   * Called while the effect is being used. When this function returns `true`, the effect
-   * is considered complete and will be removed from the camera.
+   * Implementation of the effect logic.
+   *
+   * As long as this effect is active, this function will be called once per frame. It
+   * runs until it returns `true`, at which point the effect is considered to be complete
+   * and will be removed from the camera automatically.
    */
   update(world: World, camera: Camera): boolean;
 
 }
 
-@Injectable()
-export class CameraEffects implements System {
+/**
+ * Resources that manages active camera {@link CameraEffect effects}.
+ *
+ * Only one effect per type can be active at the same time. Which means the {@link ZoomTo}
+ * and {@link MoveTo} effects can be used simultaneously, but two {@link MoveTo} can't.
+ */
+export class CameraEffects {
 
-  private readonly effects: CameraEffect[] = [];
+  /** Contains all active {@link CameraEffect effects}. */
+  public readonly active: CameraEffect[] = [];
 
-  constructor(private readonly camera: Camera) {}
+  /** Removes the active camera effect of the given `type`. */
+  public remove(type: Type<CameraEffect>): boolean {
+    const index = this.active.findIndex(item => item instanceof type);
 
-  public add(effect: CameraEffect): this {
-    this.effects.push(effect);
+    if (~index) {
+      this.active.splice(index, 1);
 
-    return this;
+      return true;
+    }
+
+    return false;
   }
 
-  public update(world: World): void {
-    for (let i = this.effects.length - 1; i >= 0; i--) {
-      const effect = this.effects[i];
+  /**
+   * Adds the given `effect`. If an effect of the same type is already active, it
+   * will be canceled and replaced with the new effect.
+   */
+  public add(effect: CameraEffect): this {
+    // Make sure the same effect doesn't run twice.
+    this.remove(effect.constructor as Type)
 
-      if (effect.update(world, this.camera)) {
-        this.effects.splice(i, 1);
-      }
-    }
+    this.active.push(effect);
+
+    return this;
   }
 
 }

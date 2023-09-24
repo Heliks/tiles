@@ -34,9 +34,14 @@ export class DrawUi implements OnInit, System {
 
   /** @internal */
   private getViewPositionFromScreenPosition(screen: XY): Vec2 {
-    // console.log('SCREEN', screen.x, screen.y)
+    // Todo: I don't know what I'm doing here but it works. Improve this when I have the time.
+    const sx = (screen.x - (this.camera.screen.size.x >> 1));
+    const sy = (screen.y - (this.camera.screen.size.y >> 1));
 
-    return this.camera.screenToWorld(screen.x, screen.y, this._scratch).scale(this.camera.unitSize);
+    this._scratch.x = (sx / this.camera.screen.scale.x) + (this.camera.world.x * this.camera.zoom * this.camera.unitSize);
+    this._scratch.y = (sy / this.camera.screen.scale.y) + (this.camera.world.y * this.camera.zoom * this.camera.unitSize);
+
+    return this._scratch;
   }
 
   /** @internal */

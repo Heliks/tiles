@@ -38,6 +38,13 @@ export class Layer {
   public sorter?: LayerSorter;
 
   /**
+   * Determines if this layer can be zoomed or not.
+   *
+   * @see zoom
+   */
+  public isZoomEnabled = true;
+
+  /**
    * @param id Unique Layer ID.
    */
   constructor(public readonly id: LayerId) {}
@@ -68,6 +75,22 @@ export class Layer {
     }
 
     return false;
+  }
+
+  /**
+   * Disables or enables zoom.
+   *
+   * When zooming is disabled, this layer will ignore all camera zoom. This means that
+   * everything rendered on this layer will stay the same size regardless of how far the
+   * camera has been zoomed in or out. This is useful for creating UI layers that are
+   * sized independently from the normal game world.
+   *
+   * All layers have zoom enabled by default.
+   */
+  public zoom(value: boolean): this {
+    this.isZoomEnabled = value;
+
+    return this;
   }
 
 }

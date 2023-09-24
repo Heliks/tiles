@@ -75,8 +75,8 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
 
     // Apply translate with unit size.
     this.debugDraw.translate(
-      transform.p.x * this.camera.unitSize,
-      transform.p.y * this.camera.unitSize
+      transform.p.x * this.camera.unitSize * this.camera.zoom,
+      transform.p.y * this.camera.unitSize * this.camera.zoom
     );
 
     // Set rotation
@@ -91,14 +91,14 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   /** Helper method to draw the lines of a polygon. */
   protected drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[0].x * this.camera.unitSize,
-      vertices[0].y * this.camera.unitSize
+      vertices[0].x * this.camera.unitSize * this.camera.zoom,
+      vertices[0].y * this.camera.unitSize * this.camera.zoom
     );
 
     for (const vertex of vertices) {
       this.ctx.lineTo(
-        vertex.x * this.camera.unitSize,
-        vertex.y * this.camera.unitSize
+        vertex.x * this.camera.unitSize * this.camera.zoom,
+        vertex.y * this.camera.unitSize * this.camera.zoom
       );
     }
 
@@ -143,9 +143,9 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
     const ctx = this.ctx;
 
     // Apply unit size to radius and position.
-    const radius = _radius * this.camera.unitSize;
-    const cx = center.x * this.camera.unitSize;
-    const cy = center.y * this.camera.unitSize;
+    const radius = _radius * this.camera.unitSize * this.camera.zoom;
+    const cx = center.x * this.camera.unitSize * this.camera.zoom;
+    const cy = center.y * this.camera.unitSize * this.camera.zoom;
 
     ctx.beginPath();
 
