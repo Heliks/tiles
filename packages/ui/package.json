@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-ui",
-  "version": "0.0.1-rc5",
+  "version": "0.0.1-rc6",
   "description": "UI Package for tiles",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
