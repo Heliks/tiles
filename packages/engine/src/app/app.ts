@@ -1,7 +1,6 @@
 import { SystemDispatcher } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
-import { World } from '../ecs';
-import { TypeRegistry } from '../types';
+import { Presets, World } from '../ecs';
 import { State, StateMachine } from './state';
 import { Ticker } from './ticker';
 
@@ -59,14 +58,14 @@ export class App {
   /** Dispatches game systems. This essentially is the game loop logic. */
   public readonly dispatcher: SystemDispatcher;
 
+  /** Manages available entity {@link Preset presets}. */
+  public readonly presets = new Presets();
+
   /** State machine that executes the game state. */
   public readonly state: StateMachine<World>;
 
   /** Ticker that executes the game loop. */
   public readonly ticker = new Ticker();
-
-  /** Manages data types known to the application. */
-  public readonly types = new TypeRegistry();
 
   /** Entity world. */
   public readonly world: World;
@@ -89,9 +88,9 @@ export class App {
     // Add required bindings to service container.
     container
       .instance(this.dispatcher)
+      .instance(this.presets)
       .instance(this.state)
       .instance(this.ticker)
-      .instance(this.types)
       .instance(this.world);
   }
 

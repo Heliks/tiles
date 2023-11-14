@@ -1,4 +1,4 @@
-import { Vec2 } from '../../../../math/src';
+import { Vec2 } from '@heliks/tiles-engine';
 import {
   calculateLineCrossSizes,
   calculateOuterNodeSize,

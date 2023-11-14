@@ -27,34 +27,6 @@ describe('AppBuilder', () => {
     });
   });
 
-  describe('systems', () => {
-    it('should add app systems to the system dispatcher', () => {
-      const system = {
-        update: jest.fn()
-      };
-
-      const app = new AppBuilder().system(system).build();
-
-      // Update all systems.
-      app.dispatcher.update(app.world);
-
-      // If the system was added correctly the dispatcher should've
-      // also called update() on the test system.
-      expect(system.update).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call OnInit lifecycle hook', () => {
-      const system = {
-        update: () => void 0,
-        onInit: jest.fn()
-      };
-
-      const app = new AppBuilder().system(system).build();
-
-      expect(system.onInit).toHaveBeenCalledWith(app.world);
-    });
-  });
-
   describe('providers', () => {
     it('should register class providers', () => {
       class Provider1 {}

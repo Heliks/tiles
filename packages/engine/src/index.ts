@@ -4,9 +4,8 @@ import 'reflect-metadata';
 export * from './app';
 export * from './core';
 export * from './ecs';
-export * from './serialization';
+export * from './serialize';
 export * from './transform';
-export * from './types';
 export * from './utils';
 
 // Files

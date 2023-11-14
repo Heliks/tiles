@@ -1,4 +1,4 @@
-import { ChangeAwareValue, Entity, EventQueue, Ignore, Vec2 } from '@heliks/tiles-engine';
+import { ChangeAwareValue, Entity, EventQueue, Ignore, UUID, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -26,6 +26,7 @@ export enum RigidBodyType {
 }
 
 /** A 2D rigid body component. */
+@UUID('6b3737fd-97a9-47c5-8556-86b03728cdcc')
 export class RigidBody {
 
   /** Colliders attached to this body. */

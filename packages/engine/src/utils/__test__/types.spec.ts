@@ -1,7 +1,7 @@
 import { isType } from '../types';
 
 
-describe('isType', () => {
+describe('isType()', () => {
   class Foo {
     constructor() {}
   }
@@ -13,6 +13,6 @@ describe('isType', () => {
   it('should return false if a value is not a class type', () => {
     expect(isType(new Foo())).toBeFalsy();
   });
-
 });
+
 

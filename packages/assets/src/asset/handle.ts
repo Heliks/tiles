@@ -1,4 +1,4 @@
-import { Uuid } from '@heliks/tiles-engine';
+import { uuid } from '@heliks/tiles-engine';
 
 
 /** A unique pointer to an asset. */
@@ -14,7 +14,7 @@ export class Handle<T = unknown> {
 
   /** Creates a new {@link Handle} from a `file` path. */
   public static from<T = unknown>(file: string): Handle {
-    return new Handle<T>(Uuid.create(file), file);
+    return new Handle<T>(uuid(file), file);
   }
 
 }

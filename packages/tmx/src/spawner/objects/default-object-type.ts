@@ -98,6 +98,7 @@ export class DefaultObjectType implements TmxObjectType {
     x = (x / this.config.unitSize) - (map.grid.cols / 2);
     y = (y / this.config.unitSize) - (map.grid.rows / 2);
 
+
     entity.use(new Transform(0, 0, 0, x, y));
   }
 

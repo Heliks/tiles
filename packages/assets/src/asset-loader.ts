@@ -1,4 +1,4 @@
-import { Injectable, ltrim, noIndent, Type, Uuid } from '@heliks/tiles-engine';
+import { Injectable, ltrim, noIndent, Type, uuid } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
 import { Format, LoadType } from './format';
 import { getExtension, join, normalize } from './utils';
@@ -133,7 +133,7 @@ export class AssetLoader {
    */
   private getAsset(file: string): Asset {
     const normalized = normalize(file);
-    const assetId = Uuid.create(normalized);
+    const assetId = uuid(normalized);
 
     let asset = this.assets.getAsset(assetId);
 

@@ -1,7 +1,7 @@
+import { World } from '../../ecs';
+import { App } from '../app';
 import { Builder } from '../builder';
 import { Bundle } from '../bundle';
-import { App } from '../app';
-import { World } from '../../ecs';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';
 
@@ -32,7 +32,7 @@ export class AddBundle<B extends Builder> implements Task {
 
   /** @internal */
   public toString(): string {
-    return `AddBundle:${this.bundle.constructor.name}`;
+    return `Add Bundle: ${this.bundle.constructor.name}`;
   }
 
 }

@@ -1,16 +1,50 @@
-import { Handle } from '@heliks/tiles-assets';
-import { Vec2 } from '@heliks/tiles-engine';
+import { AssetLoader, Handle } from '@heliks/tiles-assets';
+import { Serializeable, UUID, Vec2, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
-import { SpriteSheet } from '../sprite-sheet';
-import { ShaderMaterial } from '../../material';
 import { LayerId } from '../../layer';
+import { getMaterialFromId, ShaderMaterial } from '../../material';
+import { SpriteSheet } from '../sprite-sheet';
+
+
+export interface MaterialData {
+  data: unknown;
+  uuid: UUID;
+}
+
+export interface SpriteRenderData {
+  anchorX: number;
+  anchorY: number;
+  flipX: boolean;
+  flipY: boolean;
+  opacity: number;
+  spritesheet: string;
+  spriteIndex: number;
+  scaleX: number;
+  scaleY: number;
+  visible: boolean;
+  material?: MaterialData;
+  layer?: LayerId;
+}
+
+/** @internal */
+function createMaterialFromData(data: MaterialData): ShaderMaterial {
+  const type = getMaterialFromId(data.uuid);
+
+  // eslint-disable-next-line new-cap
+  const t = new type(data.data);
+
+  t.setData(data.data)
+
+  return t;
+}
 
 
 /**
- * Component that when attached to an entity, will render a sprite. By default the sprite
- * anchor is the middle of the sprite.
+ * Component that when attached to an entity, will render a sprite. By default, the
+ * sprite anchor is the middle of the sprite.
  */
-export class SpriteRender {
+@UUID('039f5dc4-b1fd-410e-a170-d32d2746c6be')
+export class SpriteRender implements Serializeable<SpriteRenderData> {
 
   /** @internal */
   public readonly _sprite = new Sprite();
@@ -126,6 +160,46 @@ export class SpriteRender {
     this._sprite.visible = false;
 
     return this;
+  }
+
+  /** @inheritDoc */
+  public serialize(): SpriteRenderData {
+    const { flipX, flipY, layer, opacity, spriteIndex, visible } = this;
+
+    return {
+      anchorX: this.anchor.x,
+      anchorY: this.anchor.y,
+      flipX,
+      flipY,
+      layer,
+      opacity,
+      scaleX: this.scale.x,
+      scaleY: this.scale.y,
+      spriteIndex,
+      spritesheet: this.spritesheet.file,
+      visible
+    };
+  }
+
+  /** @inheritDoc */
+  public deserialize(world: World, data: SpriteRenderData): void {
+    this.spritesheet = world.get(AssetLoader).load(data.spritesheet);
+    this.spriteIndex = data.spriteIndex;
+    this.layer = data.layer;
+
+    this.opacity = data.opacity;
+    this.visible = data.visible;
+
+    this.scale.x = data.scaleX;
+    this.scale.y = data.scaleY;
+
+    this
+      .setAnchor(data.anchorX, data.anchorY)
+      .flip(data.flipX, data.flipY);
+
+    if (data.material) {
+      this.material = createMaterialFromData(data.material);
+    }
   }
 
 }

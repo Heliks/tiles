@@ -1,5 +1,5 @@
 import { ComponentType, Entity } from '@heliks/ecs';
-import { World } from '../ecs';
+import { World } from './world';
 
 
 /**

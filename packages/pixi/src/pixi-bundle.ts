@@ -6,7 +6,7 @@ import { DebugDraw } from './debug-draw';
 import { Layers, SortChildren, Stage } from './layer';
 import { Renderer } from './renderer';
 import { Screenshot } from './screenshot';
-import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer, SpriteRenderSerializer } from './sprite';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
 import { UpdateRenderer } from './update-renderer';
 
 
@@ -22,7 +22,15 @@ export enum RendererSchedule {
   Render
 }
 
-/** Bundle that provides a WebGL rendering context via the PIXI.js library. */
+/**
+ * Bundle that provides a 2D rendering pipeline via the PIXI.js library.
+ *
+ * ## Serialization
+ *
+ * ```
+ *
+ * ```
+ */
 export class PixiBundle implements Bundle, OnInit {
 
   /**
@@ -71,7 +79,7 @@ export class PixiBundle implements Bundle, OnInit {
 
     builder
       .component(SpriteAnimation)
-      .component(SpriteRender, new SpriteRenderSerializer())
+      .component(SpriteRender)
       .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
       .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
       .provide(RendererConfig, this.config)

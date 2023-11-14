@@ -49,5 +49,5 @@ export function shuffle<T>(array: T[]): T[] {
 }
 
 export function isDefined<T>(value?: T): value is T {
-  return value !== undefined;
+  return value !== undefined && value !== null;
 }

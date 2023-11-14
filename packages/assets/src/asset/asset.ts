@@ -1,4 +1,4 @@
-import { Uuid, UUID } from '@heliks/tiles-engine';
+import { uuid, UUID } from '@heliks/tiles-engine';
 import { Handle } from './handle';
 
 
@@ -35,7 +35,7 @@ export class Asset<T = unknown> {
 
   /** Creates a new {@link Asset} from raw `data`. */
   public static from<T>(file: string, data: T): Asset<T> {
-    return new Asset(Uuid.create(file), file, data);
+    return new Asset(uuid(file), file, data);
   }
 
   /**

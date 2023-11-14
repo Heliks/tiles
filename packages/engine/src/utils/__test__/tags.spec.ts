@@ -1,5 +1,4 @@
 import { noIndent } from '../tags';
-import { Uuid } from '../uuid';
 
 
 describe('noIndent', () => {

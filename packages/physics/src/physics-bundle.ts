@@ -1,5 +1,4 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
-import { Collider } from './collider';
 import { ContactEvents } from './events';
 import { MaterialManager } from './material';
 import { Physics } from './physics';
@@ -31,7 +30,6 @@ export class PhysicsBundle implements Bundle {
 
     builder
       .component(RigidBody)
-      .type(Collider)
       .provide(MaterialManager)
       .bundle(this.adapter)
       .singleton(Physics, container => {

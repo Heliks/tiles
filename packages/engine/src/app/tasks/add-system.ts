@@ -1,21 +1,12 @@
 import { Schedule, ScheduleId, System } from '@heliks/ecs';
-import { Type } from '../../utils';
-import { App } from '../app';
 import { World } from '../../ecs';
+import { isType, Type, TypeLike } from '../../utils';
+import { App } from '../app';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';
-import { Container } from '@heliks/tiles-injector';
 
 
-/** Type or instance of a {@link System} that should be added to the dispatcher. */
-export type SystemProvider = Type<System> | System;
-
-/**
- * Adds a {@link System system} to a {@link Schedule}.
- *
- * The system can either be an instance or a class type. If it is the latter, the system
- * will be instantiated using the service container.
- */
+/** Adds a {@link System system} to a {@link Schedule}. */
 export class AddSystem implements Task {
 
   /** @internal */
@@ -26,13 +17,16 @@ export class AddSystem implements Task {
    * @param schedule Id of the schedule to which the system should be added.
    */
   constructor(
-    private readonly system: SystemProvider,
+    private readonly system: TypeLike<System>,
     private readonly schedule: ScheduleId
   ) {}
 
-  /** @internal */
-  private createSystemInstance(container: Container): System {
-    return typeof this.system === 'function' ? container.make(this.system) : this.system;
+  /**
+   * Returns the {@link system} instance. If {@link system} is a {@link Type}, it will
+   * be created using the service container.
+   */
+  public getSystem(app: App): System {
+    return isType(this.system) ? app.container.make(this.system) : this.system;
   }
 
   /** @internal */
@@ -47,7 +41,7 @@ export class AddSystem implements Task {
   }
 
   /** @internal */
-  private getSystemClassName(): string {
+  private getTypeName(): string {
     const system = this.system as Type;
 
     return system.name
@@ -57,12 +51,12 @@ export class AddSystem implements Task {
 
   /** @internal */
   public toString(): string {
-    return `AddSystem(${this.getSystemClassName()})`;
+    return `AddSystem: ${this.getTypeName()}`;
   }
 
   /** @inheritDoc */
   public exec(app: App): void {
-    this.instance = this.createSystemInstance(app.container);
+    this.instance = this.getSystem(app);
 
     app.container.instance(this.instance);
 

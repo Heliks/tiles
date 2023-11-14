@@ -1,23 +1,12 @@
-import { ScheduleId } from '@heliks/ecs';
+import { ScheduleId, System } from '@heliks/ecs';
 import { Container, InjectorToken, ValueFactory } from '@heliks/tiles-injector';
-import { ComponentType, World } from '../ecs';
-import { TypeSerializationStrategy } from '../types';
-import { Type } from '../utils';
+import { ComponentType, Preset, PresetId, World } from '../ecs';
+import { Type, TypeLike } from '../utils';
 import { App, AppSchedule } from './app';
 import { Builder } from './builder';
 import { Bundle } from './bundle';
 import { ScheduleBuilder } from './schedule-builder';
-import {
-  AddBundle,
-  AddComponent,
-  AddFactory,
-  AddService,
-  AddSystem,
-  AddType,
-  AddValue,
-  SystemProvider,
-  Task
-} from './tasks';
+import { AddBundle, AddComponent, AddFactory, AddPreset, AddService, AddSystem, AddValue, Task } from './tasks';
 
 
 /** Callback for {@link AppBuilder.run} tasks. */
@@ -35,7 +24,7 @@ export type BootCallback = (world: World) => void;
 export class AppBuilder implements Builder {
 
   /** Contains the task queue. */
-  private readonly tasks: Task[] = [];
+  public readonly tasks: Task[] = [];
 
   /**
    * @param container Service container used by the app. All providers, systems,
@@ -50,28 +39,22 @@ export class AppBuilder implements Builder {
     return this;
   }
 
-  /**
-   * Registers a `component`.
-   *
-   * This will automatically register the component type as a {@link type type}. A
-   * custom {@link TypeSerializationStrategy serialization strategy} can be provided
-   * if the default one is not sufficient
-   */
-  public component<C = unknown>(component: ComponentType<C>, strategy?: TypeSerializationStrategy<C>): this {
-    this.tasks.push(new AddComponent(component, strategy));
+  /** Registers a `component`. */
+  public component<C = unknown>(component: ComponentType<C>): this {
+    this.tasks.push(new AddComponent(component));
 
     return this;
   }
 
   /**
-   * Adds an ECS {@link SystemProvider system} to the dispatcher.
+   * Adds an ECS system to the dispatcher.
    *
    * The schedule to which the system will be added to can be specified via the given
    * schedule {@link ScheduleId id}. The system can either be an instance or a class
    * type. If it is the latter, the system will be instantiated using the service
    * container before it is added.
    */
-  public system(system: SystemProvider, schedule: ScheduleId = AppSchedule.Update): this {
+  public system(system: TypeLike<System>, schedule: ScheduleId = AppSchedule.Update): this {
     this.tasks.push(new AddSystem(system, schedule));
 
     return this;
@@ -152,6 +135,17 @@ export class AppBuilder implements Builder {
   }
 
   /**
+   * Registers an entity {@link Preset preset} using the given {@link PresetId id}.
+   *
+   * The ID must be unique across all entity presets.
+   */
+  public preset(id: PresetId, preset: TypeLike<Preset>): this {
+    this.tasks.push(new AddPreset(id, preset));
+
+    return this;
+  }
+
+  /**
    * Instantiates the given class type of a resource and registers it on the game's
    * service container.
    *
@@ -216,22 +210,6 @@ export class AppBuilder implements Builder {
     this.tasks.push({
       exec: app => callback(app.world)
     });
-
-    return this;
-  }
-
-  /**
-   * Registers a class {@link Type type} on the {@link TypeRegistry registry} so that
-   * it can be serialized by the engine. The constructor name will be used as the ID
-   * for the type.
-   *
-   * The default serialization strategy is able to handle most types, but it is possible
-   * to provide a custom one where this is not the case.
-   *
-   * To get access to serialization APIs, the {@link SerializationBundle} can be added.
-   */
-  public type<T>(type: Type<T>, strategy?: TypeSerializationStrategy<T>): this {
-    this.tasks.push(new AddType(type, strategy));
 
     return this;
   }

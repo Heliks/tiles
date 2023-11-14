@@ -1,6 +1,7 @@
 import { Type } from '../../utils';
 import { App } from '../app';
 import { Task } from './task';
+import { getTypeName } from './utils';
 
 
 export class AddService implements Task {
@@ -11,6 +12,10 @@ export class AddService implements Task {
    *  to be created by the service container.
    */
   constructor(public readonly value: Type | object, public readonly instance: boolean) {}
+
+  public toString(): string {
+    return 'Add Service: ' + getTypeName(this.value);
+  }
 
   /** @inheritDoc */
   public exec(app: App): void {

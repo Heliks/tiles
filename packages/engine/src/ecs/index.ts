@@ -7,6 +7,9 @@ export {
   Entity,
   entityId,
   entityVersion,
+  Preset,
+  Presets,
+  PresetId,
   Query,
   QueryBuilder,
   QueryEvent,
@@ -20,6 +23,7 @@ export {
 } from '@heliks/ecs';
 
 export * from './change-aware-value';
+export * from './component-list';
 export * from './entity-builder';
 export * from './entity-ref';
 export * from './storage';

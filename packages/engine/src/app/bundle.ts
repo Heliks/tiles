@@ -36,6 +36,6 @@ export interface Bundle<B extends Builder> extends HasLifecycleEvents {
    * If this bundle was added as a build task to the `AppBuilder`, this function will
    * be called during the game runtime build process.
    */
-  build(builder: B): void;
+  build(app: B): void;
 
 }

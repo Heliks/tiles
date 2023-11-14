@@ -1,13 +1,14 @@
-import { createPackedArray, Grid } from '@heliks/tiles-engine';
+import { createPackedArray, Grid, UUID } from '@heliks/tiles-engine';
 import { Container, LayerId } from '@heliks/tiles-pixi';
-import { LocalTilesetBag, Tileset } from './tileset';
 import { AnimatedSprite } from 'pixi.js';
+import { LocalTilesetBag, Tileset } from './tileset';
 
 
 /**
  * Component that when added to an entity, will render a tilemap on its world position. A
  * tilemap is essentially a grid where each cell can possibly contain a tile.
  */
+@UUID('415ca0bf-6b43-4481-9064-3313c3fa1b01')
 export class Tilemap<T extends Tileset = Tileset> {
 
   /**
