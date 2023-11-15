@@ -20,6 +20,12 @@ type AnyFormat<L> = Format<unknown, unknown, L>;
 export class AssetLoader {
 
   /**
+   * Root path from which assets should be loaded. The loader will prepend this to every
+   * file path that it loads.
+   */
+  public root = './';
+
+  /**
    * Contains all formats known to the asset loader. All formats here are guaranteed
    * to not have overlapping file extension mappings.
    *
@@ -28,10 +34,12 @@ export class AssetLoader {
   private readonly formats: AnyFormat<AssetLoader>[] = [];
 
   /**
-   * Root path from which assets should be loaded. The loader will prepend this to every
-   * file path that it loads.
+   * Contains the promises for assets that are currently being loaded. Assets that are
+   * complete will have their promise removed from this map.
+   *
+   * @internal
    */
-  public root = './';
+  private readonly promises = new Map<Asset, Promise<unknown>>();
 
   /**
    * @param assets Resource where loaded assets are stored.
@@ -148,20 +156,33 @@ export class AssetLoader {
     return asset;
   }
 
+  /** @internal */
+  private async _fetchAsset(asset: Asset): Promise<void> {
+    asset.state = AssetState.Loading;
+
+    const promise = this.fetch(asset.file);
+
+    this.promises.set(asset, promise);
+
+    asset.data = await promise;
+    asset.state = AssetState.Loaded;
+
+    this.promises.delete(asset);
+  }
+
   /**
    * Fetches the file content for the given `asset`.
    *
    * @internal
    */
-  private async fetchAssetData(asset: Asset): Promise<void> {
-    // Check if asset is already loaded (or in the process of being loaded).
-    if (asset.state !== AssetState.Pending) {
-      return;
+  private async fetchAsset(asset: Asset): Promise<void> {
+    switch (asset.state) {
+      case AssetState.Loading:
+        await this.promises.get(asset);
+        break;
+      case AssetState.Pending:
+        return this._fetchAsset(asset);
     }
-
-    asset.state = AssetState.Loading;
-    asset.data = await this.fetch(asset.file);
-    asset.state = AssetState.Loaded;
   }
 
   /**
@@ -173,7 +194,7 @@ export class AssetLoader {
 
     // Load asynchronously in background.
     // noinspection JSIgnoredPromiseFromCall
-    this.fetchAssetData(asset);
+    this.fetchAsset(asset);
 
     return asset.handle();
   }
@@ -185,7 +206,7 @@ export class AssetLoader {
   public async async<R>(file: string): Promise<Handle<R>> {
     const asset = this.getAsset(file);
 
-    await this.fetchAssetData(asset);
+    await this.fetchAsset(asset);
 
     return asset.handle();
   }

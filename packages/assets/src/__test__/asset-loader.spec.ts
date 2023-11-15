@@ -1,5 +1,5 @@
-import { AssetLoader } from '../asset-loader';
 import { AssetStorage, Handle, Load } from '../asset';
+import { AssetLoader } from '../asset-loader';
 
 
 describe('AssetLoader', () => {
@@ -50,6 +50,25 @@ describe('AssetLoader', () => {
       await loader.async('bar.txt');
 
       expect(fetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('should wait complete load when same asset is loaded twice', async () => {
+      // Our fetch call
+      loader.fetch = jest.fn().mockImplementation(() => {
+        return new Promise<boolean>(resolve => {
+          // Make sure to slightly delay the "loading" so that the second call in our
+          // test has time to (potentially) complete before the loading process.
+          setTimeout(() => resolve(true), 50);
+        });
+      });
+
+      // Do not wait for this to complete.
+      void loader.async('foo.txt');
+
+      const handle = await loader.async('foo.txt');
+      const asset = loader.assets.get(handle);
+
+      expect(asset).not.toBeUndefined();
     });
   });
 });
