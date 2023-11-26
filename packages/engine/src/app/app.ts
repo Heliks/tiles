@@ -1,6 +1,6 @@
 import { SystemDispatcher } from '@heliks/ecs';
 import { Container } from '@heliks/tiles-injector';
-import { Presets, World } from '../ecs';
+import { World } from '../ecs';
 import { State, StateMachine } from './state';
 import { Ticker } from './ticker';
 
@@ -58,9 +58,6 @@ export class App {
   /** Dispatches game systems. This essentially is the game loop logic. */
   public readonly dispatcher: SystemDispatcher;
 
-  /** Manages available entity {@link Preset presets}. */
-  public readonly presets = new Presets();
-
   /** State machine that executes the game state. */
   public readonly state: StateMachine<World>;
 
@@ -88,7 +85,6 @@ export class App {
     // Add required bindings to service container.
     container
       .instance(this.dispatcher)
-      .instance(this.presets)
       .instance(this.state)
       .instance(this.ticker)
       .instance(this.world);
@@ -100,10 +96,9 @@ export class App {
    * While the app is running, this is called automatically once per frame.
    */
   public update(): void {
-    this.dispatcher.update(this.world);
-
     // Updates the world. E.g. entities, components.
     this.world.update();
+    this.dispatcher.update(this.world);
     this.state.update();
   }
 

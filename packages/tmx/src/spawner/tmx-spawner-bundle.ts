@@ -1,14 +1,11 @@
-import { AppBuilder, Bundle, Container as ServiceContainer, Type } from '@heliks/tiles-engine';
-import { DefaultObjectType, TmxObjectType, TmxObjectTypes } from './objects';
+import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
+import { TmxDefaultObjectFactory, TmxObjectFactory, TmxObjectSpawner } from './objects';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
 import { TmxSpawnMap } from './tmx-spawn-map';
 import { TmxSpawner } from './tmx-spawner';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 import { TmxSpawnerSystem } from './tmx-spawner-system';
 
-
-/** @internal */
-type RegisterObjectTypeParams = [type: Type<TmxObjectType>] | [id: string, type: Type<TmxObjectType>];
 
 /**
  * ## Physics
@@ -30,10 +27,7 @@ type RegisterObjectTypeParams = [type: Type<TmxObjectType>] | [id: string, type:
 export class TmxSpawnerBundle implements Bundle {
 
   /** @internal */
-  private defaultObjectType?: Type<TmxObjectType>;
-
-  /** @internal */
-  private types = new Map<string, Type<TmxObjectType>>();
+  private factories = new Set<Type<TmxObjectFactory>>();
 
   /**
    * @param unitSize Amount of pixels that are treated as one in-game unit by the
@@ -47,19 +41,12 @@ export class TmxSpawnerBundle implements Bundle {
   constructor(public unitSize: number) {}
 
   /** @internal */
-  private createDefaultObjectType(container: ServiceContainer): TmxObjectType {
-    return container.make(this.defaultObjectType ?? DefaultObjectType);
-  }
+  private setup(world: World): void {
+    const spawner = world.get(TmxObjectSpawner);
 
-  /** @internal */
-  private createObjectTypeRegistry(container: ServiceContainer): TmxObjectTypes {
-    const types = new TmxObjectTypes(this.createDefaultObjectType(container));
-
-    for (const [id, type] of this.types) {
-      types.register(id, container.make(type));
+    for (const type of this.factories) {
+      spawner.register(world.make(type));
     }
-
-    return types;
   }
 
   /** @inheritDoc */
@@ -67,43 +54,22 @@ export class TmxSpawnerBundle implements Bundle {
     builder
       .component(TmxSpawnMap)
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
-      .singleton(TmxObjectTypes, this.createObjectTypeRegistry.bind(this))
       .provide(TmxPhysicsFactory)
+      .provide(TmxDefaultObjectFactory)
+      .provide(TmxObjectSpawner)
       .provide(TmxSpawner)
-      .system(TmxSpawnerSystem);
+      .system(TmxSpawnerSystem)
+      .run(this.setup.bind(this));
   }
 
   /**
    * Overwrites the default {@link TmxObjectType object type} {@link Type type } used to
    * compose entities for {@link TmxObject objects} that do not have a custom type.
    */
-  public type(type: Type<TmxObjectType>): this;
-
-  /**
-   * Registers a custom {@link TmxObjectType object type}. Throws an error if `id` is
-   * already used by a different type.
-   */
-  public type(id: string, type: Type<TmxObjectType>): this;
-
-  /** @internal */
-  public type(...params: RegisterObjectTypeParams): this {
-    // If we have no ID, set given object type as default.
-    if (params.length === 1) {
-      this.defaultObjectType = params[0];
-
-      return this;
-    }
-
-    const [ id, type ] = params;
-
-    if (this.types.has(id)) {
-      throw new Error(`Custom object type ID "${id}" is already in use.`);
-    }
-
-    this.types.set(id, type);
+  public type(type: Type<TmxObjectFactory>): this {
+    this.factories.add(type);
 
     return this;
   }
-
 
 }

@@ -4,7 +4,7 @@
  * This component is attached to all entities that are created from objects that are
  * placed on object layers.
  */
-export class TmxMapObject {
+export class TmxObjectMetadata {
 
   /**
    * @param id Unique Id.

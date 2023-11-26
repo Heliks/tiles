@@ -1,7 +1,6 @@
-import { Type } from '../../utils';
+import { getTypeName, Type } from '../../utils';
 import { App } from '../app';
 import { Task } from './task';
-import { getTypeName } from './utils';
 
 
 export class AddService implements Task {
@@ -13,10 +12,6 @@ export class AddService implements Task {
    */
   constructor(public readonly value: Type | object, public readonly instance: boolean) {}
 
-  public toString(): string {
-    return 'Add Service: ' + getTypeName(this.value);
-  }
-
   /** @inheritDoc */
   public exec(app: App): void {
     app.container.instance(
@@ -24,6 +19,11 @@ export class AddService implements Task {
         ? this.value
         : app.container.make(this.value as Type)
     );
+  }
+
+  /** @internal */
+  public toString(): string {
+    return 'Add Service: ' + getTypeName(this.value);
   }
 
 }

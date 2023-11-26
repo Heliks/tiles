@@ -1,5 +1,5 @@
 import { Preset, PresetId } from '../../ecs';
-import { isType, TypeLike } from '../../utils';
+import { getTypeName, isType, TypeLike } from '../../utils';
 import { App } from '../app';
 import { Task } from './task';
 
@@ -9,7 +9,7 @@ export class AddPreset implements Task {
 
   /**
    * @param id Unique id with which the {@link preset} will be registered.
-   * @param preset The entity {@link Preset preset} to register.
+   * @param preset The entity {@link Preset} to register.
    */
   constructor(public readonly id: PresetId, public readonly preset: TypeLike<Preset>) {}
 
@@ -26,7 +26,12 @@ export class AddPreset implements Task {
     const preset = this.getPreset(app);
 
     app.container.instance(preset);
-    app.presets.set(this.id, preset);
+    app.world.presets.set(this.id, preset);
+  }
+
+  /** @internal */
+  public toString(): string {
+    return 'Add Preset: ' + getTypeName(this.preset);
   }
 
 }

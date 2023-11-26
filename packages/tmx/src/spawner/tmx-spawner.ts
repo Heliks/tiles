@@ -1,14 +1,11 @@
-import { AssetStorage } from '@heliks/tiles-assets';
-import { Entity, EventQueue, Injectable, Parent, Transform, World } from '@heliks/tiles-engine';
+import { Entity, EventQueue, Injectable, Parent, token, Transform, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { TmxLayer, TmxLayerType, TmxMapAsset, TmxObject, TmxObjectLayer, TmxTileLayer } from '../parser';
-import { TmxObjectType, TmxObjectTypes } from './objects';
-import { TmxMapObject } from './objects/tmx-map-object';
+import { TmxLayer, TmxLayerType, TmxMapAsset, TmxObjectLayer, TmxTileLayer } from '../parser';
+import { TmxObjectFactory } from './objects';
+import { TmxObjectSpawner } from './objects/tmx-object-spawner';
 import { TmxLayerRoot } from './tmx-layer-root';
-import { TmxPhysicsFactory } from './tmx-physics-factory';
 import { TmxSpawnMap } from './tmx-spawn-map';
-import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /** @internal */
@@ -28,6 +25,7 @@ function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: T
   }
 }
 
+export const DEFAULT_OBJECT_FACTORY = token<TmxObjectFactory>();
 
 /**
  * Service that spawns {@link TmxMapAsset maps}.
@@ -44,53 +42,17 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
    */
   public readonly onMapSpawned = new EventQueue<T>();
 
-  /**
-   * @param assets {@see AssetStorage}
-   * @param config {@see TmxConfig}
-   * @param physics {@see PhysicsFactory}
-   * @param types {@see TmxObjectTypes}
-   */
-  constructor(
-    private readonly assets: AssetStorage,
-    private readonly config: TmxSpawnerConfig,
-    private readonly physics: TmxPhysicsFactory,
-    private readonly types: TmxObjectTypes
-  ) {}
+  constructor(private readonly objects: TmxObjectSpawner) {}
 
-  /** Returns the appropriate {@link TmxObjectType} for the given `obj`. */
-  private getObjectType(world: World, obj: TmxObject): TmxObjectType {
-    if (obj.type) {
-      const type = this.types.items.get(obj.type);
-
-      if (type) {
-        return type;
-      }
-    }
-
-    return this.types.def;
+  /** @internal */
+  private async spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer): Promise<void> {
+    await Promise.all(
+      layer.data.map(item => this.objects.spawn(world, root, map, layer, item))
+    );
   }
 
   /** @internal */
-  private spawnObjectLayer(world: World, root: Entity, map: T, layer: TmxObjectLayer): Entity {
-    for (const obj of layer.data) {
-      const type = this.getObjectType(world, obj);
-
-      const entity = world
-        .create()
-        .use(new TmxMapObject(obj.id, obj.name));
-
-      type.compose(world, entity, map, layer, obj);
-
-      entity
-        .use(new Parent(root))
-        .build();
-    }
-
-    return root;
-  }
-
-  /** @internal */
-  public spawnLayer(world: World, map: T, layer: TmxLayer, renderLayer?: LayerId): Entity {
+  public async spawnLayer(world: World, map: T, layer: TmxLayer, renderLayer?: LayerId): Promise<Entity> {
     const entity = world
       .create()
       .use(new TmxLayerRoot(layer))
@@ -102,7 +64,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
         spawnTileLayer(world, entity, map, layer, renderLayer);
         break;
       case TmxLayerType.Objects:
-        this.spawnObjectLayer(world, entity, map, layer);
+        await this.spawnObjectLayer(world, entity, map, layer);
         break;
       default:
         throw new Error(`Unsupported layer type ${layer.type}`);
@@ -117,7 +79,7 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
    * If a `parent` entity is given, entities that are created in the process will be
    * children of that parent.
    */
-  public spawn(world: World, map: T, parent?: Entity): void {
+  public async spawn(world: World, map: T, parent?: Entity): Promise<void> {
     let renderLayer;
 
     for (const data of map.layers) {
@@ -129,7 +91,8 @@ export class TmxSpawner<T extends TmxMapAsset = TmxMapAsset> {
         renderLayer = data.properties.$layer;
       }
 
-      const entity = this.spawnLayer(world, map, data, renderLayer);
+      // Fixme: Should not await in loops...
+      const entity = await this.spawnLayer(world, map, data, renderLayer);
 
       if (parent !== undefined) {
         // Set layer root as child of parent entity.

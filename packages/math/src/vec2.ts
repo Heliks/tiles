@@ -21,6 +21,14 @@ export class Vec2 implements XY {
     return Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y);
   }
 
+  /** Creates a unit vector from `radians`. */
+  public static fromRadians(radians: number): Vec2 {
+    return new Vec2(
+      Math.sin(radians),
+      Math.cos(radians)
+    );
+  }
+
   /** Updates the `x` and `y` position of the vector. */
   public set(x: number, y: number): this {
     this.x = x;

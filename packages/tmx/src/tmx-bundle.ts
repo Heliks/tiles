@@ -1,5 +1,5 @@
-import { AppBuilder, Bundle, World } from '@heliks/tiles-engine';
 import { AssetLoader } from '@heliks/tiles-assets';
+import { AppBuilder, Bundle, World } from '@heliks/tiles-engine';
 import { TmxLoadTilemap, TmxLoadTileset } from './formats';
 
 
@@ -28,11 +28,6 @@ function setupAssetFormats(world: World): void {
  * to circles. The radius of the circle is the larger of the two sides of the ellipsis.
  */
 export class TmxBundle implements Bundle {
-
-  /**
-   * @param unitSize Amount of pixels that are equivalent to one game unit.
-   */
-  constructor(public unitSize = 1) {}
 
   /** @inheritDoc */
   public build(builder: AppBuilder): void {

@@ -4,7 +4,7 @@ import { AddPreset } from '../add-preset';
 
 
 class Foo implements Preset {
-  compose = jest.fn();
+  create = jest.fn();
 }
 
 describe('AddPreset', () => {
@@ -38,7 +38,7 @@ describe('AddPreset', () => {
 
     task.exec(app);
 
-    const preset = app.presets.get('foo');
+    const preset = app.world.presets.get('foo');
 
     expect(preset).toBeInstanceOf(Foo);
   });

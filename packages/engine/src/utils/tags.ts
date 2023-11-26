@@ -2,7 +2,7 @@
  * Template tag that removes all indentation from a string.
  *
  * This is mostly used as convenience for error messages so that they can be formatted
- * in code if they are to long. For example:
+ * in code if they are too long. For example:
  *
  * ```ts
  *  function foo() {

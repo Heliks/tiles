@@ -1,6 +1,6 @@
 import { Schedule, ScheduleId, System } from '@heliks/ecs';
 import { World } from '../../ecs';
-import { isType, Type, TypeLike } from '../../utils';
+import { getTypeName, isType, Type, TypeLike } from '../../utils';
 import { App } from '../app';
 import { hasOnInit } from '../lifecycle';
 import { Task } from './task';
@@ -41,17 +41,8 @@ export class AddSystem implements Task {
   }
 
   /** @internal */
-  private getTypeName(): string {
-    const system = this.system as Type;
-
-    return system.name
-      ? system.name
-      : system.constructor.name;
-  }
-
-  /** @internal */
   public toString(): string {
-    return `AddSystem: ${this.getTypeName()}`;
+    return 'Add System: ' + getTypeName(this.system);
   }
 
   /** @inheritDoc */

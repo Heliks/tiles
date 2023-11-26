@@ -1,5 +1,5 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { EntityBuilder, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { Entity, EntityBuilder, Injectable, Vec2, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '@heliks/tiles-pixi';
 import {
   isTile,
@@ -12,28 +12,18 @@ import {
   TmxTileset
 } from '../../parser';
 import { ColliderProps, TmxPhysicsFactory } from '../tmx-physics-factory';
-import { TmxSpawnerConfig } from '../tmx-spawner-config';
-import { TmxObjectType } from './tmx-object-types';
+import { TmxObjectFactory } from './tmx-object-factory';
 
 
-/**
- * Default strategy used to compose entities from {@link TmxObject objects}.
- *
- * @see TmxObjectType
- */
+/** Default {@link TmxObjectFactory}. */
 @Injectable()
-export class DefaultObjectType implements TmxObjectType {
+export class TmxDefaultObjectFactory implements TmxObjectFactory {
 
   /**
    * @param assets {@see AssetStorage}
-   * @param config {@see TmxConfig}
    * @param physics {@see PhysicsFactory}
    */
-  constructor(
-    private readonly assets: AssetStorage,
-    private readonly config: TmxSpawnerConfig,
-    private readonly physics: TmxPhysicsFactory
-  ) {}
+  constructor(private readonly assets: AssetStorage, private readonly physics: TmxPhysicsFactory) {}
 
   /** @internal */
   private getSpriteSize(tileset: TmxTileset, spriteIdx: number): Vec2 {
@@ -80,9 +70,8 @@ export class DefaultObjectType implements TmxObjectType {
   }
 
   /** @inheritDoc */
-  public compose(world: World, entity: EntityBuilder, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): void {
-    let x = obj.shape.x;
-    let y = obj.shape.y;
+  public create(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Entity {
+    const entity = world.create();
 
     if (isTile(obj)) {
       this.composeTileObject(map, layer, obj, entity);
@@ -93,14 +82,7 @@ export class DefaultObjectType implements TmxObjectType {
       entity.use(this.physics.shape(obj as TmxGeometryObject<ColliderProps>));
     }
 
-    // The object position we received from tiled is relative to the top left corner
-    // of the map. Re-align position to world space & apply unit size.
-    x = (x / this.config.unitSize) - (map.grid.cols / 2);
-    y = (y / this.config.unitSize) - (map.grid.rows / 2);
-
-
-    entity.use(new Transform(0, 0, 0, x, y));
+    return entity.build();
   }
-
 
 }

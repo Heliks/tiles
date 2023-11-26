@@ -4,6 +4,8 @@ import { Handle } from './handle';
 import { AssetCollectionMetadata } from './metadata';
 
 
+export type HandleType<H> = H extends Handle<infer T> ? T : never;
+
 /**
  * An asset collection holds a collection class that contains properties which are
  * automatically loaded by the asset loader. This serves as a convenient way to load
@@ -33,6 +35,11 @@ export class AssetCollection<C> {
     }
 
     return true;
+  }
+
+  /** @see AssetStorage.get */
+  public get<K extends keyof C, R = HandleType<C[K]>>(key: K): R {
+    return this.storage.resolve<R>(this.data[key] as Handle);
   }
 
 }

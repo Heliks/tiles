@@ -37,7 +37,7 @@ import { LoadedEntity } from './loaded-entity';
 export class LoadEntity implements Format<EntityData, LoadedEntity> {
 
   /** @inheritDoc */
-  public readonly extensions = ['entity.json', '.entity'];
+  public readonly extensions = ['entity.json', 'entity'];
 
   /**
    * @param serializer Serializer used to deserialize the entity data.

@@ -48,3 +48,8 @@ export function isPrimitive(value: unknown): value is Primitive {
 export function isType<T>(value: TypeLike<T>): value is Type<T> {
   return typeof value === 'function';
 }
+
+export function getTypeName(type: TypeLike<object>): string {
+  return isType(type) ? type.name : type.constructor.name;
+}
+

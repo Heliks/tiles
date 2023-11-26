@@ -1,4 +1,5 @@
 export * from './camera';
+export * from './config';
 export * from './drawable';
 export * from './layer';
 export * from './material';
