@@ -12,8 +12,9 @@ import { parseCustomProperties } from './tmx-properties';
  *
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
+ * - `T`: Custom type.
  */
-export type TmxGeometryObject<P = unknown, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S>;
+export type TmxGeometryObject<P = unknown, T extends string = string, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S, T>;
 
 /**
  * A freely placed object that uses a tile as its sprite.
@@ -21,7 +22,7 @@ export type TmxGeometryObject<P = unknown, S extends ColliderShape = ColliderSha
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
  */
-export interface TmxTileObject<P = unknown> extends TmxGeometry<P, Rectangle> {
+export interface TmxTileObject<P = unknown, T extends string = string> extends TmxGeometry<P, Rectangle, T> {
 
   /** If set to `true`, the sprite of the object will be flipped along the x-axis. */
   flipX: boolean;
@@ -40,7 +41,7 @@ export interface TmxTileObject<P = unknown> extends TmxGeometry<P, Rectangle> {
  * - `P`: Custom Properties
  * - `C`: Geometric shape of the object.
  */
-export type TmxObject<P = unknown, S extends ColliderShape = ColliderShape> = TmxGeometryObject<P, S> | TmxTileObject<P>;
+export type TmxObject<P = {}, T extends string = string, S extends ColliderShape = ColliderShape> = TmxGeometryObject<P, T, S> | TmxTileObject<P, T>;
 
 /**
  * Returns `true` if `value` is a {@link TmxTileObject}.

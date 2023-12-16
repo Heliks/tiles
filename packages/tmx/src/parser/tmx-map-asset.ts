@@ -4,11 +4,17 @@ import { TmxLayer } from './layers';
 import { TmxTileset } from './tmx-tileset';
 
 
-/** Map asset created from {@link TmxMapData} when a map file is loaded. */
-export class TmxMapAsset<P = unknown, T extends TmxTileset = TmxTileset> {
+/**
+ * Map asset created from {@link TmxMapData} when a map file is loaded.
+ *
+ * - `P`: Custom properties.
+ * - `L`: Type of layer found on this asset.
+ * - `T`: Type of tileset found on this asset.
+ */
+export class TmxMapAsset<P = unknown, L extends TmxLayer = TmxLayer, T extends TmxTileset = TmxTileset> {
 
   /** Map layers. The index of each layer is simultaneously its z position. */
-  public readonly layers: TmxLayer[] = [];
+  public readonly layers: L[] = [];
 
   /** Bag that contains all tilesets that are part of this map. */
   public readonly tilesets = new LocalTilesetBag<T>();

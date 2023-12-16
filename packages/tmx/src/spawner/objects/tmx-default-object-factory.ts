@@ -12,6 +12,7 @@ import {
   TmxTileset
 } from '../../parser';
 import { ColliderProps, TmxPhysicsFactory } from '../tmx-physics-factory';
+import { SpawnableAsset, SpawnLayerProperties } from '../tmx-spawner';
 import { TmxObjectFactory } from './tmx-object-factory';
 
 
@@ -44,7 +45,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
   }
 
   /** @internal */
-  private composeTileObject(map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxTileObject, entity: EntityBuilder): void {
+  private composeTileObject(map: TmxMapAsset, layer: TmxObjectLayer<SpawnLayerProperties>, obj: TmxTileObject, entity: EntityBuilder): void {
     const local = map.tilesets.getFromGlobalId(obj.tileId);
 
     const tileIdx = local.getLocalIndex(obj.tileId);
@@ -70,7 +71,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
   }
 
   /** @inheritDoc */
-  public create(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Entity {
+  public create(world: World, map: SpawnableAsset, layer: TmxObjectLayer<SpawnLayerProperties>, obj: TmxObject): Entity {
     const entity = world.create();
 
     if (isTile(obj)) {

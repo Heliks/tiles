@@ -1,8 +1,8 @@
 /** @internal */
-export interface HasCustomType {
+export interface HasCustomType<T extends string = string> {
 
   /** Custom user defined type, if any. */
-  type?: string;
+  type?: T;
 
 }
 

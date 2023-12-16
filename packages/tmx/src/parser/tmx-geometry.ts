@@ -11,8 +11,12 @@ import { HasProperties, parseCustomProperties } from './tmx-properties';
  *
  * - `P`: Custom properties.
  * - `S`: Geometric shape.
+ * - `T`: Custom type.
  */
-export interface TmxGeometry<P = unknown, S extends ColliderShape = ColliderShape> extends HasProperties<P>, HasCustomType {
+export interface TmxGeometry<
+  P = {},
+  S extends ColliderShape = ColliderShape,
+  T extends string = string> extends HasProperties<P>, HasCustomType<T> {
 
   /** Unique identifier. */
   readonly id: number;

@@ -1,93 +1,62 @@
 import { Grid } from '@heliks/tiles-engine';
+import { TmxLayerData, TmxLayerTypeData, TmxMapData, TmxObjectLayerData, TmxTileLayerData } from '../../tmx';
 import { parseObjectData, TmxObject } from '../tmx-object';
-import { parseCustomProperties } from '../tmx-properties';
-import { TmxLayerData, TmxLayerTypeData, TmxObjectLayerData, TmxTileLayerData, TmxMapData } from '../../tmx';
-import { BaseLayer } from './base-layer';
+import { HasProperties, parseCustomProperties } from '../tmx-properties';
 import { TileChunk } from './tile-chunk';
-import { LayerId } from '@heliks/tiles-pixi';
 
 
-/** Internal that can occur on a {@link TmxLayer layer}. */
-export interface LayerProperties {
-
-  /**
-   * If defined, the TMX layer will be rendered on the renderer {@link LayerId layer}
-   * using this ID. Subsequent layers will inherit this setting. For example:
-   *
-   * ```
-   *  - Layer1 with $layer 1   -> renderer layer 1
-   *  - Layer2                 -> renderer layer 1
-   *  - Layer3 with $layer 2   -> renderer layer 2
-   *  - Layer4                 -> renderer layer 2
-   *  - Layer5 with $layer 1   -> renderer layer 1
-   *  ...
-   * ```
-   */
-  $layer?: LayerId;
-
-  /**
-   * If set to `true`, this layer will be ignored when its map is spawned.
-   */
-  $skip?: boolean;
-
+/** The kinds of layers that are extracted from a tiled map. */
+export enum TmxLayerKind {
+  /** Layer contains tiles arranged on a grid. */
+  Tiles,
+  /** Layer contains freely placed objects. */
+  Objects,
+  /** Layer is a group of other layers. */
+  Group
 }
 
-
-/** Available layer types. */
-export enum TmxLayerType {
-
-  /**
-   * Layer contains tiles on a tile grid.
-   * @see TmxTileLayer
-   */
-  Tiles,
-
-  /**
-   * Layer contains freely placed objects.
-   * @see TmxObjectLayer
-   */
-  Objects,
-
-  /**
-   * Layer is a group that contains other layers.
-   * @see TmxLayerGroup
-   */
-  Group
-
+/** @internal */
+export interface BaseLayer<D, K extends TmxLayerKind, P = unknown> extends HasProperties<P> {
+  /** Layer data. The shape of this depends on what {@link kind} of layer this is. */
+  data: D;
+  /** Determines what kind of {@link data} is contained in this map. */
+  kind: K;
+  /** Custom name. */
+  name: string;
+  /** Custom type. In tiled, this is the "class" property on a layer. */
+  type?: string;
+  /** Determines if the layer should be visible. */
+  isVisible: boolean;
 }
 
 /**
  * Layer that contains freely placed objects.
  *
- * @typeparam P Custom layer properties.
+ * - `P`: Custom properties.
  */
-export type TmxObjectLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TmxObject[], TmxLayerType.Objects, P>;
+export type TmxObjectLayer<P = {}, O extends TmxObject = TmxObject> = BaseLayer<O[], TmxLayerKind.Objects, P>;
 
 /**
  * Layer that contains tiles.
  *
- * @typeparam P Custom layer properties.
+ - `P`: Custom properties.
  */
-export type TmxTileLayer<P extends LayerProperties = LayerProperties> = BaseLayer<TileChunk[], TmxLayerType.Tiles, P>;
+export type TmxTileLayer<P = {}> = BaseLayer<TileChunk[], TmxLayerKind.Tiles, P>;
 
 /**
  * Layer that groups multiple layers together. This counts as its own layer and can have
  * its own custom properties etc.
  *
- * @typeparam P Custom layer properties
+ - `P`: Custom properties.
  */
-export type TmxLayerGroup<P extends LayerProperties = LayerProperties> = BaseLayer<(TmxLayerGroup | TmxObjectLayer | TmxTileLayer)[], TmxLayerType.Group, P>;
+export type TmxLayerGroup<P = {}> = BaseLayer<(TmxLayerGroup | TmxObjectLayer | TmxTileLayer)[], TmxLayerKind.Group, P>;
 
 /**
- * Any valid layer type.
+ * A layer that can occur on a {@link TmxMapAsset map}.
  *
- * @see TmxLayerGroup
- * @see TmxObjectLayer
- * @see TmxTileLayer
- *
- * @typeparam P Custom layer properties.
+ * - `P`: Custom properties.
  */
-export type TmxLayer<P extends LayerProperties = LayerProperties> = TmxLayerGroup<P> | TmxObjectLayer<P> | TmxTileLayer<P>;
+export type TmxLayer<P = {}> = TmxLayerGroup<P> | TmxObjectLayer<P> | TmxTileLayer<P>;
 
 
 /**
@@ -108,7 +77,8 @@ export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
     data: objects,
     isVisible: layer.visible,
     properties: parseCustomProperties(layer),
-    type: TmxLayerType.Objects
+    type: layer.class,
+    kind: TmxLayerKind.Objects
   };
 }
 
@@ -142,7 +112,8 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Tm
     data: chunks,
     isVisible: layer.visible,
     properties: parseCustomProperties(layer),
-    type: TmxLayerType.Tiles
+    type: layer.class,
+    kind: TmxLayerKind.Tiles
   };
 }
 
@@ -172,7 +143,8 @@ export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: 
         data: layers,
         isVisible: layer.visible,
         properties: parseCustomProperties(layer),
-        type: TmxLayerType.Group
+        type: layer.class,
+        kind: TmxLayerKind.Group
       };
   }
 }

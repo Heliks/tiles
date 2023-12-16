@@ -1,5 +1,5 @@
 import { Grid } from '@heliks/tiles-engine';
-import { TmxLayerGroup, TmxLayerType, parseLayer } from '../layers';
+import { parseLayer, TmxLayerGroup, TmxLayerKind } from '../layers';
 
 
 describe('Layers', () => {
@@ -12,11 +12,11 @@ describe('Layers', () => {
       new Grid(0, 0, 0, 0)
     ) as TmxLayerGroup;
 
-    expect(layer.type).toBe(TmxLayerType.Group);
+    expect(layer.kind).toBe(TmxLayerKind.Group);
     expect(layer.data.length).toBe(2);
 
     // Check if parsed layers have the correct type.
-    expect(layer.data[0].type).toBe(TmxLayerType.Tiles);
-    expect(layer.data[1].type).toBe(TmxLayerType.Objects);
+    expect(layer.data[0].kind).toBe(TmxLayerKind.Tiles);
+    expect(layer.data[1].kind).toBe(TmxLayerKind.Objects);
   });
 });

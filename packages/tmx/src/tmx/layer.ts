@@ -10,6 +10,7 @@ export enum TmxLayerTypeData {
 }
 
 interface TmxBaseLayerData extends TmxHasPropertyData {
+  class?: string;
   width: number;
   height: number;
   name: string;

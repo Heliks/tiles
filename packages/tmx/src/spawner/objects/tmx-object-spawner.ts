@@ -46,7 +46,7 @@ export class TmxObjectSpawner {
     return this.factories.get(type!) ?? this.factory;
   }
 
-  public createTransform(map: TmxMapAsset, obj: TmxObject): Transform {
+  public createLocalTransform(map: TmxMapAsset, obj: TmxObject): Transform {
     const x = (obj.shape.x / this.config.unitSize) - (map.grid.cols / 2);
     const y = (obj.shape.y / this.config.unitSize) - (map.grid.rows / 2);
 
@@ -58,7 +58,7 @@ export class TmxObjectSpawner {
 
     world.add(entity, new TmxObjectMetadata(obj.id, obj.name));
     world.add(entity, new Parent(root));
-    world.add(entity, this.createTransform(map, obj));
+    world.add(entity, this.createLocalTransform(map, obj));
 
     return entity;
   }
