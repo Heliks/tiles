@@ -47,8 +47,14 @@ export class UiText implements UiWidget {
     this.size.height.value = this.view.height;
   }
 
-  /** Applies a solid border to the text. */
-  public border(width: number, color: number, style = TextBorderStyle.Round): this {
+  /**
+   * Applies a border to the text.
+   *
+   * @param width Stroke width in px.
+   * @param color Border color.
+   * @param style Border style.
+   */
+  public stroke(width = 1, color = 0x000000, style = TextBorderStyle.Round): this {
     this.view.style.lineJoin = style;
     this.view.style.stroke = color;
     this.view.style.strokeThickness = width;
@@ -61,6 +67,21 @@ export class UiText implements UiWidget {
     this.view.style.fontFamily = family;
     this.view.style.fontSize = size;
     this.view.style.fill = color;
+
+    return this;
+  }
+
+  /**
+   * Applies a drop shadow to the text.
+   *
+   * @param blur Blur distance in px.
+   * @param distance Distance from the text in px.
+   * @param angle Angle in radians.
+   */
+  public shadow(blur: number, distance = 0, angle = 0): this {
+    this.view.style.dropShadow = true;
+    this.view.style.dropShadowBlur = blur;
+    this.view.style.dropShadowDistance = distance;
 
     return this;
   }
