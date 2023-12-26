@@ -76,7 +76,7 @@ export class UiComposer<W extends UiWidget = UiWidget> {
    * is being {@link build build}.
    */
   public use(component: object): this {
-    this.world.add(this.entity, component);
+    this.world.attach(this.entity, component);
 
     return this;
   }

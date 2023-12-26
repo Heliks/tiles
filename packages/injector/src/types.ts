@@ -73,6 +73,24 @@ export interface Container extends ImmutableContainer {
   bind<T>(token: InjectorToken<T>, value: T): this;
 
   /**
+   * Removes any value bound to `token` from the service container.
+   *
+   * ```ts
+   *  class Foo {}
+   *
+   *  container.bind(Foo, new Foo());
+   *
+   *  const foo = container.get(Foo);
+   *
+   *  container.unbind(Foo);
+   *
+   *  // Will throw, because "Foo" is no longer bound to the service container.
+   *  container.get(Foo);
+   * ```ts
+   */
+  unbind<T>(token: InjectorToken<T>): this;
+
+  /**
    * Binds one or more instances to their own class type.
    *
    * ### Example

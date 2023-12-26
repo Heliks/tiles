@@ -1,15 +1,14 @@
 import { Builder } from './builder';
-import { HasLifecycleEvents } from './lifecycle';
 
 
 /**
  * A bundle is a collection of builder tasks that are grouped together.
  *
- * Essentially they are modules for the game builder. Bundles do `not` run in a sandbox,
- * which means that providers, systems, etc. will bleed into the game runtime and system
- * dispatcher as if they were added to the runtime as normal.
+ * Essentially they are modules for the game builder. Bundles do *not* run in a sandbox,
+ * which means that resources, systems, etc. will bleed into the {@link World} as if
+ * they were added outside a bundle.
  *
- * Bundles can implement lifecycle events.
+ * Bundles can implement the {@link OnInit} lifecycle.
  *
  * ### Example
  *
@@ -28,7 +27,7 @@ import { HasLifecycleEvents } from './lifecycle';
  *  }
  * ```
  */
-export interface Bundle<B extends Builder> extends HasLifecycleEvents {
+export interface Bundle<B extends Builder> {
 
   /**
    * Implementation of the bundle build logic.

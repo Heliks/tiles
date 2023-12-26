@@ -83,7 +83,7 @@ describe('EventSystem', () => {
       const parentA = world.insert(new UiNode());
       const parentB = world.insert(nodeB, new Parent(parentA));
 
-      world.add(entity, new Parent(parentB));
+      world.attach(entity, new Parent(parentB));
 
       // Subscribe to queue of the highest node in the hierarchy.
       const subscriber = nodeB.onInteract.subscribe();

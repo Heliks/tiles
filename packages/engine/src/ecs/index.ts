@@ -26,6 +26,7 @@ export * from './change-aware-value';
 export * from './component-list';
 export * from './entity-builder';
 export * from './entity-ref';
+export * from './lifecycle';
 export * from './storage';
 export * from './processing-system';
 export * from './reactive-system';

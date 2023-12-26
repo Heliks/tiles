@@ -18,6 +18,13 @@ export class Container implements Base {
     return this;
   }
 
+  /** @inheritDoc */
+  public unbind(token: InjectorToken): this {
+    this.bindings.delete(token);
+
+    return this;
+  }
+
   /** @hidden */
   public getBindings(): Map<InjectorToken, Binding> {
     return this.bindings;

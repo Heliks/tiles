@@ -2,7 +2,7 @@ import { World } from '../../ecs';
 import { App } from '../app';
 import { Builder } from '../builder';
 import { Bundle } from '../bundle';
-import { hasOnInit } from '../lifecycle';
+import { hasOnInit } from '../../ecs/lifecycle';
 import { Task } from './task';
 
 

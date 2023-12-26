@@ -53,3 +53,7 @@ export function getTypeName(type: TypeLike<object>): string {
   return isType(type) ? type.name : type.constructor.name;
 }
 
+export function getType<T extends object>(target: TypeLike<T>): Type<T> {
+  return isType(target) ? target : target.constructor as Type<T>;
+}
+

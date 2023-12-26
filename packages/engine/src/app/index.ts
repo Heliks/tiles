@@ -4,7 +4,6 @@ import { Bundle as BaseBundle } from './bundle';
 
 export * from './app';
 export * from './app-builder';
-export * from './lifecycle';
 export * from './schedule-builder';
 export * from './state'
 export * from './ticker';

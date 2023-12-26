@@ -121,7 +121,7 @@ export class TmxSpawner<M extends SpawnableAsset = SpawnableAsset> {
 
       if (parent !== undefined) {
         // Set layer root as child of parent entity.
-        world.add(entity, new Parent(parent));
+        world.attach(entity, new Parent(parent));
 
         // Add entity to spawner layers.
         world
