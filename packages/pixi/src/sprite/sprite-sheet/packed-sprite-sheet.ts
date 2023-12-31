@@ -1,26 +1,23 @@
 import { Vec2 } from '@heliks/tiles-engine';
-import { Rectangle as PxRectangle, Sprite, Texture } from 'pixi.js';
+import { Rectangle as PxRectangle, Texture } from 'pixi.js';
 import { PackedSprite } from './packed-sprite';
 import { SpriteSheet } from './sprite-sheet';
 
 
 /**
- * A {@link SpriteSheet spritesheet} that contains sprites that are packed to be reduced
- * to their lowest possible width and height. When a {@link Texture texture} is created
- * from this spritesheet, the original, "un-packed" size is restored.
+ * A {@link SpriteSheet} that contains sprites packed together to their lowest possible
+ * size on a source texture. When sprites are created, their textures are cut from that
+ * source texture and their original, unpacked size will be restored.
  */
-export class PackedSpriteSheet extends SpriteSheet {
+export class PackedSpriteSheet extends SpriteSheet<number> {
 
   /** @internal */
   private readonly sprites = new Map<number, PackedSprite>();
 
-  /** Cache for created textures. */
-  private readonly textures = new Map<number, Texture>()
-
   /**
-   * @param tex Texture from which sprites will be created.
+   * @param source Source texture from which sprite textures will be created.
    */
-  constructor(private readonly tex: Texture) {
+  constructor(private readonly source: Texture) {
     super();
   }
 
@@ -54,19 +51,13 @@ export class PackedSpriteSheet extends SpriteSheet {
   }
 
   /** @inheritDoc */
-  public texture(spriteId: number): Texture {
-    let texture = this.textures.get(spriteId);
-
-    if (texture) {
-      return texture;
-    }
-
+  protected _texture(spriteId: number): Texture {
     // Todo: getFrame is a hard error which makes this inconsistent with how sprite
     //  grids work. Maybe an empty frame should be used here instead?
     const frame = this._getPackedSprite(spriteId);
 
-    texture = new Texture(
-      this.tex.baseTexture,
+    return new Texture(
+      this.source.baseTexture,
       frame,
       new PxRectangle(
         0,
@@ -81,15 +72,6 @@ export class PackedSpriteSheet extends SpriteSheet {
         frame.height
       )
     );
-
-    this.textures.set(spriteId, texture);
-
-    return texture;
-  }
-
-  /** @inheritDoc */
-  public sprite(index: number): Sprite {
-    return new Sprite(this.texture(index));
   }
 
   /** @inheritDoc */

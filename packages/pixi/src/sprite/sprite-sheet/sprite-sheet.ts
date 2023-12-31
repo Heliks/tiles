@@ -11,22 +11,48 @@ export interface SpriteAnimationFrames {
 }
 
 /** A collection of sprites. */
-export abstract class SpriteSheet {
+export abstract class SpriteSheet<I = unknown> {
 
   /** @internal */
   private readonly animations = new Map<string, SpriteAnimationFrames>();
 
+  /** @internal */
+  private readonly cache = new Map<I, Texture>();
+
   /** Returns the total amount of sprites in this spritesheet. */
   public abstract size(): number;
 
-  /** Creates a sprite {@link Texture texture}. */
-  public abstract texture(index: number): Texture;
+  /**
+   * Returns the size of the sprite matching `id` in px. Depending on the sprite-sheet,
+   * this can throw an error if no sprite matches that id.
+   */
+  public abstract getSpriteSize(id: I): Vec2;
 
-  /** Creates a {@link Sprite}. */
-  public abstract sprite(index: number): Sprite;
+  /** Internal implementation of the spritesheet {@link Texture} factory. */
+  protected abstract _texture(id: I): Texture;
 
-  /** Returns the size of a sprite in pixels. */
-  public abstract getSpriteSize(spriteId: number): Vec2;
+  /**
+   * Creates a {@link Texture} from the sprite matching `id`. Depending on the sprite -
+   * sheet, this can throw an error if no sprite matches that id.
+   */
+  public texture(id: I): Texture {
+    let texture = this.cache.get(id);
+
+    if (! texture) {
+      texture = this._texture(id);
+      this.cache.set(id, texture);
+    }
+
+    return texture;
+  }
+
+  /**
+   * Creates the {@link Sprite} matching `id`. Depending on the sprite-sheet, this can
+   * throw an error if no sprite matches that id.
+   */
+  public sprite(id: I): Sprite {
+    return new Sprite(this.texture(id));
+  }
 
   /**
    * Registers an animation with `name`. Non-required data is filled with fallback values.

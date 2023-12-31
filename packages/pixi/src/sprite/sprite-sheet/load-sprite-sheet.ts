@@ -1,49 +1,119 @@
-import { Grid, Struct } from '@heliks/tiles-engine';
-import { SpriteAnimationFrames, SpriteSheet } from './sprite-sheet';
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
-import { SpriteGrid } from './sprite-grid';
+import { Grid, Rectangle, Struct } from '@heliks/tiles-engine';
 import { Texture } from 'pixi.js';
+import { SpriteGrid } from './sprite-grid';
+import { SpriteAnimationFrames, SpriteSheet } from './sprite-sheet';
+import { SliceId, SpriteSlices } from './sprite-slices';
 
 
-/** The raw data of a sprite sheet loaded from JSON. */
-interface SpriteSheetData {
+/** @internal */
+interface BaseSpriteSheetData {
   animations?: Struct<SpriteAnimationFrames>;
   image: string;
   imageWidth: number;
   imageHeight: number;
+}
+
+/** Raw data for {@link SpriteGrid} {@link SpriteSheet spritesheets}. */
+ interface SpriteGridData extends BaseSpriteSheetData {
   spriteWidth: number;
   spriteHeight: number;
+  type?: 'grid';
 }
 
 /** @internal */
-function createSpritesheetGrid(data: SpriteSheetData): Grid {
-  return new Grid(
+interface SpriteSlicesConfig {
+  [id: SliceId]: {
+    w: number;
+    h: number;
+    x: number;
+    y: number;
+  }
+}
+
+/** Raw data for {@link SpriteSlices} {@link SpriteSheet spritesheets}. */
+interface SpriteSlicesData extends BaseSpriteSheetData {
+  slices: SpriteSlicesConfig;
+  type: 'slices';
+}
+
+/** Raw data for sprite sheets. */
+type SpriteSheetData = SpriteSlicesData | SpriteGridData;
+
+/** @internal */
+function _grid(texture: Texture, data: SpriteGridData): SpriteGrid {
+  const grid = new Grid(
     Math.floor(data.imageWidth / data.spriteWidth),
     Math.floor(data.imageHeight / data.spriteHeight),
     data.spriteWidth,
     data.spriteHeight
   );
+
+  return new SpriteGrid(grid, texture);
+}
+
+/** @internal */
+function _slices(texture: Texture, data: SpriteSlicesData): SpriteSlices {
+  const spritesheet = new SpriteSlices(texture);
+
+  for (const id in data.slices) {
+    const slice = data.slices[id];
+
+    spritesheet.setSliceRegion(id, new Rectangle(
+      slice.w,
+      slice.h,
+      slice.x,
+      slice.y
+    ));
+  }
+
+  return spritesheet;
+}
+
+/** @internal */
+function parse(texture: Texture, data: SpriteSheetData): SpriteSheet {
+  switch (data.type) {
+    default:
+    case 'grid':
+      return _grid(texture, data);
+    case 'slices':
+      return _slices(texture, data);
+  }
 }
 
 /**
- * Loads a `SpriteSheet` from a JSON format.
+ * Loads {@link Spritesheet spritesheets} from `.spritesheet` & `.spritesheet.json` files.
+ *
+ * ### Load sprite grids
+ *
+ * See: {@link SpriteGrid}
  *
  * ```json
- * {
- *    "cols": 1,
- *    "image":
- *    "rows": 2,
- *    "spriteSize": [16, 16]
- * }
- * ```
- * To load the sprite sheet:
- *
- * ```ts
- * const sheet = world.get(AssetLoader).fetch('foo.json', new LoadSpriteSheet());
+ *  {
+ *    "image": 'foo.png'
+ *    "imageWidth": 100,
+ *    "imageHeight": 100,
+ *    "spriteWidth": 10,
+ *    "spriteWidth": 10
+ *  }
  * ```
  *
- * @see SpriteSheetData
- * @see SpriteSheet
+ * ### Load slice-able texture
+ *
+ * See {@link SpriteSlices}
+ *
+ * ```json
+ *  {
+ *    "image": 'foo.png'
+ *    "imageWidth": 100,
+ *    "imageHeight": 100,
+ *    "slices": {
+ *      "foo": { w: 10, h: 10, x: 0, y: 0 },
+ *      "bar": { w: 10, h: 10, x: 10, y: 0 }
+ *    }
+ *  }
+ * ```
+ * ```
  */
 export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
@@ -54,19 +124,25 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
   public readonly type = LoadType.Json;
 
   /** @inheritDoc */
+  public async process(data: SpriteGridData, file: string, loader: AssetLoader): Promise<SpriteGrid>;
+
+  /** @inheritDoc */
+  public async process(data: SpriteSlicesData, file: string, loader: AssetLoader): Promise<SpriteSlices>;
+
+  /** @inheritDoc */
   public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
     const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const sheet = new SpriteGrid(createSpritesheetGrid(data), texture);
+    const spritesheet = parse(texture, data);
 
     if (data.animations) {
       for (const name in data.animations) {
         if (data.animations.hasOwnProperty(name)) {
-          sheet.setAnimation(name, data.animations[name]);
+          spritesheet.setAnimation(name, data.animations[name]);
         }
       }
     }
 
-    return sheet;
+    return spritesheet;
   }
 
 }
