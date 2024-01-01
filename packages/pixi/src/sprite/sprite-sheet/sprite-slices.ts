@@ -1,5 +1,5 @@
 import { Rectangle, Vec2 } from '@heliks/tiles-engine';
-import { Texture, Rectangle as PixRectangle } from 'pixi.js';
+import { Rectangle as PixRectangle, Texture } from 'pixi.js';
 import { SpriteSheet } from './sprite-sheet';
 
 
@@ -65,7 +65,7 @@ export class SpriteSlices extends SpriteSheet<SliceId> {
       region.width,
       region.height,
       region.x,
-      region.x
+      region.y
     ));
   }
 
