@@ -62,10 +62,10 @@ export class SpriteSlices extends SpriteSheet<SliceId> {
     const region = this.getSliceRegion(id);
 
     return new Texture(this.source.baseTexture, new PixRectangle(
-      region.width,
-      region.height,
       region.x,
-      region.y
+      region.y,
+      region.width,
+      region.height
     ));
   }
 
