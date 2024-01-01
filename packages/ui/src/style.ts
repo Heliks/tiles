@@ -22,7 +22,7 @@ export interface Style extends BaseStyle {
   context?: DisplayContext;
 
   /**
-   * Id of the renderer {@link LayerId layer} where the node should be rendered.
+   * ID of the renderer {@link LayerId layer} where the node should be rendered.
    *
    * If not defined, the node will be rendered on the first layer available. If the node
    * is the child of another node, this setting will be ignored.

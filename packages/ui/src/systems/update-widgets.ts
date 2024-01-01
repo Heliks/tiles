@@ -24,7 +24,7 @@ export class UpdateWidgets extends ProcessingSystem {
       const node = this.nodes.get(entity);
 
       if (node._widget) {
-        node._widget.update(world, entity);
+        node._widget.update(world, entity, node.layout);
 
         // Widgets can project their content size directly onto the layout node,
         // overwriting the existing style.

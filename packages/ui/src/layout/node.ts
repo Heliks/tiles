@@ -4,6 +4,7 @@ import { Rect } from './rect';
 import { Size } from './size';
 import { computeStyleSheet, Style } from './style';
 
+
 let id = 0;
 
 /**

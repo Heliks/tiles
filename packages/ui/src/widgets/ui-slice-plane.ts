@@ -1,0 +1,80 @@
+import { AssetStorage, Handle } from '@heliks/tiles-assets';
+import { World } from '@heliks/tiles-engine';
+import { SpriteSheet } from '@heliks/tiles-pixi';
+import { NineSlicePlane, Texture } from 'pixi.js';
+import { Node } from '../layout';
+import { UiWidget } from '../ui-widget';
+
+
+/**
+ * Displays a texture that can be stretched in all directions using 9-slice scaling.
+ *
+ * Todo: Slice plane texture can not be switched after it was first created.
+ *
+ * @see NineSlicePlane
+ */
+export class UiSlicePlane<I = unknown> implements UiWidget {
+
+  /** @inheritDoc */
+  public readonly view = new NineSlicePlane(Texture.WHITE, 0, 0, 0, 0);
+
+  /** Current slice plane texture. */
+  private texture?: Texture;
+
+  /**
+   * @param spritesheet Spritesheet from which the slice plane texture will be created.
+   * @param spriteId Id of the sprite that should be used as the slice plane texture.
+   */
+  constructor(public spritesheet: Handle<SpriteSheet<I>>, public spriteId: I) {
+    // Hide until slice plane texture is ready.
+    this.view.visible = false;
+  }
+
+  /** @internal */
+  private createPlaneTexture(world: World): Texture | undefined {
+    const spritesheet = world.get(AssetStorage).get(this.spritesheet);
+
+    if (spritesheet) {
+      return this.texture = spritesheet.texture(this.spriteId);
+    }
+  }
+
+  /** @internal */
+  private getPlaneTexture(world: World): Texture | undefined {
+    return this.texture ? this.texture : this.createPlaneTexture(world);
+  }
+
+  /** Individually sets the offset to each side for the {@link NineSlicePlane}. */
+  public side(top: number, right: number, bottom: number, left: number): this {
+    this.view.topHeight = top;
+    this.view.bottomHeight = bottom;
+    this.view.leftWidth = left;
+    this.view.rightWidth = right;
+
+    return this;
+  }
+
+  /** Sets the offset for all sides of the {@link NineSlicePlane}. */
+  public sides(offset: number): this {
+    return this.side(offset, offset, offset, offset);
+  }
+
+  /** @inheritDoc */
+  public update(world: World, _: unknown, layout: Node): void {
+    const texture = this.getPlaneTexture(world);
+
+    if (! texture) {
+      return;
+    }
+
+    this.view.texture = texture;
+
+    // Inherit view size from node that displays this widget.
+    this.view.width = layout.size.width;
+    this.view.height = layout.size.height;
+
+    // Texture is loaded, therefore sprite can be made visible again.
+    this.view.visible = true;
+  }
+
+}
