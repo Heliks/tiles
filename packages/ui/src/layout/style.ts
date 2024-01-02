@@ -1,5 +1,6 @@
-import { Size } from './size';
 import { Rect } from './rect';
+import { Sides } from './sides';
+import { Size } from './size';
 
 
 /**
@@ -43,34 +44,38 @@ export enum FlexDirection {
  * Alignment modes.
  */
 export enum AlignContent {
+
   /** Pack items around the start. */
   Start,
+
   /** Pack items around the center. */
   Center,
+
   /** Pack items around the end. */
   End,
+
   /**
    * Each flex item will have remaining free space distributed equally to both of their
    * edges. I.e., the gap between the edge of the first & last item and the start / end
    * edge of the flex container, is exactly half of the gap between each item.
    */
   SpaceAround,
+
   /**
    * The first and last items are aligned with the edges of the container. The remaining
    * free space is distributed evenly. If the leftover space is negative, or there is
    * only a single item on the line, this value is treated as {@link AlignContent.Start}.
    */
   SpaceBetween,
+
   /**
    * Each flex item will have the same amount of space distributed to them on both of
    * their edges. I.e., the gap between the container edge and the first & last item
    * is exactly the same as the gap between each item.
    */
   SpaceEvenly
-}
 
-/** Array that contains margins for each side of a box. */
-export type MarginStyle = [top: number, right: number, bottom: number, left: number];
+}
 
 /** Available styling options. */
 export interface Style {
@@ -97,10 +102,16 @@ export interface Style {
   justify: AlignContent;
 
   /**
-   * Margins surround the border edge of a node, providing spacing between node. The
-   * margin property specifies the thickness of the margin area of a box.
+   * Sets the margin thickness for all four sides of the node. The margin is the space
+   * that surrounds a node.
    */
-  margin: MarginStyle;
+  margin: Sides;
+
+  /**
+   * Sets the padding area for all four sides of the node. The padding is the space
+   * between the node border and its content.
+   */
+  padding: Sides;
 
   /**
    * Defines the size of the node.
@@ -130,7 +141,8 @@ export function computeStyleSheet(style: Partial<Style> = {}): Style {
     align: AlignContent.Start,
     direction: FlexDirection.Row,
     justify: AlignContent.Start,
-    margin: [0, 0, 0, 0],
+    margin: new Sides(0, 0, 0, 0),
+    padding: new Sides(0, 0, 0, 0),
     size: new Rect(
       Size.auto(),
       Size.auto()

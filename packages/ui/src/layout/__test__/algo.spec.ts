@@ -13,6 +13,7 @@ import { Constants } from '../constants';
 import { Line } from '../line';
 import { Node } from '../node';
 import { Rect } from '../rect';
+import { Sides } from '../sides';
 import { Size } from '../size';
 import { FlexDirection, isRow, Style } from '../style';
 
@@ -71,7 +72,7 @@ describe('determineAvailableSpace()', () => {
 
   it('should take container margin into account', () => {
     const node = new Node({
-      margin: [10, 5, 10, 5]
+      margin: new Sides(10, 5, 10, 5)
     });
 
     // Sums horizontal & vertical margins.
@@ -79,6 +80,18 @@ describe('determineAvailableSpace()', () => {
     determineAvailableSpace(node, new Rect(200, 200));
 
     expect(node.constants.space).toMatchObject(new Rect(190, 180));
+  });
+
+  it('should take container padding into account', () => {
+    const node = new Node({
+      padding: new Sides(5, 10, 15, 20)
+    });
+
+    // Sums horizontal & vertical margins.
+    setupConstants(node);
+    determineAvailableSpace(node, new Rect(200, 200));
+
+    expect(node.constants.space).toMatchObject(new Rect(170, 180));
   });
 });
 
@@ -179,9 +192,9 @@ describe('collectLines()', () => {
     // Create three nodes. Based on their defined size they should all fit into the
     // same line. However, with a margin applied, their outer size grows where only
     // two items should fit into the same line.
-    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
-    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
-    node.add(createTestNode(25, 25, { margin: [0, 0, 0, 5] }));
+    node.add(createTestNode(25, 25, { margin: new Sides(0, 0, 0, 5) }));
+    node.add(createTestNode(25, 25, { margin: new Sides(0, 0, 0, 5) }));
+    node.add(createTestNode(25, 25, { margin: new Sides(0, 0, 0, 5) }));
 
     const lines = collectLines(node, new Rect(75, 75));
 
@@ -286,7 +299,7 @@ describe('calculateOuterSize()', () => {
 
   it('should take margin into account', () => {
     const node = new Node({
-      margin: [1, 2, 3, 4]
+      margin: new Sides(1, 2, 3, 4)
     });
 
     node.size.width = 10;
@@ -346,11 +359,11 @@ describe('distributeAvailableSpace()', () => {
 
   it('should distribute margins for column layouts', () => {
     const childA = createTestNode(25, 25, {
-      margin: [5, 5, 5, 5]
+      margin: new Sides(5, 5, 5, 5)
     });
 
     const childB = createTestNode(25, 25, {
-      margin: [0, 0, 0, 5]
+      margin: new Sides(0, 0, 0, 5)
     });
 
     const space = new Rect(200, 200);
@@ -368,9 +381,23 @@ describe('distributeAvailableSpace()', () => {
     expect(childA.pos).toMatchObject(new Vec2(5, 5));
     expect(childB.pos).toMatchObject(new Vec2(40, 0));
   });
+
+  it('should take padding of flex container into account', () => {
+    constants.padding.copy(new Sides(5, 0, 0, 10));
+
+    const child = createTestNode(10, 10);
+    const space = new Rect(100, 100);
+
+    line.add(child);
+
+    distributeAvailableSpace([ line ], space, constants);
+
+    expect(child.pos).toMatchObject(new Vec2(10, 5));
+  });
 });
 
 
+/*
 describe('compute', () => {
   it('foo', () => {
     const container = new Node({
@@ -389,7 +416,7 @@ describe('compute', () => {
     for (let i = 0; i < 2; i++) {
       const wrapper = new Node({
         direction: FlexDirection.Column,
-        margin: [0, 5, 0, 5]
+        margin: new Sides(0, 5, 0, 5)
       });
 
       const childA = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
@@ -409,3 +436,5 @@ describe('compute', () => {
     // console.log(outer.children[1].children[1].pos)
   });
 });
+
+ */

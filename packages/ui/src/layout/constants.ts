@@ -1,13 +1,14 @@
 import { Line } from './line';
 import { Point } from './point';
 import { Rect } from './rect';
+import { Sides } from './sides';
 import { AlignContent } from './style';
 import { Maybe } from './types';
 
 
 /**
  * Caches intermediate computations during layout computation. This class is considered
- * internal and should not be edited from outside the layout algorithm.
+ * internal and should not be manually edited.
  */
 export class Constants {
 
@@ -16,7 +17,11 @@ export class Constants {
   public justify = AlignContent.Start;
   public isRow = true;
   public readonly lines: Line[] = [];
-  public readonly margin = new Rect(0, 0);
+
+  public readonly margin = new Sides();
+  public readonly padding = new Sides();
+
+
   public readonly offset = new Point();
   public readonly outerSize = new Rect(0, 0);
 

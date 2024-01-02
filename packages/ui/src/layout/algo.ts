@@ -9,8 +9,8 @@ import { calculateAlignOffset, isRow } from './style';
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-available */
 export function determineAvailableSpace(node: Node, space: Rect): Rect {
-  node.constants.space.width = node.style.size.width.resolve(space.width, space.width) - node.constants.margin.width;
-  node.constants.space.height = node.style.size.height.resolve(space.height, space.height) - node.constants.margin.height;
+  node.constants.space.width = node.style.size.width.resolve(space.width, space.width) - node.constants.margin.horizontal() - node.constants.padding.horizontal();
+  node.constants.space.height = node.style.size.height.resolve(space.height, space.height) - node.constants.margin.vertical() - node.constants.padding.vertical();
 
   return node.constants.space;
 }
@@ -26,9 +26,8 @@ export function setupConstants(node: Node): void {
   node.constants.size.width = undefined;
   node.constants.size.height = undefined;
 
-  // Compute horizontal + vertical margins.
-  node.constants.margin.width = node.style.margin[1] + node.style.margin[3];
-  node.constants.margin.height = node.style.margin[0] + node.style.margin[2];
+  node.constants.padding.copy(node.style.padding);
+  node.constants.margin.copy(node.style.margin);
 
   // Reset cached flex lines.
   for (const line of node.constants.lines) {
@@ -248,12 +247,13 @@ export function distributeAvailableSpace(lines: Line[], space: Rect, constants: 
       const crossPos = calculateAlignOffset(freeCrossSpace, l, first, constants.align) + crossSpaceInUse;
 
       if (constants.isRow) {
-        child.pos.x = mainPos + child.style.margin[3];
-        child.pos.y = crossPos + child.style.margin[0];
+        // Todo: Should we get child margin from child constants?
+        child.pos.x = mainPos + child.style.margin.left + constants.padding.left;
+        child.pos.y = crossPos + child.style.margin.top + constants.padding.top;
       }
       else {
-        child.pos.x = crossPos + child.style.margin[3];
-        child.pos.y = mainPos + child.style.margin[0];
+        child.pos.x = crossPos + child.style.margin.left + constants.padding.left;
+        child.pos.y = mainPos + child.style.margin.top + constants.padding.top;
       }
 
       mainSpaceInUse += child.constants.outerSize.main(constants.isRow);
@@ -264,8 +264,8 @@ export function distributeAvailableSpace(lines: Line[], space: Rect, constants: 
 }
 
 export function calculateOuterNodeSize(node: Node): Rect {
-  node.constants.outerSize.width = node.size.width + node.constants.margin.width;
-  node.constants.outerSize.height = node.size.height + node.constants.margin.height;
+  node.constants.outerSize.width = node.size.width + node.constants.margin.horizontal();
+  node.constants.outerSize.height = node.size.height + node.constants.margin.vertical();
 
   return node.constants.outerSize;
 }
