@@ -9,7 +9,7 @@ import { UiWidget } from '../ui-widget';
 /**
  * Ui widget that displays a sprite.
  */
-export class UiSprite implements UiWidget {
+export class UiSprite<I = unknown> implements UiWidget {
 
   /** @inheritDoc */
   public readonly view = new Sprite();
@@ -21,18 +21,23 @@ export class UiSprite implements UiWidget {
   );
 
   /** @internal */
-  private currentIndex = -1;
+  private currentId?: I;
 
   /**
    * @param spritesheet Spritesheet from which the sprite textures will be created.
-   * @param spriteIndex Index of the sprite that should be displayed.
+   * @param spriteIndex Id of the sprite that should be displayed.
    */
-  constructor(public spritesheet: Handle<SpriteSheet>, public spriteIndex: number) {
+  constructor(public spritesheet: Handle<SpriteSheet<I>>, public spriteIndex: I) {
     this.view.visible = false;
   }
 
+  /** @inheritDoc */
+  public getContextInstance(): this {
+    return this;
+  }
+
   /** Updates the displayed sprite. */
-  public set(spritesheet: Handle<SpriteSheet>, spriteIndex: number): this {
+  public set(spritesheet: Handle<SpriteSheet>, spriteIndex: I): this {
     this.spritesheet = spritesheet;
     this.spriteIndex = spriteIndex;
 
@@ -43,11 +48,11 @@ export class UiSprite implements UiWidget {
   public update(world: World): void {
     const asset = world.get(AssetStorage).get(this.spritesheet);
 
-    if (asset && this.currentIndex !== this.spriteIndex) {
+    if (asset && this.currentId !== this.spriteIndex) {
       this.view.visible = true;
       this.view.texture = asset.texture(this.spriteIndex);
 
-      this.currentIndex = this.spriteIndex;
+      this.currentId = this.spriteIndex;
 
       this.size.width.value = this.view.texture.width;
       this.size.height.value = this.view.texture.height;

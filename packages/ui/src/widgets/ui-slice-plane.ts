@@ -30,6 +30,11 @@ export class UiSlicePlane<I = unknown> implements UiWidget {
     this.view.visible = false;
   }
 
+  /** @inheritDoc */
+  public getContextInstance(): this {
+    return this;
+  }
+
   /** @internal */
   private createPlaneTexture(world: World): Texture | undefined {
     const spritesheet = world.get(AssetStorage).get(this.spritesheet);

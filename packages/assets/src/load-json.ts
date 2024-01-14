@@ -8,14 +8,10 @@ import { Format } from './format';
  */
 export class LoadJSON implements Format<object, object> {
 
-  /**
-   * @inheritDoc
-   */
-  readonly extensions = ['json'];
+  /** @inheritDoc */
+  public readonly extensions = ['json'];
 
-  /**
-   * @inheritDoc
-   */
+  /** @inheritDoc */
   public process(data: object): object {
     return data;
   }

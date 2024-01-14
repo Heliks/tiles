@@ -1,8 +1,7 @@
 import { Schedule, ScheduleId, System } from '@heliks/ecs';
-import { World } from '../../ecs';
-import { getTypeName, isType, Type, TypeLike } from '../../utils';
+import { hasOnInit, World } from '../../ecs';
+import { getTypeName, isType, TypeLike } from '../../utils';
 import { App } from '../app';
-import { hasOnInit } from '../../ecs/lifecycle';
 import { Task } from './task';
 
 

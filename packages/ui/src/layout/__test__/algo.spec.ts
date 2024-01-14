@@ -396,45 +396,27 @@ describe('distributeAvailableSpace()', () => {
   });
 });
 
-
 /*
 describe('compute', () => {
   it('foo', () => {
     const container = new Node({
       // justify: AlignContent.Center,
       // wrap: true,
+      direction: FlexDirection.Column,
       size: new Rect<Size>(
         Size.percent(1),
         Size.percent(1)
       )
     });
 
-    const outer = new Node({
-      direction: FlexDirection.Row
-    });
 
-    for (let i = 0; i < 2; i++) {
-      const wrapper = new Node({
-        direction: FlexDirection.Column,
-        margin: new Sides(0, 5, 0, 5)
-      });
+    const childA = new Node({ size: new Rect(Size.px(20), Size.px(20)), padding: new Sides(5, 5, 5, 5), margin: new Sides(5, 0, -5, 0) });
+    const childB = new Node({ size: new Rect(Size.px(20), Size.px(20)), padding: new Sides(5, 5, 5, 5) });
 
-      const childA = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
-      const childB = new Node({ size: new Rect(Size.px(32), Size.px(32)) });
+    container.add(childA);
+    container.add(childB);
 
-      wrapper.add(childA);
-      wrapper.add(childB);
-
-      outer.add(wrapper);
-    }
-
-    container.add(outer);
-
-    compute(container, new Rect(180, 320));
-
-    // console.log(outer.children[0].children[0].pos)
-    // console.log(outer.children[1].children[1].pos)
+    compute(container, new Rect(100, 200));
   });
 });
-
- */
+*/

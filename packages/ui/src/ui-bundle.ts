@@ -1,6 +1,16 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
 import { RendererSchedule } from '@heliks/tiles-pixi';
-import { ComputeLayouts, DrawUi, EventSystem, MaintainLayouts, SyncNodes, UpdateWidgets } from './systems';
+import { Context } from './context';
+import {
+  DrawUi,
+  EventSystem,
+  MaintainContexts,
+  MaintainLayouts,
+  SyncNodes,
+  UpdateContexts,
+  UpdateLayouts,
+  UpdateWidgets
+} from './systems';
 import { UiNode } from './ui-node';
 
 
@@ -12,12 +22,15 @@ export class UiBundle implements Bundle {
   /** @inheritDoc */
   public build(app: AppBuilder): void {
     app
+      .component(Context)
       .component(UiNode)
       .system(EventSystem)
-      .system(SyncNodes, RendererSchedule.Update)
-      .system(MaintainLayouts, RendererSchedule.Update)
-      .system(UpdateWidgets, RendererSchedule.Update)
-      .system(ComputeLayouts, RendererSchedule.Update)
+      .system(SyncNodes)
+      .system(MaintainLayouts)
+      .system(MaintainContexts)
+      .system(UpdateContexts)
+      .system(UpdateWidgets)
+      .system(UpdateLayouts)
       .system(DrawUi, RendererSchedule.Update);
   }
 

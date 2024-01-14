@@ -14,7 +14,7 @@ import { UiNode } from '../ui-node';
 
 /** Computes UI node {@link UiNode.layout layouts}. */
 @Injectable()
-export class ComputeLayouts extends ProcessingSystem {
+export class UpdateLayouts extends ProcessingSystem {
 
   /** Available screen space. */
   private space = new Rect(0, 0);

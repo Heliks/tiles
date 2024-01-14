@@ -1,8 +1,8 @@
-import { UiWidget } from '../ui-widget';
-import { Sprite } from 'pixi.js';
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
-import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
 import { Ticker, Timer, World } from '@heliks/tiles-engine';
+import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
+import { Sprite } from 'pixi.js';
+import { UiWidget } from '../ui-widget';
 
 
 /**
@@ -53,6 +53,11 @@ export class UiAnimatedSprite implements UiWidget {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.view.texture = spritesheet.texture( this.frames!.frames[ frame ] )
     this.frame = frame;
+  }
+
+  /** @inheritDoc */
+  public getContextInstance(): this {
+    return this;
   }
 
   /** @inheritDoc */

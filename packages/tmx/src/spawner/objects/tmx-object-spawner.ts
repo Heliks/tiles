@@ -43,6 +43,7 @@ export class TmxObjectSpawner {
   public getFactory(type?: string): TmxObjectFactory {
     // Safety: Using an undefined key should always fail to return a factory, therefore
     // we don't need the additional check here.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.factories.get(type!) ?? this.factory;
   }
 

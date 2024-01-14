@@ -49,7 +49,7 @@ export class SyncNodes implements OnInit, System {
   }
 
   /** @internal */
-  private add(parents: Storage<Parent>, nodes: Storage<UiNode>, entity: Entity): void {
+  private add(world: World, parents: Storage<Parent>, nodes: Storage<UiNode>, entity: Entity): void {
     const component = nodes.get(entity);
 
     if (parents.has(entity)) {
@@ -63,13 +63,19 @@ export class SyncNodes implements OnInit, System {
     else {
       this.stage.add(component.container, component.style.layer);
     }
+
+    // Call lifecycle.
+    component._widget?.onInit?.(world, entity);
   }
 
   /** @internal */
-  private remove(roots: Storage<UiNode>, entity: Entity): void {
+  private remove(world: World, roots: Storage<UiNode>, entity: Entity): void {
     const root = roots.get(entity);
 
     root.container.parent?.removeChild(root.container);
+
+    // Call lifecycle.
+    root._widget?.onInit?.(world, entity);
   }
 
   /** @inheritDoc */
@@ -80,10 +86,10 @@ export class SyncNodes implements OnInit, System {
     for (const event of this.subscription.read()) {
       switch (event.type) {
         case QueryEventType.Added:
-          this.add(parents, nodes, event.entity);
+          this.add(world, parents, nodes, event.entity);
           break;
         case QueryEventType.Removed:
-          this.remove(nodes, event.entity);
+          this.remove(world, nodes, event.entity);
           break;
       }
     }

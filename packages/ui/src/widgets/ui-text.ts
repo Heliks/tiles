@@ -1,5 +1,6 @@
 import { Text } from 'pixi.js';
 import { Rect, Size } from '../layout';
+import { Input } from '../params';
 import { UiWidget } from '../ui-widget';
 
 
@@ -17,6 +18,9 @@ export class UiText implements UiWidget {
    */
   public static defaultFont = 'serif';
 
+  @Input()
+  public text = '';
+
   /** @inheritDoc */
   public view = new Text('', {
     align: 'center'
@@ -33,16 +37,21 @@ export class UiText implements UiWidget {
    * @param color Color in which the text should be rendered.
    * @param size Font size in px.
    */
-  constructor(public value: string, color = 0x000000, size = 10) {
-    this.view.text = value;
+  constructor(value: string, color = 0x000000, size = 10) {
+    this.text = value;
     this.view.style.fontSize = size;
     this.view.style.fill = color;
     this.view.resolution = 2;
   }
 
   /** @inheritDoc */
+  public getContextInstance(): this {
+    return this;
+  }
+
+  /** @inheritDoc */
   public update(): void {
-    this.view.text = this.value;
+    this.view.text = this.text;
     this.size.width.value = this.view.width;
     this.size.height.value = this.view.height;
   }
@@ -82,6 +91,7 @@ export class UiText implements UiWidget {
     this.view.style.dropShadow = true;
     this.view.style.dropShadowBlur = blur;
     this.view.style.dropShadowDistance = distance;
+    this.view.style.dropShadowAngle = angle;
 
     return this;
   }

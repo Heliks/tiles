@@ -27,7 +27,7 @@ export class UiComposer<W extends UiWidget = UiWidget> {
   }
 
   /** @internal */
-  private child<T extends UiWidget = UiWidget>(component: UiNode<T>): UiComposer<T> {
+  public child<T extends UiWidget = UiWidget>(component: UiNode<T>): UiComposer<T> {
     const entity = this.world.insert(component, new Parent(this.entity));
     const compose = new UiComposer(this.world, entity, component);
 

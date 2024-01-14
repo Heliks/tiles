@@ -2,13 +2,14 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Type<T = any> = new (...params: any[]) => T;
 
-/** In JS, functions can be used as constructors aswell. */
+/** In JS, functions can be used as constructors as well. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Ctor<T = any> = Type<T> | Function;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AbstractType<T = any> = abstract new (...params: any[]) => T;
 
-/** Either a {@link Type type} of `T` or an instance of `T`. */
+/** Either a {@link Type} of `T` or an instance of `T`. */
 export type TypeLike<T> = Type<T> | T;
 
 /** Typed class decorator. */

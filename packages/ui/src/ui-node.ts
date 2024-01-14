@@ -100,14 +100,14 @@ export class UiNode<W extends UiWidget = UiWidget> {
   /** Attaches a {@link UiWidget} to this node. */
   public setWidget(widget: W): UiNode<W> {
     // Remove previous widget from container.
-    if (this._widget) {
-      this.container.removeChild(this._widget.view);
-    }
+    this.container.removeChildren();
 
     this._widget = widget;
 
     // Always at the widget as the first child of the container.
-    this.container.addChild(widget.view);
+    if (widget.view) {
+      this.container.addChild(widget.view);
+    }
 
     return this;
   }
@@ -117,23 +117,8 @@ export class UiNode<W extends UiWidget = UiWidget> {
     return this._widget;
   }
 
-  /**
-   * Makes this root node interactive.
-   *
-   * @see interactive
-   * @see interact
-   */
-  public toInteractive(): this {
-    this.interactive = true;
-
-    return this;
-  }
-
-  /** Sets the {@link pivot}. */
-  public setPivot(pivot: Pivot): this {
-    this.pivot = pivot;
-
-    return this;
+  public static use<E extends UiWidget>(element: E): UiNode<E> {
+    return new UiNode<E>().setWidget(element);
   }
 
 }

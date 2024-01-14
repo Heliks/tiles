@@ -84,6 +84,8 @@
           "Inject",
           "InjectStorage",
           "Optional",
+          "Input",
+          "UUID",
           "b2*"
         ]
       }

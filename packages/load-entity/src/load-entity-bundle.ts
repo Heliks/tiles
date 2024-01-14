@@ -27,7 +27,7 @@ export class LoadEntityBundle implements Bundle {
   public build(app: AppBuilder): void {
     app.run(world => {
       world.get(AssetLoader).use(new LoadEntity(
-          world.get(EntitySerializer)
+        world.get(EntitySerializer)
       ))
     });
   }

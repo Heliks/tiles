@@ -7,13 +7,6 @@ import { Node as LayoutNode, Rect, Size } from './layout';
 export interface UiWidget {
 
   /**
-   * If specified, this will be inherited by the {@link Node} component. This is useful
-   * for widgets that are interactive by default (a.E. buttons). The interaction can
-   * still be disabled directly on the component.
-   */
-  readonly interactive?: boolean;
-
-  /**
    * Intrinsic size of the widget.
    *
    * If set, the widget will project this size onto the layout of the {@link Node} to
@@ -26,7 +19,24 @@ export interface UiWidget {
    *
    * Will be added to the stage automatically where appropriate.
    */
-  view: Drawable;
+  view?: Drawable;
+
+  /**
+   * If this element uses a {@link Context}, this will return the local instance type
+   * to which the context applies data to. In most cases this is the element itself,
+   * but some structural elements like {@link UiComponentRenderer} might want to defer
+   * the context to somewhere else.
+   *
+   * This also means that the value returned here is also the value from which the
+   * context {@link Input inputs} will be resolved.
+   */
+  getContextInstance(): object;
+
+  /** Called when this widget is attached to a {@link UiNode}. */
+  onInit?(world: World, entity: Entity): void;
+
+  /** Called when this widget is no longer attached to an entity. */
+  onDestroy?(world: World, entity: Entity): void;
 
   /**
    * Updates the widget view. If this widget is attached to a {@link Node} component,
