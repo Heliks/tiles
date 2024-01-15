@@ -1,10 +1,10 @@
 import { App, Parent, runtime, TransformBundle, World } from '@heliks/tiles-engine';
+import { Element } from '../../element';
 import { UiNode } from '../../ui-node';
-import { UiWidget } from '../../ui-widget';
-import { UpdateWidgets } from '../update-widgets';
+import { UpdateElements } from '../update-elements';
 
 
-class NoopElement implements UiWidget {
+class NoopElement implements Element {
 
   /** @inheritDoc */
   update = jest.fn();
@@ -18,7 +18,7 @@ class NoopElement implements UiWidget {
 
 describe('UpdateNodes', () => {
   let app: App;
-  let system: UpdateWidgets;
+  let system: UpdateElements;
   let world: World;
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('UpdateNodes', () => {
       .component(UiNode)
       .component(Parent)
       .bundle(new TransformBundle())
-      .system(UpdateWidgets)
+      .system(UpdateElements)
       .build();
 
     // Boot system.
@@ -34,17 +34,17 @@ describe('UpdateNodes', () => {
       update: jest.fn()
     });
 
-    system = app.world.get(UpdateWidgets);
+    system = app.world.get(UpdateElements);
     world = app.world;
   });
 
-  it('should update node widget', () => {
-    const widget = new NoopElement();
-    const entity = world.insert(new UiNode().setWidget(widget));
+  it('should update node element', () => {
+    const element = new NoopElement();
+    const entity = world.insert(new UiNode().setElement(element));
 
     system.updateNode(world, entity);
 
-    expect(widget.update).toHaveBeenCalled();
+    expect(element.update).toHaveBeenCalled();
   });
 
   it('should update nodes hierarchically', () => {

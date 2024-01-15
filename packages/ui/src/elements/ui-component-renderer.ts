@@ -1,6 +1,7 @@
-import { Entity, hasOnInit, Hierarchy, Parent, Type, World } from '@heliks/tiles-engine';
+import { Entity, Hierarchy, Parent, Type, World } from '@heliks/tiles-engine';
+import { Element } from '../element';
+import { canDestroy, canInit, OnDestroy, OnInit } from '../lifecycle';
 import { UiComponent } from '../ui-component';
-import { UiWidget } from '../ui-widget';
 
 
 /**
@@ -14,7 +15,7 @@ import { UiWidget } from '../ui-widget';
  *
  * - `T`: The UI Component type that is rendered by this element.
  */
-export class UiComponentRenderer<T extends UiComponent = UiComponent> implements UiWidget {
+export class UiComponentRenderer<T extends UiComponent = UiComponent> implements Element, OnInit, OnDestroy {
 
   /**
    * The instance of the UI {@link component} that will be created after the owner of
@@ -46,19 +47,23 @@ export class UiComponentRenderer<T extends UiComponent = UiComponent> implements
     this.instance = world.make(this.component);
 
     // Call onInit lifecycle hook if it is implemented by the component.
-    if (hasOnInit(this.instance)) {
-      this.instance.onInit(world);
+    if (canInit(this.instance)) {
+      this.instance.onInit(world, entity);
     }
 
     this.root = this.instance.render(world);
 
-    // The component node tree is always a child of this widget.
+    // The component node tree is always a child of this element.
     world.attach(this.root, new Parent(entity));
   }
 
   /** @inheritDoc */
-  public onDestroy(world: World): void {
+  public onDestroy(world: World, entity: Entity): void {
     world.get(Hierarchy).destroy(world, this.root);
+
+    if (canDestroy(this.instance)) {
+      this.instance.onDestroy(world, entity);
+    }
   }
 
   /** @inheritDoc */

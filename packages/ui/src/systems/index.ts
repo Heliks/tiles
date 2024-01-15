@@ -5,4 +5,4 @@ export * from './maintain-layouts';
 export * from './sync-nodes';
 export * from './update-contexts';
 export * from './update-layouts';
-export * from './update-widgets';
+export * from './update-elements';

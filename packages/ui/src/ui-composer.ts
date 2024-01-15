@@ -2,13 +2,13 @@ import { Handle } from '@heliks/tiles-assets';
 import { Entity, Parent, World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
+import { Element } from './element';
+import { UiSprite, UiText, UiTexture } from './elements';
 import { FlexDirection, Style } from './layout';
 import { UiNode } from './ui-node';
-import { UiWidget } from './ui-widget';
-import { UiSprite, UiText, UiTexture } from './widgets';
 
 
-export class UiComposer<W extends UiWidget = UiWidget> {
+export class UiComposer<W extends Element = Element> {
 
   public readonly children: UiComposer[] = [];
 
@@ -22,12 +22,12 @@ export class UiComposer<W extends UiWidget = UiWidget> {
     return new UiComposer(world, entity, world.storage(UiNode).get(entity));
   }
 
-  public getChildAt<W extends UiWidget = UiWidget>(index: number): UiComposer<W> {
+  public getChildAt<W extends Element = Element>(index: number): UiComposer<W> {
     return this.children[index] as UiComposer<W>;
   }
 
   /** @internal */
-  public child<T extends UiWidget = UiWidget>(component: UiNode<T>): UiComposer<T> {
+  public child<T extends Element = Element>(component: UiNode<T>): UiComposer<T> {
     const entity = this.world.insert(component, new Parent(this.entity));
     const compose = new UiComposer(this.world, entity, component);
 
@@ -51,24 +51,24 @@ export class UiComposer<W extends UiWidget = UiWidget> {
     return this.node({ direction: FlexDirection.Row, ...style });
   }
 
-  /** Adds a node with a {@link UiWidget widget} to the composition. */
-  public widget<T extends UiWidget>(widget: T, style?: Partial<Style>): UiComposer<T> {
-    return this.child(new UiNode<T>(style).setWidget(widget));
+  /** Adds a node with a {@link Element} to the composition. */
+  public element<T extends Element>(element: T, style?: Partial<Style>): UiComposer<T> {
+    return this.child(new UiNode<T>(style).setElement(element));
   }
 
-  /** Shorthand for adding a {@link widget} child with a {@link UiSprite} widget. */
+  /** Shorthand for adding a {@link Element} child with a {@link UiSprite} element. */
   public sprite(spritesheet: Handle<SpriteSheet>, spriteIndex: number, style?: Partial<Style>): UiComposer<UiSprite> {
-    return this.widget(new UiSprite(spritesheet, spriteIndex), style);
+    return this.element(new UiSprite(spritesheet, spriteIndex), style);
   }
 
-  /** Shorthand for adding a {@link widget} child with a {@link UiTexture} widget. */
+  /** Shorthand for adding a {@link Element} child with a {@link UiTexture} element. */
   public texture(texture: Texture | Handle<Texture>, style?: Partial<Style>): UiComposer<UiTexture> {
-    return this.widget(new UiTexture(texture), style);
+    return this.element(new UiTexture(texture), style);
   }
 
-  /** Shorthand for adding a {@link widget} child with a {@link UiText} widget. */
+  /** Shorthand for adding a {@link Element} child with a {@link UiText} element. */
   public text(text: string, color?: number, size?: number, style?: Partial<Style>): UiComposer<UiText> {
-    return this.widget(new UiText(text, color, size), style);
+    return this.element(new UiText(text, color, size), style);
   }
 
   /**

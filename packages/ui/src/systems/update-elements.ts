@@ -14,13 +14,13 @@ import { UiNode } from '../ui-node';
 
 
 /**
- * Updates all node {@link UiWidget widgets}.
+ * Updates {@link Element elements} on active {@link UiNode nodes}.
  *
  * Updates happens top-down in a nodes entity {@link Hierarchy}, which means that
  * parent nodes are always updated before their children.
  */
 @Injectable()
-export class UpdateWidgets extends ProcessingSystem {
+export class UpdateElements extends ProcessingSystem {
 
   /**
    * @param nodes Storage for {@link UiNode} components.
@@ -45,13 +45,13 @@ export class UpdateWidgets extends ProcessingSystem {
   public updateNode(world: World, entity: Entity): void {
     const node = this.nodes.get(entity);
 
-    if (node._widget) {
-      node._widget.update(world, entity, node.layout);
+    if (node._element) {
+      node._element.update(world, entity, node.layout);
 
       // Widgets can project their content size directly onto the layout node,
       // overwriting the existing style.
-      if (node._widget.size) {
-        node.layout.style.size = node._widget.size;
+      if (node._element.size) {
+        node.layout.style.size = node._element.size;
       }
     }
 

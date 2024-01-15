@@ -2,13 +2,11 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { Ticker, Timer, World } from '@heliks/tiles-engine';
 import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
-import { UiWidget } from '../ui-widget';
+import { Element } from '../element';
 
 
-/**
- * A {@link UiWidget widget} that displays an animation on a sprite.
- */
-export class UiAnimatedSprite implements UiWidget {
+/** Displays an animated sprite. */
+export class UiAnimatedSprite implements Element {
 
   /** @inheritDoc */
   public readonly view = new Sprite();

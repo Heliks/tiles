@@ -1,7 +1,7 @@
 import { runtime, World } from '@heliks/tiles-engine';
 import { Context } from '../../context';
+import { Element } from '../../element';
 import { UiNode } from '../../ui-node';
-import { UiWidget } from '../../ui-widget';
 import { UpdateContexts } from '../update-contexts';
 
 
@@ -22,7 +22,7 @@ describe('UpdateContexts', () => {
 
   describe('when updating an entity tree', () => {
     it('it should propagate data to child elements within the parents context', () => {
-      class NoopElement implements UiWidget {
+      class NoopElement implements Element {
 
         public step1 = false;
         public step2 = false;
@@ -54,9 +54,9 @@ describe('UpdateContexts', () => {
       // Set initial data on element.
       element1.step1 = true;
 
-      const entity1 = world.insert(new UiNode().setWidget(element1), ctx1);
-      const entity2 = world.insert(new UiNode().setWidget(element2), ctx2);
-      const entity3 = world.insert(new UiNode().setWidget(element3), ctx3);
+      const entity1 = world.insert(new UiNode().setElement(element1), ctx1);
+      const entity2 = world.insert(new UiNode().setElement(element2), ctx2);
+      const entity3 = world.insert(new UiNode().setElement(element3), ctx3);
 
       // Build context hierarchy Context1 -> Context2 -> Context3
       ctx1.add(entity2);

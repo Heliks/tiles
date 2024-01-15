@@ -8,8 +8,8 @@ import {
   MaintainLayouts,
   SyncNodes,
   UpdateContexts,
-  UpdateLayouts,
-  UpdateWidgets
+  UpdateElements,
+  UpdateLayouts
 } from './systems';
 import { UiNode } from './ui-node';
 
@@ -29,7 +29,7 @@ export class UiBundle implements Bundle {
       .system(MaintainLayouts)
       .system(MaintainContexts)
       .system(UpdateContexts)
-      .system(UpdateWidgets)
+      .system(UpdateElements)
       .system(UpdateLayouts)
       .system(DrawUi, RendererSchedule.Update);
   }

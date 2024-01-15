@@ -13,6 +13,7 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
+import { canDestroy, canInit } from '../lifecycle';
 import { UiNode } from '../ui-node';
 
 
@@ -64,8 +65,9 @@ export class SyncNodes implements OnInit, System {
       this.stage.add(component.container, component.style.layer);
     }
 
-    // Call lifecycle.
-    component._widget?.onInit?.(world, entity);
+    if (canInit(component._element)) {
+      component._element.onInit(world, entity);
+    }
   }
 
   /** @internal */
@@ -74,8 +76,9 @@ export class SyncNodes implements OnInit, System {
 
     root.container.parent?.removeChild(root.container);
 
-    // Call lifecycle.
-    root._widget?.onInit?.(world, entity);
+    if (canDestroy(root._element)) {
+      root._element.onDestroy(world, entity);
+    }
   }
 
   /** @inheritDoc */

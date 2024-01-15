@@ -52,17 +52,17 @@ export class MaintainContexts extends ReactiveSystem {
   public insert(world: World, entity: Entity) {
     const node = world.storage(UiNode).get(entity);
 
-    if (! node._widget) {
+    if (! node._element) {
       throw new Error('Nodes with a context must be elements.');
     }
 
-    // Assign widget input keys.
+    // Assign element input keys.
     world
       .storage(Context)
       .get(entity)
       .input(
         ...getInputParams(
-          node._widget.getContextInstance()
+          node._element.getContextInstance()
         )
       );
 

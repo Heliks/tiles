@@ -30,8 +30,8 @@ export type Binding<L, P> = OneWayBinding<L, P>;
 
 /**
  * When attached to entities with a {@link UiNode} component, data is resolved from the
- * nodes {@link UiWidget} and propagated to child context {@link inputs}, and eventually
- * applied to the instance of the childs {@link UiWidget}.
+ * nodes {@link Element} and propagated to child context {@link inputs}, and eventually
+ * applied to the instance of the childs {@link Element}.
  *
  * The context tree is not the same as the node / entity tree. Not all nodes captures a
  * context, therefore the owner of a parent context is not necessarily the same entity

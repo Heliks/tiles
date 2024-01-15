@@ -2,14 +2,12 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
-import { UiWidget } from '../ui-widget';
 
 
-/**
- * Ui widget that displays a sprite.
- */
-export class UiSprite<I = unknown> implements UiWidget {
+/** Displays a sprite. */
+export class UiSprite<I = unknown> implements Element {
 
   /** @inheritDoc */
   public readonly view = new Sprite();

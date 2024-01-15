@@ -5,16 +5,17 @@ import { UiNode } from './ui-node';
 
 
 export * from './layout';
-export * from './widgets';
+export * from './elements';
 
 export * from './context';
+export * from './element';
 export * from './params';
+export * from './lifecycle';
 export * from './ui-bundle';
 export * from './ui-component';
 export * from './ui-composer';
 export * from './ui-event';
 export * from './ui-node';
-export * from './ui-widget';
 
 
 /**

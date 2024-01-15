@@ -2,18 +2,15 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { NineSlicePlane, Texture } from 'pixi.js';
+import { Element } from '../element';
 import { Node } from '../layout';
-import { UiWidget } from '../ui-widget';
 
 
 /**
- * Displays a texture that can be stretched in all directions using 9-slice scaling.
- *
- * Todo: Slice plane texture can not be switched after it was first created.
- *
- * @see NineSlicePlane
+ * Displays a {@link NineSlicePlane} texture that can be stretched in all directions
+ * using 9-slice scaling.
  */
-export class UiSlicePlane<I = unknown> implements UiWidget {
+export class UiSlicePlane<I = unknown> implements Element {
 
   /** @inheritDoc */
   public readonly view = new NineSlicePlane(Texture.WHITE, 0, 0, 0, 0);
@@ -74,7 +71,7 @@ export class UiSlicePlane<I = unknown> implements UiWidget {
 
     this.view.texture = texture;
 
-    // Inherit view size from node that displays this widget.
+    // Inherit view size from node that displays this element.
     this.view.width = layout.size.width;
     this.view.height = layout.size.height;
 

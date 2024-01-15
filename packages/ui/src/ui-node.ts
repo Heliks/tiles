@@ -1,9 +1,9 @@
 import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { Container } from 'pixi.js';
+import { Element } from './element';
 import { Node } from './layout';
 import { Style } from './style';
 import { UiEvent } from './ui-event';
-import { UiWidget } from './ui-widget';
 
 
 /** Possible interactions with {@link UiNode ui nodes}. */
@@ -29,9 +29,9 @@ export enum UiNodeInteraction {
  * parent, which means that it's not possible to render a child on screen while its
  * parent is rendered in the world.
  *
- * - `W`: Kind of widget that can be attached to this node.
+ * - `E`: The kind of element that this node displays.
  */
-export class UiNode<W extends UiWidget = UiWidget> {
+export class UiNode<E extends Element = Element> {
 
   /**
    * Container where the display objects of ui nodes that are children of this root
@@ -49,7 +49,7 @@ export class UiNode<W extends UiWidget = UiWidget> {
 
   /**
    * If set to `true`, user interactions (a.E. click, hover, etc.) will be enabled for
-   * this widget. The current interaction can be read from {@link interaction}.
+   * this node. The current interaction can be read from {@link interaction}.
    */
   public interactive = false;
 
@@ -60,7 +60,7 @@ export class UiNode<W extends UiWidget = UiWidget> {
   public onInteract = new EventQueue<UiEvent>();
 
   /**
-   * Layout {@link Node node}. Used for layout calculations when the UI node is part of
+   * Layout {@link Node}. Used for layout calculations when the UI node is part of
    * a formatting context. (e.g. applies a {@link Style stylesheet} to its children, or
    * has one applied via its parent).
    */
@@ -73,7 +73,7 @@ export class UiNode<W extends UiWidget = UiWidget> {
   public readonly style: Style;
 
   /** @internal */
-  public _widget?: W;
+  public _element?: E;
 
   /**
    * @param style (optional) Style properties that should be applied to the node layout.
@@ -97,28 +97,27 @@ export class UiNode<W extends UiWidget = UiWidget> {
     return this;
   }
 
-  /** Attaches a {@link UiWidget} to this node. */
-  public setWidget(widget: W): UiNode<W> {
-    // Remove previous widget from container.
+  /** Attaches a {@link Element} to this node. */
+  public setElement(element: E): UiNode<E> {
+    // Remove view of previous element from node. This will be replaced with the view
+    // of the new element (if any).
     this.container.removeChildren();
+    this._element = element;
 
-    this._widget = widget;
-
-    // Always at the widget as the first child of the container.
-    if (widget.view) {
-      this.container.addChild(widget.view);
+    if (element.view) {
+      this.container.addChild(element.view);
     }
 
     return this;
   }
 
-  /** Returns the {@link UiWidget widget} that is attached to this node, if any. */
-  public getWidget(): W | undefined {
-    return this._widget;
+  /** Returns the {@link Element} that is displayed by this node, if any. */
+  public getElement(): E | undefined {
+    return this._element;
   }
 
-  public static use<E extends UiWidget>(element: E): UiNode<E> {
-    return new UiNode<E>().setWidget(element);
+  public static use<E extends Element>(element: E): UiNode<E> {
+    return new UiNode<E>().setElement(element);
   }
 
 }

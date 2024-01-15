@@ -1,7 +1,7 @@
 import { Text } from 'pixi.js';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
 import { Input } from '../params';
-import { UiWidget } from '../ui-widget';
 
 
 export enum TextBorderStyle {
@@ -10,11 +10,12 @@ export enum TextBorderStyle {
   Bevel
 }
 
-export class UiText implements UiWidget {
+/** Displays text. */
+export class UiText implements Element {
 
   /**
-   * Name of the default font that should be used for new {@link UiText} widgets. The
-   * font can be set individually on each widget.
+   * Name of the default font that should be used for new {@link UiText} elements. The
+   * font can be set individually on each element.
    */
   public static defaultFont = 'serif';
 

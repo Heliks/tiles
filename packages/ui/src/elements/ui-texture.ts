@@ -1,12 +1,12 @@
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
-import { UiWidget } from '../ui-widget';
 
 
-/** Widget used to display a {@link Texture texture}. */
-export class UiTexture implements UiWidget {
+/** Displays a texture. */
+export class UiTexture implements Element {
 
   /** @inheritDoc */
   public readonly size = new Rect(
@@ -36,8 +36,8 @@ export class UiTexture implements UiWidget {
   }
 
   /**
-   * Updates the current texture of the widget. If a handle that points to a texture
-   * is given, the widget will be updated as soon as the handle has finished loading.
+   * Updates the current texture of the element. If a handle that points to a texture
+   * is given, the element will be updated as soon as the handle has finished loading.
    */
   public setTexture(texture: Texture | Handle<Texture>): this {
     this.texture = texture;

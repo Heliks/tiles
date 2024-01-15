@@ -1,8 +1,8 @@
 import { App, Parent, runtime, World } from '@heliks/tiles-engine';
 import { Context } from '../../context';
+import { Element } from '../../element';
 import { Input } from '../../params';
 import { UiNode } from '../../ui-node';
-import { UiWidget } from '../../ui-widget';
 import { MaintainContexts } from '../maintain-contexts';
 
 
@@ -26,7 +26,7 @@ describe('MaintainContexts', () => {
   });
 
   describe('when inserting an entity in the context hierarchy', () => {
-    class NoopElement implements UiWidget {
+    class NoopElement implements Element {
 
       @Input()
       public foo = false;
@@ -46,12 +46,12 @@ describe('MaintainContexts', () => {
 
     it('should set parent context', () => {
       const context = new Context();
-      const entity1 = world.insert(new UiNode().setWidget(new NoopElement()), new Context());
+      const entity1 = world.insert(new UiNode().setElement(new NoopElement()), new Context());
 
       // This entity makes sure we resolve the parent context through parents that
       // do not capture it.
-      const entity2 = world.insert(new UiNode().setWidget(new NoopElement()), new Parent(entity1));
-      const entity3 = world.insert(new UiNode().setWidget(new NoopElement()), new Parent(entity2), context);
+      const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Parent(entity1));
+      const entity3 = world.insert(new UiNode().setElement(new NoopElement()), new Parent(entity2), context);
 
       system.onEntityAdded(world, entity3);
 
@@ -60,8 +60,8 @@ describe('MaintainContexts', () => {
 
     it('should add child context to parent', () => {
       const context = new Context();
-      const entity1 = world.insert(new UiNode().setWidget(new NoopElement()), context);
-      const entity2 = world.insert(new UiNode().setWidget(new NoopElement()), new Context(), new Parent(entity1));
+      const entity1 = world.insert(new UiNode().setElement(new NoopElement()), context);
+      const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Context(), new Parent(entity1));
 
       system.onEntityAdded(world, entity2);
 
@@ -72,7 +72,7 @@ describe('MaintainContexts', () => {
 
     it('should set inputs', () => {
       const context = new Context();
-      const entity = world.insert(new UiNode().setWidget(new NoopElement()), context);
+      const entity = world.insert(new UiNode().setElement(new NoopElement()), context);
 
       system.onEntityAdded(world, entity);
 
@@ -86,7 +86,7 @@ describe('MaintainContexts', () => {
   });
 
   it('should detach a child context from its parent', () => {
-    class NoopElement implements UiWidget {
+    class NoopElement implements Element {
 
       /** @inheritDoc */
       update = jest.fn();
@@ -99,8 +99,8 @@ describe('MaintainContexts', () => {
     }
 
     const context = new Context();
-    const entity1 = world.insert(new UiNode().setWidget(new NoopElement()), context);
-    const entity2 = world.insert(new UiNode().setWidget(new NoopElement()), new Context(), new Parent(entity1));
+    const entity1 = world.insert(new UiNode().setElement(new NoopElement()), context);
+    const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Context(), new Parent(entity1));
 
     system.onEntityAdded(world, entity1);
     system.onEntityAdded(world, entity2);
