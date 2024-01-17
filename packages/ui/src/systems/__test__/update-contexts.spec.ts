@@ -32,7 +32,7 @@ describe('UpdateContexts', () => {
         update = jest.fn();
 
         /** @inheritDoc */
-        public getContextInstance(): this {
+        public getViewRef(): this {
           return this;
         }
 

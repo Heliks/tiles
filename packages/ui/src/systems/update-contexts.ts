@@ -48,7 +48,7 @@ export class UpdateContexts extends ProcessingSystem {
   public updateTree(world: World, entity: Entity): void {
     // Safety: Only entities with elements are actually queried.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const element = this.nodes.get(entity)._element!.getContextInstance();
+    const element = this.nodes.get(entity)._element!.getViewRef();
     const context = this.contexts.get(entity);
 
 
@@ -61,7 +61,7 @@ export class UpdateContexts extends ProcessingSystem {
 
       // Safety: Only entities with elements are actually queried.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ctx.apply(node._element!.getContextInstance());
+      ctx.apply(node._element!.getViewRef());
 
       this.updateTree(world, child);
     }

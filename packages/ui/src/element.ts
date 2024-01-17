@@ -4,6 +4,17 @@ import { Node as LayoutNode, Rect, Size } from './layout';
 
 
 /**
+ * An object that is a view reference.
+ *
+ * View references are the instances that a node {@link Context} applies data to. In
+ * most cases, this is the nodes {@link Element} itself. Some structural elements like
+ * {@link UiComponentRenderer} however, might want to defer the view reference to
+ * somewhere else. Consequently, this is also the object from which the nodes own
+ * context will resolve data from.
+ */
+export type ViewRef = object;
+
+/**
  * Implementation of a UI element.
  *
  * The element adds behavior to the {@link UiNode} to which it is attached to. Like HTML
@@ -36,16 +47,11 @@ export interface Element {
   update(world: World, entity: Entity, layout: LayoutNode): void;
 
   /**
-   * Returns the context target.
+   * Returns the view reference.
    *
-   * If this element uses a {@link Context}, this will return the local instance type
-   * to which the context applies data to. In most cases this is the element itself,
-   * but some structural elements like {@link UiComponentRenderer} might want to defer
-   * the context to somewhere else.
-   *
-   * This also means that the value returned here is also the value from which the
-   * context {@link Input inputs} will be resolved.
+   * In most cases, this is a reference to the element itself. Some structural elements
+   * like {@link UiComponentRenderer} however, will defer it to somewhere else.
    */
-  getContextInstance(): object;
+  getViewRef(): ViewRef;
 
 }

@@ -38,7 +38,7 @@ describe('MaintainContexts', () => {
       update = jest.fn();
 
       /** @inheritDoc */
-      public getContextInstance(): this {
+      public getViewRef(): this {
         return this;
       }
 
@@ -92,7 +92,7 @@ describe('MaintainContexts', () => {
       update = jest.fn();
 
       /** @inheritDoc */
-      public getContextInstance(): this {
+      public getViewRef(): this {
         return this;
       }
 

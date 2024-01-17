@@ -62,7 +62,7 @@ export class MaintainContexts extends ReactiveSystem {
       .get(entity)
       .input(
         ...getInputParams(
-          node._element.getContextInstance()
+          node._element.getViewRef()
         )
       );
 

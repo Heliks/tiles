@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-import { Element } from '../element';
+import { Element, ViewRef } from '../element';
 import { Rect, Size } from '../layout';
 import { Input } from '../params';
 
@@ -46,7 +46,7 @@ export class UiText implements Element {
   }
 
   /** @inheritDoc */
-  public getContextInstance(): this {
+  public getViewRef(): ViewRef {
     return this;
   }
 

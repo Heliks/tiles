@@ -2,7 +2,7 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { Ticker, Timer, World } from '@heliks/tiles-engine';
 import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
-import { Element } from '../element';
+import { Element, ViewRef } from '../element';
 
 
 /** Displays an animated sprite. */
@@ -54,7 +54,7 @@ export class UiAnimatedSprite implements Element {
   }
 
   /** @inheritDoc */
-  public getContextInstance(): this {
+  public getViewRef(): ViewRef {
     return this;
   }
 

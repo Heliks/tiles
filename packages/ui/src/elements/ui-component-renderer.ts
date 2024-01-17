@@ -38,7 +38,7 @@ export class UiComponentRenderer<T extends UiComponent = UiComponent> implements
   constructor(public readonly component: Type<T>) {}
 
   /** @inheritDoc */
-  public getContextInstance(): T {
+  public getViewRef(): T {
     return this.instance;
   }
 
@@ -67,8 +67,8 @@ export class UiComponentRenderer<T extends UiComponent = UiComponent> implements
   }
 
   /** @inheritDoc */
-  public update(): void {
-    return;
+  public update(world: World): void {
+    this.instance.update(world);
   }
 
 }

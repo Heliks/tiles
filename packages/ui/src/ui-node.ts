@@ -54,8 +54,11 @@ export class UiNode<E extends Element = Element> {
   public interactive = false;
 
   /**
-   * Receives an event every time the {@link interaction} of this node changes. Events
-   * are propagated through event queues of parent nodes (event bubbling).
+   * Receives an event when an {@link interaction} happens on this node.
+   *
+   * Events are propagated to parent nodes (event bubbling). This means that this queue
+   * can receive events of child nodes, even if this node is not {@link interactive}
+   * itself.
    */
   public onInteract = new EventQueue<UiEvent>();
 
@@ -116,8 +119,8 @@ export class UiNode<E extends Element = Element> {
     return this._element;
   }
 
-  public static use<E extends Element>(element: E): UiNode<E> {
-    return new UiNode<E>().setElement(element);
+  public static use<E extends Element>(element: E, style?: Partial<Style>): UiNode<E> {
+    return new UiNode<E>(style).setElement(element);
   }
 
 }

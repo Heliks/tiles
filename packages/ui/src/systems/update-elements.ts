@@ -8,8 +8,11 @@ import {
   Query,
   QueryBuilder,
   Storage,
+  Subscriber,
   World
 } from '@heliks/tiles-engine';
+import { canReceiveEvents } from '../lifecycle';
+import { UiEvent } from '../ui-event';
 import { UiNode } from '../ui-node';
 
 
@@ -21,6 +24,9 @@ import { UiNode } from '../ui-node';
  */
 @Injectable()
 export class UpdateElements extends ProcessingSystem {
+
+  /** Contains active subscriptions for nodes that are interactive. */
+  private subscriptions = new Map<UiNode, Subscriber<UiEvent>>();
 
   /**
    * @param nodes Storage for {@link UiNode} components.
@@ -42,10 +48,48 @@ export class UpdateElements extends ProcessingSystem {
       .build();
   }
 
+  public setupNodeSubscription(node: UiNode): Subscriber<UiEvent> {
+    const subscriber = node.onInteract.subscribe();
+
+    this.subscriptions.set(node, subscriber);
+
+    return subscriber;
+  }
+
+  /**
+   * Returns the {@link Subscriber} for interaction events of the given `node`. If none
+   * exists, it will be created.
+   *
+   * This function should be called with caution, as any new event queue *must* consume
+   * its events, or it will grow indefinitely, causing memory leaks.
+   */
+  public getNodeSubscription(node: UiNode): Subscriber<UiEvent> {
+    const subscriber = this.subscriptions.get(node);
+
+    return subscriber
+      ? subscriber
+      : this.setupNodeSubscription(node);
+  }
+
+  public handleElementEventLifecycle(world: World, node: UiNode): void {
+    // Safety: This function should only be called with nodes that have an element.
+    const viewRef = node._element!.getViewRef();
+
+    if (canReceiveEvents(viewRef)) {
+      const subscriber = this.getNodeSubscription(node);
+
+      for (const event of subscriber.read()) {
+        viewRef.onEvent(world, event);
+      }
+    }
+  }
+
   public updateNode(world: World, entity: Entity): void {
     const node = this.nodes.get(entity);
 
     if (node._element) {
+      this.handleElementEventLifecycle(world, node);
+
       node._element.update(world, entity, node.layout);
 
       // Widgets can project their content size directly onto the layout node,
