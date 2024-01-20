@@ -390,15 +390,21 @@ describe('distributeAvailableSpace()', () => {
 
 describe('compute()', () => {
   it('should calculate size of node with display:none as 0', () => {
+    const space = new Rect(100, 100);
     const node = new Node({
-      display: Display.None,
       size: new Rect<Size>(
         Size.px(50),
         Size.px(50)
       )
     });
 
-    compute(node, new Rect(100, 100));
+    // Compute once to calculate the node size.
+    compute(node, space);
+
+    node.style.display = Display.None;
+
+    // After hiding the node, the computation should result in a size of 0/0.
+    compute(node, space);
 
     expect(node.size).toMatchObject(new Rect(0, 0));
   });

@@ -276,8 +276,8 @@ export function calculateOuterNodeSize(node: Node): Rect {
 export function compute(node: Node, space: Rect) {
   // If the node has display: none, set size to 0 and exit early.
   if (node.style.display === Display.None) {
-    node.constants.size.width = 0;
-    node.constants.size.height = 0;
+    node.size.width = 0;
+    node.size.height = 0;
 
     return;
   }
