@@ -11,6 +11,7 @@ import {
   Subscriber,
   World
 } from '@heliks/tiles-engine';
+import { Display } from '../layout';
 import { canReceiveEvents } from '../lifecycle';
 import { UiEvent } from '../ui-event';
 import { UiNode } from '../ui-node';
@@ -86,6 +87,14 @@ export class UpdateElements extends ProcessingSystem {
 
   public updateNode(world: World, entity: Entity): void {
     const node = this.nodes.get(entity);
+    const show = node.style.display !== Display.None;
+
+    node.container.visible = show;
+
+    // Exit early if the node is hidden. Children don't need to be updated.
+    if (! show) {
+      return;
+    }
 
     if (node._element) {
       this.handleElementEventLifecycle(world, node);

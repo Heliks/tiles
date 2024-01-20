@@ -1,4 +1,5 @@
 import { Attribute } from '../attribute';
+import { Display } from '../layout';
 import { Input } from '../params';
 import { UiNode } from '../ui-node';
 
@@ -30,7 +31,7 @@ export class ConditionAttribute implements Attribute {
 
   /** @inheritDoc */
   public update(node: UiNode): void {
-    node.container.visible = this.resolve();
+    node.style.display = this.resolve() ? Display.Flex : Display.None;
   }
 
 }

@@ -15,7 +15,7 @@ import { Node } from '../node';
 import { Rect } from '../rect';
 import { Sides } from '../sides';
 import { Size } from '../size';
-import { FlexDirection, isRow, Style } from '../style';
+import { Display, FlexDirection, isRow, Style } from '../style';
 
 
 /** @internal */
@@ -138,6 +138,23 @@ describe('collectLines()', () => {
     expect(lines.length).toBe(1);
   });
 
+  it('should skip items with display:none', () => {
+    const root = new Node();
+
+    const node1 = createTestNode(0, 0, { display: Display.None });
+    const node2 = createTestNode(0, 0);
+
+    root.add(node1);
+    root.add(node2);
+
+    const lines = collectLines(root, new Rect(100, 100));
+    const nodes = lines[0].nodes;
+
+    expect(nodes).toEqual([
+      node2
+    ]);
+  });
+
   it.each([
     {
       direction: FlexDirection.Row,
@@ -182,14 +199,14 @@ describe('collectLines()', () => {
     expect(lengths).toEqual(test.lengths);
   });
 
-  it('should take outer size into account when collecting the flex line', () => {
+  it('should take outer node size of flex items into account', () => {
     const node = new Node({
       wrap: true
     });
 
     setupConstants(node);
 
-    // Create three nodes. Based on their defined size they should all fit into the
+    // Create three nodes. Based on their defined size, they should all fit into the
     // same line. However, with a margin applied, their outer size grows where only
     // two items should fit into the same line.
     node.add(createTestNode(25, 25, { margin: new Sides(0, 0, 0, 5) }));
@@ -200,31 +217,6 @@ describe('collectLines()', () => {
 
     expect(lines).toHaveLength(2);
   });
-
-  /*
-  it.each([
-    {
-      direction: FlexDirection.Row,
-      size: new Rect(250, 25)
-    },
-    {
-      direction: FlexDirection.Column,
-      size: new Rect(50, 125)
-    }
-  ])('should calculate size of collected lines', test => {
-    const root = new Node({
-      direction: test.direction
-    });
-
-    setupConstants(root);
-    setupItemNodes(root, 50, 25, 5);
-
-    const lines = collectLines(root, new Rect(500, 500));
-    const line = lines[0];
-
-    expect(line.size).toMatchObject(test.size);
-  });
-   */
 });
 
 describe('determineContainerMainSize()', () => {
@@ -393,6 +385,22 @@ describe('distributeAvailableSpace()', () => {
     distributeAvailableSpace([ line ], space, constants);
 
     expect(child.pos).toMatchObject(new Vec2(10, 5));
+  });
+});
+
+describe('compute()', () => {
+  it('should calculate size of node with display:none as 0', () => {
+    const node = new Node({
+      display: Display.None,
+      size: new Rect<Size>(
+        Size.px(50),
+        Size.px(50)
+      )
+    });
+
+    compute(node, new Rect(100, 100));
+
+    expect(node.size).toMatchObject(new Rect(0, 0));
   });
 });
 

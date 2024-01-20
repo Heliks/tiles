@@ -2,7 +2,7 @@ import { Constants } from './constants';
 import { Line } from './line';
 import { Node } from './node';
 import { Rect } from './rect';
-import { calculateAlignOffset, isRow } from './style';
+import { calculateAlignOffset, Display, isRow } from './style';
 
 /* eslint-disable */
 // Todo: Do not look here everything is WIP
@@ -105,10 +105,8 @@ function getLineAt(idx: number, constants: Constants): Line {
  *
  * All items must have their hypothetical main size measured.
  *
- * @param node Items of this nodes will be collected into lines.
- * @param space Available space.
- *
- * @see determineBaseSize
+ * @param node Flex items of this node will be collected into flex lines.
+ * @param space Available space for individual lines to take.
  */
 export function collectLines(node: Node, space: Rect): Line[] {
   const available = space.main(node.constants.isRow);
@@ -118,6 +116,13 @@ export function collectLines(node: Node, space: Rect): Line[] {
 
   while (nodeIdx < node.children.length) {
     const child = node.children[nodeIdx];
+
+    // Skip children that are `display:none` entirely.
+    if (child.style.display === Display.None) {
+      nodeIdx++;
+      continue;
+    }
+
     const line = getLineAt(lineIdx, node.constants);
     const main = child.constants.outerSize.main(node.constants.isRow);
 
@@ -127,8 +132,7 @@ export function collectLines(node: Node, space: Rect): Line[] {
     // If the container is single-line, collect all items into a single line. Otherwise,
     // starting from the first uncollected item, collect consecutive items one by one
     // until the first time that the next collected item would not fit into the container
-    // main size. If the very first uncollected item wouldn't fit, collect just it into
-    // the line.
+    // main size.
     if (line.nodes.length > 0 && node.constants.wrap && newLineMainSize > available) {
       lineIdx++;
 
@@ -140,7 +144,6 @@ export function collectLines(node: Node, space: Rect): Line[] {
 
     nodeIdx++;
   }
-
 
   return node.constants.lines;
 }
@@ -271,6 +274,14 @@ export function calculateOuterNodeSize(node: Node): Rect {
 }
 
 export function compute(node: Node, space: Rect) {
+  // If the node has display: none, set size to 0 and exit early.
+  if (node.style.display === Display.None) {
+    node.constants.size.width = 0;
+    node.constants.size.height = 0;
+
+    return;
+  }
+
   setupConstants(node);
 
   node.constants.size.width = node.style.size.width.resolve(space.width);

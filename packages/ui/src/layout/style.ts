@@ -77,14 +77,27 @@ export enum AlignContent {
 
 }
 
+/** Defines the layout used for an item. */
+export enum Display {
+
+  /**
+   * Children of this item will be laid out using the flexbox algorithm. If not specified
+   * otherwise, this is the layout method all items use by default.
+   */
+  Flex,
+
+  /**
+   * Item will be removed from the layout entirely. Children do not generate any layout
+   * either. The item and its contents are removed from the document entirely.
+   */
+  None
+
+}
+
 /** Available styling options. */
 export interface Style {
 
-  /**
-   * Aligns flex items along the cross axis of the current line of the flex container.
-   *
-   * @see justify
-   */
+  /** Aligns flex items along the cross-axis of the flex container. */
   align: AlignContent;
 
   /**
@@ -94,23 +107,16 @@ export interface Style {
    */
   direction: FlexDirection;
 
-  /**
-   * Aligns flex items along the main axis of the current line of the flex container.
-   *
-   * @see align
-   */
+  /** Defines the layout method used for this item. */
+  display: Display;
+
+  /** Aligns flex items along the main-axis of the flex container. */
   justify: AlignContent;
 
-  /**
-   * Sets the margin thickness for all four sides of the node. The margin is the space
-   * that surrounds a node.
-   */
+  /** Sets the margin area for all four sides of the node. */
   margin: Sides;
 
-  /**
-   * Sets the padding area for all four sides of the node. The padding is the space
-   * between the node border and its content.
-   */
+  /** Sets the padding area for all four sides of the node. */
   padding: Sides;
 
   /**
@@ -125,11 +131,10 @@ export interface Style {
    * Controls weither the flex-container is single-line or multi-line.
    *
    * A single-line flex container lays out all of its children in a single line, even if
-   * that would cause its contents to overflow.
-   *
-   * A multi-line container breaks its flex items across multiple lines. When additional
-   * lines are created, they are stacked along the cross axis. Every line contains at
-   * least one flex item, unless the flex container itself is completely empty.
+   * that causes its contents to overflow. A multi-line container breaks its flex items
+   * across multiple lines. When additional lines are created, they are stacked along the
+   * cross-axis. Every line contains at least one flex item, unless the flex container
+   * itself is completely empty.
    */
   wrap: boolean;
 
@@ -140,6 +145,7 @@ export function computeStyleSheet(style: Partial<Style> = {}): Style {
   return {
     align: AlignContent.Start,
     direction: FlexDirection.Row,
+    display: Display.Flex,
     justify: AlignContent.Start,
     margin: new Sides(0, 0, 0, 0),
     padding: new Sides(0, 0, 0, 0),
