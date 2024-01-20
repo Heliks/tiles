@@ -1,4 +1,6 @@
 import { Entity } from '@heliks/tiles-engine';
+import { Attribute } from './attribute';
+import { getInputs } from './params';
 
 
 /**
@@ -23,8 +25,15 @@ export interface OneWayBinding<L, P> {
 export type Binding<L, P> = OneWayBinding<L, P>;
 
 /** @internal */
-function resolve<T>(target: T, key: keyof T): any {
+export function resolve<T>(target: T, key: keyof T): any {
   return target[key];
+}
+
+/** @internal */
+interface ContextDirective<P, A extends Attribute = Attribute> {
+  attribute: A;
+  input?: keyof A;
+  key: keyof P;
 }
 
 /**
@@ -46,6 +55,9 @@ function resolve<T>(target: T, key: keyof T): any {
  * - `P`: Parent {@link ViewRef} type.
  */
 export class Context<L = unknown, P = unknown> {
+
+  /** Contains all {@link Attribute attributes} of this context. */
+  public readonly attributes: ContextDirective<P, any>[] = [];
 
   /**
    * Contains all known bindings. Bindings are relationships between the local view
@@ -107,6 +119,22 @@ export class Context<L = unknown, P = unknown> {
   }
 
   /**
+   * Adds an {@link Attribute} to the context and binds it to a key on the parent view
+   * reference `P`. Data sent to the attribute will be resolved from that key.
+   */
+  public attr<D extends Attribute>(key: keyof P, attribute: D): this {
+    const input = getInputs(attribute)[0];
+
+    this.attributes.push({
+      attribute,
+      input,
+      key
+    });
+
+    return this;
+  }
+
+  /**
    * Binds the given `local` key to a `parent` key, establishing a relationship between
    * this context and its parent.
    *
@@ -154,13 +182,14 @@ export class Context<L = unknown, P = unknown> {
     return this;
   }
 
+
   /**
    * Shares data between a `local` and `parent` view reference.
    *
    * Context {@link inputs} will be resolved from the parent view reference and applied
    * to the local reference. Context {@link outputs} will be resolved from the local view
    * reference and applied to the parent reference.
-   * 
+   *
    * Only data is shared for keys that have a  {@link bindings relationship} defined
    * on this context.
    */

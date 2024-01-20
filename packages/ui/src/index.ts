@@ -4,9 +4,11 @@ import { UiComposer } from './ui-composer';
 import { UiNode } from './ui-node';
 
 
+export * from './directives';
 export * from './layout';
 export * from './elements';
 
+export * from './attribute';
 export * from './context';
 export * from './element';
 export * from './params';

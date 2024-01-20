@@ -2,7 +2,7 @@ import { getType, Type, TypeLike } from '@heliks/tiles-engine';
 
 
 /** @internal */
-const INPUT_MAP = new Map<Type, unknown[]>();
+export const INPUT_MAP = new Map<Type, unknown[]>();
 
 /** @internal */
 const OUTPUT_MAP = new Map<Type, unknown[]>();
@@ -12,12 +12,12 @@ const OUTPUT_MAP = new Map<Type, unknown[]>();
 type KnownParams<T> = (keyof T)[];
 
 /** Returns all keys of the given `type` that are configured as inputs parameters.  */
-export function getInputs<T extends object>(type: TypeLike<T>): KnownParams<T> {
+export function getInputs<T extends object>(type: TypeLike<T>): (keyof T)[] {
   return INPUT_MAP.get(getType(type)) as KnownParams<T> ?? [];
 }
 
 /** Returns all keys of the given `type` that are configured as output parameters.  */
-export function getOutputs<T extends object>(type: TypeLike<T>): KnownParams<T> {
+export function getOutputs<T extends object>(type: TypeLike<T>): (keyof T)[]{
   return OUTPUT_MAP.get(getType(type)) as KnownParams<T> ?? [];
 }
 
