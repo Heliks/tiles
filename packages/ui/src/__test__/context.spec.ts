@@ -2,36 +2,36 @@ import { Context } from '../context';
 
 
 describe('Context', () => {
-  it('should resolve context data', () => {
-    const context = new Context<{ bar: string }, { foo: string }>();
+  let context: Context<{ bar: string }, { foo: string }>;
+
+  beforeEach(() => {
+    context = new Context<{ bar: string }, { foo: string }>();
 
     // Map local "bar" key to "foo".
     context.bind('bar', 'foo');
-
-    // Resolve data from object.
-    context.resolve({
-      foo: 'foobar'
-    });
-
-    expect(context.data.bar).toBe('foobar');
   });
 
-  it('should apply input data', () => {
-    const context = new Context<{ foo: boolean, bar: boolean }>();
-    const target = {
-      foo: false,
-      bar: false
-    };
+  it('should apply inputs to local view reference', () => {
+    // Set local "bar" property as input.
+    context.input('bar');
 
-    context.data.foo = true;
-    context.data.bar = true;
+    const local = { bar: 'foo' };
+    const parent = { foo: 'bar' };
 
-    context.input('foo');
-    context.apply(target);
+    context.apply(local, parent);
 
-    expect(target).toMatchObject({
-      foo: true,
-      bar: false
-    });
+    expect(local.bar).toBe('bar');
+  });
+
+  it('should apply outputs to parent view reference', () => {
+    // Set local "bar" property as output
+    context.output('bar');
+
+    const local = { bar: 'foo' };
+    const parent = { foo: 'bar' };
+
+    context.apply(local, parent);
+
+    expect(parent.foo).toBe('foo');
   });
 });

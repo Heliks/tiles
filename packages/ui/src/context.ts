@@ -1,12 +1,6 @@
 import { Entity } from '@heliks/tiles-engine';
 
 
-/** Data for a {@link Context}. */
-type ContextData<T = unknown> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in keyof T]?: any;
-};
-
 /**
  * Describes a one-way data binding relationship between a local {@link Context} and its
  * parent. Essentially, the local context data at the given `local` key will resolve
@@ -28,29 +22,35 @@ export interface OneWayBinding<L, P> {
  */
 export type Binding<L, P> = OneWayBinding<L, P>;
 
+/** @internal */
+function resolve<T>(target: T, key: keyof T): any {
+  return target[key];
+}
+
 /**
- * When attached to entities with a {@link UiNode} component, data is resolved from the
- * nodes {@link Element} and propagated to child context {@link inputs}, and eventually
- * applied to the instance of the childs {@link Element}.
+ * Allows data sharing between the view references of {@link UiNode nodes}.
  *
- * The context tree is not the same as the node / entity tree. Not all nodes captures a
- * context, therefore the owner of a parent context is not necessarily the same entity
- * that owns the node that is the direct parent of the owner of this context.
+ * If the entity that owns this context is not a top level node, it cannot be a top
+ * level context.
  *
- * The parent context is resolved automatically when this component is attached to an
- * entity. If that entity is not a top is not top-level, it requires a parent context
- * somewhere up its entity tree.
+ * The context declares which data is shared between a local view reference `L` and a
+ * parent view reference `P`, and in which direction it will flow. The parent view ref
+ * is always the view reference of the parent context. Subsequently, if this context is
+ * top-level, it can't share data up via {@link outputs}.
  *
- * - `L`: Local type to which this context applies data to.
- * - `P`: Parent type from which this context resolves data from.
+ * The context hierarchy is not the same as the node hierarchy, as not all nodes capture
+ * a context. The parent context is resolved automatically when this component is first
+ * spawned into the world.
+ *
+ * - `L`: Local {@link ViewRef} type.
+ * - `P`: Parent {@link ViewRef} type.
  */
 export class Context<L = unknown, P = unknown> {
 
   /**
-   * Bindings are data relationships from child to parent. They describe how a context
-   * will resolve {@link data} from the type its parent references (`P`). Subsequently,
-   * top-level contexts will never resolve bindings as they don't have a parent to
-   * resolve data from.
+   * Contains all known bindings. Bindings are relationships between the local view
+   * reference `L` and the parent view reference `P`. If they are set to be either
+   * an {@link input} or an {@link output}, they will share data between each other.
    */
   public readonly bindings: Binding<L, P>[] = [];
 
@@ -62,17 +62,23 @@ export class Context<L = unknown, P = unknown> {
   public readonly children = new Set<Entity>();
 
   /**
-   * Contains all data for this context. The data will be {@link resolve resolved} from
-   * the type `P` that the parent of this context references.
-   */
-  public readonly data: ContextData<L> = {};
-
-  /**
-   * Contains all keys of the local type `L` that are treated as inputs. When the context
-   * is {@link apply applied} to an object, all inputs will be copied from {@link data}
-   * to the instance to which it is applied.
+   * Contains all keys of the local {@link ViewRef} `L` that are inputs.
+   *
+   * Inputs are keys of the local view reference `L` on which data is received from the
+   * parent view reference `P`. The input requires a {@link bind relationship} to know
+   * from where it should resolve data from. A key can't be an input and output at the
+   * same time.
    */
   public readonly inputs = new Set<keyof L>();
+
+  /**
+   * Contains all keys of the local {@link ViewRef} `L` that are inputs.
+   *
+   * Outputs are keys of the local view reference `L` that send their data to the parent
+   * view reference `P`. The input requires a {@link bind relationship} to know where it
+   * should send data to. A key can't be an input and output at the same time.
+   */
+  public readonly outputs = new Set<keyof L>();
 
   /**
    * Entity that is the parent context of this one, if any. If this context is not a top
@@ -102,11 +108,12 @@ export class Context<L = unknown, P = unknown> {
 
   /**
    * Binds the given `local` key to a `parent` key, establishing a relationship between
-   * this context and its parent. The context will resolve data from `parent` and store
-   * it using `local` as key for the context {@link data}.
+   * this context and its parent.
    *
-   * This will not have any effect if this is a top-level context, as it does not have
-   * a parent to establish a relationship with.
+   * If the `local` key is a {@link input}, the context will share data from the parent
+   * view reference `P` with the local view reference `L`. If it's a {@link output}, the
+   * local view reference will share its data with the parent instead. If it's neither,
+   * no data will be shared.
    */
   public bind(local: keyof L, parent: keyof P): this {
     this.bindings.push({
@@ -117,29 +124,54 @@ export class Context<L = unknown, P = unknown> {
     return this;
   }
 
-  public input(...inputs: (keyof L)[]): this {
+  /** Overwrites the contexts {@link inputs}. */
+  public input(...keys: (keyof L)[]): this {
     this.inputs.clear();
 
-    for (const input of inputs) {
-      this.inputs.add(input);
+    for (const key of keys) {
+      if (this.outputs.has(key)) {
+        throw new Error(`${key.toString()} can not be both an input and output at the same time.`);
+      }
+
+      this.inputs.add(key);
     }
 
     return this;
   }
 
-  /** Copies all data keys that are {@link inputs} from  {@link data} to `target`. */
-  public apply(target: L): this {
-    for (const input of this.inputs) {
-      target[input] = this.data[input];
+  /** Overwrites the contexts {@link outputs}. */
+  public output(...keys: (keyof L)[]): this {
+    this.outputs.clear();
+
+    for (const key of keys) {
+      if (this.inputs.has(key)) {
+        throw new Error(`${key.toString()} can not be both an input and output at the same time.`);
+      }
+
+      this.outputs.add(key);
     }
 
     return this;
   }
 
-  /** Resolves all context {@link bindings}. */
-  public resolve(instance: P): this {
+  /**
+   * Shares data between a `local` and `parent` view reference.
+   *
+   * Context {@link inputs} will be resolved from the parent view reference and applied
+   * to the local reference. Context {@link outputs} will be resolved from the local view
+   * reference and applied to the parent reference.
+   * 
+   * Only data is shared for keys that have a  {@link bindings relationship} defined
+   * on this context.
+   */
+  public apply(local: L, parent: P): this {
     for (const binding of this.bindings) {
-      this.data[binding.local] = instance[binding.parent];
+      if (this.outputs.has(binding.local)) {
+        parent[binding.parent] = resolve(local, binding.local);
+      }
+      else if (this.inputs.has(binding.local)) {
+        local[binding.local] = resolve(parent, binding.parent);
+      }
     }
 
     return this;

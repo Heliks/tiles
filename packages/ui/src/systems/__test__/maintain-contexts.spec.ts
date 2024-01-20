@@ -1,7 +1,7 @@
 import { App, Parent, runtime, World } from '@heliks/tiles-engine';
 import { Context } from '../../context';
 import { Element } from '../../element';
-import { Input } from '../../params';
+import { Input, Output } from '../../params';
 import { UiNode } from '../../ui-node';
 import { MaintainContexts } from '../maintain-contexts';
 
@@ -28,10 +28,7 @@ describe('MaintainContexts', () => {
   describe('when inserting an entity in the context hierarchy', () => {
     class NoopElement implements Element {
 
-      @Input()
       public foo = false;
-
-      @Input()
       public bar = false;
 
       /** @inheritDoc */
@@ -53,7 +50,7 @@ describe('MaintainContexts', () => {
       const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Parent(entity1));
       const entity3 = world.insert(new UiNode().setElement(new NoopElement()), new Parent(entity2), context);
 
-      system.onEntityAdded(world, entity3);
+      system.insert(world, entity3);
 
       expect(context.parent).toBe(entity1);
     });
@@ -63,7 +60,7 @@ describe('MaintainContexts', () => {
       const entity1 = world.insert(new UiNode().setElement(new NoopElement()), context);
       const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Context(), new Parent(entity1));
 
-      system.onEntityAdded(world, entity2);
+      system.insert(world, entity2);
 
       const isChild = context.children.has(entity2);
 
@@ -71,17 +68,53 @@ describe('MaintainContexts', () => {
     });
 
     it('should set inputs', () => {
+      class Noop implements Element {
+        @Input()
+        public foo = true;
+        public bar = true;
+
+        /** @inheritDoc */
+        public update = jest.fn();
+
+        /** @inheritDoc */
+        public getViewRef(): this {
+          return this;
+        }
+      }
+
       const context = new Context();
-      const entity = world.insert(new UiNode().setElement(new NoopElement()), context);
+      const entity = world.insert(UiNode.use(new Noop()), context);
 
-      system.onEntityAdded(world, entity);
+      system.insert(world, entity);
 
-      const inputs = Array.from(context.inputs).sort();
+      const inputs = Array.from(context.inputs);
 
-      expect(inputs).toEqual([
-        'foo',
-        'bar'
-      ].sort());
+      expect(inputs).toEqual([ 'foo' ]);
+    });
+
+    it('should set outputs', () => {
+      class Noop implements Element {
+        @Output()
+        public foo = true;
+        public bar = true;
+
+        /** @inheritDoc */
+        public update = jest.fn();
+
+        /** @inheritDoc */
+        public getViewRef(): this {
+          return this;
+        }
+      }
+
+      const context = new Context();
+      const entity = world.insert(UiNode.use(new Noop()), context);
+
+      system.insert(world, entity);
+
+      const outputs = Array.from(context.outputs);
+
+      expect(outputs).toEqual([ 'foo' ]);
     });
   });
 
@@ -102,8 +135,8 @@ describe('MaintainContexts', () => {
     const entity1 = world.insert(new UiNode().setElement(new NoopElement()), context);
     const entity2 = world.insert(new UiNode().setElement(new NoopElement()), new Context(), new Parent(entity1));
 
-    system.onEntityAdded(world, entity1);
-    system.onEntityAdded(world, entity2);
+    system.insert(world, entity1);
+    system.insert(world, entity2);
 
     // Remove entity
     system.remove(world, entity2);

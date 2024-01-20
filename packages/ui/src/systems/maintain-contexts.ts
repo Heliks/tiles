@@ -1,6 +1,6 @@
 import { Entity, Injectable, Parent, Query, QueryBuilder, ReactiveSystem, World } from '@heliks/tiles-engine';
 import { Context } from '../context';
-import { getInputParams } from '../params';
+import { getInputs, getOutputs } from '../params';
 import { UiNode } from '../ui-node';
 
 
@@ -57,14 +57,11 @@ export class MaintainContexts extends ReactiveSystem {
     }
 
     // Assign element input keys.
-    world
-      .storage(Context)
-      .get(entity)
-      .input(
-        ...getInputParams(
-          node._element.getViewRef()
-        )
-      );
+    const context = world.storage(Context).get(entity);
+    const viewRef = node._element.getViewRef();
+
+    context.input(...getInputs(viewRef));
+    context.output(...getOutputs(viewRef));
 
     if (world.storage(Parent).has(entity)) {
       this.setParentContext(world, entity);

@@ -51,17 +51,20 @@ export class UpdateContexts extends ProcessingSystem {
     const element = this.nodes.get(entity)._element!.getViewRef();
     const context = this.contexts.get(entity);
 
-
     for (const child of context.children) {
-      const ctx = this.contexts.get(child);
+      // const ctx = this.contexts.get(child);
       const node = this.nodes.get(child);
-
-      // Resolve context data from element & apply it to its own element.
-      ctx.resolve(element);
 
       // Safety: Only entities with elements are actually queried.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ctx.apply(node._element!.getViewRef());
+      this.contexts.get(child).apply(node._element!.getViewRef(), element);
+
+      // Resolve context data from element & apply it to its own element.
+      // ctx.resolve(element);
+
+      // Safety: Only entities with elements are actually queried.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // ctx.apply(node._element!.getViewRef());
 
       this.updateTree(world, child);
     }

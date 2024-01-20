@@ -70,7 +70,7 @@ describe('UpdateContexts', () => {
         step2: false,
         step3: false
       });
-
+      
       expect(element2).toMatchObject({
         step1: false,
         step2: true,
