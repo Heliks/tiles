@@ -1,7 +1,6 @@
-import 'reflect-metadata';
-
 import { Entity, Storage, World as BaseWorld } from '@heliks/ecs';
 import { Container, ImmutableContainer, InjectorToken } from '@heliks/tiles-injector';
+import 'reflect-metadata';
 import { getType, getTypeName, isType, Type, TypeLike } from '../utils';
 import { EntityBuilder } from './entity-builder';
 import { EntityRef } from './entity-ref';
@@ -61,7 +60,7 @@ export class World extends BaseWorld implements ImmutableContainer {
    * @param container Service {@link Container} that manages available dependencies
    *  for this entity world.
    */
-  constructor(public readonly container: Container) {
+  constructor(public readonly container = new Container()) {
     super();
   }
 

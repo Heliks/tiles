@@ -5,18 +5,43 @@ import { World } from './world';
 /**
  * A list of components.
  *
- * Each component type is unique, which means that a component list can only hold one
- * component of a certain component type.
+ * The list can only hold one instance per {@link ComponentType}.
  */
 export class ComponentList {
 
-  /** Component instances. Limited to one per component type. */
+  /**
+   * Contains all component instances added to this list. This is guaranteed to only
+   * contain one instance per component type.
+   */
   private readonly items: object[] = [];
 
   /**
-   * Adds a `component` to the list. If a component of that {@link ComponentType type}
-   * already exists, it will not be added. Returns `true` if the component was added to
-   * the list successfully.
+   * Creates a {@link ComponentList} from all components that the given `entity` owns
+   * in the entity `world`.
+   */
+  public static from(world: World, entity: Entity): ComponentList {
+    const list = new ComponentList();
+
+    for (const type of world.components()) {
+      const store = world.storage(type);
+
+      if (store.has(entity)) {
+        list.add(store.get(entity) as object);
+      }
+    }
+
+    return list;
+  }
+
+  /** Returns the total number of components in this list. */
+  public size(): number {
+    return this.items.length;
+  }
+
+  /**
+   * Adds a `component` to the list. Only one instance per {@link ComponentType} can be
+   * added to this list. Returns `true` if the component was successfully added, or false
+   * if its type already exists.
    */
   public add(component: object): boolean {
     if (this.find(component.constructor as ComponentType)) {
@@ -28,14 +53,17 @@ export class ComponentList {
     return true;
   }
 
-  /** Returns the component of `type` from the list, if any. */
+  /**
+   * Returns the instance of the given component `type` from the list, or `undefined` if
+   * no such type exists.
+   */
   public find<T>(type: ComponentType<T>): T | undefined {
     return this.items.find(item => item instanceof type) as T;
   }
 
   /**
-   * Returns the component of `type` from the list. Throws if no component of such type
-   * exists within this list.
+   * Returns the instance of the given component `type` from the list. Throws an error
+   * if no such type exists.
    */
   public get<T>(type: ComponentType<T>): T {
     const component = this.find(type);
@@ -47,10 +75,7 @@ export class ComponentList {
     return component;
   }
 
-  /**
-   * Creates a new entity in the given `world` & attaches all components in this
-   * list to it.
-   */
+  /** Creates an entity from all components that are added to this list. */
   public entity(world: World): Entity {
     return world.insert(...this.items);
   }
