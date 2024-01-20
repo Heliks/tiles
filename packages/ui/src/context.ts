@@ -25,6 +25,8 @@ export interface OneWayBinding<L, P> {
 export type Binding<L, P> = OneWayBinding<L, P>;
 
 /** @internal */
+// Safety: The value returned here can truly be anything.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function resolve<T>(target: T, key: keyof T): any {
   return target[key];
 }
@@ -57,6 +59,7 @@ interface ContextDirective<P, A extends Attribute = Attribute> {
 export class Context<L = unknown, P = unknown> {
 
   /** Contains all {@link Attribute attributes} of this context. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public readonly attributes: ContextDirective<P, any>[] = [];
 
   /**

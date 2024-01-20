@@ -49,7 +49,7 @@ export class MaintainContexts extends ReactiveSystem {
   }
 
   /** Inserts the given `entity` in the context hierarchy. */
-  public insert(world: World, entity: Entity) {
+  public insert(world: World, entity: Entity): void {
     const node = world.storage(UiNode).get(entity);
 
     if (! node._element) {

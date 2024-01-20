@@ -74,6 +74,7 @@ export class UpdateElements extends ProcessingSystem {
 
   public handleElementEventLifecycle(world: World, node: UiNode): void {
     // Safety: This function should only be called with nodes that have an element.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const viewRef = node._element!.getViewRef();
 
     if (canReceiveEvents(viewRef)) {
