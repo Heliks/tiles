@@ -77,17 +77,17 @@ importers:
   packages/engine:
     dependencies:
       '@heliks/ecs':
-        specifier: file:../../../ecs/packages/ecs
-        version: file:../ecs/packages/ecs
+        specifier: 0.3.2-rc1
+        version: 0.3.2-rc1
       '@heliks/ecs-hierarchy':
-        specifier: file:../../../ecs/packages/ecs-hierarchy
-        version: file:../ecs/packages/ecs-hierarchy(@heliks/ecs@0.3.1)(@heliks/event-queue@0.3.0)
+        specifier: 0.3.2-rc1
+        version: 0.3.2-rc1(@heliks/ecs@0.3.2-rc1)(@heliks/event-queue@0.3.0)
       '@heliks/ecs-serialize':
-        specifier: file:../../../ecs/packages/ecs-serialize
-        version: file:../ecs/packages/ecs-serialize(@heliks/ecs@0.3.1)(reflect-metadata@0.1.13)
+        specifier: 0.3.2-rc1
+        version: 0.3.2-rc1(@heliks/ecs@0.3.2-rc1)(reflect-metadata@0.1.13)
       '@heliks/ecs-transform':
-        specifier: file:../../../ecs/packages/ecs-transform
-        version: file:../ecs/packages/ecs-transform(@heliks/ecs-hierarchy@0.3.1)(@heliks/ecs@0.3.1)(@heliks/event-queue@0.3.0)
+        specifier: 0.3.2-rc1
+        version: 0.3.2-rc1(@heliks/ecs-hierarchy@0.3.2-rc1)(@heliks/ecs@0.3.2-rc1)(@heliks/event-queue@0.3.0)
       '@heliks/event-queue':
         specifier: 0.3.0
         version: 0.3.0
@@ -619,6 +619,42 @@ packages:
     resolution: {integrity: sha512-6qZCV2D7s4W8DJi7w1AhxXrtta+aKyM/LMbYXnnE9ykSqIWTLZKJTJu+CqlylLswdt43IV6irvAy8VzjS+ptOw==}
     dependencies:
       '@types/systemjs': 0.20.11
+    dev: false
+
+  /@heliks/ecs-hierarchy@0.3.2-rc1(@heliks/ecs@0.3.2-rc1)(@heliks/event-queue@0.3.0):
+    resolution: {integrity: sha512-0RC6cRYN+Lzd0zK8Oq37wAkT5ZlpN3WMVgayjwQSqA6C3BZELHvFMAsZqukI5dF/K0qBcx4yTaqlt+EFS2xSlg==}
+    peerDependencies:
+      '@heliks/ecs': ^0.3.2-rc1
+      '@heliks/event-queue': 0.3.0
+    dependencies:
+      '@heliks/ecs': 0.3.2-rc1
+      '@heliks/event-queue': 0.3.0
+    dev: false
+
+  /@heliks/ecs-serialize@0.3.2-rc1(@heliks/ecs@0.3.2-rc1)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-ws9+Ywr1ORdnc0JiiPQV5qbnyEdBM76h9WKjfP5aOkmWDSFuNtHiqUILCzWuHtkhP9TLG/8vDR3SihqjKXyG8w==}
+    peerDependencies:
+      '@heliks/ecs': ^0.3.2-rc1
+      reflect-metadata: ^0.1.13
+    dependencies:
+      '@heliks/ecs': 0.3.2-rc1
+      reflect-metadata: 0.1.13
+    dev: false
+
+  /@heliks/ecs-transform@0.3.2-rc1(@heliks/ecs-hierarchy@0.3.2-rc1)(@heliks/ecs@0.3.2-rc1)(@heliks/event-queue@0.3.0):
+    resolution: {integrity: sha512-OsRqeGa0RRWt/9xRYTrU4oOc6h6Wqda0Fdvcihvw8i5iWl6WI82Zkz/N5cMQQq37+mwNRMQgqp62vgDlAcCeNA==}
+    peerDependencies:
+      '@heliks/ecs': ^0.3.2-rc1
+      '@heliks/ecs-hierarchy': ^0.3.2-rc1
+      '@heliks/event-queue': 0.3.0
+    dependencies:
+      '@heliks/ecs': 0.3.2-rc1
+      '@heliks/ecs-hierarchy': 0.3.2-rc1(@heliks/ecs@0.3.2-rc1)(@heliks/event-queue@0.3.0)
+      '@heliks/event-queue': 0.3.0
+    dev: false
+
+  /@heliks/ecs@0.3.2-rc1:
+    resolution: {integrity: sha512-hfJv+vcXQP2kwjzzsw5hwt+UzlPxZ9rc0M6Pb19WjAT2xVN4InFy9SQRAGxVjJVKKCYPoMqwEN2Jz718LZx00Q==}
     dev: false
 
   /@heliks/event-queue@0.3.0:
@@ -3982,50 +4018,3 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  file:../ecs/packages/ecs:
-    resolution: {directory: ../ecs/packages/ecs, type: directory}
-    name: '@heliks/ecs'
-    version: 0.3.1
-    dev: false
-
-  file:../ecs/packages/ecs-hierarchy(@heliks/ecs@0.3.1)(@heliks/event-queue@0.3.0):
-    resolution: {directory: ../ecs/packages/ecs-hierarchy, type: directory}
-    id: file:../ecs/packages/ecs-hierarchy
-    name: '@heliks/ecs-hierarchy'
-    version: 0.3.1
-    peerDependencies:
-      '@heliks/ecs': workspace:^
-      '@heliks/event-queue': 0.3.0
-    dependencies:
-      '@heliks/ecs': file:../ecs/packages/ecs
-      '@heliks/event-queue': 0.3.0
-    dev: false
-
-  file:../ecs/packages/ecs-serialize(@heliks/ecs@0.3.1)(reflect-metadata@0.1.13):
-    resolution: {directory: ../ecs/packages/ecs-serialize, type: directory}
-    id: file:../ecs/packages/ecs-serialize
-    name: '@heliks/ecs-serialize'
-    version: 0.3.1
-    peerDependencies:
-      '@heliks/ecs': workspace:^
-      reflect-metadata: ^0.1.13
-    dependencies:
-      '@heliks/ecs': file:../ecs/packages/ecs
-      reflect-metadata: 0.1.13
-    dev: false
-
-  file:../ecs/packages/ecs-transform(@heliks/ecs-hierarchy@0.3.1)(@heliks/ecs@0.3.1)(@heliks/event-queue@0.3.0):
-    resolution: {directory: ../ecs/packages/ecs-transform, type: directory}
-    id: file:../ecs/packages/ecs-transform
-    name: '@heliks/ecs-transform'
-    version: 0.3.1
-    peerDependencies:
-      '@heliks/ecs': workspace:^
-      '@heliks/ecs-hierarchy': workspace:^
-      '@heliks/event-queue': 0.3.0
-    dependencies:
-      '@heliks/ecs': file:../ecs/packages/ecs
-      '@heliks/ecs-hierarchy': file:../ecs/packages/ecs-hierarchy(@heliks/ecs@0.3.1)(@heliks/event-queue@0.3.0)
-      '@heliks/event-queue': 0.3.0
-    dev: false
