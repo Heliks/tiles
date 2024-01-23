@@ -3,6 +3,7 @@ import { Ticker, Timer, World } from '@heliks/tiles-engine';
 import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
 import { Element, ViewRef } from '../element';
+import { Rect, Size } from '../layout';
 
 
 /** Displays an animated sprite. */
@@ -10,6 +11,13 @@ export class UiAnimatedSprite implements Element {
 
   /** @inheritDoc */
   public readonly view = new Sprite();
+
+  /** @inheritDoc */
+  public readonly size = new Rect(
+    Size.px(0),
+    Size.px(0)
+  );
+
 
   /**
    * Currently playing animation.
@@ -94,6 +102,9 @@ export class UiAnimatedSprite implements Element {
         this.setFrameIndex(asset, frameIdx);
       }
     }
+
+    this.size.width.value = this.view.texture.width;
+    this.size.height.value = this.view.texture.height;
   }
 
 }

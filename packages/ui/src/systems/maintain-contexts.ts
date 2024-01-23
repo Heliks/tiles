@@ -1,5 +1,5 @@
 import { Entity, Injectable, Parent, Query, QueryBuilder, ReactiveSystem, World } from '@heliks/tiles-engine';
-import { Context } from '../context';
+import { Context } from '../context/context';
 import { getInputs, getOutputs } from '../params';
 import { UiNode } from '../ui-node';
 

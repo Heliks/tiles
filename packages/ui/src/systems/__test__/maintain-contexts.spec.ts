@@ -1,5 +1,5 @@
 import { App, Parent, runtime, World } from '@heliks/tiles-engine';
-import { Context } from '../../context';
+import { Context } from '../../context/context';
 import { Element } from '../../element';
 import { Input, Output } from '../../params';
 import { UiNode } from '../../ui-node';

@@ -9,7 +9,7 @@ import {
   Storage,
   World
 } from '@heliks/tiles-engine';
-import { Context, resolve } from '../context';
+import { Context } from '../context';
 import { UiNode } from '../ui-node';
 
 
@@ -50,7 +50,7 @@ export class UpdateContexts extends ProcessingSystem {
   private updateAttributes<L, P>(owner: UiNode, context: Context<L, P>, viewRef: P): void {
     for (const item of context.attributes) {
       if (item.input) {
-        item.attribute[item.input] = resolve(viewRef, item.key);
+        item.attribute[item.input] = viewRef[item.key];
       }
 
       item.attribute.update(owner);
