@@ -272,6 +272,67 @@ describe('calculateLineCrossSizes()', () => {
 
     expect(cross).toBe(50);
   });
+
+  describe('with multiple lines (flex-wrap: wrap)', () => {
+    /**
+     * Creates a test node that is set up for flex-wrap tests.
+     *
+     * @param baseline The nodes baseline.
+     * @param width Outer node width in px.
+     * @param height Outer node height in px.
+     */
+    function _create(baseline: number, width: number, height: number): Node {
+      const node = new Node();
+
+      node.constants.baseline = baseline;
+      node.constants.outerSize.set(width, height);
+
+      return node;
+    }
+
+    it('should calculate cross size for all lines in flex-direction: row', () => {
+      const line1 = new Line();
+      const line2 = new Line();
+
+      line1.add(_create(20, 10, 20));
+      line1.add(_create(20, 10, 30));
+
+      line2.add(_create(20, 10, 10));
+      line2.add(_create(20, 10, 15));
+
+      const constants = new Constants();
+
+      constants.lines.push(line1);
+      constants.lines.push(line2);
+
+      calculateLineCrossSizes(constants);
+
+      expect(line1.size.cross(true)).toBe(30);
+      expect(line2.size.cross(true)).toBe(15);
+    });
+
+    it('should calculate cross size for all lines in flex-direction: column', () => {
+      const line1 = new Line();
+      const line2 = new Line();
+
+      line1.add(_create(20, 10, 20));
+      line1.add(_create(20, 20, 20));
+
+      line2.add(_create(20, 30, 20));
+      line2.add(_create(20, 50, 20));
+
+      const constants = new Constants();
+
+      constants.isRow = false;
+      constants.lines.push(line1);
+      constants.lines.push(line2);
+
+      calculateLineCrossSizes(constants);
+
+      expect(line1.size.cross(false)).toBe(20);
+      expect(line2.size.cross(false)).toBe(50);
+    });
+  });
 });
 
 describe('calculateOuterSize()', () => {
@@ -411,26 +472,37 @@ describe('compute()', () => {
 });
 
 /*
-describe('compute', () => {
+describe('algo_test', () => {
   it('foo', () => {
     const container = new Node({
-      // justify: AlignContent.Center,
-      // wrap: true,
-      direction: FlexDirection.Column,
+      wrap: true,
+      // direction: FlexDirection.Column,
       size: new Rect<Size>(
-        Size.percent(1),
-        Size.percent(1)
+        Size.px(50),
+        Size.px(50)
       )
     });
 
+    for (let i = 0; i < 4; i++) {
+      const child = new Node({
+        margin: new Sides(1, 1, 1, 1),
+        size: new Rect(
+          Size.px(20),
+          Size.px(20)
+        )
+      });
 
-    const childA = new Node({ size: new Rect(Size.px(20), Size.px(20)), padding: new Sides(5, 5, 5, 5), margin: new Sides(5, 0, -5, 0) });
-    const childB = new Node({ size: new Rect(Size.px(20), Size.px(20)), padding: new Sides(5, 5, 5, 5) });
+      (child as any).i = i;
 
-    container.add(childA);
-    container.add(childB);
+      container.add(child);
+    }
 
     compute(container, new Rect(100, 200));
+
+    console.log(container.constants.lines)
+
+    for (const child of container.children) {
+      console.log(child.pos, (child as any).i);
+    }
   });
-});
-*/
+});*/

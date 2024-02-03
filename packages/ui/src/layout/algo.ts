@@ -35,15 +35,6 @@ export function setupConstants(node: Node): void {
   }
 }
 
-
-
-/** @internal */
-function calculateBaseLines(node: Node, constants: Constants): void {
-  for (const child of node.children) {
-    child.constants.baseline = child.size.cross(constants.isRow);
-  }
-}
-
 /** @internal */
 function maxBaseLineReducer(max: number, node: Node): number {
   return Math.max(max, node.constants.baseline);
@@ -76,14 +67,14 @@ export function calculateLineCrossSizes(constants: Constants): void {
       let highest = 0;
 
       for (const child of line.nodes) {
-        const cross = maxBaseLine - child.constants.baseline + child.size.cross(constants.isRow);
+        const cross = maxBaseLine - child.constants.baseline + child.constants.outerSize.cross(constants.isRow);
 
         if (cross > highest) {
           highest = cross;
         }
       }
 
-      line.size.setCross(constants.isRow, maxBaseLine);
+      line.size.setCross(constants.isRow, highest);
     }
   }
 }
