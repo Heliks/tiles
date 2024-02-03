@@ -1,6 +1,7 @@
 import { Entity, Hierarchy, Parent, Type, World } from '@heliks/tiles-engine';
+import { Host } from '../context';
 import { Element } from '../element';
-import { canDestroy, canInit, OnDestroy, OnInit } from '../lifecycle';
+import { canDestroy, canInit, OnBeforeInit, OnDestroy, OnInit } from '../lifecycle';
 import { UiComponent } from '../ui-component';
 
 
@@ -15,7 +16,7 @@ import { UiComponent } from '../ui-component';
  *
  * - `T`: The UI Component type that is rendered by this element.
  */
-export class UiComponentRenderer<T extends UiComponent = UiComponent> implements Element, OnInit, OnDestroy {
+export class UiComponentRenderer<T extends UiComponent = UiComponent> implements Element<T>, OnInit, OnBeforeInit, OnDestroy {
 
   /**
    * The instance of the UI {@link component} that will be created after the owner of
@@ -38,13 +39,18 @@ export class UiComponentRenderer<T extends UiComponent = UiComponent> implements
   constructor(public readonly component: Type<T>) {}
 
   /** @inheritDoc */
-  public getViewRef(): T {
+  public getContext(): T {
     return this.instance;
   }
 
   /** @inheritDoc */
-  public onInit(world: World, entity: Entity): void {
+  public onBeforeInit(world: World): void {
     this.instance = world.make(this.component);
+  }
+
+  /** @inheritDoc */
+  public onInit(world: World, entity: Entity): void {
+    world.attach(entity, new Host());
 
     // Call onInit lifecycle hook if it is implemented by the component.
     if (canInit(this.instance)) {

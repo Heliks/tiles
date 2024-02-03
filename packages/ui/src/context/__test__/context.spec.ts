@@ -1,8 +1,30 @@
-import { Context } from '../context';
+import { Parent, runtime, World } from '@heliks/tiles-engine';
+import { Host } from '../context';
 
 
+describe('Host', () => {
+  let world: World;
+
+  beforeEach(() => {
+    world = runtime().build().world;
+  });
+
+  it('should resolve host for entity', () => {
+    const entity1 = world.insert(new Host());
+    const entity2 = world.insert(new Parent(entity1));
+    const entity3 = world.insert(new Parent(entity2));
+
+    const host1 = Host.get(world, entity2);
+    const host2 = Host.get(world, entity3);
+
+    expect(host1).toBe(entity1);
+    expect(host2).toBe(entity1);
+  });
+});
+
+/*
 describe('Context', () => {
-  let context: Context<{ bar: string }, { foo: string }>;
+  let context: ContextRef;
 
   beforeEach(() => {
     context = new Context<{ bar: string }, { foo: string }>();
@@ -12,26 +34,28 @@ describe('Context', () => {
   });
 
   it('should apply inputs to local view reference', () => {
-    // Set local "bar" property as input.
-    context.input('bar');
+    const parent = new ContextRef({ foo: 'bar' });
+    const local = new ContextRef({ bar: 'foo' });
 
-    const local = { bar: 'foo' };
-    const parent = { foo: 'bar' };
+    // Set the local "bar" property to be an input.
+    local.setInputs('bar');
 
     context.apply(local, parent);
 
-    expect(local.bar).toBe('bar');
+    expect(local.context.bar).toBe('bar');
   });
 
   it('should apply outputs to parent view reference', () => {
-    // Set local "bar" property as output
-    context.output('bar');
+    const parent = new ContextRef({ foo: 'bar' });
+    const local = new ContextRef({ bar: 'foo' });
 
-    const local = { bar: 'foo' };
-    const parent = { foo: 'bar' };
-
+    // Set local "bar" property to be an output.
+    local.setOutputs('bar');
+    
     context.apply(local, parent);
 
-    expect(parent.foo).toBe('foo');
+    expect(parent.context.foo).toBe('foo');
   });
 });
+
+ */

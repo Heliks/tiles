@@ -2,7 +2,7 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
-import { Element, ViewRef } from '../element';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
 
 
@@ -30,7 +30,7 @@ export class UiSprite<I = unknown> implements Element {
   }
 
   /** @inheritDoc */
-  public getViewRef(): ViewRef {
+  public getContext(): object {
     return this;
   }
 

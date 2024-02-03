@@ -19,6 +19,22 @@ export interface OnInit {
 }
 
 /**
+ * A lifecycle hook that is invoked before a resource is initialized. Implement this
+ * interface to handle additional setup tasks before the initialization of the resource.
+ */
+export interface OnBeforeInit {
+
+  /**
+   * Callback that is invoked before the resource is initialized.
+   *
+   * @param world Entity world.
+   * @param entity Entity that owns the initialized resource.
+   */
+  onBeforeInit(world: World, entity: Entity): void;
+
+}
+
+/**
  * A lifecycle hook that is called when a UI resource is being destroyed. Implement this
  * interface to handle additional cleanup tasks.
  */
@@ -53,9 +69,20 @@ export interface OnEvent {
 
 }
 
+
 /** Returns `true` if the given `target` has an {@link OnInit} lifecycle event. */
 export function canInit(target: unknown): target is OnInit {
   return Boolean((target as OnInit)?.onInit);
+}
+
+export function emitOnInit(target: unknown, world: World, entity: Entity): void {
+  if (canInit(target)) {
+    target.onInit(world, entity);
+  }
+}
+
+export function canSetupBeforeInit(target: unknown): target is OnBeforeInit {
+  return Boolean((target as OnBeforeInit)?.onBeforeInit);
 }
 
 /** Returns `true` if the given `target` has an {@link OnDestroy} lifecycle event. */

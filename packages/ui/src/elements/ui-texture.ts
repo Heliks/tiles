@@ -1,7 +1,7 @@
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
-import { Element, ViewRef } from '../element';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
 
 
@@ -26,7 +26,7 @@ export class UiTexture implements Element {
   constructor(private texture: Texture | Handle<Texture>) {}
 
   /** @inheritDoc */
-  public getViewRef(): ViewRef {
+  public getContext(): object {
     return this;
   }
 

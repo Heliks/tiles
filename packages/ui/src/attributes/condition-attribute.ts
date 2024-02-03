@@ -1,5 +1,7 @@
+import { Entity, World } from '@heliks/tiles-engine';
 import { Attribute } from '../attribute';
 import { Display } from '../layout';
+import { OnInit } from '../lifecycle';
 import { Input } from '../params';
 import { UiNode } from '../ui-node';
 
@@ -9,12 +11,18 @@ import { UiNode } from '../ui-node';
  * value of an expression that is cast into a `boolean`. When the expression evaluates
  * to `true`, the element will be made visible. If it evaluates to `false`, it will
  * be hidden.
+ *
+ * This does not remove the element from the layout tree. Therefore, it does not guard
+ * against not-yet existing inputs that are supposed to be passed into the element at a
+ * later time. For this case, a {@link TemplateElement} can be used to completely remove
+ * an element from the layout tree conditionally.
  */
-export class ConditionAttribute implements Attribute {
+export class ConditionAttribute implements Attribute, OnInit {
 
   /**
-   * This value will be cast into a boolean. If it valuates to `true`, the element will
-   * be made visible. If it evaluates to `false`, it will be hidden.
+   * Expression that will be evaluated to decide if the element should be hidden or
+   * shown. If it evaluates to `true`, it will be shown. If it is `false`, it will
+   * be hidden instead.
    */
   @Input()
   public expression?: unknown;
@@ -29,9 +37,19 @@ export class ConditionAttribute implements Attribute {
     return this.not ? !this.expression : Boolean(this.expression);
   }
 
+  /** @internal */
+  private apply(node: UiNode): void {
+    node.style.display = this.resolve() ? Display.Flex : Display.None;
+  }
+
+  /** @inheritDoc */
+  public onInit(world: World, entity: Entity): void {
+    this.apply(world.storage(UiNode).get(entity));
+  }
+
   /** @inheritDoc */
   public update(node: UiNode): void {
-    node.style.display = this.resolve() ? Display.Flex : Display.None;
+    this.apply(node);
   }
 
 }

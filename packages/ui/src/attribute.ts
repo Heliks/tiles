@@ -2,11 +2,13 @@ import { UiNode } from './ui-node';
 
 
 /**
- * Adds additional logic or behavior to a {@link UiNode} and by extension, its element.
+ * Adds additional logic or behavior to a {@link UiElement}.
  *
- * Values can be passed into an attribute from the contextual parents view reference by
- * declaring a property as {@link Input}. Only one input property should be defined per
- * attribute. If there is more than one, it will be sent to the first one defined.
+ * Values can be passed into an attribute from the context host of the element to which
+ * this attribute is attached to by declaring a property as {@link Input}.
+ *
+ * Only one input should be defined per attribute. If there is more than one, the context
+ * host will send the data to the first one available.
  *
  * ```ts
  *  class Foo implements Attribute {

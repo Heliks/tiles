@@ -1,7 +1,6 @@
 import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { Container } from 'pixi.js';
-import { Element } from './element';
-import { Node } from './layout';
+import { Display, Node } from './layout';
 import { Style } from './style';
 import { UiEvent } from './ui-event';
 
@@ -28,10 +27,8 @@ export enum UiNodeInteraction {
  * If this node is a child of another node, the alignment is always inherited from the
  * parent, which means that it's not possible to render a child on screen while its
  * parent is rendered in the world.
- *
- * - `E`: The kind of element that this node displays.
  */
-export class UiNode<E extends Element = Element> {
+export class UiNode {
 
   /**
    * Container where the display objects of ui nodes that are children of this root
@@ -75,9 +72,6 @@ export class UiNode<E extends Element = Element> {
   /** The stylesheet that is applied to this node. */
   public readonly style: Style;
 
-  /** @internal */
-  public _element?: E;
-
   /**
    * @param style (optional) Style properties that should be applied to the node layout.
    */
@@ -100,27 +94,12 @@ export class UiNode<E extends Element = Element> {
     return this;
   }
 
-  /** Attaches a {@link Element} to this node. */
-  public setElement(element: E): UiNode<E> {
-    // Remove view of previous element from node. This will be replaced with the view
-    // of the new element (if any).
-    this.container.removeChildren();
-    this._element = element;
-
-    if (element.view) {
-      this.container.addChild(element.view);
-    }
-
-    return this;
+  public visible(): boolean {
+    return this.style.display !== Display.None;
   }
 
-  /** Returns the {@link Element} that is displayed by this node, if any. */
-  public getElement(): E | undefined {
-    return this._element;
-  }
-
-  public static use<E extends Element>(element: E, style?: Partial<Style>): UiNode<E> {
-    return new UiNode<E>(style).setElement(element);
+  public hidden(): boolean {
+    return this.style.display === Display.None;
   }
 
 }

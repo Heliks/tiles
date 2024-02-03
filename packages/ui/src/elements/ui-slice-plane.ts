@@ -2,7 +2,7 @@ import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { NineSlicePlane, Texture } from 'pixi.js';
-import { Element, ViewRef } from '../element';
+import { Element } from '../element';
 import { Node } from '../layout';
 
 
@@ -28,7 +28,7 @@ export class UiSlicePlane<I = unknown> implements Element {
   }
 
   /** @inheritDoc */
-  public getViewRef(): ViewRef {
+  public getContext(): object {
     return this;
   }
 

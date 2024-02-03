@@ -1,5 +1,5 @@
 import { Text } from 'pixi.js';
-import { Element, ViewRef } from '../element';
+import { Element } from '../element';
 import { Rect, Size } from '../layout';
 import { Input } from '../params';
 
@@ -37,16 +37,18 @@ export class UiText implements Element {
    * @param value The text that should be rendered.
    * @param color Color in which the text should be rendered.
    * @param size Font size in px.
+   * @param size Font family
    */
-  constructor(value: string, color = 0x000000, size = 10) {
+  constructor(value: string, color = 0x000000, size = 10, family?: string) {
     this.text = value;
     this.view.style.fontSize = size;
     this.view.style.fill = color;
+    this.view.style.fontFamily = family ?? UiText.defaultFont;
     this.view.resolution = 2;
   }
 
   /** @inheritDoc */
-  public getViewRef(): ViewRef {
+  public getContext(): object {
     return this;
   }
 

@@ -1,27 +1,14 @@
-import {
-  Entity,
-  Hierarchy,
-  Injectable,
-  InjectStorage,
-  Parent,
-  ProcessingSystem,
-  Query,
-  QueryBuilder,
-  Storage,
-  Subscriber,
-  World
-} from '@heliks/tiles-engine';
-import { Display } from '../layout';
+import { Injectable, ProcessingSystem, Query, QueryBuilder, Subscriber, World } from '@heliks/tiles-engine';
+import { ContextRef } from '../context';
+import { Element } from '../element';
 import { canReceiveEvents } from '../lifecycle';
+import { UiElement } from '../ui-element';
 import { UiEvent } from '../ui-event';
 import { UiNode } from '../ui-node';
 
 
 /**
- * Updates {@link Element elements} on active {@link UiNode nodes}.
- *
- * Updates happens top-down in a nodes entity {@link Hierarchy}, which means that
- * parent nodes are always updated before their children.
+ * Updates elements.
  */
 @Injectable()
 export class UpdateElements extends ProcessingSystem {
@@ -29,23 +16,11 @@ export class UpdateElements extends ProcessingSystem {
   /** Contains active subscriptions for nodes that are interactive. */
   private subscriptions = new Map<UiNode, Subscriber<UiEvent>>();
 
-  /**
-   * @param nodes Storage for {@link UiNode} components.
-   * @param hierarchy Entity hierarchy.
-   */
-  constructor(
-    @InjectStorage(UiNode)
-    private readonly nodes: Storage<UiNode>,
-    private readonly hierarchy: Hierarchy
-  ) {
-    super();
-  }
-
   /** @inheritDoc */
   public build(query: QueryBuilder): Query {
     return query
       .contains(UiNode)
-      .excludes(Parent)
+      .contains(UiElement)
       .build();
   }
 
@@ -72,10 +47,8 @@ export class UpdateElements extends ProcessingSystem {
       : this.setupNodeSubscription(node);
   }
 
-  public handleElementEventLifecycle(world: World, node: UiNode): void {
-    // Safety: This function should only be called with nodes that have an element.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const viewRef = node._element!.getViewRef();
+  public handleElementEventLifecycle(world: World, node: UiNode, element: Element): void {
+    const viewRef = element.getContext();
 
     if (canReceiveEvents(viewRef)) {
       const subscriber = this.getNodeSubscription(node);
@@ -86,42 +59,45 @@ export class UpdateElements extends ProcessingSystem {
     }
   }
 
-  public updateNode(world: World, entity: Entity): void {
-    const node = this.nodes.get(entity);
-    const show = node.style.display !== Display.None;
-
-    node.container.visible = show;
-
-    // Exit early if the node is hidden. Children don't need to be updated.
-    if (! show) {
-      return;
-    }
-
-    if (node._element) {
-      this.handleElementEventLifecycle(world, node);
-
-      node._element.update(world, entity, node.layout);
-
-      // Widgets can project their content size directly onto the layout node,
-      // overwriting the existing style.
-      if (node._element.size) {
-        node.layout.style.size = node._element.size;
-      }
-    }
-
-    const children = this.hierarchy.children.get(entity);
-
-    if (children) {
-      for (const child of children) {
-        this.updateNode(world, child);
-      }
+  private updateAttributes(node: UiNode, element: UiElement, context: ContextRef): void {
+    for (const item of element.attributes) {
+      item.resolve(context);
+      item.attribute.update(node);
     }
   }
 
   /** @inheritDoc */
   public update(world: World): void {
+    const elements = world.storage(UiElement);
+    const nodes = world.storage(UiNode);
+
     for (const entity of this.query.entities) {
-      this.updateNode(world, entity);
+      const element = elements.get(entity);
+      const node = nodes.get(entity);
+
+      // Note: Data is shared with the context host and attributes are evaluated even if
+      // the node is invisible, because when an attribute receives a new input, it could
+      // possibly make the element visible again.
+      if (element.host !== undefined) {
+        const host = elements.get(element.host);
+
+        this.updateAttributes(node, element, host.context);
+
+        element.share(host);
+      }
+
+      if (node.hidden()) {
+        continue;
+      }
+
+      this.handleElementEventLifecycle(world, node, element.instance);
+
+      element.instance.update(world, entity, node.layout);
+
+      // Elements can project their content size directly into the stylesheet.
+      if (element.instance.size) {
+        node.layout.style.size = element.instance.size;
+      }
     }
   }
 

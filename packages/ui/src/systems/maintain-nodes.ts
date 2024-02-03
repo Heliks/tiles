@@ -1,7 +1,6 @@
 import {
   Entity,
   Injectable,
-  InjectStorage,
   OnInit,
   Parent,
   Query,
@@ -13,12 +12,11 @@ import {
   World
 } from '@heliks/tiles-engine';
 import { Stage } from '@heliks/tiles-pixi';
-import { canDestroy, canInit } from '../lifecycle';
 import { UiNode } from '../ui-node';
 
 
 @Injectable()
-export class SyncNodes implements OnInit, System {
+export class MaintainNodes implements OnInit, System {
 
   /** @internal */
   private query!: Query;
@@ -27,17 +25,9 @@ export class SyncNodes implements OnInit, System {
   private subscription!: Subscriber<QueryEvent>;
 
   /**
-   * @param parents Storage for {@link Parent} components.
-   * @param uiNodes Storage for {@link UiNode} components.
    * @param stage Renderer stage.
    */
-  constructor(
-    @InjectStorage(Parent)
-    private parents: Storage<Parent>,
-    @InjectStorage(UiNode)
-    private uiNodes: Storage<UiNode>,
-    private readonly stage: Stage
-  ) {}
+  constructor(private readonly stage: Stage) {}
 
   /** @inheritDoc */
   public onInit(world: World): void {
@@ -64,10 +54,6 @@ export class SyncNodes implements OnInit, System {
     else {
       this.stage.add(component.container, component.style.layer);
     }
-
-    if (canInit(component._element)) {
-      component._element.onInit(world, entity);
-    }
   }
 
   /** @internal */
@@ -75,10 +61,6 @@ export class SyncNodes implements OnInit, System {
     const root = roots.get(entity);
 
     root.container.parent?.removeChild(root.container);
-
-    if (canDestroy(root._element)) {
-      root._element.onDestroy(world, entity);
-    }
   }
 
   /** @inheritDoc */

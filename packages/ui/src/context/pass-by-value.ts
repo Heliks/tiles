@@ -1,27 +1,23 @@
-import { Binding, Context } from './types';
+import { Binding } from './binding';
+import { ContextRef } from './context-ref';
 
 
 /**
  * Passes a fixed value into the local view ref.
- *
- * - `L`: Local {@link ViewRef} type.
- * - `P`: Parent {@link ViewRef} type.
  */
-export class PassByValue<L = unknown, P = unknown> implements Binding<L, P> {
+export class PassByValue implements Binding {
 
   /**
    * @param local Key of the local view ref `L` into which {@link value} is injected.
    * @param value Value to inject into the {@link local} view ref.
    */
-  constructor(public readonly local: keyof L, public readonly value: any) {}
+  constructor(public readonly local: string, public readonly value: unknown) {}
 
   /** @inheritDoc */
-  public resolve(context: Context<L, P>, local: L): void {
-    if (! context.inputs.has(this.local)) {
-      throw new Error('Values can only be passed into @Input() bindings.');
+  public resolve(local: ContextRef): void {
+    if (local.isInput(this.local)) {
+      local.setInput(this.local, this.value);
     }
-
-    local[this.local] = this.value;
   }
 
 }

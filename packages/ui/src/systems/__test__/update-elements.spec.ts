@@ -1,22 +1,11 @@
 import { App, Parent, runtime, Subscriber, TransformBundle, World } from '@heliks/tiles-engine';
-import { Element } from '../../element';
 import { OnEvent } from '../../lifecycle';
+import { UiElement } from '../../ui-element';
 import { UiEvent } from '../../ui-event';
 import { UiNode, UiNodeInteraction } from '../../ui-node';
 import { UpdateElements } from '../update-elements';
+import { NoopElement } from './utils';
 
-
-class NoopElement implements Element {
-
-  /** @inheritDoc */
-  update = jest.fn();
-
-  /** @inheritDoc */
-  public getViewRef(): this {
-    return this;
-  }
-
-}
 
 describe('UpdateElements', () => {
   let app: App;
@@ -26,6 +15,7 @@ describe('UpdateElements', () => {
   beforeEach(() => {
     app = runtime()
       .component(UiNode)
+      .component(UiElement)
       .component(Parent)
       .bundle(new TransformBundle())
       .system(UpdateElements)
@@ -40,34 +30,6 @@ describe('UpdateElements', () => {
     world = app.world;
   });
 
-  it('should update node element', () => {
-    const element = new NoopElement();
-    const entity = world.insert(new UiNode().setElement(element));
-
-    system.updateNode(world, entity);
-
-    expect(element.update).toHaveBeenCalled();
-  });
-
-  it('should update nodes hierarchically', () => {
-    const entity1 = world.insert(new UiNode());
-    const entity2 = world.insert(new UiNode());
-    const entity3 = world.insert(new UiNode());
-
-    // Create a hierarchy that is different from the order in which entities were
-    // created. This ensures that the test doesn't report a false positive where
-    // entities are merely conveniently located next to each other in their group.
-    world.attach(entity2, new Parent(entity1));
-    world.attach(entity1, new Parent(entity3));
-
-    const onUpdateNode = jest.spyOn(system, 'updateNode');
-
-    app.update();
-
-    expect(onUpdateNode).toHaveBeenNthCalledWith(1, world, entity3);
-    expect(onUpdateNode).toHaveBeenNthCalledWith(2, world, entity1);
-    expect(onUpdateNode).toHaveBeenNthCalledWith(3, world, entity2);
-  });
 
   describe('when handling the event lifecycle', () => {
     it('should call OnEvent lifecycle', () => {
@@ -75,13 +37,12 @@ describe('UpdateElements', () => {
         onEvent = jest.fn();
       }
 
-      const element = new Foo();
+      const element = new UiElement(new Foo());
       const node = new UiNode();
 
-      node.setElement(element);
       node.interactive = true;
 
-      const entity = world.insert(node);
+      const entity = world.insert(node, element);
 
       // The system can only receive UiEvents that occur after it has initialized the
       // subscription for the interaction event queue.
@@ -92,13 +53,13 @@ describe('UpdateElements', () => {
       node.onInteract.push(event);
 
       // Execute the lifecycle event.
-      system.handleElementEventLifecycle(world, node);
+      system.handleElementEventLifecycle(world, node, element.instance);
 
-      expect(element.onEvent).toHaveBeenCalledWith(world, event);
+      expect(element.instance.onEvent).toHaveBeenCalledWith(world, event);
     });
   });
 
-  describe('when a node subscriber is request', () => {
+  describe('when a subscriber is requested', () => {
     it('should return a subscriber', () => {
       const subscriber = system.getNodeSubscription(new UiNode());
 

@@ -2,23 +2,22 @@ import { getType, Type, TypeLike } from '@heliks/tiles-engine';
 
 
 /** @internal */
-export const INPUT_MAP = new Map<Type, unknown[]>();
+const IO_KEY_REGISTRY = {
+  /** Contains known input keys for class types. */
+  inputs: new Map<Type, string[]>(),
+  /** Contains known output keys for class types. */
+  outputs: new Map<Type, string[]>()
+};
 
-/** @internal */
-const OUTPUT_MAP = new Map<Type, unknown[]>();
-
-
-/** @internal */
-type KnownParams<T> = (keyof T)[];
 
 /** Returns all keys of the given `type` that are configured as inputs parameters.  */
-export function getInputs<T extends object>(type: TypeLike<T>): (keyof T)[] {
-  return INPUT_MAP.get(getType(type)) as KnownParams<T> ?? [];
+export function getInputs<T extends object>(type: TypeLike<T>): string[] {
+  return IO_KEY_REGISTRY.inputs.get(getType(type)) ?? [];
 }
 
 /** Returns all keys of the given `type` that are configured as output parameters.  */
-export function getOutputs<T extends object>(type: TypeLike<T>): (keyof T)[]{
-  return OUTPUT_MAP.get(getType(type)) as KnownParams<T> ?? [];
+export function getOutputs<T extends object>(type: TypeLike<T>): string[]{
+  return IO_KEY_REGISTRY.outputs.get(getType(type)) ?? [];
 }
 
 /** @internal */
@@ -30,10 +29,9 @@ function uiComponentInputDecorator(): Function {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keys.push(key as any);
 
-    INPUT_MAP.set(target.constructor as Type, keys);
+    IO_KEY_REGISTRY.inputs.set(target.constructor as Type, keys);
   }
 }
-
 
 /** @internal */
 function uiComponentOutputDecorator(): Function {
@@ -44,12 +42,12 @@ function uiComponentOutputDecorator(): Function {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keys.push(key as any);
 
-    OUTPUT_MAP.set(target.constructor as Type, keys);
+    IO_KEY_REGISTRY.outputs.set(target.constructor as Type, keys);
   }
 }
 
-/** Allows a parent {@link Context} to send data to this property. */
+/** Allows the context {@link Host} to send data to this property. */
 export const Input = uiComponentInputDecorator;
 
-/** Allows a {@link Context} to send this property to its parent. */
+/** Allows this property to send its data to its context {@link Host}. */
 export const Output = uiComponentOutputDecorator;
