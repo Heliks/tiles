@@ -39,7 +39,7 @@ export class UpdateLayouts extends ProcessingSystem {
 
   /** @inheritDoc */
   public update(): void {
-    this.space.set(this.screen.resolution.x, this.screen.resolution.y);
+    this.space.setSides(this.screen.resolution.x, this.screen.resolution.y);
 
     for (const entity of this.query.entities) {
       compute(this.nodes.get(entity).layout, this.space);

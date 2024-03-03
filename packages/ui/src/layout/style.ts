@@ -94,11 +94,35 @@ export enum Display {
 
 }
 
+export type Auto = symbol;
+
+
+
+const IS_AUTO = Symbol();
+
+export function auto(): Auto {
+  return IS_AUTO;
+}
+
+export type FlexBasisContent = 'content';
+
 /** Available styling options. */
 export interface Style {
 
   /** Aligns flex items along the cross-axis of the flex container. */
   align: AlignContent;
+
+  /**
+   * Determines the flex basis, the initial main size of the node, before free space
+   * is distributed according to flex factors.
+   *
+   * @see grow
+   * @see shrink
+   */
+  basis: Size;
+
+  grow: number;
+  shrink: number;
 
   /**
    * The direction property specifies how flex items are placed in the flex container,
@@ -144,6 +168,9 @@ export interface Style {
 export function computeStyleSheet(style: Partial<Style> = {}): Style {
   return {
     align: AlignContent.Start,
+    basis: Size.auto(),
+    grow: 0,
+    shrink: 0,
     direction: FlexDirection.Row,
     display: Display.Flex,
     justify: AlignContent.Start,
