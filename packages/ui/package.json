@@ -21,6 +21,7 @@
     "pixi.js": "^5.3.3"
   },
   "devDependencies": {
+    "@types/node": "20.11.22",
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
     "@heliks/tiles-pixi": "workspace:^",

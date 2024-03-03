@@ -11,14 +11,14 @@ describe('Align', () => {
   });
 
   test.each([
-    { name: 'left',         align: Align.Left,        expected: new Vec2(-5, 0) },
-    { name: 'right',        align: Align.Right,       expected: new Vec2(5, 0) },
-    { name: 'top',          align: Align.Top,         expected: new Vec2(0, -5) },
-    { name: 'top left',     align: Align.TopLeft,     expected: new Vec2(-5, -5) },
-    { name: 'top right',    align: Align.TopRight,    expected: new Vec2(5, -5) },
-    { name: 'bottom',       align: Align.Bottom,      expected: new Vec2(0, 5) },
-    { name: 'bottom left',  align: Align.BottomLeft,  expected: new Vec2(-5, 5) },
-    { name: 'bottom right', align: Align.BottomRight, expected: new Vec2(5, 5) },
+    { name: 'left',         align: Align.Left,        inner: new Vec2(-5, 0) },
+    { name: 'right',        align: Align.Right,       inner: new Vec2(5, 0) },
+    { name: 'top',          align: Align.Top,         inner: new Vec2(0, -5) },
+    { name: 'top left',     align: Align.TopLeft,     inner: new Vec2(-5, -5) },
+    { name: 'top right',    align: Align.TopRight,    inner: new Vec2(5, -5) },
+    { name: 'bottom',       align: Align.Bottom,      inner: new Vec2(0, 5) },
+    { name: 'bottom left',  align: Align.BottomLeft,  inner: new Vec2(-5, 5) },
+    { name: 'bottom right', align: Align.BottomRight, inner: new Vec2(5, 5) },
   ])('should align to $name', ({ align, expected }) => {
     const position = alignTo(pos, 10, 10, align);
 
