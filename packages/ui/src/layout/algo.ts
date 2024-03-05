@@ -279,23 +279,52 @@ function calculateOuterNodeSize(node: Node): Rect {
   return node.constants.outerSize;
 }
 
-/** @see https://www.w3.org/TR/css-flexbox-1/#algo-main-item */
-function determineBaseSizes(node: Node, known?: Rect<Option<number>>): void {
+/**
+ * Returns the available space to calculate the base size of a flex item that is a child
+ * of the given `node`.
+ *
+ * @internal
+ */
+function getBaseSizeSpace(node: Node): Rect {
+  const space = node.constants.measure as Rect;
+
   let main = node.constants.size.main(node.constants.isRow);
   let cross = node.constants.size.cross(node.constants.isRow);
 
-  // The space that is passed into the measurement call below is used to resolve
-  // percentages. Percentages should not contribute to the base size calculation
-  // of an auto sized container. Therefore, if the node size is not yet determined,
-  // the available measurement space in that axis is 0.
-  main = main === undefined ? 0 : main - node.style.padding.main(node.constants.isRow);
-  cross = cross === undefined ? 0 : cross - node.style.padding.cross(node.constants.isRow);
+  // During the base size calculation, the child will use the available space to resolve
+  // percentages. Percentages should not contribute to the base size calculation of an
+  // auto sized child, therefore, if the node size is not yet determined, the child does
+  // not have a definite size, and therefore, the available space in that axis is 0.
+  if (main === undefined) {
+    main = 0;
+  }
+  else {
+    main -= node.style.padding.main(node.constants.isRow);
+  }
+
+  if (cross === undefined) {
+    cross = 0;
+  }
+  else {
+    cross -= node.style.padding.cross(node.constants.isRow);
+  }
+
+  space.set(node.constants.isRow, main, cross);
+
+  return space;
+}
+
+/** @see https://www.w3.org/TR/css-flexbox-1/#algo-main-item */
+function determineBaseSizes(node: Node): void {
+  const space = getBaseSizeSpace(node);
+  const main = space.main(node.constants.isRow);
 
   for (const child of node.children) {
     let basis;
 
     // A. If the item has a definite used flex basis, that’s the flex base size.
     basis = child.style.basis.resolve(main);
+
     // B. Todo: Aspect ratios are not supported.
     // C. Handled in E.
     // D. Todo: Vertical writing modes are not supported.
@@ -306,98 +335,8 @@ function determineBaseSizes(node: Node, known?: Rect<Option<number>>): void {
     //    in this calculation use fit-content as the flex item’s cross size. The flex
     //    base size is the item’s resulting main size.
     if (basis === undefined) {
-      // basis = child.style.size.main(node.constants.isRow).resolve(node.constants.space.width);
-
-
-      // Size "auto" is treated as "content" when the items main size is also "auto".
-      if (basis === undefined) {
-        /*
-        // Note: The available space is used to calculate percentages, and percentage
-        // sizes should not contribute to the min-content contribution. Therefore we
-        // pass a main axis size of 0 as long as the
-
-
-        children that depend on their available space to measure their
-        // content under a min-content constraint (rather than max-content). If we don't
-        // do this, content with percentages will contribute to the nodes min-content,
-        // which would result in an incorrect base size.
-        child.constants.measure
-          .setSides(0, 0)
-          .setCross(node.constants.isRow, node.constants.space.cross(node.constants.isRow))
-
-        if (node.constants.isRow) {
-          child.constants.measure.width = child.constants.size.width ?? node.constants.space.width;
-          child.constants.measure.height = child.constants.size.height ?? node.constants.space.height;
-        }
-        else {
-          child.constants.measure.width = child.constants.size.height ?? node.constants.space.height;
-          child.constants.measure.height = child.constants.size.width ?? node.constants.space.width;
-        }
-         */
-
-        /*
-
-            let width: Number = if !child.size.width.is_defined()
-                && child_style.align_self(&self.nodes[node].style) == AlignSelf::Stretch
-                && is_column
-            {
-                available_space.width
-            } else {
-                child.size.width
-            };
-
-            let height: Number = if !child.size.height.is_defined()
-                && child_style.align_self(&self.nodes[node].style) == AlignSelf::Stretch
-                && is_row
-            {
-                available_space.height
-            } else {
-                child.size.height
-            };
-
-
-        foo.set(
-          node.constants.isRow,
-          child.constants.baseSize,
-          node.constants.space.cross(node.constants.isRow)
-        );*/
-
-        // Todo
-
-        /*
-        child.constants.measure.width = child.constants.size.width ?? node.constants.space.width;
-        child.constants.measure.height = child.constants.size.height ?? node.constants.space.height;
-
-        /*
-        const cm = node.constants.size.main(node.constants.isRow) ?? 0;
-        child.constants.measure.setMain(node.constants.isRow, cm);
-         */
-
-        const bb = known?.main(node.constants.isRow) ?? 0;
-
-        const c = node.constants.size.cross(node.constants.isRow);
-
-        const space = child.constants.measure.set(node.constants.isRow, main, cross) as Rect;
-
-        if (child.id === 3) {
-          // console.log('-> set basis', child.id, child.constants.size, node.constants.space, main)
-        }
-
-        // const before = child.constants.size.clone();
-        const before = child.constants.size.main(node.constants.isRow);
-
-        basis = compute(child, space, true).main(node.constants.isRow);
-
-        child.constants.size.setMain(node.constants.isRow, before);
-
-        // child.constants.size.copy(before);
-
-        if (child.id === 2) {
-          // console.log('<- set basis', child.id, basis)
-        }
-      }
+      basis = compute(child, space, true).main(node.constants.isRow);
     }
-
 
     child.constants.baseSize = basis;
     child.constants.innerBaseSize = basis - child.style.padding.main(node.constants.isRow);
@@ -558,20 +497,9 @@ function resolveFlexibleLengths(node: Node, line: Line) {
  * @see https://www.w3.org/TR/css-flexbox-1/#algo-cross-item
  */
 function determineHypotheticalCrossSizes(node: Node, space: Rect, known?: Rect<Option<number>>): void {
-  let pC = node.constants.size.cross(node.constants.isRow);
-
   for (const child of node.children) {
-    /*
-    FlexNodeRef item = items[i];
-    FlexLength oldMainSize = item->size[mainAxis];
-    item->size[mainAxis] = (FlexLength){item->result.size[mainAxis], FlexLengthTypePoint};
-    flex_layoutInternal(item, context, availableSize, flags, false);
-    item->size[mainAxis] = oldMainSize;
-     */
-
     let cross = child.constants.size.cross(node.constants.isRow);
-
-
+    
     const foo = Rect.option<number>();
     const _space = space.clone();
 
@@ -610,7 +538,7 @@ function determineHypotheticalCrossSizes(node: Node, space: Rect, known?: Rect<O
       foo.width = cross;
       foo.height = main;
     }
-    
+
 
     /*
     Size {
@@ -685,7 +613,7 @@ export function compute(node: Node, space: Rect, measure = false, known?: Rect<O
   const available = determineAvailableSpace(node, space);
 
   // 3. Determine the flex base size and hypothetical main size of each item:
-  determineBaseSizes(node, known);
+  determineBaseSizes(node);
 
   // 4. Determine the main size of the flex container
   // Todo: Don't re-calculate known axis.
