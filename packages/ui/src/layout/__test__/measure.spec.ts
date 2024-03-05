@@ -6,9 +6,14 @@ import { Size } from '../size';
 import { FlexDirection } from '../style';
 
 
-const SIZE_FULL_WIDTH = new Rect<Size>(
+const SIZE_FILL = new Rect<Size>(
   Size.percent(1),
   Size.percent(1)
+);
+
+const SIZE_HALF = new Rect<Size>(
+  Size.percent(0.5),
+  Size.percent(0.5)
 );
 
 const SIZE_AUTO = new Rect<Size>(
@@ -143,7 +148,29 @@ describe('compute', () => {
       expect(node1.size).toMatchObject(new Rect(30, 25));
     });
 
-    it('should measure percentage based item in definite sized container', () => {
+    it('should measure definite sized item with margin in auto sized container', () => {
+      // 80x60px container.
+      const node0 = new Node({
+        size: SIZE_AUTO.clone()
+      });
+
+      const node1 = new Node({
+        margin: new Sides(2, 1, 2, 1),
+        size: new Rect<Size>(
+          Size.px(20),
+          Size.px(10)
+        )
+      });
+
+      node0.add(node1);
+
+      compute(node0, space);
+
+      expect(node0.size).toMatchObject(new Rect(22, 14));
+      expect(node1.size).toMatchObject(new Rect(20, 10));
+    });
+
+    it('should measure percentage sized item in definite sized container', () => {
       const node0 = new Node({
         size: new Rect<Size>(
           Size.px(80),
@@ -165,7 +192,7 @@ describe('compute', () => {
       expect(node1.size).toMatchObject(new Rect(60, 10));
     });
 
-    it('should measure percentage based item in percentage sized container', () => {
+    it('should measure percentage sized item in percentage sized container', () => {
       // 80x60px container.
       const node0 = new Node({
         size: new Rect<Size>(
@@ -188,7 +215,7 @@ describe('compute', () => {
       expect(node1.size).toMatchObject(new Rect(24, 12));
     });
 
-    it('should measure percentage based item in auto sized container', () => {
+    it('should measure percentage sized item in auto sized container', () => {
       // 80x60px container.
       const node0 = new Node({
         size: SIZE_AUTO.clone()
@@ -206,6 +233,29 @@ describe('compute', () => {
       compute(node0, space);
 
       expect(node1.size).toMatchObject(new Rect(0, 0));
+    });
+
+    it('should measure percentage sized content in item with padding', () => {
+      const node0 = new Node({
+        size: SIZE_FILL.clone()
+      });
+
+      const node1 = new Node({
+        padding: new Sides(20, 10, 20, 10),
+        size: SIZE_FILL.clone()
+      });
+
+      const node2 = new Node({
+        size: SIZE_HALF.clone()
+      });
+
+      node0.add(node1);
+      node1.add(node2);
+
+      compute(node0, new Rect(180, 320));
+
+      expect(node1.size).toMatchObject(new Rect(180, 320));
+      expect(node2.size).toMatchObject(new Rect(80, 140));
     });
 
     it.each([
@@ -276,7 +326,7 @@ describe('compute', () => {
     ])('should grow flex items proportionally with flex-basis: auto', data => {
       const node0 = new Node({
         direction: data.direction,
-        size: SIZE_FULL_WIDTH.clone()
+        size: SIZE_FILL.clone()
       });
 
       const node1 = new Node({ grow: 1 });
@@ -347,7 +397,7 @@ describe('compute', () => {
       });
 
       const node1 = new Node({
-        size: SIZE_FULL_WIDTH.clone()
+        size: SIZE_FILL.clone()
       });
 
       node0.add(node1)
@@ -363,7 +413,7 @@ describe('compute', () => {
       const node3 = new Node({
         direction: data.direction,
         padding: new Sides(10, 10, 10, 10),
-        size: SIZE_FULL_WIDTH.clone()
+        size: SIZE_FILL.clone()
       })
         .add(node0)
         .add(node2);
