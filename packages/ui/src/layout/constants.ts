@@ -1,5 +1,4 @@
 import { Line } from './line';
-import { Point } from './point';
 import { Rect } from './rect';
 import { Sides } from './sides';
 import { AlignContent, FlexBasisContent } from './style';
@@ -38,22 +37,20 @@ export class Constants {
   public hypotheticalInnerSize = new Rect(0, 0);
   public hypotheticalOuterSize = new Rect(0, 0);
 
-  public measure = new Rect(0, 0);
 
-  public readonly offset = new Point();
+  public measure = Rect.option();
 
   /**
-   * Computed definite outer node size. This is the computed node size with margins
+   * Computed definite outer node size. This is the computed {@link size} with margins
    * applied.
    */
   public readonly outerSize = new Rect(0, 0);
 
   public readonly targetSize = new Rect(0, 0);
-  public readonly outerTargetSize = new Rect(0, 0)
 
   /**
-   * Computed definite node size. At the beginning of the computation, this always starts
-   * empty. Each side will be progressively determined based on the nodes' layout constraints.
+   * Computed definite node size. When both the main and cross size are determined, the
+   * computation for this node is complete.
    */
   public readonly size = new Rect<Option<number>>(undefined, undefined);
 

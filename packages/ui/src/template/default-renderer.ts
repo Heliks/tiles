@@ -12,9 +12,7 @@ export class DefaultRenderer<C extends BaseTemplateComposer> implements Template
 
   /** @inheritDoc */
   public render(): Entity {
-    this.composer.child(this.factory)
-
-    return this.composer.entity;
+    return this.composer.child(this.factory).entity;
   }
 
 }

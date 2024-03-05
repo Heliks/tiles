@@ -281,11 +281,15 @@ function calculateOuterNodeSize(node: Node): Rect {
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-main-item */
 function determineBaseSizes(node: Node, known?: Rect<Option<number>>): void {
-  // The space that is passed into compute() is used to resolve percentages. Percentages
-  // should not contribute to the min-content contribution. Therefore, if the node size
-  // is not determined, the available space in that axis is 0.
-  const main = node.constants.size.main(node.constants.isRow) ?? 0;
-  const cross = node.constants.size.cross(node.constants.isRow) ?? 0;
+  let main = node.constants.size.main(node.constants.isRow);
+  let cross = node.constants.size.cross(node.constants.isRow);
+
+  // The space that is passed into the measurement call below is used to resolve
+  // percentages. Percentages should not contribute to the base size calculation
+  // of an auto sized container. Therefore, if the node size is not yet determined,
+  // the available measurement space in that axis is 0.
+  main = main === undefined ? 0 : main - node.style.padding.main(node.constants.isRow);
+  cross = cross === undefined ? 0 : cross - node.style.padding.cross(node.constants.isRow);
 
   for (const child of node.children) {
     let basis;
@@ -359,19 +363,6 @@ function determineBaseSizes(node: Node, known?: Rect<Option<number>>): void {
         );*/
 
         // Todo
-        if (child.id === 2) {
-          // console.log('before measure main size', child.id, child.constants.size, child.constants.measure, node.constants.space);
-          // console.log('before set basis', child.id, child.constants.size, node.id, node.constants.space)
-        }
-
-        child.constants.measure.width = child.constants.size.width !== undefined
-          ? child.constants.size.width - node.style.padding.horizontal()
-          : node.constants.space.width;
-
-        child.constants.measure.height = child.constants.size.height !== undefined
-          ? child.constants.size.height - node.style.padding.vertical()
-          : node.constants.space.height;
-
 
         /*
         child.constants.measure.width = child.constants.size.width ?? node.constants.space.width;
@@ -386,25 +377,23 @@ function determineBaseSizes(node: Node, known?: Rect<Option<number>>): void {
 
         const c = node.constants.size.cross(node.constants.isRow);
 
+        const space = child.constants.measure.set(node.constants.isRow, main, cross) as Rect;
 
-        child.constants.measure.setMain(node.constants.isRow, main);
-        child.constants.measure.setCross(node.constants.isRow, cross);
-
-        if (child.id === 1 || child.id === 2) {
-          console.log('-> set basis', child.id, child.constants.size, node.constants.space, main)
+        if (child.id === 3) {
+          // console.log('-> set basis', child.id, child.constants.size, node.constants.space, main)
         }
 
         // const before = child.constants.size.clone();
         const before = child.constants.size.main(node.constants.isRow);
 
-        basis = compute(child, child.constants.measure, true).main(node.constants.isRow);
+        basis = compute(child, space, true).main(node.constants.isRow);
 
         child.constants.size.setMain(node.constants.isRow, before);
 
         // child.constants.size.copy(before);
 
         if (child.id === 2) {
-          console.log('<- set basis', child.id, basis)
+          // console.log('<- set basis', child.id, basis)
         }
       }
     }
@@ -460,7 +449,7 @@ function resolveFlexibleLengths(node: Node, line: Line) {
   for (const child of line.nodes) {
     const inner = child.constants.hypotheticalInnerSize.main(node.constants.isRow);
 
-    child.constants.targetSize.setMain(node.constants.isRow, inner)
+    child.constants.targetSize.setMain(node.constants.isRow, inner);
 
     if (
       child.style.grow === 0 &&
@@ -605,7 +594,7 @@ function determineHypotheticalCrossSizes(node: Node, space: Rect, known?: Rect<O
 
     // const main = (node.constants.size.main(node.constants.isRow) as number) - node.constants.padding.main(node.constants.isRow);
 
-    const main = child.constants.targetSize.main(node.constants.isRow) - child.style.padding.main(node.constants.isRow);
+    const main = child.constants.targetSize.main(node.constants.isRow);
 
     if (node.constants.isRow) {
       _space.width = main;
@@ -639,10 +628,6 @@ function determineHypotheticalCrossSizes(node: Node, space: Rect, known?: Rect<O
 
     }
 
-    const hypo = child.constants.hypotheticalInnerSize.main(node.constants.isRow);
-
-    console.log('-> perform layout', child.id, node.constants.space)
-
     // const before = child.constants.size.clone();
     const before = child.constants.size.main(node.constants.isRow);
 
@@ -652,11 +637,8 @@ function determineHypotheticalCrossSizes(node: Node, space: Rect, known?: Rect<O
 
     child.constants.size.setMain(node.constants.isRow, before)
 
-    child.constants.hypotheticalInnerSize.setMain(node.constants.isRow, hypo);
     child.constants.hypotheticalInnerSize.setCross(node.constants.isRow, cross);
     child.constants.hypotheticalOuterSize.setCross(node.constants.isRow, cross + child.style.margin.cross(node.constants.isRow));
-
-    console.log('<- perform layout', child.id, cross);
   }
 }
 
@@ -676,7 +658,7 @@ function determineItemCrossSizes(node: Node): void {
   for (const child of node.children) {
     child.size.setCross(
       node.constants.isRow,
-      child.constants.hypotheticalOuterSize.cross(node.constants.isRow)
+      child.constants.hypotheticalInnerSize.cross(node.constants.isRow)
     );
   }
 }
@@ -688,15 +670,13 @@ function measure(node: Node, space: Rect): Rect {
 export function compute(node: Node, space: Rect, measure = false, known?: Rect<Option<number>>, parentSize = Rect.option()): Rect<number> {
   setupConstants(node, space, known);
 
-  console.log(measure ? 'measure' : 'compute', node.id, space, known)
+  // console.log(measure ? 'measure' : 'compute', node.id, space, known)
 
   // If we are only interested in measuring and size can be fully determined from node
   // style, exit early.
   if (measure && node.constants.size.width !== undefined && node.constants.size.height !== undefined) {
     node.size.width = node.constants.size.width;
     node.size.height = node.constants.size.height;
-
-    console.log('early exit', node.id, node.constants.size)
 
     return node.constants.size as Rect;
   }
@@ -716,10 +696,6 @@ export function compute(node: Node, space: Rect, measure = false, known?: Rect<O
 
   let main = node.constants.size.main(node.constants.isRow);
   let cross = node.constants.size.cross(node.constants.isRow);
-
-  if (node.id === 4) {
-    console.log('CROSS1', cross)
-  }
 
   // Calculate container main size if it hasn't been determined yet.
   if (main === undefined) {
@@ -756,11 +732,6 @@ export function compute(node: Node, space: Rect, measure = false, known?: Rect<O
   //       min and max cross sizes of the flex container.
   if (cross === undefined) {
     cross = getLinesCrossAxisSum(node);
-
-    if (node.id === 4) {
-      console.log('CROSS2', cross)
-    }
-
     node.constants.size.setCross(node.constants.isRow, cross);
   }
 
@@ -779,8 +750,6 @@ export function compute(node: Node, space: Rect, measure = false, known?: Rect<O
   // Todo: This is not really in line with the spec, but we can set this here because
   //  currently all items participate in baseline alignment.
   node.constants.baseline = node.size.height;
-
-  console.log('Done', node.id, node.constants.size)
 
   return node.constants.size as Rect;
 }

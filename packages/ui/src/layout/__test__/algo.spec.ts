@@ -844,43 +844,80 @@ describe('compute()', () => {
   });
 
   it('foo', () => {
-    const header = // Id:              4
-      // Calculated size: 300x32px
-      // Element: UiComponentRenderer (HeaderComponent)
-      new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.auto()),wrap: false})
-        .add(
-          // Id:              6
-          // Calculated size: 160x32px
-          new Node({ align: 1,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 1,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.px(32)),wrap: false})
-        );
+    const node0 =
 
-    const node =
       // Id:              1
-// Calculated size: 0x320px
+// Calculated size: 180x320px
 // Element: UiComponentRenderer (RaceSelectComponent)
-      new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
-        .add(
-          // Id:              3
-          // Calculated size: 180x320px
-          // Element: UiSlicePlane
-          new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 0,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(10, 10, 10, 10),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
-            .add(
-              header
-            )
-            .add(
-              // Id:              5
-              // Calculated size: 0x268px
-              new Node({ align: 0,basis: Size.auto(),grow: 1,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.auto(), Size.auto()),wrap: false})
-            )
-        )
+    new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
+      .add(
+        // Id:              2
+        // Calculated size: 180x320px
+        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
+          .add(
+            // Id:              3
+            // Calculated size: 180x320px
+            // Element: UiSlicePlane
+            new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 0,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(10, 10, 10, 10),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
+              .add(
+                // Id:              4
+                // Calculated size: 160x32px
+                // Element: UiComponentRenderer (HeaderComponent)
+                new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 0,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.auto()),wrap: false})
+                  .add(
+                    // Id:              7
+                    // Calculated size: 160x32px
+                    new Node({ align: 1,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 1,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.px(32)),wrap: false})
+                      .add(
+                        // Id:              8
+                        // Calculated size: 32x16px
+                        // Element: UiSprite
+                        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.px(32), Size.px(16)),wrap: false})
+                      )
+                      .add(
+                        // Id:              9
+                        // Calculated size: 68x11px
+                        // Element: UiText
+                        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 5, 0, 5),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.px(68), Size.px(11)),wrap: false})
+                      )
+                      .add(
+                        // Id:              10
+                        // Calculated size: 32x16px
+                        // Element: UiSprite
+                        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.px(32), Size.px(16)),wrap: false})
+                      )
+                  )
+              )
+              .add(
+                // Id:              5
+                // Calculated size: 160x268px
+                // Element: TemplateElement
+                new Node({ align: 0,basis: Size.auto(),grow: 1,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.auto()),wrap: false})
+                  .add(
+                    // Id:              6
+                    // Calculated size: 0x0px
+                    new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.auto(), Size.auto()),wrap: false})
+                      .add(
+                        // Id:              11
+                        // Calculated size: 0x0px
+                        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
+                      )
+                  )
+                  .add(
+                    // Id:              6
+                    // Calculated size: 0x0px
+                    new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.auto(), Size.auto()),wrap: false})
+                      .add(
+                        // Id:              11
+                        // Calculated size: 0x0px
+                        new Node({ align: 0,basis: Size.auto(),grow: 0,shrink: 0,direction: 1,display: 0,justify: 0,margin: new Sides(0, 0, 0, 0),padding: new Sides(0, 0, 0, 0),size: new Rect<Size>(Size.percent(1), Size.percent(1)),wrap: false})
+                      )
+                  )
+              )
+          )
+      )
 
 
-    compute(node, new Rect(180, 320));
-
-    console.log('--->')
-    console.log(header.id, header.size)
-
-    expect(header.size).toMatchObject(new Rect(160, 32));
   });
 
   /*

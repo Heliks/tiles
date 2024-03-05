@@ -1,4 +1,4 @@
-import { Entity, Hierarchy, Parent, World } from '@heliks/tiles-engine';
+import { Entity, Hierarchy, World } from '@heliks/tiles-engine';
 import { Element } from '../element';
 import { OnInit } from '../lifecycle';
 import { Input } from '../params';
@@ -9,7 +9,9 @@ export interface TemplateRenderer {
 }
 
 /**
- * Elements can be conditionally hidden with their
+ * Templates will be rendered as long as their {@link expression} evaluates to `true`,
+ * and hidden if not. Hidden templates are removed from the layout tree, which results
+ * in everything in the tree below the template node being destroyed.
  */
 export class TemplateElement implements Element, OnInit {
 
@@ -22,6 +24,10 @@ export class TemplateElement implements Element, OnInit {
   /** @internal */
   private _expression = false;
 
+  /**
+   * Determines if the template should be shown or hidden. When the template is hidden,
+   * it is removed from the layout tree entirely.
+   */
   @Input()
   public set expression(value: unknown) {
     const expression = Boolean(value);
@@ -41,9 +47,6 @@ export class TemplateElement implements Element, OnInit {
 
   public render(world: World, entity: Entity): void {
     this.root = this.renderer.render(world);
-
-    // The component node tree is always a child of this element.
-    world.attach(this.root, new Parent(entity));
   }
 
   public destroy(world: World): void {

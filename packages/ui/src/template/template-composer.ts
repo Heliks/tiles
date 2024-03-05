@@ -78,7 +78,7 @@ export class TemplateComposer implements BaseTemplateComposer {
 
   /** Shorthand for changing the node into a {@link TemplateElement} element. */
   public template(factory: TemplateFactory<TemplateComposer>): ElementComposer<TemplateComposer> {
-    return this.element(new TemplateElement(new DefaultRenderer(this._child(), factory)))
+    return this.element(new TemplateElement(new DefaultRenderer(this, factory)))
   }
 
   /** Shorthand for changing the node into a {@link UiText} element. */
