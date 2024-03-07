@@ -45,7 +45,7 @@ export class TemplateElement implements Element, OnInit {
     return this;
   }
 
-  public render(world: World, entity: Entity): void {
+  public render(world: World): void {
     this.root = this.renderer.render(world);
   }
 
