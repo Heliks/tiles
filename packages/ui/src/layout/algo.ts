@@ -5,7 +5,6 @@ import { ImmutableRect, Rect } from './rect';
 import { calculateAlignOffset, Display, isRow } from './style';
 import { Option } from './types';
 
-/* eslint-disable */
 // Todo: Do not look here everything is WIP
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-available */
@@ -211,7 +210,7 @@ function getLinesCrossAxisSum(node: Node): number {
  * @see https://www.w3.org/TR/css-flexbox-1/#algo-main-align
  * @see https://www.w3.org/TR/css-flexbox-1/#algo-cross-container
  */
-export function distributeAvailableSpace(node: Node, lines: Line[], space: Rect, constants: Constants): void {
+export function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void {
   let usedMain = 0;
   let usedCross = 0;
 
@@ -334,7 +333,7 @@ function determineBaseSizes(node: Node): void {
 }
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#resolve-flexible-lengths */
-function resolveFlexibleLengths(node: Node, line: Line) {
+function resolveFlexibleLengths(node: Node, line: Line): void {
   // 1. Determine the used flex factor. Sum the outer hypothetical main sizes of all
   //    items on the line. If the sum is less than the flex container’s inner main
   //    size, use the flex grow factor for the rest of this algorithm; otherwise,
@@ -383,7 +382,7 @@ function resolveFlexibleLengths(node: Node, line: Line) {
   }
 
   // 4. Loop
-  while(true) {
+  while (true) {
     // A. Check for flexible items. If all the flex items on the line are frozen,
     //    free space has been distributed; exit this loop.
     if (line.unfrozen.length === 0) {
@@ -586,7 +585,7 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
     determineItemCrossSizes(node);
 
     // 12. Distribute any remaining free space.
-    distributeAvailableSpace(node, lines, node.size, node.constants);
+    distributeAvailableSpace(node, lines, node.size);
   }
 
   // 15. Determine the flex container’s used cross size:
@@ -603,8 +602,8 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
   // This step is covered in 12.
 
   // Safety: At this point both width and height should be determined.
-  node.size.width = node.constants.size.width!;
-  node.size.height = node.constants.size.height!;
+  node.size.width = node.constants.size.width as number;
+  node.size.height = node.constants.size.height as number;
 
   calculateOuterNodeSize(node);
 
