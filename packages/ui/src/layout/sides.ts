@@ -19,10 +19,12 @@ export class Sides {
     return this.top + this.bottom;
   }
 
+  /** Returns the sum of both sides aligned to the main axis. */
   public main(row: boolean): number {
     return row ? this.horizontal() : this.vertical();
   }
 
+  /** Returns the sum of both sides aligned to the cross axis. */
   public cross(row: boolean): number {
     return row ? this.vertical() : this.horizontal();
   }

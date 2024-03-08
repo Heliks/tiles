@@ -55,10 +55,10 @@ export class TemplateElement implements Element, OnInit {
     }
   }
 
-  public apply(world: World, entity: Entity): void {
+  public apply(world: World): void {
     if (this._changed) {
       if (this._expression) {
-        this.render(world, entity);
+        this.render(world);
       }
       else {
         this.destroy(world);
@@ -70,13 +70,13 @@ export class TemplateElement implements Element, OnInit {
   }
 
   /** @inheritDoc */
-  public onInit(world: World, entity: Entity): void {
-    this.apply(world, entity);
+  public onInit(world: World): void {
+    this.apply(world);
   }
 
   /** @inheritDoc */
-  public update(world: World, entity: Entity): void {
-    this.apply(world, entity);
+  public update(world: World): void {
+    this.apply(world);
   }
 
 }

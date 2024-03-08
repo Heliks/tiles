@@ -94,18 +94,6 @@ export enum Display {
 
 }
 
-export type Auto = symbol;
-
-
-
-const IS_AUTO = Symbol();
-
-export function auto(): Auto {
-  return IS_AUTO;
-}
-
-export type FlexBasisContent = 'content';
-
 /** Available styling options. */
 export interface Style {
 
