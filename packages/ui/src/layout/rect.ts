@@ -1,3 +1,6 @@
+import { Option } from './types';
+
+
 /** A basic rectangle shape. */
 export interface ImmutableRect<T> {
 
@@ -24,7 +27,8 @@ export class Rect<T = number> implements ImmutableRect<T> {
    */
   constructor(public width: T, public height: T) {}
 
-  public static option<T>(width?: T, height?: T): Rect<T | undefined> {
+  /** Creates a {@link Rect} with optional width and height. */
+  public static option<T>(width?: T, height?: T): Rect<Option<T>> {
     return new Rect(width, height);
   }
 
@@ -36,19 +40,6 @@ export class Rect<T = number> implements ImmutableRect<T> {
   /** @inheritDoc */
   public cross(row: boolean): T {
     return row ? this.height : this.width;
-  }
-
-  public set(row: boolean, main: T, cross: T): this {
-    if (row) {
-      this.width = main;
-      this.height = cross;
-    }
-    else {
-      this.width = cross;
-      this.height = main;
-    }
-
-    return this;
   }
 
   public setMain(row: boolean, value: T): this {
@@ -73,6 +64,28 @@ export class Rect<T = number> implements ImmutableRect<T> {
     return this;
   }
 
+  /** Sets the rectangle size using the given `width` and `height`. */
+  public sides(width: T, height: T): this {
+    this.width = width;
+    this.height = height;
+
+    return this;
+  }
+
+  /** Sets the rectangle size using the given `main` and `cross` axis. */
+  public axis(row: boolean, main: T, cross: T): this {
+    if (row) {
+      this.width = main;
+      this.height = cross;
+    }
+    else {
+      this.width = cross;
+      this.height = main;
+    }
+
+    return this;
+  }
+
   public copy(rect: Rect<T>): this {
     this.width = rect.width;
     this.height = rect.height;
@@ -82,13 +95,6 @@ export class Rect<T = number> implements ImmutableRect<T> {
 
   public clone(): Rect<T> {
     return new Rect<T>(this.width, this.height);
-  }
-
-  public setSides(width: T, height: T): this {
-    this.width = width;
-    this.height = height;
-
-    return this;
   }
 
 }

@@ -28,10 +28,6 @@ export class Size<U extends Unit = Unit> {
     return new Size(Unit.Percentage, value);
   }
 
-  public isAuto(): boolean {
-    return this.unit === Unit.Auto;
-  }
-
   /**
    * Resolves the size to an absolute pixel value.
    */

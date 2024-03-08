@@ -1,6 +1,5 @@
 import { Line } from './line';
 import { Rect } from './rect';
-import { Option } from './types';
 
 
 /**
@@ -52,7 +51,7 @@ export class Constants {
    * Computed definite node size. The computation for this node is complete when both
    * the main and cross axis are determined.
    */
-  public readonly size = new Rect<Option<number>>(undefined, undefined);
+  public readonly size = Rect.option<number>();
 
   /** Computed available space that content inside the node can occupy. */
   public readonly space = new Rect(0, 0);

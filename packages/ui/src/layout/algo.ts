@@ -5,10 +5,9 @@ import { ImmutableRect, Rect } from './rect';
 import { calculateAlignOffset, Display, isRow } from './style';
 import { Option } from './types';
 
-// Todo: Do not look here everything is WIP
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-available */
-export function determineAvailableSpace(node: Node, space: Rect): Rect {
+function determineAvailableSpace(node: Node, space: Rect): Rect {
   // If node has an inner size, use that. Otherwise, resolve style property against space
   // that is available to the node itself.
   const width = node.constants.size.width ?? node.style.size.width.resolve(space.width, space.width);
@@ -20,7 +19,7 @@ export function determineAvailableSpace(node: Node, space: Rect): Rect {
   return node.constants.space;
 }
 
-export function setupConstants(node: Node, space: Rect, known?: ImmutableRect<Option<number>>): void {
+function setupConstants(node: Node, space: Rect, known?: ImmutableRect<Option<number>>): void {
   node.constants.frozen = false;
   node.constants.wrap = node.style.wrap;
   node.constants.isRow = isRow(node.style.direction);
@@ -36,8 +35,8 @@ export function setupConstants(node: Node, space: Rect, known?: ImmutableRect<Op
     node.constants.size.height = node.style.size.height.resolve(space.height);
   }
 
-  node.constants.hypotheticalOuterSize.setSides(0, 0);
-  node.constants.hypotheticalInnerSize.setSides(0, 0);
+  node.constants.hypotheticalOuterSize.sides(0, 0);
+  node.constants.hypotheticalInnerSize.sides(0, 0);
 
   // Reset cached flex lines.
   for (const line of node.constants.lines) {
@@ -46,7 +45,7 @@ export function setupConstants(node: Node, space: Rect, known?: ImmutableRect<Op
 }
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-cross-line */
-export function calculateLineCrossSizes(constants: Constants): void {
+function calculateLineCrossSizes(constants: Constants): void {
   const cross = constants.size.cross(constants.isRow);
 
   // If the flex container is single-line and has a definite cross size, the cross size
@@ -103,7 +102,7 @@ function getLineAt(idx: number, constants: Constants): Line {
  * @param node Flex items of this node will be collected into flex lines.
  * @param space Available space for individual lines to take.
  */
-export function collectLines(node: Node, space: Rect): Line[] {
+function collectLines(node: Node, space: Rect): Line[] {
   const available = space.main(node.constants.isRow);
 
   let lineIdx = 0;
@@ -152,7 +151,7 @@ export function collectLines(node: Node, space: Rect): Line[] {
  * @param lines Container lines.
  * @param constants Container constants.
  */
-export function determineContainerMainSize(lines: Line[], constants: Constants): number {
+function determineContainerMainSize(lines: Line[], constants: Constants): number {
   if (lines.length === 1) {
     return lines[0].size.main(constants.isRow);
   }
@@ -210,7 +209,7 @@ function getLinesCrossAxisSum(node: Node): number {
  * @see https://www.w3.org/TR/css-flexbox-1/#algo-main-align
  * @see https://www.w3.org/TR/css-flexbox-1/#algo-cross-container
  */
-export function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void {
+function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void {
   let usedMain = 0;
   let usedCross = 0;
 
@@ -285,9 +284,7 @@ function getBaseSizeSpace(node: Node): Rect {
     cross -= node.style.padding.cross(node.constants.isRow);
   }
 
-  space.set(node.constants.isRow, main, cross);
-
-  return space;
+  return space.axis(node.constants.isRow, main, cross);
 }
 
 /** @see https://www.w3.org/TR/css-flexbox-1/#algo-main-item */
@@ -541,7 +538,7 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
   // If we are only interested in measuring and size can be fully determined from node
   // style, exit early.
   if (measure && node.constants.size.width !== undefined && node.constants.size.height !== undefined) {
-    return node.size.setSides(node.constants.size.width, node.constants.size.height);
+    return node.size.sides(node.constants.size.width, node.constants.size.height);
   }
 
   // 2. Determine the available main and cross space for the flex items.
