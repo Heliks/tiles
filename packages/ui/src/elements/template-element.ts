@@ -38,6 +38,10 @@ export class TemplateElement implements Element, OnInit {
     }
   }
 
+  public get expression(): unknown {
+    return this._expression;
+  }
+
   constructor(public readonly renderer: TemplateRenderer) {}
 
   /** @inheritDoc */
@@ -50,8 +54,9 @@ export class TemplateElement implements Element, OnInit {
   }
 
   public destroy(world: World): void {
-    if (this.root) {
+    if (this.root !== undefined) {
       world.get(Hierarchy).destroy(world, this.root);
+      this._expression = false;
     }
   }
 

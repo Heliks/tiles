@@ -46,7 +46,13 @@ function uiComponentOutputDecorator(): Function {
   }
 }
 
-/** Allows the context {@link Host} to send data to this property. */
+/**
+ * Allows the context {@link Host} to send data to this property.
+ *
+ * When the property is a setter, it requires a getter counterpart for proper change
+ * detection.
+ *
+ */
 export const Input = uiComponentInputDecorator;
 
 /** Allows this property to send its data to its context {@link Host}. */

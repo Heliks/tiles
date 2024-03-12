@@ -1,23 +1,35 @@
-import { Entity } from '@heliks/tiles-engine';
+import { Entity, World } from '@heliks/tiles-engine';
 import { Attribute } from '../attribute';
 import { Style } from '../style';
 import { UiElement } from '../ui-element';
-import { BaseTemplateComposer, ComposeNode, TemplateFactory } from './types';
+import { ComposeNode, TemplateFactory } from './types';
 
 
-export class ElementComposer<C extends BaseTemplateComposer> implements ComposeNode {
+export class ElementComposer<C extends ComposeNode> implements ComposeNode {
 
   /**
+   * @param world Entity world in which the element is rendered.
+   * @param entity Entity that owns the composed {@link element} component.
    * @param composer The base composer for the elements' node.
    * @param element The UI element that is being composed.
    */
-  constructor(public readonly composer: C, public readonly element: UiElement) {}
+  constructor(
+    public readonly world: World,
+    public readonly entity: Entity,
+    public readonly composer: C,
+    public readonly element: UiElement
+  ) {}
 
   /** @inheritDoc */
   public style(style: Partial<Style>): this {
     this.composer.style(style);
 
     return this;
+  }
+
+  /** @inheritDoc */
+  public insert(): ComposeNode {
+    return this.composer.insert();
   }
 
   /** @inheritDoc */

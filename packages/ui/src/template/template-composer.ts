@@ -7,11 +7,11 @@ import { UiElement } from '../ui-element';
 import { UiNode } from '../ui-node';
 import { DefaultRenderer } from './default-renderer';
 import { ElementComposer } from './element-composer';
-import { BaseTemplateComposer, TemplateFactory } from './types';
+import { ComposeNode, TemplateFactory } from './types';
 
 
 /** Utility for high-level UI composition. */
-export class TemplateComposer implements BaseTemplateComposer {
+export class TemplateComposer implements ComposeNode {
 
   constructor(public readonly world: World, public readonly entity: Entity) {}
 
@@ -27,8 +27,8 @@ export class TemplateComposer implements BaseTemplateComposer {
     return this;
   }
 
-  /** @internal */
-  private _child(): TemplateComposer {
+  /** @inheritDoc */
+  public insert(): TemplateComposer {
     return new TemplateComposer(
       this.world,
       this.world.insert(
@@ -40,7 +40,7 @@ export class TemplateComposer implements BaseTemplateComposer {
 
   /** @inheritDoc */
   public child(factory: TemplateFactory<TemplateComposer>): this {
-    factory(this._child());
+    factory(this.insert());
 
     return this;
   }
@@ -68,7 +68,12 @@ export class TemplateComposer implements BaseTemplateComposer {
   public element(element: Element): ElementComposer<TemplateComposer> {
     const component = new UiElement(element);
 
-    return new ElementComposer(this.use(component), component)
+    return new ElementComposer(
+      this.world,
+      this.entity,
+      this.use(component),
+      component
+    )
   }
 
   /** Shorthand for changing the node into a {@link UiComponentRenderer} element. */
