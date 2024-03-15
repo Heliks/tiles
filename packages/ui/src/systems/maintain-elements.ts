@@ -1,6 +1,7 @@
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, World } from '@heliks/tiles-engine';
 import { ContextRef, Host } from '../context';
 import { canDestroy, canInit, canSetupBeforeInit } from '../lifecycle';
+import { Elements } from '../provider/elements';
 import { UiElement } from '../ui-element';
 import { UiNode } from '../ui-node';
 
@@ -26,6 +27,12 @@ export function setupHostContext(world: World, entity: Entity): void {
 /** Initializes new {@link UiElement elements} and cleans up destroyed ones. */
 @Injectable()
 export class MaintainElements extends ReactiveSystem {
+
+  public dirty = false;
+
+  constructor(private readonly elements: Elements) {
+    super();
+  }
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
@@ -114,6 +121,17 @@ export class MaintainElements extends ReactiveSystem {
     setupHostContext(world, entity);
 
     this.emitOnInit(world, entity, element);
+
+    // Update the spawned element once.
+    this.elements.update(world, entity);
+
+    // Elements can spawn additional nodes & elements when they are updated (for example,
+    // template elements and ui component renderers). This makes sure that the entities
+    // of those newly spawned nodes are available instantly to subsequent systems such
+    // as layout computation.
+    world.queries.sync(world.changes);
+
+    this.dirty = true;
   }
 
   /** @inheritDoc */
@@ -128,6 +146,15 @@ export class MaintainElements extends ReactiveSystem {
 
     // Call destroy lifecycle.
     this.emitOnDestroy(world, entity, element);
+  }
+
+  update(world: World) {
+    super.update(world)
+
+    if (this.dirty) {
+      this.dirty = false;
+      this.update(world);
+    }
   }
 
 }
