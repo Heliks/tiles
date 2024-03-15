@@ -59,6 +59,8 @@ export class UiComponentRenderer<T extends UiComponent = UiComponent> implements
 
     this.root = this.instance.render(world);
 
+    console.log('INIT COMPONENT', this.root, this.component)
+
     // The component node tree is always a child of this element.
     world.attach(this.root, new Parent(entity));
   }
