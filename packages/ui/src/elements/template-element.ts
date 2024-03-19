@@ -2,6 +2,7 @@ import { Entity, Hierarchy, World } from '@heliks/tiles-engine';
 import { Element } from '../element';
 import { OnInit } from '../lifecycle';
 import { Input } from '../params';
+import { Document } from '../providers/document';
 
 
 export interface TemplateRenderer {
@@ -56,7 +57,6 @@ export class TemplateElement implements Element, OnInit {
   public destroy(world: World): void {
     if (this.root !== undefined) {
       world.get(Hierarchy).destroy(world, this.root);
-      this._expression = false;
     }
   }
 
@@ -71,6 +71,8 @@ export class TemplateElement implements Element, OnInit {
 
       // Changes were applied successfully.
       this._changed = false;
+
+      world.get(Document).invalidate();
     }
   }
 

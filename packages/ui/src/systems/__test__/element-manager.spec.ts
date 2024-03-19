@@ -1,11 +1,16 @@
 import { App, Parent, runtime, World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
+import { NoopAttribute } from '../../__test__/utils/noop-attribute';
+import { NoopElement } from '../../__test__/utils/noop-element';
+import { SpawnOnInit } from '../../__test__/utils/spawn-on-init';
+import { SpawnOnUpdate } from '../../__test__/utils/spawn-on-update';
 import { Host } from '../../context';
 import { OnBeforeInit, OnDestroy, OnInit } from '../../lifecycle';
+import { Document } from '../../providers/document';
+import { EventLifecycle } from '../../providers/event-lifecycle';
 import { UiElement } from '../../ui-element';
 import { UiNode } from '../../ui-node';
-import { MaintainElements, setupHostContext } from '../maintain-elements';
-import { NoopAttribute, NoopElement } from './utils';
+import { ElementManager, setupHostContext } from '../element-manager';
 
 
 describe('setupHostContext', () => {
@@ -46,14 +51,18 @@ describe('setupHostContext', () => {
   });
 });
 
-describe('MaintainElements', () => {
+describe('ElementManager', () => {
   let app: App;
-  let system: MaintainElements;
+  let system: ElementManager;
   let world: World;
 
   beforeEach(() => {
     app = runtime()
-      .system(MaintainElements)
+      .component(UiElement)
+      .component(UiNode)
+      .provide(EventLifecycle)
+      .provide(Document)
+      .system(ElementManager)
       .build();
 
     // Boot system.
@@ -61,7 +70,7 @@ describe('MaintainElements', () => {
       update: jest.fn()
     });
 
-    system = app.world.get(MaintainElements);
+    system = app.world.get(ElementManager);
     world = app.world;
   });
 
@@ -239,5 +248,40 @@ describe('MaintainElements', () => {
 
       expect(system.emitOnDestroy).toHaveBeenCalledWith(world, entity, element);
     })
+  });
+
+  describe('update()', () => {
+    it.each([
+      {
+        description: 'spawned by OnInit lifecycle',
+        spawner: SpawnOnInit
+      },
+      {
+        description: 'spawned by update() call',
+        spawner: SpawnOnUpdate
+      }
+    ])('should call onEntityAdded() for element that is $description', data => {
+      const element3 = new UiElement(new NoopElement());
+      const element2 = new UiElement(new data.spawner(element3));
+      const element1 = new UiElement(new data.spawner(element2));
+
+      jest.spyOn(system, 'onEntityAdded');
+
+      world.insert(new UiNode(), element1);
+      world.update();
+
+      system.update(world);
+
+      const store = world.storage(UiElement);
+
+      // All previously created entities should have an owner now.
+      const owner1 = store.owner(element1);
+      const owner2 = store.owner(element2);
+      const owner3 = store.owner(element3);
+
+      expect(system.onEntityAdded).toHaveBeenCalledWith(world, owner1);
+      expect(system.onEntityAdded).toHaveBeenCalledWith(world, owner2);
+      expect(system.onEntityAdded).toHaveBeenCalledWith(world, owner3);
+    });
   });
 });
