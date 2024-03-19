@@ -1,14 +1,14 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
 import { RendererSchedule } from '@heliks/tiles-pixi';
 import { Host } from './context';
-import { Elements } from './provider/elements';
+import { Document } from './providers/document';
+import { EventLifecycle } from './providers/event-lifecycle';
 import {
   DrawUi,
+  ElementManager,
   EventSystem,
-  MaintainElements,
   MaintainLayouts,
   MaintainNodes,
-  UpdateElements,
   UpdateLayouts,
   UpdateNodes
 } from './systems';
@@ -27,14 +27,14 @@ export class UiBundle implements Bundle {
       .component(Host)
       .component(UiNode)
       .component(UiElement)
-      .provide(Elements)
+      .provide(Document)
+      .provide(EventLifecycle)
       .system(EventSystem)
-      .system(MaintainElements)
-      .system(MaintainNodes)
-      .system(UpdateNodes)
-      .system(UpdateElements)
+      .system(ElementManager)
       .system(MaintainLayouts)
       .system(UpdateLayouts)
+      .system(MaintainNodes)
+      .system(UpdateNodes)
       .system(DrawUi, RendererSchedule.Update);
   }
 

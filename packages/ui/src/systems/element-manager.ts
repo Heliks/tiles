@@ -1,7 +1,7 @@
-import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, World } from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
 import { ContextRef, Host } from '../context';
 import { canDestroy, canInit, canSetupBeforeInit } from '../lifecycle';
-import { Elements } from '../provider/elements';
+import { Document, EventLifecycle } from '../providers';
 import { UiElement } from '../ui-element';
 import { UiNode } from '../ui-node';
 
@@ -24,13 +24,18 @@ export function setupHostContext(world: World, entity: Entity): void {
   element.share(elements.get(host));
 }
 
-/** Initializes new {@link UiElement elements} and cleans up destroyed ones. */
+/** Manages {@link UiElement} components that are attached to {@link UiNode nodes}.*/
 @Injectable()
-export class MaintainElements extends ReactiveSystem {
+export class ElementManager extends ReactiveSystem {
 
-  public dirty = false;
+  /** @internal */
+  private readonly entities: Entity[] = [];
 
-  constructor(private readonly elements: Elements) {
+  /**
+   * @param document
+   * @param eventLifecycle
+   */
+  constructor(private readonly document: Document, private readonly eventLifecycle: EventLifecycle) {
     super();
   }
 
@@ -102,6 +107,42 @@ export class MaintainElements extends ReactiveSystem {
     }
   }
 
+  private updateAttributes(node: UiNode, element: UiElement, context: ContextRef): void {
+    for (const item of element.attributes) {
+      item.resolve(context);
+      item.attribute.update(node);
+    }
+  }
+
+  public updateEntity(world: World, elements: Storage<UiElement>, nodes: Storage<UiNode>, entity: Entity): void {
+    const element = elements.get(entity);
+    const node = nodes.get(entity);
+
+    // Note: Data is shared with the context host and attributes are evaluated even if
+    // the node is invisible, because when an attribute receives a new input, it could
+    // possibly make the element visible again.
+    if (element.host !== undefined) {
+      const host = elements.get(element.host);
+
+      this.updateAttributes(node, element, host.context);
+
+      element.share(host);
+    }
+
+    if (node.hidden()) {
+      return;
+    }
+
+    this.eventLifecycle.trigger(world, node, element.instance);
+
+    element.instance.update(world, entity, node.layout);
+
+    // Elements can project their content size directly into the stylesheet.
+    if (element.instance.size) {
+      node.layout.style.size = element.instance.size;
+    }
+  }
+
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const element = world.storage(UiElement).get(entity);
@@ -123,15 +164,8 @@ export class MaintainElements extends ReactiveSystem {
     this.emitOnInit(world, entity, element);
 
     // Update the spawned element once.
-    this.elements.update(world, entity);
-
-    // Elements can spawn additional nodes & elements when they are updated (for example,
-    // template elements and ui component renderers). This makes sure that the entities
-    // of those newly spawned nodes are available instantly to subsequent systems such
-    // as layout computation.
-    world.queries.sync(world.changes);
-
-    this.dirty = true;
+    // this.elements.update(world, entity);
+    this.document.invalidate();
   }
 
   /** @inheritDoc */
@@ -148,11 +182,35 @@ export class MaintainElements extends ReactiveSystem {
     this.emitOnDestroy(world, entity, element);
   }
 
-  update(world: World) {
+  /** @inheritDoc */
+  public update(world: World): void {
+    // Keep track of all entities that are elements before query changes are resolved.
+    this.entities.length = 0;
+    this.entities.push(...this.query.entities);
+
+    // Triggers onEntityAdded() and onEntityRemoved() events. Some elements like template
+    // elements or ui component renderers might spawn new elements during this time.
     super.update(world)
 
-    if (this.dirty) {
-      this.dirty = false;
+    const nodes = world.storage(UiNode);
+    const elems = world.storage(UiElement);
+
+    // Update all elements, excluding those that were spawned earlier in super.update().
+    for (const entity of this.entities) {
+      this.updateEntity(world, elems, nodes, entity);
+    }
+
+    // If new elements were spawned during this pass, run the system again. This makes
+    // sure that new elements are fully processed on the same frame as they are spawned,
+    // preventing a short flickering as they appear. As this re-synchronizes entity
+    // queries, the new elements are also available to be processed by subsequent
+    // systems, like the layout update.
+    if (this.document.invalid) {
+      // Trigger re-sync for entity queries, making the newly spawned entities available
+      // to this system.
+      world.queries.sync(world.changes);
+
+      this.document.invalid = false;
       this.update(world);
     }
   }

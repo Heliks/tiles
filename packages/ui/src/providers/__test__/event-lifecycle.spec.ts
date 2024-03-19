@@ -1,38 +1,26 @@
-import { App, Parent, runtime, Subscriber, TransformBundle, World } from '@heliks/tiles-engine';
+import { App, runtime, Subscriber, World } from '@heliks/tiles-engine';
+import { NoopElement } from '../../__test__/utils/noop-element';
 import { OnEvent } from '../../lifecycle';
 import { UiElement } from '../../ui-element';
 import { UiEvent } from '../../ui-event';
 import { UiNode, UiNodeInteraction } from '../../ui-node';
-import { UpdateElements } from '../update-elements';
-import { NoopElement } from './utils';
+import { EventLifecycle } from '../event-lifecycle';
 
 
-describe('UpdateElements', () => {
+describe('EventLifecycle', () => {
   let app: App;
-  let system: UpdateElements;
+  let service: EventLifecycle;
   let world: World;
 
   beforeEach(() => {
-    app = runtime()
-      .component(UiNode)
-      .component(UiElement)
-      .component(Parent)
-      .bundle(new TransformBundle())
-      .system(UpdateElements)
-      .build();
+    app = runtime().provide(EventLifecycle).build();
 
-    // Boot system.
-    app.start({
-      update: jest.fn()
-    });
-
-    system = app.world.get(UpdateElements);
+    service = app.world.get(EventLifecycle);
     world = app.world;
   });
 
-
-  describe('when handling the event lifecycle', () => {
-    it('should call OnEvent lifecycle', () => {
+  describe('when triggering the event lifecycle', () => {
+    it('should call OnEvent callback on element when node is being interacted with', () => {
       class Foo extends NoopElement implements OnEvent {
         onEvent = jest.fn();
       }
@@ -46,14 +34,14 @@ describe('UpdateElements', () => {
 
       // The system can only receive UiEvents that occur after it has initialized the
       // subscription for the interaction event queue.
-      system.setupNodeSubscription(node);
+      service.setup(node);
 
       const event = new UiEvent(entity, UiNodeInteraction.Down);
 
       node.onInteract.push(event);
 
       // Execute the lifecycle event.
-      system.handleElementEventLifecycle(world, node, element.instance);
+      service.trigger(world, node, element.instance);
 
       expect(element.instance.onEvent).toHaveBeenCalledWith(world, event);
     });
@@ -61,7 +49,7 @@ describe('UpdateElements', () => {
 
   describe('when a subscriber is requested', () => {
     it('should return a subscriber', () => {
-      const subscriber = system.getNodeSubscription(new UiNode());
+      const subscriber = service.subscriber(new UiNode());
 
       expect(subscriber).toBeInstanceOf(Subscriber)
     });
@@ -69,10 +57,11 @@ describe('UpdateElements', () => {
     it('should re-use existing subscriber', () => {
       const node = new UiNode();
 
-      const subscriber1 = system.getNodeSubscription(node);
-      const subscriber2 = system.getNodeSubscription(node);
+      const subscriber1 = service.subscriber(node);
+      const subscriber2 = service.subscriber(node);
 
       expect(subscriber1).toBe(subscriber2);
     });
   });
+
 });
