@@ -1,6 +1,15 @@
-import { ComponentEventType, Injectable, Subscriber, System, Transform, World } from '@heliks/tiles-engine';
-import { RigidBody } from './rigid-body';
+import {
+  ComponentEvent,
+  ComponentEventType,
+  Injectable,
+  Subscriber,
+  System,
+  Transform,
+  World
+} from '@heliks/tiles-engine';
 import { Physics } from './physics';
+import { RigidBody } from './rigid-body';
+
 
 /**
  * Synchronizes the entity world with the physics world. E.g. it spawns a body when a
@@ -10,7 +19,7 @@ import { Physics } from './physics';
 export class SyncWorlds implements System {
 
   /** @internal */
-  private body$!: Subscriber;
+  private body$!: Subscriber<ComponentEvent<RigidBody>>;
 
   /**
    * @param physics The physics adapter.
@@ -20,7 +29,7 @@ export class SyncWorlds implements System {
   /** @inheritDoc */
   public boot(world: World): void {
     // Subscribe to changes in the rigid body storage.
-    this.body$ = world.storage(RigidBody).subscribe();
+    this.body$ = world.storage(RigidBody).events.subscribe();
   }
 
   /** @inheritDoc */
@@ -28,7 +37,7 @@ export class SyncWorlds implements System {
     const bodies = world.storage(RigidBody);
     const transforms = world.storage(Transform);
 
-    for (const event of bodies.events(this.body$)) {
+    for (const event of this.body$.read()) {
       switch (event.type) {
         case ComponentEventType.Added:
           this.physics.createBody(

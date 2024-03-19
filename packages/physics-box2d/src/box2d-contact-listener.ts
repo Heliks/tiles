@@ -35,7 +35,7 @@ export class Box2dContactListener extends b2ContactListener {
   /** @internal */
   private push(a: FixtureUserData, b: FixtureUserData, type: ContactEventType): void {
     // Avoid creating useless objects when no one is listening.
-    if (this.queue.subscriberAmount > 0) {
+    if (this.queue.size() > 0) {
       this.queue.push({
         contact: new ColliderContact(
           a.entity,

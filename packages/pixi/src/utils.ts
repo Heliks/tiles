@@ -1,19 +1,11 @@
-import { Vec2 } from '@heliks/tiles-engine';
+import { XY } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js'
 import { Rectangle, Texture } from 'pixi.js'
 
+
 /** Crops a texture. */
-export function cropTexture(
-  source: Texture,
-  pos: Vec2,
-  size: Vec2
-): PIXI.Texture {
-  return new Texture(source.baseTexture, new Rectangle(
-    pos.x,
-    pos.y,
-    size.x,
-    size.y
-  ));
+export function cropTexture(source: Texture, pos: XY, size: XY): PIXI.Texture {
+  return new Texture(source.baseTexture, new Rectangle(pos.x, pos.y, size.x, size.y));
 }
 
 /**

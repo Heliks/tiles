@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-engine",
-  "version": "0.0.0",
+  "version": "0.0.1-rc6",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,12 +20,13 @@
   },
   "dependencies": {
     "uuid": "8.3.2",
-    "@heliks/ecs": "^0.2.3",
-    "@heliks/ecs-hierarchy": "^0.2.1",
-    "@heliks/ecs-transform": "^0.2.1",
-    "@heliks/event-queue": "^0.2.2",
-    "@heliks/tiles-injector": "^0.0.0",
-    "@heliks/tiles-math": "^0.0.0",
+    "@heliks/ecs": "0.3.2-rc2",
+    "@heliks/ecs-hierarchy": "0.3.2-rc2",
+    "@heliks/ecs-transform": "0.3.2-rc2",
+    "@heliks/ecs-serialize": "0.3.2-rc2",
+    "@heliks/event-queue": "0.3.0",
+    "@heliks/tiles-injector": "workspace:^",
+    "@heliks/tiles-math": "workspace:^",
     "reflect-metadata": "^0.1.13"
   }
 }

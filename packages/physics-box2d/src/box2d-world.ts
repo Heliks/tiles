@@ -2,11 +2,11 @@
 import { b2Body, b2World } from '@flyover/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
+import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
 import { syncBodyFixtures } from './fixtures';
-import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 
 
 /** User data that will be assigned to `b2Fixture` instances. */
@@ -130,7 +130,7 @@ export class Box2dWorld extends Physics {
     // Since this can run fairly often we only push these events in case there are any
     // subscribers to this queue to prevent the creation of unnecessary garbage that has
     // to be collected. This will mostly be used to draw debug information anyway.
-    if (this.raycasts.subscriberAmount > 0) {
+    if (this.raycasts.size() > 0) {
       this.raycasts.push({
         start,
         end

@@ -1,6 +1,5 @@
 import { b2World } from '@flyover/box2d';
-import { EventQueue, token } from '@heliks/tiles-engine';
-import { XY } from '@heliks/tiles-math';
+import { EventQueue, token, XY } from '@heliks/tiles-engine';
 
 
 /** Event that occurs when a raycast is performed. */

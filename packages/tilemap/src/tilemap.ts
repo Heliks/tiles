@@ -1,19 +1,21 @@
-import { createPackedArray, Entity, Grid } from '@heliks/tiles-engine';
-import { Container } from '@heliks/tiles-pixi';
-import { LocalTilesetBag } from './local-tileset-bag';
+import { createPackedArray, Grid, UUID } from '@heliks/tiles-engine';
+import { Container, LayerId } from '@heliks/tiles-pixi';
+import { AnimatedSprite } from 'pixi.js';
+import { LocalTilesetBag, Tileset } from './tileset';
 
 
 /**
  * Component that when added to an entity, will render a tilemap on its world position. A
  * tilemap is essentially a grid where each cell can possibly contain a tile.
  */
-export class Tilemap {
+@UUID('415ca0bf-6b43-4481-9064-3313c3fa1b01')
+export class Tilemap<T extends Tileset = Tileset> {
 
   /**
    * Grid data. Each index represents a grid cell and each value a tile ID. If a cell
    * has a value of `0`, it means that that cell is not occupied by any tile. The data
-   * is packed, which means that this array is guaranteed to have a length equal to the
-   * grid size.
+   * is packed, which means that this array is guaranteed to have a length equal to size
+   * of the grid of this tilemap.
    *
    * For example, the data of a 3x3 grid could be laid out like this:
    *
@@ -39,15 +41,23 @@ export class Tilemap {
    *
    * @see data
    */
-  public tilesets = new LocalTilesetBag();
+  public tilesets = new LocalTilesetBag<T>();
 
   /**
-   * Contains the display object on which the tilemap will be rendered. Will either be
-   * added directly to the stage or to a specific render group (if defined).
+   * Contains the display object on which the tilemap will be rendered.
    *
    * @internal
    */
   public readonly view = new Container();
+
+  /**
+   * Contains {@link AnimatedSprite animated sprites} that need to be updated by the
+   * tilemap renderer. This has to be done manually because we do not use the internal
+   * PIXI ticker to update the renderer.
+   *
+   * @internal
+   */
+  public readonly _animations: AnimatedSprite[] = [];
 
   /** The opacity of the tilemap. Value from 0-1. */
   public set opacity(opacity: number) {
@@ -60,9 +70,9 @@ export class Tilemap {
 
   /**
    * @param grid Grid that defines the boundaries of the tilemap.
-   * @param group (optional) Parent render group.
+   * @param layer (optional) Renderer layer ID.
    */
-  constructor(public readonly grid: Grid, public readonly group?: Entity) {
+  constructor(public readonly grid: Grid, public readonly layer?: LayerId) {
     this.data = createPackedArray(grid.size, 0);
   }
 
@@ -72,14 +82,41 @@ export class Tilemap {
    * data was changed.
    */
   public set(cell: number, tileId: number): boolean {
-    if (cell < 0 || cell >= this.grid.size || this.data[ cell ] === tileId) {
-      return false;
+    if (this.grid.isIndexInBounds(cell) && this.data[ cell ] !== tileId) {
+      this.data[ cell ] = tileId;
+      this.dirty = true;
+
+      return true;
     }
 
-    this.data[ cell ] = tileId;
+    return false;
+  }
+
+  /**
+   * Overwrites the existing tilemap data. The new `data` must have a length equal to
+   * the size of the tilemap.
+   *
+   * @see data
+   */
+  public setAll(data: number[]): this {
+    if (data.length !== this.grid.size) {
+      throw new Error('Data must have equal indexes to tilemap size.');
+    }
+
+    this.data.length = 0;
+    this.data.push(...data);
+
     this.dirty = true;
 
-    return true;
+    return this;
+  }
+
+  /**
+   * Returns the tile ID that occupies a `cell` index. Returns `0` if `cell` is outside
+   * the boundaries of the tilemap grid, or if that cell is not occupied by any tile.
+   */
+  public get(cell: number): number {
+    return this.grid.isIndexInBounds(cell) ? this.data[ cell ] : 0;
   }
 
 }

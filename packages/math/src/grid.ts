@@ -1,4 +1,5 @@
-import { Vec2 } from './vec2';
+import { Vec2, XY } from './vec2';
+import { clamp } from './utils';
 
 
 export class Grid {
@@ -31,86 +32,56 @@ export class Grid {
     public readonly cellHeight: number
   ) {}
 
-  /** Returns the top-left aligned position of the cell that occupies the given `index`. */
-  public position(index: number, out = new Vec2()): Vec2 {
-    out.x = index % this.cols * this.cellWidth;
-    out.y = Math.floor(index / this.cols) * this.cellHeight;
-
-    return out;
-  }
-
-  /** Returns the index of the cell on which the position `x` and `y` is located. */
-  public index(x: number, y: number): number {
-    const col = Math.floor(x / this.cellWidth);
-    const row = Math.floor(y / this.cellHeight);
-
-    return (row * this.cols) + col;
-  }
-
   /**
-   * Returns an array that contains all cell indexes that are neighbours to `index`.
-   *
-   * ### Example
-   *
-   * Given the following 5x5 grid:
-   *
-   * ```
-   * +--------------+
-   * | 0| 1| 2| 3| 4|
-   * | 5| 6| 7| 8| 9|
-   * |10|11|12|13|14|
-   * |15|16|17|18|19|
-   * |20|21|22|23|24|
-   * +--------------+
-   * ```
-   *
-   * We get the following indexes as neighbours:
-   *
-   * ```ts
-   * const grid = new Grid(5, 5, 0, 0);
-   *
-   * // [1, 5, 6]
-   * console.log(grid.getNeighbourIndexes(0));
-   *
-   * // [6, 7, 8, 11, 13, 16, 17, 18]
-   * console.log(grid.getNeighbourIndexes(12));
-   * ```
-   * */
-  public getNeighbourIndexes(index: number, out: number[] = []): number[] {
-    const col = index % this.cols;
-    const row = (index / this.rows) | 0;
+   * Returns a vector that represents the location of a `cell` index. The x-axis
+   * represents the grid column, y the grid row.
+   */
+  public getLocation(cell: number, out?: XY): XY {
+    const x = cell % this.cols;
+    const y = Math.floor(cell / this.cols);
 
-    // Calculate start / end positions to iterate over.
-    const sx = Math.max(col - 1, 0);
-    const ex = Math.min(col + 1, this.size - 1);
-
-    const sy = Math.max(row - 1, 0);
-    const ey = Math.min(row + 1, this.size - 1);
-
-    for (let y = sy; y <= ey; y++) {
-      for (let x = sx; x <= ex; x++) {
-        // If we are not out of bounds convert the x and y position back to an index
-        // and push it to the output. Also ignore the index for which we were looking
-        // for itself as it is not a neighbour.
-        if (!(x === col && y === row) && x < this.cols && y < this.rows) {
-          out.push(y * this.cols + x);
-        }
-      }
+    if (out) {
+      out.x = x;
+      out.y = y;
+    }
+    else {
+      out = { x, y };
     }
 
     return out;
   }
 
-  /**
-   * Converts a top-left aligned `pos` vector of a cell and converts its values to be
-   * center aligned.
-   */
-  public getCellMiddlePosition(pos: Vec2): Vec2 {
-    // The bitshift is a faster way of dividing by 2.
-    pos.x += this.cellWidth >> 1;
-    pos.y += this.cellHeight >> 1;
+  /** Returns the top-left aligned position of a `cell` index. */
+  public getPosition(cell: number, out = new Vec2()): XY {
+    const loc = this.getLocation(cell, out);
 
-    return pos;
+    loc.x *= this.cellWidth;
+    loc.y *= this.cellHeight;
+
+    return loc;
+  }
+
+  /** Returns the index of the cell that is located at `col` and `row`. */
+  public getIndex(col: number, row: number): number {
+    return (clamp(row, 0, this.rows - 1) * this.cols) + clamp(col, 0, this.cols - 1);
+  }
+
+  /** Returns the index of the cell that is located at the position `x` and `y` */
+  public getIndexAt(x: number, y: number): number {
+    return this.getIndex(
+      Math.floor(x / this.cellWidth),
+      Math.floor(y / this.cellHeight)
+    );
+  }
+
+  /** Returns `true` if a `cell` index is within the bounds of this grid. */
+  public isIndexInBounds(cell: number): boolean {
+    return cell >= 0 && cell < this.size;
+  }
+
+  /** Returns `true` if `col` and `row` are within the bounds of this grid. */
+  public isLocationInBounds(col: number, row: number): boolean {
+    return col < this.cols && col >= 0 && row < this.rows && row >= 0;
   }
 
 }

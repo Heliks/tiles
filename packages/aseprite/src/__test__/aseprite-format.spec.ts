@@ -1,4 +1,4 @@
-import { AssetLoader } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteFormat } from '../aseprite-format';
@@ -20,7 +20,7 @@ describe('AsepriteFormat', () => {
 
   beforeEach(() => {
     format = new AsepriteFormatMock();
-    loader = new AssetLoader();
+    loader = new AssetLoader(new AssetStorage());
   });
 
   function parse(data: AsepriteData): Promise<SpriteSheet> {

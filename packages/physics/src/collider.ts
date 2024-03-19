@@ -1,4 +1,4 @@
-import { Circle, Rectangle, uuid } from '@heliks/tiles-engine';
+import { Circle, Rectangle, UUID, uuid } from '@heliks/tiles-engine';
 import { MaterialId } from './material';
 
 
@@ -16,20 +16,21 @@ export interface ColliderData {
   material?: MaterialId;
 
   /**
-   * If set to `true` the collider will act as a sensor. Sensors will detect collisions
-   * but won't produce any responses and can only collide when one of the colliding
-   * bodies is dynamic. E.g. when attached to a kinematic body a sensor won't detect
-   * collisions with a static or another kinematic body.
+   * If set to `true` the collider will act as a sensor. Sensors detect collisions but
+   * don't produce a collision response. They can only collide when one of the colliding
+   * {@link RigidBody bodies} is {@link RigidBodyType.Dynamic dynamic}. This means that
+   * when attached to a {@link RigidBodyType.Kinematic kinematic} body, the sensor will
+   * not detect collisions with {@link RigidBodyType.Static} or other kinematic bodies.
    */
   sensor: boolean;
 
 }
 
-
 /**
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
  */
+@UUID('c4b05f97-abc9-4efa-b7a8-19413df9a732')
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /** Unique identifier. */
