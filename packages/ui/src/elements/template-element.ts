@@ -1,8 +1,8 @@
 import { Entity, Hierarchy, World } from '@heliks/tiles-engine';
 import { Element } from '../element';
-import { OnInit } from '../lifecycle';
+import { OnDestroy, OnInit } from '../lifecycle';
 import { Input } from '../params';
-import { Document } from '../providers/document';
+import { Document } from '../providers';
 
 
 export interface TemplateRenderer {
@@ -14,7 +14,7 @@ export interface TemplateRenderer {
  * and hidden if not. Hidden templates are removed from the layout tree, which results
  * in everything in the tree below the template node being destroyed.
  */
-export class TemplateElement implements Element, OnInit {
+export class TemplateElement implements Element, OnInit, OnDestroy {
 
   /** Contains the root entity of the rendered template. */
   public root?: Entity;
@@ -51,12 +51,20 @@ export class TemplateElement implements Element, OnInit {
   }
 
   public render(world: World): void {
+    if (this.root !== undefined) {
+      throw new Error('Component is already rendered.');
+    }
+
     this.root = this.renderer.render(world);
   }
 
   public destroy(world: World): void {
     if (this.root !== undefined) {
       world.get(Hierarchy).destroy(world, this.root);
+
+      this.root = undefined;
+      this._changed = false;
+      this._expression = false;
     }
   }
 
@@ -79,6 +87,11 @@ export class TemplateElement implements Element, OnInit {
   /** @inheritDoc */
   public onInit(world: World): void {
     this.apply(world);
+  }
+
+  /** @inheritDoc */
+  public onDestroy(world: World): void {
+    this.destroy(world);
   }
 
   /** @inheritDoc */

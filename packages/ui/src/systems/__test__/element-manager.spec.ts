@@ -247,7 +247,22 @@ describe('ElementManager', () => {
       system.onEntityRemoved(world, entity);
 
       expect(system.emitOnDestroy).toHaveBeenCalledWith(world, entity, element);
-    })
+    });
+
+    it('should remove element from OnEvent lifecycle', () => {
+      const lifecycle = world.get(EventLifecycle);
+
+      lifecycle.unsubscribe = jest.fn();
+
+      const element = new UiElement(new NoopElement());
+      const node = new UiNode();
+
+      const entity = world.insert(node, element);
+
+      system.onEntityRemoved(world, entity);
+
+      expect(lifecycle.unsubscribe).toHaveBeenCalledWith(node);
+    });
   });
 
   describe('update()', () => {
@@ -283,5 +298,18 @@ describe('ElementManager', () => {
       expect(system.onEntityAdded).toHaveBeenCalledWith(world, owner2);
       expect(system.onEntityAdded).toHaveBeenCalledWith(world, owner3);
     });
+
+    it('should not update elements that are destroyed during onEntityRemoved()', () => {
+
+
+      const element2 = new UiElement(new NoopElement());
+      const element1 = new UiElement(new SpawnOnInit(element2));
+
+      world.insert(new UiNode(), element1);
+      world.update();
+
+    });
+
+
   });
 });

@@ -178,26 +178,30 @@ export class ElementManager extends ReactiveSystem {
       node.container.removeChild(element.instance.view);
     }
 
+    this.eventLifecycle.unsubscribe(node);
+
     // Call destroy lifecycle.
     this.emitOnDestroy(world, entity, element);
   }
 
   /** @inheritDoc */
   public update(world: World): void {
-    // Keep track of all entities that are elements before query changes are resolved.
     this.entities.length = 0;
     this.entities.push(...this.query.entities);
 
     // Triggers onEntityAdded() and onEntityRemoved() events. Some elements like template
     // elements or ui component renderers might spawn new elements during this time.
-    super.update(world)
+    super.update(world);
 
     const nodes = world.storage(UiNode);
     const elems = world.storage(UiElement);
 
-    // Update all elements, excluding those that were spawned earlier in super.update().
+    // Update all elements, excluding those that were either newly spawned or destroyed
+    // in the the super.update() call above.
     for (const entity of this.entities) {
-      this.updateEntity(world, elems, nodes, entity);
+      if (world.alive(entity)) {
+        this.updateEntity(world, elems, nodes, entity);
+      }
     }
 
     // If new elements were spawned during this pass, run the system again. This makes
@@ -206,9 +210,8 @@ export class ElementManager extends ReactiveSystem {
     // queries, the new elements are also available to be processed by subsequent
     // systems, like the layout update.
     if (this.document.invalid) {
-      // Trigger re-sync for entity queries, making the newly spawned entities available
-      // to this system.
-      world.queries.sync(world.changes);
+      // Trigger world update to re-synchronize the systems entity query with changes above.
+      world.update();
 
       this.document.invalid = false;
       this.update(world);

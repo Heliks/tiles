@@ -36,6 +36,15 @@ export class EventLifecycle {
       : this.setup(node);
   }
 
+  /** Unsubscribes the element that is owned by the given `node` from the OnEvent lifecycle. */
+  public unsubscribe(node: UiNode): void {
+    const subscriber = this.interactions.get(node);
+
+    if (subscriber) {
+      node.onInteract.unsubscribe(subscriber);
+    }
+  }
+
   public trigger(world: World, node: UiNode, element: Element): void {
     const viewRef = element.getContext();
 

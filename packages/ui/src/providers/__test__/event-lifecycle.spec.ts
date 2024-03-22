@@ -64,4 +64,14 @@ describe('EventLifecycle', () => {
     });
   });
 
+  it('should unsubscribe lifecycle subscriber from the nodes event queue', () => {
+    const node = new UiNode();
+    const subscriber = service.subscriber(node);
+
+    node.onInteract.unsubscribe = jest.fn();
+
+    service.unsubscribe(node);
+
+    expect(node.onInteract.unsubscribe).toHaveBeenCalledWith(subscriber);
+  });
 });
