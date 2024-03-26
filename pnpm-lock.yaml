@@ -257,6 +257,30 @@ importers:
         specifier: ^4.7.4
         version: 4.8.3
 
+  packages/ui-components:
+    devDependencies:
+      '@heliks/tiles-assets':
+        specifier: workspace:^
+        version: link:../assets
+      '@heliks/tiles-engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@heliks/tiles-pixi':
+        specifier: workspace:^
+        version: link:../pixi
+      '@heliks/tiles-ui':
+        specifier: workspace:^
+        version: link:../ui
+      '@types/node':
+        specifier: 20.11.22
+        version: 20.11.22
+      pixi.js:
+        specifier: ^5.3.3
+        version: 5.3.3
+      typescript:
+        specifier: ^4.7.4
+        version: 4.8.3
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:

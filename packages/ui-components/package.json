@@ -1,0 +1,33 @@
+{
+  "name": "@heliks/tiles-ui-components",
+  "version": "0.0.1-rc6",
+  "description": "UI Component framework",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
+  },
+  "peerDependencies": {
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-ui": "workspace:^",
+    "pixi.js": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.22",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-ui": "workspace:^",
+    "typescript": "^4.7.4",
+    "pixi.js": "^5.3.3"
+  }
+}

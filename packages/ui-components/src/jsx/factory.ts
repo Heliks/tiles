@@ -1,0 +1,77 @@
+import { Type } from '@heliks/tiles-engine';
+import { Style } from '@heliks/tiles-ui';
+import { UiComponent } from '../ui-component';
+import { Attributes, Node } from './node';
+
+
+/** Statically compiled params that will be passed into the {@link jsx} factory. */
+type NodeParams = Attributes & {
+  children?: Node | Node[];
+}
+
+declare global {
+  namespace JSX {
+    /** Definition for JSX nodes that are tags. <div>, <span>, etc. */
+    type Element = Node<UiComponent>;
+
+    /** Interface for JSX nodes that are components. */
+    interface Component extends UiComponent {}
+
+    /** Property in 'props' that will contain the nodes children. */
+    interface ElementChildrenAttribute {
+      children: Node[];
+    }
+
+    /** Common attributes present on all elements and components. */
+    interface IntrinsicAttributes {
+      readonly style?: Partial<Style>;
+
+      [key: string]: any
+    }
+
+    /** Common attributes present on all components.*/
+    interface IntrinsicClassAttributes<C> {}
+
+    /** Available HTML elements. <div>, <span>, etc.  */
+    interface IntrinsicElements {
+      [key: string]: IntrinsicAttributes
+    }
+  }
+}
+
+/**
+ * Fallback object for empty attributes. Attributes are readonly, therefore, this can
+ * be re-used by all tags without attributes.
+ */
+const EMPTY_ATTRIBUTES: Attributes = {};
+
+/**
+ * Fallback object for empty children. Children are readonly, therefore, this can
+ * be re-used by all tags without children.
+ */
+const EMPTY_CHILDREN: readonly Node[] = [];
+
+/** @internal */
+export function getChildren(params: NodeParams): readonly Node[] {
+  if (params.children) {
+    return Array.isArray(params.children) ? params.children : [ params.children ];
+  }
+
+  return EMPTY_CHILDREN;
+}
+
+/**
+ * Implementation of the JSX factory.
+ * @see https://www.typescriptlang.org/docs/handbook/jsx.html
+ */
+export function jsx(tag: string | Type<UiComponent>, params: NodeParams): Node {
+  return {
+    attributes: params ?? EMPTY_ATTRIBUTES,
+    children: getChildren(params),
+    tag
+  }
+}
+
+// React exposes "jsxs" as a variant to "take advantage of static children", but doesn't
+// actually do anything with it. We do the same and simply re-export "jsx" as "jsxs".
+export { jsx as jsxs };
