@@ -27,8 +27,10 @@ export enum UiNodeInteraction {
  * If this node is a child of another node, the alignment is always inherited from the
  * parent, which means that it's not possible to render a child on screen while its
  * parent is rendered in the world.
+ *
+ * - `S`: Stylesheet type passed into the node.
  */
-export class UiNode {
+export class UiNode<S extends Style = Style> {
 
   /**
    * Container where the display objects of ui nodes that are children of this root
@@ -70,14 +72,14 @@ export class UiNode {
   public pivot: Pivot = PivotPreset.TOP_LEFT;
 
   /** The stylesheet that is applied to this node. */
-  public readonly style: Style;
+  public readonly style: S;
 
   /**
    * @param style (optional) Style properties that should be applied to the node layout.
    */
-  constructor(style?: Partial<Style>) {
+  constructor(style?: Partial<S>) {
     this.layout = new Node(style);
-    this.style = this.layout.style;
+    this.style = this.layout.style as S;
   }
 
   /** Shows the container. */

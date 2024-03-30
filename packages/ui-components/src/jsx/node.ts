@@ -1,13 +1,15 @@
 import { Type } from '@heliks/tiles-engine';
-import { Style } from '@heliks/tiles-ui';
+import { Style } from '../style';
 
 
 export type Attributes = {
-  readonly style?: Style;
+  readonly style?: Partial<Style>;
   readonly [name: string]: unknown;
 }
 
 export type NodeTag<C> = string | Type<C>;
+
+export type NodeChildren<N> = readonly (N | string)[];
 
 export interface Node<C = unknown> {
 
@@ -40,10 +42,10 @@ export interface Node<C = unknown> {
   readonly attributes: Attributes;
 
   /**
-   * Contains all nodes that are children of this one. Children are additionally stored
-   * as {@link attributes} as the key `children`
+   * Contains all nodes and strings that are children of this node. Children are stored
+   * additionally as {@link attributes} as the key `children`.
    */
-  readonly children: readonly Node<C>[];
+  readonly children: readonly (Node<C> | string)[];
 
   /**
    * The tag used for this node. This is either a string or a constructor for the UI

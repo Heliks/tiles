@@ -3,7 +3,7 @@ import { UiNode } from '@heliks/tiles-ui';
 import { Element, ElementFactory } from '../element';
 
 
-@Element('div')
+@Element('span')
 export class Span implements ElementFactory {
 
   /** @inheritDoc */

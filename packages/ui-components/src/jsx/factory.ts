@@ -1,5 +1,5 @@
 import { Type } from '@heliks/tiles-engine';
-import { Style } from '@heliks/tiles-ui';
+import { Style } from '../style';
 import { UiComponent } from '../ui-component';
 import { Attributes, Node } from './node';
 
