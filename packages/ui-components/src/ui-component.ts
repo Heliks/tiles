@@ -7,6 +7,7 @@ import { Node } from './jsx';
  *
  * ## Lifecycle
  *
+ *
  * Ui components can implement {@link OnInit}.
  */
 export interface UiComponent {

@@ -7,7 +7,7 @@ import { TextStyle } from '../style';
 import { UiComponent } from '../ui-component';
 
 
-class NoopElement implements ElementFactory {
+class NoopFactory implements ElementFactory {
 
   /** @inheritDoc */
   public render(world: World): Entity {
@@ -38,7 +38,7 @@ describe('JsxRenderer', () => {
 
     registry = world
       .get(ElementRegistry)
-      .add('noop', new NoopElement());
+      .add('noop', new NoopFactory());
   });
 
   // Todo: Should move this functionality to Hierarchy resource at some point.

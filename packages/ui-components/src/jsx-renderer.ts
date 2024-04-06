@@ -13,6 +13,7 @@ import {
 } from '@heliks/tiles-ui';
 import { ElementRegistry } from './element';
 import { Node } from './jsx';
+import { setContextBindingsFromAttributes } from './renderer/context';
 import { Style, TextStyle } from './style';
 import { UiComponent } from './ui-component';
 
@@ -59,7 +60,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     this.instance = world.make(this.component);
   }
 
-  public static createText(world: World, parent: Entity, text: string, style?: TextStyle): Entity {
+  public static createText(world: World, text: string, style?: TextStyle): Entity {
     const element = new UiText(text);
 
     if (style) {
@@ -68,13 +69,14 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
 
     return world.insert(
       new UiNode(),
-      new UiElement(element),
-      new Parent(parent)
+      new UiElement(element)
     );
   }
 
   public foo(world: World, node: Node<UiComponent>, textStyle?: TextStyle): Entity {
     let entity;
+
+    console.log(node)
 
     if (typeof node.tag !== 'string') {
       entity = world.insert(
@@ -100,18 +102,23 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       Object.assign(uiNode.layout.style, node.attributes.style);
     }
 
+    if (world.storage(UiElement).has(entity)) {
+      setContextBindingsFromAttributes(world, entity, node.attributes);
+    }
+
+    // If the node declares its own text style, overwrite the inherited one. We will also
+    // pass down this new style from now on.
     if (uiNode.style.text) {
       textStyle = uiNode.style.text;
     }
 
-    // Produce children and attach them as children to the current node.
     for (const item of node.children) {
-      if (typeof item === 'string') {
-        JsxRenderer.createText(world, entity, item, textStyle);
-      }
-      else {
-        world.attach(this.foo(world, item, textStyle), new Parent(entity));
-      }
+      // If the child is another JSX node and not a text, recursively render it until
+      // we are at the bottom of the tree.
+      const child = typeof item !== 'string' ? this.foo(world, item, textStyle) : JsxRenderer.createText(world, item, textStyle);
+
+      // Attach the rendered node as a parent to all of its children.
+      world.attach(child, new Parent(entity));
     }
 
     return entity;
