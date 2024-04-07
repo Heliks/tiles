@@ -1,5 +1,5 @@
 import { Entity, World } from '@heliks/tiles-engine';
-import { UiElement } from '@heliks/tiles-ui';
+import { UiElement, UiNode } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx';
 
 
@@ -81,5 +81,27 @@ export function setContextBindingsFromAttributes(world: World, entity: Entity, a
     if (params) {
       setContextBinding(element, params[0], attributes[name], params[1]);
     }
+  }
+}
+
+/**
+ * Assigns the given JSX `attributes` to a UI `node`.
+ *
+ * Default attributes like `style` or `events` will be used as documented. Context
+ * bindings like `foo:value` will be applied only if the `owner` has a {@link UiElement}
+ * component. All other attributes are discarded.
+ */
+export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, attributes: Attributes): void {
+  // If node has the style attribute, assign it to the nodes original style.
+  if (attributes.style) {
+    Object.assign(node.layout.style, attributes.style);
+  }
+
+  if (attributes.events) {
+    node.interactive = true;
+  }
+
+  if (world.storage(UiElement).has(owner)) {
+    setContextBindingsFromAttributes(world, owner, attributes);
   }
 }

@@ -15,7 +15,7 @@ import {
 } from '@heliks/tiles-ui';
 import { TagRegistry, TagType } from './element';
 import { Node } from './jsx';
-import { setContextBindingsFromAttributes } from './renderer/context';
+import { assignJsxAttributes } from './renderer/attributes';
 import { Style, TextStyle } from './style';
 import { UiComponent } from './ui-component';
 
@@ -58,6 +58,8 @@ export function createUiNode(world: World, node: Node<UiComponent>): Entity {
     })
   );
 }
+
+
 
 /**
  * A {@link UiElement} that renders a {@link UiComponent} on the entity to which this
@@ -118,20 +120,14 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   }
 
 
+
   public foo(world: World, node: Node<UiComponent>, textStyle?: TextStyle): Entity {
     const entity = createUiNode(world, node);
 
     const nodes = world.storage<UiNode<Style>>(UiNode);
     const uiNode = nodes.get(entity);
 
-    // If node has the style attribute, assign it to the nodes original style.
-    if (node.attributes.style) {
-      Object.assign(uiNode.layout.style, node.attributes.style);
-    }
-
-    if (world.storage(UiElement).has(entity)) {
-      setContextBindingsFromAttributes(world, entity, node.attributes);
-    }
+    assignJsxAttributes(world, entity, uiNode, node.attributes);
 
     // If the node declares its own text style, overwrite the inherited one. We will also
     // pass down this new style from now on.

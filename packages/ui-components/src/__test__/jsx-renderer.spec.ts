@@ -38,7 +38,7 @@ describe('JsxRenderer', () => {
 
     registry = world
       .get(TagRegistry)
-      .add('noop', new NoopFactory());
+      .element('noop', new NoopFactory());
   });
 
   // Todo: Should move this functionality to Hierarchy resource at some point.
@@ -122,6 +122,7 @@ describe('JsxRenderer', () => {
     });
   });
 
+  // Todo: Idk, should prolly redo these tests as they depend too much on createText()
   describe('when rendering JSX node text children', () => {
     let renderer: JsxRenderer;
     let onCreateText: jest.SpyInstance;

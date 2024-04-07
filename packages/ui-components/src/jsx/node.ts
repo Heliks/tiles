@@ -2,9 +2,18 @@ import { Type } from '@heliks/tiles-engine';
 import { Style } from '../style';
 
 
+/** JSX node attributes. */
 export type Attributes = {
+
+  /** If set to `true`, this node will be able to capture events. */
+  readonly events?: boolean;
+
+  /** Style to apply to the node. */
   readonly style?: Partial<Style>;
+
+  /** Any other attribute. */
   readonly [name: string]: unknown;
+
 }
 
 export type NodeTag<C> = string | Type<C>;

@@ -1,9 +1,16 @@
-import { UiElement } from '@heliks/tiles-ui';
-import { AttributeContextBindingKeyword, setContextBinding } from '../context';
+import { Entity, runtime, World } from '@heliks/tiles-engine';
+import { UiElement, UiNode } from '@heliks/tiles-ui';
+import { assignJsxAttributes, AttributeContextBindingKeyword, setContextBinding } from '../attributes';
 import { NoopElement } from './noop-element';
 
 
-describe('context', () => {
+describe('attributes', () => {
+  let world: World;
+
+  beforeEach(() => {
+    world = runtime().build().world;
+  });
+
   describe('setContextBinding()', () => {
     let element: UiElement;
 
@@ -37,4 +44,36 @@ describe('context', () => {
       }).toThrow();
     });
   });
+
+  describe('assignJsxAttributes()', () => {
+    let entity: Entity;
+    let node: UiNode;
+
+    beforeEach(() => {
+      node = new UiNode();
+      entity = world.insert(node);
+    });
+
+    it('should apply "style" attribute to UI node stylesheet', () => {
+      const style = {
+        grow: 100,
+        shrink: 200
+      }
+
+      assignJsxAttributes(world, entity, node, {
+        style
+      })
+
+      expect(node.style).toMatchObject(style);
+    });
+
+    it.each([ true, false ])('should make UI node interactive when "events" attribute is set', result => {
+      assignJsxAttributes(world, entity, node, {
+        events: result
+      });
+
+      expect(node.interactive).toBe(result);
+    });
+  });
+
 });
