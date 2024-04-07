@@ -1,2 +1,2 @@
-export * from './element';
-export * from './element-registry';
+export * from './metadata';
+export * from './tag-registry';

@@ -1,4 +1,5 @@
-import { jsx, Node } from '../factory';
+import { jsx } from '../factory';
+import { Node } from '../node';
 
 
 function noop(tag: string): Node {
@@ -9,7 +10,7 @@ function noop(tag: string): Node {
   };
 }
 
-describe('formatChildren', () => {
+describe('jsx()', () => {
   it('should parse single child', () => {
     const node1 = noop('foo');
     const node2 = jsx('bar', { children: node1 });

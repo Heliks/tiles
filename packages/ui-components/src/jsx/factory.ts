@@ -29,6 +29,10 @@ declare global {
       [key: string]: any
     }
 
+    interface ElementAttributesProperty {
+      props: any;
+    }
+
     /** Common attributes present on all components.*/
     interface IntrinsicClassAttributes<C> {}
 

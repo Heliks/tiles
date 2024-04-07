@@ -2,6 +2,7 @@ import { Node } from './jsx';
 import { UiComponent } from './ui-component';
 
 
+export * from './element';
 export * from './jsx';
 export * from './style';
 

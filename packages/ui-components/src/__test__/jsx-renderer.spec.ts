@@ -1,6 +1,6 @@
-import { App, Entity, Hierarchy, Parent, runtime, TransformBundle, World } from '@heliks/tiles-engine';
+import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode, UiText } from '@heliks/tiles-ui';
-import { ElementFactory, ElementRegistry } from '../element';
+import { ElementFactory, TagRegistry } from '../element';
 import { Node } from '../jsx';
 import { JsxRenderer } from '../jsx-renderer';
 import { TextStyle } from '../style';
@@ -20,12 +20,12 @@ describe('JsxRenderer', () => {
   let app: App;
   let world: World;
   let hierarchy: Hierarchy;
-  let registry: ElementRegistry;
+  let registry: TagRegistry;
 
   beforeEach(() => {
     app = runtime()
       .bundle(new TransformBundle())
-      .provide(ElementRegistry)
+      .provide(TagRegistry)
       .build();
 
     app.start({
@@ -37,7 +37,7 @@ describe('JsxRenderer', () => {
     hierarchy = world.get(Hierarchy);
 
     registry = world
-      .get(ElementRegistry)
+      .get(TagRegistry)
       .add('noop', new NoopFactory());
   });
 
@@ -60,30 +60,22 @@ describe('JsxRenderer', () => {
     });
 
     it('should return an entity', () => {
-      expect(JsxRenderer.createText(world, root, '')).not.toBeUndefined();
+      expect(JsxRenderer.createText(world, '')).not.toBeUndefined();
     });
 
     it('should attach UiNode component to text entity', () => {
-      const entity = JsxRenderer.createText(world, root, '');
+      const entity = JsxRenderer.createText(world, '');
 
       expect(world.storage(UiNode).has(entity)).toBeTruthy();
     });
 
     it('should attach UiElement component with UiText element to text entity', () => {
-      const entity = JsxRenderer.createText(world, root, 'foobar');
+      const entity = JsxRenderer.createText(world, 'foobar');
       const element = world.storage(UiElement).get(entity);
 
       // Make sure the UiElement used by the text node is a UiText using "bar" as text.
       expect(element.instance).toBeInstanceOf(UiText);
       expect(element.instance.text).toBe('foobar');
-    });
-
-    it('should attach Parent component to text entity', () => {
-      const entity = JsxRenderer.createText(world, root, 'foobar');
-      const parent = world.storage(Parent).get(entity);
-
-      // Make sure the parent of the text entity is correct.
-      expect(parent.entity).toBe(root);
     });
   });
 
@@ -159,7 +151,7 @@ describe('JsxRenderer', () => {
       });
 
       // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][3];
+      const applied = onCreateText.mock.calls[0][2];
 
       expect(applied).toBe(style);
     });
@@ -192,11 +184,9 @@ describe('JsxRenderer', () => {
       });
 
       // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][3];
+      const applied = onCreateText.mock.calls[0][2];
 
       expect(applied).toBe(style);
     });
   });
-
-
 });
