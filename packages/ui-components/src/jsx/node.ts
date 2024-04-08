@@ -5,6 +5,12 @@ import { Style } from '../style';
 /** JSX node attributes. */
 export type Attributes = {
 
+  /**
+   * When set, a {@link Data} component is assigned to the owner of this node, using the
+   * value of this attribute as data.
+   */
+  readonly data?: unknown;
+
   /** If set to `true`, this node will be able to capture events. */
   readonly events?: boolean;
 

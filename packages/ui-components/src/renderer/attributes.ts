@@ -1,23 +1,28 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx';
+import { Data } from './data';
+import { kebabToCamel } from './utils';
 
 
 /**
- * Keywords in JSX attribute namespaces that declare how the value of the attribute
- * should be bound to the JSX elements context, e.g. `<div name:keyword></div>`.
+ * Declares all available keywords in JSX attribute namespaces that define how its value
+ * is bound to the context of the nodes {@link UiElement} component.
+ *
+ * ```jsx
+ *  <div foo:keyword></div>
+ * ```
  */
 export enum AttributeContextBindingKeyword {
 
   /**
-   * Value passed into the attribute is treated as the name of the property of the local
-   * component that is bound to an @Input() on the JSX element.
+   * Value passed into the attribute is treated as the name of the host property that
+   * is bound to a local `@Input()`.
    */
   OneWay = 'bind',
 
   /**
-   * Value passed into the attribute is directly bound to an @Input() on the JSX
-   * element.
+   * Value passed into the attribute is directly bound to a local `@Input`.
    */
   Value = 'value'
 
@@ -31,13 +36,17 @@ export type AttributeContextBindingParams = [name: string, type: AttributeContex
 
 /**
  * Extracts {@link AttributeContextBindingParams} from the given attribute `name`. The
- * name should be in a namespace format, e.g., `name:namespace`. Returns `undefined` if
- * no params can be extracted.
+ * name should be in a namespace format, e.g., `name:namespace`. If the attribute name
+ * is in a kebab case format (`foo-bar:namespace`), it will be converted into camel
+ * case (`fooBar:namespace`). Returns `undefined` if no params can be extracted.
  */
 export function getAttributeContextBindingParams(name: string): AttributeContextBindingParams | undefined {
   const binding = name.split(':') as AttributeContextBindingParams;
 
   if (binding.length === 2) {
+    // Convert name segment into camelCase.
+    binding[0] = kebabToCamel(binding[0]);
+
     return binding;
   }
 }
@@ -99,6 +108,11 @@ export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, a
 
   if (attributes.events) {
     node.interactive = true;
+  }
+
+  // Hard check for `undefined` here because `false` and `0` is valid assignable data.
+  if (attributes.data !== undefined) {
+    world.attach(owner, new Data(attributes.data));
   }
 
   if (world.storage(UiElement).has(owner)) {

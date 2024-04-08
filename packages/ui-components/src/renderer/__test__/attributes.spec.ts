@@ -1,6 +1,11 @@
 import { Entity, runtime, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
-import { assignJsxAttributes, AttributeContextBindingKeyword, setContextBinding } from '../attributes';
+import {
+  assignJsxAttributes,
+  AttributeContextBindingKeyword,
+  getAttributeContextBindingParams,
+  setContextBinding
+} from '../attributes';
 import { NoopElement } from './noop-element';
 
 
@@ -9,6 +14,25 @@ describe('attributes', () => {
 
   beforeEach(() => {
     world = runtime().build().world;
+  });
+
+  describe('getAttributeContextBindingParams()', () => {
+    it.each([
+      {
+        name: 'foo:bar',
+        expected: ['foo', 'bar']
+      },
+      { 
+        name: 'foobar',
+        expected: undefined
+      },
+      {
+        name: 'foo-bar:foobar',
+        expected: ['fooBar', 'foobar']
+      },
+    ])('should extract context params from attribute name: $name', data => {
+      expect(getAttributeContextBindingParams(data.name)).toEqual(data.expected)
+    });
   });
 
   describe('setContextBinding()', () => {
@@ -75,5 +99,4 @@ describe('attributes', () => {
       expect(node.interactive).toBe(result);
     });
   });
-
 });
