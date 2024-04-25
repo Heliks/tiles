@@ -2,27 +2,23 @@ import { getInputs, getOutputs } from '../params';
 
 
 /**
- * Represents a reference to a context target `C` with which other references can share
- * data with.
+ * A reference to a context with which other context references can share data with.
  *
  * - `C`: The referenced context.
- * - `K`: Valid context keys that can be set to be inputs or outputs.
  */
 export class ContextRef<C extends object = object> {
 
   /**
-   * Contains all keys of the referenced {@link context} that are treated as inputs.
-   *
-   * Inputs are properties data can be received from a parent reference. The same key
-   * can't be an input and output at the same time.
+   * Keys of the referenced {@link context} that are inputs. Input properties receive
+   * data from their host context. A property can't be an input and an output at the
+   * same time.
    */
   public readonly inputs = new Set<string>();
 
   /**
-   * Contains all keys of the referenced {@link context} that are treated as outputs.
-   *
-   * Outputs are properties on which data can be sent upwards to a parent reference. The
-   * same key can't be an input and output at the same time.
+   * Keys of the referenced {@link context} that are outputs. Output properties send data
+   * upstream to their host context. A property can't be an input and an output at the
+   * same time.
    */
   public readonly outputs = new Set<string>();
 

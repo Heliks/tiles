@@ -9,38 +9,55 @@ import {
   OnInit,
   Rect,
   Size,
+  TemplateElement,
+  TemplateRenderer,
   UiElement,
   UiNode,
   UiText
 } from '@heliks/tiles-ui';
 import { TagRegistry, TagType } from './element';
-import { Node } from './jsx';
+import { isJsxNode, JsxNode } from './jsx';
 import { assignJsxAttributes } from './renderer/attributes';
 import { Style, TextStyle } from './style';
 import { UiComponent } from './ui-component';
 
 
+/** Template renderer for conditional JSX nodes that are elements. */
+export class JsxTemplate implements TemplateRenderer {
+
+  /**
+   * @param root The root JSX node that is being rendered as template.
+   */
+  constructor(public readonly root: JsxNode) {}
+
+  /** @inheritDoc */
+  public render(world: World, owner: Entity): Entity {
+    const nodes = world.storage(UiNode);
+    const template = JsxRenderer.render(world, this.root, undefined, false);
+
+    // The parent entity for the template is the parent of the owner of the template.
+    const parent = world.storage(Parent).get(owner).entity;
+    const parentNode = nodes.get(parent);
+
+    // The position in the layout tree matters. The layout node of the template is
+    // inserted at the same location as the template element.
+    parentNode.layout.appendBefore(
+      nodes.get(owner).layout,
+      nodes.get(template).layout
+    );
+    
+    world.attach(template, new Parent(parent));
+
+    return template;
+  }
+
+}
+
 /**
- * Creates an entity from the given JSX `node`. The entity that is being returned must
- * always contain a {@link UiNode} component. This is only supported for nodes that use
- * a tag name. Class or function components are not supported.
  *
- * The tag must be known to the {@link TagRegistry}.
- *
- * @param world World in which the created entity will be spawned.
- * @param node The JSX node from which the entity should be created.
  */
-export function createUiNode(world: World, node: Node<UiComponent>): Entity {
-  if (typeof node.tag !== 'string') {
-    console.error(node)
-    throw new Error('Class and function components are not supported. Use the lowercase tag format instead.');
-  }
-
+function createJsxEntity(world: World, node: JsxNode): Entity {
   const entry = world.get(TagRegistry).entry(node.tag);
-
-  if (! entry) {
-    throw new Error(`Invalid tag <${node.tag}>`);
-  }
 
   if (entry.type === TagType.Element) {
     return entry.factory.render(world, node.attributes);
@@ -58,6 +75,60 @@ export function createUiNode(world: World, node: Node<UiComponent>): Entity {
     })
   );
 }
+
+/**
+ * Wraps the given JSX `node` in a {@link TemplateElement template} and binds the
+ * template {@link TemplateElement.expression} to the given `host` property.
+ *
+ * @param world Entity world.
+ * @param host The host property to which the template expression will be bound.
+ * @param node JSX node that should be wrapped into a template.
+ *
+ * @see JsxTemplate
+ */
+export function createTemplateFromJsxNode(world: World, node: JsxNode, host: string): Entity {
+  const element = new UiElement(new TemplateElement(
+    new JsxTemplate(node)
+  ));
+
+  const uiNode = new UiNode();
+  const entity = world.insert(uiNode, element);
+
+  element.bind('expression', host);
+
+  assignJsxAttributes(world, entity, uiNode, node.attributes);
+
+  return entity
+}
+
+/**
+ * Converts the given JSX `child` into a string.
+ *
+ * - `null` will be converted into `'null'`.
+ * - Objects are parsed with `JSON.stringify`.
+ * - Everything else is converted with `toString()`.
+ */
+export function stringifyUnknownJsxChild(child: unknown): string {
+  if (child === null) {
+    return 'null';
+  }
+
+  if (typeof child === 'object') {
+    return JSON.stringify(child);
+  }
+
+  return child!.toString();
+}
+
+/** Returns the {@link UiComponent} instance of the given entity. */
+export function getUiComponent<C extends UiComponent>(world: World, entity: Entity): C {
+  return world
+    .storage(UiElement<object, JsxRenderer<C>>)
+    .get(entity)
+    .instance
+    .instance
+}
+
 
 
 
@@ -96,14 +167,64 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
    */
   constructor(public readonly component: Type<T>) {}
 
-  /** @inheritDoc */
-  public getContext(): T {
-    return this.instance;
-  }
+  /**
+   * Renders the given JSX `node` and returns its entity.
+   *
+   * The entity always contains a {@link UiNode} component and optionally a {@link UiElement}
+   * component. If the node is {@link Attributes.if conditional}, it will be wrapped in
+   * a {@link TemplateElement template}.
+   *
+   * The nodes' tag must be known to the {@link TagRegistry}.
+   *
+   * @param world World in which the created entity will be spawned.
+   * @param node The JSX node from which the entity should be created.
+   * @param textStyle Styling used for text inside of this node.
+   * @param templates If set to `false`, `node` will be rendered, even if it is conditional.
+   */
+  public static render(world: World, node: JsxNode, textStyle?: TextStyle, templates = true): Entity {
+    if (node.attributes.if && templates) {
+      return createTemplateFromJsxNode(world, node, node.attributes.if);
+    }
 
-  /** @inheritDoc */
-  public onBeforeInit(world: World): void {
-    this.instance = world.make(this.component);
+    const entity = createJsxEntity(world, node);
+    const uiNode = world.storage<UiNode<Style>>(UiNode).get(entity);
+
+    assignJsxAttributes(world, entity, uiNode, node.attributes);
+
+    // If the node declares its own text style, overwrite the inherited one. We will also
+    // pass down this new style from now on.
+    if (uiNode.style.text) {
+      textStyle = uiNode.style.text;
+    }
+
+    for (const _item of node.children) {
+      if (_item === undefined) {
+        continue;
+      }
+
+      const item = typeof _item === 'function' ? _item() : _item;
+
+      let child;
+
+      if (isJsxNode(item)) {
+        child = JsxRenderer.render(world, item, textStyle, true);
+      }
+      else {
+        const text = stringifyUnknownJsxChild(item);
+
+        // Don't create text nodes for empty strings.
+        if (text.trim().length === 0) {
+          continue;
+        }
+
+        child = JsxRenderer.createText(world, text, textStyle);
+      }
+
+      // Attach the rendered node as a parent to all of its children.
+      world.attach(child, new Parent(entity));
+    }
+
+    return entity;
   }
 
   public static createText(world: World, text: string, style?: TextStyle): Entity {
@@ -119,78 +240,26 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     );
   }
 
+  /** @inheritDoc */
+  public getContext(): T {
+    return this.instance;
+  }
 
-
-  public foo(world: World, node: Node<UiComponent>, textStyle?: TextStyle): Entity {
-    const entity = createUiNode(world, node);
-
-    const nodes = world.storage<UiNode<Style>>(UiNode);
-    const uiNode = nodes.get(entity);
-
-    assignJsxAttributes(world, entity, uiNode, node.attributes);
-
-    // If the node declares its own text style, overwrite the inherited one. We will also
-    // pass down this new style from now on.
-    if (uiNode.style.text) {
-      textStyle = uiNode.style.text;
-    }
-
-    for (const item of node.children) {
-      // If the child is another JSX node and not a text, recursively render it until
-      // we are at the bottom of the tree.
-      const child = typeof item !== 'string' ? this.foo(world, item, textStyle) : JsxRenderer.createText(world, item, textStyle);
-
-      // Attach the rendered node as a parent to all of its children.
-      world.attach(child, new Parent(entity));
-    }
-
-    return entity;
+  /** @inheritDoc */
+  public onBeforeInit(world: World): void {
+    this.instance = world.make(this.component);
   }
 
   public render(world: World, parent: Entity): void {
-    const node = this.instance.render(world);
+    if (this.root !== undefined) {
+      throw new Error('Component is already rendered and must be destroyed first.')
+    }
 
-    const entity = this.foo(world, node);
-
-    console.log('GOT ENTITY', entity)
+    const entity = JsxRenderer.render(world, this.instance.render(world));
 
     world.attach(entity, new Parent(parent));
 
-
-
-
-    /*
-    let renderer = this.registry.tag(tag.tag);
-
-    if (! renderer) {
-      throw new Error('Invalid renderer');
-    }
-
-    const nodes = world.storage(UiNode);
-    const entity = renderer.render(world, tag.attributes);
-
-    console.log('Attributes', tag.attributes)
-
-    // If node has the style attribute, assign it to the nodes original style.
-    if (tag.attributes.style) {
-      Object.assign(nodes.get(entity).layout.style, tag.attributes.style);
-    }
-
-    /*
-    const t = (0, jsx_runtime_1.jsx)("fill", { children: (0, jsx_runtime_1.jsx)("slice-plane", { spritesheet: this.spritesheet, sprite: "window_frame2", sides: "32", style: {
-          direction: tiles_ui_1.FlexDirection.Column,
-          padding: new tiles_ui_1.Sides(10, 10, 15, 10),
-          size: new tiles_ui_1.Rect(tiles_ui_1.Size.percent(1), tiles_ui_1.Size.percent(1))
-        } }) });
-
-    // Produce children.
-    for (const item of tag.children) {
-      world.attach(this.render(world, item), new Parent(entity));
-    }
-
-    return entity;
-
-     */
+    this.root = entity;
   }
 
   /** @inheritDoc */

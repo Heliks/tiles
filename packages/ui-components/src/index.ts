@@ -1,4 +1,4 @@
-import { Node } from './jsx';
+import { JsxNode } from './jsx';
 import { UiComponent } from './ui-component';
 
 
@@ -14,4 +14,4 @@ export * from './ui-components-bundle';
 
 
 /** Alias type for the root node returned by a {@link UiComponent}. */
-export type ComponentTemplate = Node<UiComponent>;
+export type ComponentTemplate = JsxNode;

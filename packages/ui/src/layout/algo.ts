@@ -215,6 +215,8 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
 
   const isRow = node.constants.isRow;
 
+  // console.log('DISTRIBUTE SPACE', node.id, node.constants.size, node.constants.hypotheticalInnerSize, space)
+
   for (const line of lines) {
     const freeMain = space.main(isRow) - line.size.main(isRow);
     const availableCrossSpace = space.cross(isRow);
@@ -579,10 +581,8 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
   // Don't perform layout if we are only interested in measuring the node.
   if (! measure) {
     // 11. Determine the used cross size of each flex item.
+    // 12. This is step is covered in 16.
     determineItemCrossSizes(node);
-
-    // 12. Distribute any remaining free space.
-    distributeAvailableSpace(node, lines, node.size);
   }
 
   // 15. Determine the flex container’s used cross size:
@@ -595,12 +595,14 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
     node.constants.size.setCross(node.constants.isRow, cross);
   }
 
-  // 16. Align all flex lines per align-content.
-  // This step is covered in 12.
-
   // Safety: At this point both width and height should be determined.
   node.size.width = node.constants.size.width as number;
   node.size.height = node.constants.size.height as number;
+
+  // 16. Align all flex lines per align-content.
+  if (! measure) {
+    distributeAvailableSpace(node, lines, node.size);
+  }
 
   calculateOuterNodeSize(node);
 

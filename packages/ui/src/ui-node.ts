@@ -39,6 +39,12 @@ export class UiNode<S extends Style = Style> {
   public readonly container = new Container();
 
   /**
+   * Specifies a name for this node so that it can be referenced in code. This is
+   * treated similarly to the HTML `name` attribute.
+   */
+  public name?: string;
+
+  /**
    * Contains the current user interaction with this UI element. If interactions are
    * disabled the interaction will always be `Interaction.None`.
    *

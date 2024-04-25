@@ -2,14 +2,12 @@ import { Binding } from './binding';
 import { ContextRef } from './context-ref';
 
 
-/**
- * Passes a fixed value into the local view ref.
- */
+/** Passes a static value into the local {@link ContextRef context}. */
 export class PassByValue implements Binding {
 
   /**
-   * @param local Key of the local view ref `L` into which {@link value} is injected.
-   * @param value Value to inject into the {@link local} view ref.
+   * @param local Local context key.
+   * @param value Value to inject into the {@link local} context.
    */
   constructor(public readonly local: string, public readonly value: unknown) {}
 

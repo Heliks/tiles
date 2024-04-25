@@ -73,9 +73,18 @@ export class TagRegistry {
     return this;
   }
 
-  /** Returns the {@link TagRegistryEntry} that matches the given `tag` name. */
-  public entry(tag: string): TagRegistryEntry | undefined {
-    return this.entries.get(tag);
+  /**
+   * Returns the {@link TagRegistryEntry} that matches the given `tag` name. Throws an
+   * error if it does not exist.
+   */
+  public entry(tag: string): TagRegistryEntry {
+    const entry = this.entries.get(tag);
+
+    if (! entry) {
+      throw new Error(`Invalid tag <${tag}>`);
+    }
+
+    return entry;
   }
 
 }

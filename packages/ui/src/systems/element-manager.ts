@@ -4,6 +4,7 @@ import { canDestroy, canInit, canSetupBeforeInit } from '../lifecycle';
 import { Document, EventLifecycle } from '../providers';
 import { UiElement } from '../ui-element';
 import { UiNode } from '../ui-node';
+import { MaintainLayouts } from './maintain-layouts';
 
 
 /**
@@ -34,8 +35,13 @@ export class ElementManager extends ReactiveSystem {
   /**
    * @param document
    * @param eventLifecycle
+   * @param layouts MaintainLayouts
    */
-  constructor(private readonly document: Document, private readonly eventLifecycle: EventLifecycle) {
+  constructor(
+    private readonly document: Document,
+    private readonly eventLifecycle: EventLifecycle,
+    private readonly layouts: MaintainLayouts
+  ) {
     super();
   }
 
@@ -212,6 +218,7 @@ export class ElementManager extends ReactiveSystem {
     if (this.document.invalid) {
       // Trigger world update to re-synchronize the systems entity query with changes above.
       world.update();
+      this.layouts.update(world);
 
       this.document.invalid = false;
       this.update(world);

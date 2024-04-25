@@ -6,15 +6,26 @@ import { Document } from '../providers';
 
 
 export interface TemplateRenderer {
-  render(world: World): Entity;
+
+  /**
+   * Creates the entity hierarchy of UI nodes that make up the rendered template.
+   *
+   * @param world Entity world.
+   * @param owner The entity that owns the {@link TemplateElement} that wants to
+   *  render this template.
+   */
+  render(world: World, owner: Entity): Entity;
+
 }
 
 /**
  * Templates will be rendered as long as their {@link expression} evaluates to `true`,
  * and hidden if not. Hidden templates are removed from the layout tree, which results
  * in everything in the tree below the template node being destroyed.
+ *
+ * - `R`: Type of {@link TemplateRenderer} used to render the template.
  */
-export class TemplateElement implements Element, OnInit, OnDestroy {
+export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> implements Element, OnInit, OnDestroy {
 
   /** Contains the root entity of the rendered template. */
   public root?: Entity;
@@ -43,19 +54,19 @@ export class TemplateElement implements Element, OnInit, OnDestroy {
     return this._expression;
   }
 
-  constructor(public readonly renderer: TemplateRenderer) {}
+  constructor(public readonly renderer: R) {}
 
   /** @inheritDoc */
   public getContext(): object {
     return this;
   }
 
-  public render(world: World): void {
+  public render(world: World, entity: Entity): void {
     if (this.root !== undefined) {
       throw new Error('Component is already rendered.');
     }
 
-    this.root = this.renderer.render(world);
+    this.root = this.renderer.render(world, entity);
   }
 
   public destroy(world: World): void {
@@ -68,10 +79,10 @@ export class TemplateElement implements Element, OnInit, OnDestroy {
     }
   }
 
-  public apply(world: World): void {
+  public apply(world: World, entity: Entity): void {
     if (this._changed) {
       if (this._expression) {
-        this.render(world);
+        this.render(world, entity);
       }
       else {
         this.destroy(world);
@@ -85,8 +96,8 @@ export class TemplateElement implements Element, OnInit, OnDestroy {
   }
 
   /** @inheritDoc */
-  public onInit(world: World): void {
-    this.apply(world);
+  public onInit(world: World, entity: Entity): void {
+    this.apply(world, entity);
   }
 
   /** @inheritDoc */
@@ -95,8 +106,8 @@ export class TemplateElement implements Element, OnInit, OnDestroy {
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
-    this.apply(world);
+  public update(world: World, entity: Entity): void {
+    this.apply(world, entity);
   }
 
 }

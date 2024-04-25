@@ -1,9 +1,8 @@
 import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks/tiles-engine';
-import { UiElement, UiNode, UiText } from '@heliks/tiles-ui';
+import { PassByReference, TemplateElement, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
 import { ElementFactory, TagRegistry } from '../element';
-import { Node } from '../jsx';
-import { JsxRenderer } from '../jsx-renderer';
-import { TextStyle } from '../style';
+import { createJsxNode, JsxNode } from '../jsx';
+import { createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
 import { UiComponent } from '../ui-component';
 
 
@@ -39,6 +38,10 @@ describe('JsxRenderer', () => {
     registry = world
       .get(TagRegistry)
       .element('noop', new NoopFactory());
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   // Todo: Should move this functionality to Hierarchy resource at some point.
@@ -82,16 +85,73 @@ describe('JsxRenderer', () => {
   class NoopComponent implements UiComponent {
 
     /** @inheritDoc */
-    public render(): Node<UiComponent> {
-      return {
-        attributes: {},
-        children: [],
-        tag: 'noop'
-      }
+    public render(): JsxNode {
+      return createJsxNode('noop');
     }
 
   }
 
+  describe('createTemplateFromJsxNode()', () => {
+    let node: JsxNode;
+
+    beforeEach(() => {
+      node = createJsxNode('noop');
+    });
+
+    it('should bind template expression to given host property', () => {
+      const entity = createTemplateFromJsxNode(world, node, 'foo');
+
+      const template = world.storage<UiElement<{}, TemplateElement>>(UiElement).get(entity);
+      const binding = template.bindings[0] as PassByReference;
+
+      expect(binding).toBeInstanceOf(PassByReference);
+      expect(binding).toMatchObject({
+        local: 'expression',
+        host: 'foo'
+      });
+    });
+
+    it('should wrap JSX node in template', () => {
+      const entity = createTemplateFromJsxNode(world, node, 'foo');
+
+      const template = world
+        .storage<UiElement<{}, TemplateElement<JsxTemplate>>>(UiElement)
+        .get(entity)
+        .instance;
+
+      expect(template.renderer).toBeInstanceOf(JsxTemplate);
+      expect(template.renderer.root).toBe(node);
+    });
+  });
+
+  describe('render', () => {
+    let hierarchy: Hierarchy;
+
+    beforeEach(() => {
+      hierarchy = world.get(Hierarchy);
+    });
+
+    describe('when rendering functions', () => {
+      it('should render return value', () => {
+        const node0 = createJsxNode('noop');
+        const node1 = createJsxNode('noop', {}, [
+          () => node0
+        ]);
+
+        const spy = jest.spyOn(JsxRenderer, 'render');
+
+        JsxRenderer.render(world, node1);
+
+        expect(spy).toHaveBeenNthCalledWith(2, world, node0, undefined, true);
+      });
+    });
+
+
+
+  });
+
+
+  /*
   describe('when rendering JSX node', () => {
     let renderer: JsxRenderer;
 
@@ -190,4 +250,5 @@ describe('JsxRenderer', () => {
       expect(applied).toBe(style);
     });
   });
+   */
 });

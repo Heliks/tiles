@@ -1,2 +1,2 @@
 export * from './factory';
-export * from './node';
+export * from './jsx-node';

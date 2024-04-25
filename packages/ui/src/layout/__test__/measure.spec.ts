@@ -40,7 +40,7 @@ describe('compute', () => {
       root = new Node();
       node = new Node();
 
-      root.add(node);
+      root.append(node);
     });
 
     it('should be determined from definite flex-basis', () => {
@@ -107,7 +107,7 @@ describe('compute', () => {
       });
 
       node0
-        .add(
+        .append(
           new Node({
             size: new Rect<Size>(
               Size.px(20),
@@ -115,7 +115,7 @@ describe('compute', () => {
             )
           })
         )
-        .add(
+        .append(
           new Node({
             size: new Rect<Size>(
               Size.px(20),
@@ -141,7 +141,7 @@ describe('compute', () => {
         )
       });
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -162,7 +162,7 @@ describe('compute', () => {
         )
       });
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -185,7 +185,7 @@ describe('compute', () => {
         )
       });
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -208,7 +208,7 @@ describe('compute', () => {
         )
       });
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -228,7 +228,7 @@ describe('compute', () => {
         )
       });
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -249,8 +249,8 @@ describe('compute', () => {
         size: SIZE_HALF.clone()
       });
 
-      node0.add(node1);
-      node1.add(node2);
+      node0.append(node1);
+      node1.append(node2);
 
       compute(node0, new Rect(180, 320));
 
@@ -279,7 +279,7 @@ describe('compute', () => {
       });
 
       node1
-        .add(
+        .append(
           new Node({
             size: new Rect<Size>(
               Size.px(15),
@@ -287,7 +287,7 @@ describe('compute', () => {
             )
           })
         )
-        .add(
+        .append(
           new Node({
             size: new Rect<Size>(
               Size.px(15),
@@ -296,7 +296,7 @@ describe('compute', () => {
           })
         );
 
-      node0.add(node1);
+      node0.append(node1);
 
       compute(node0, space);
 
@@ -333,15 +333,14 @@ describe('compute', () => {
       const node2 = new Node({ grow: 3 });
 
       node0
-        .add(node1)
-        .add(node2);
+        .append(node1)
+        .append(node2);
 
       compute(node0, space);
 
       expect(node1.size).toMatchObject(data.node1);
       expect(node2.size).toMatchObject(data.node2);
     });
-
 
     it.each([
       {
@@ -372,8 +371,8 @@ describe('compute', () => {
       const node2 = new Node({ grow: 3, size });
 
       node0
-        .add(node1)
-        .add(node2);
+        .append(node1)
+        .append(node2);
 
       compute(node0, space);
 
@@ -400,7 +399,7 @@ describe('compute', () => {
         size: SIZE_FILL.clone()
       });
 
-      node0.add(node1)
+      node0.append(node1)
 
       // Add a fixed node next to node0 to make sure that it grew properly.
       const node2 = new Node({
@@ -415,8 +414,8 @@ describe('compute', () => {
         padding: new Sides(10, 10, 10, 10),
         size: SIZE_FILL.clone()
       })
-        .add(node0)
-        .add(node2);
+        .append(node0)
+        .append(node2);
 
       compute(node3, space);
 
@@ -427,6 +426,7 @@ describe('compute', () => {
       expect(node2.size).toMatchObject(new Rect(30, 25));
       expect(node3.size).toMatchObject(new Rect(100, 100));
     });
+
   });
 })
 

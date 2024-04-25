@@ -1,25 +1,25 @@
 import { Type } from '@heliks/tiles-engine';
 import { Style } from '../style';
 import { UiComponent } from '../ui-component';
-import { Attributes, Node } from './node';
+import { Attributes, JSX_NODE_MARKER, JsxNode } from './jsx-node';
 
 
 /** Statically compiled params that will be passed into the {@link jsx} factory. */
 type NodeParams = Attributes & {
-  children?: Node | Node[];
+  children?: JsxNode | JsxNode[];
 }
 
 declare global {
   namespace JSX {
     /** Definition for JSX nodes that are tags. <div>, <span>, etc. */
-    type Element = Node<UiComponent>;
+    type Element = JsxNode;
 
     /** Interface for JSX nodes that are components. */
     interface Component extends UiComponent {}
 
     /** Property in 'props' that will contain the nodes children. */
     interface ElementChildrenAttribute {
-      children: Node[];
+      children: JsxNode[];
     }
 
     /** Common attributes present on all elements and components. */
@@ -53,10 +53,10 @@ const EMPTY_ATTRIBUTES: Attributes = {};
  * Fallback object for empty children. Children are readonly, therefore, this can
  * be re-used by all tags without children.
  */
-const EMPTY_CHILDREN: readonly Node[] = [];
+const EMPTY_CHILDREN: readonly JsxNode[] = [];
 
 /** @internal */
-export function getChildren(params: NodeParams): readonly Node[] {
+export function getChildren(params: NodeParams): readonly JsxNode[] {
   if (params.children) {
     return Array.isArray(params.children) ? params.children : [ params.children ];
   }
@@ -68,8 +68,13 @@ export function getChildren(params: NodeParams): readonly Node[] {
  * Implementation of the JSX factory.
  * @see https://www.typescriptlang.org/docs/handbook/jsx.html
  */
-export function jsx(tag: string | Type<UiComponent>, params: NodeParams): Node {
+export function jsx(tag: string | Type<UiComponent>, params: NodeParams): JsxNode {
+  if (typeof tag !== 'string') {
+    throw new Error('Class or function components are not supported.');
+  }
+
   return {
+    $$node: JSX_NODE_MARKER,
     attributes: params ?? EMPTY_ATTRIBUTES,
     children: getChildren(params),
     tag

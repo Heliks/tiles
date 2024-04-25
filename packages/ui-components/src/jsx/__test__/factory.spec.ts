@@ -1,8 +1,8 @@
 import { jsx } from '../factory';
-import { Node } from '../node';
+import { JsxNode } from '../jsx-node';
 
 
-function noop(tag: string): Node {
+function noop(tag: string): JsxNode {
   return {
     attributes: {},
     children: [],

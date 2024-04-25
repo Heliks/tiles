@@ -81,7 +81,7 @@ export function setContextBinding(element: UiElement, local: string, value: unkn
  * of the {@link UiElement} owned by the given `entity`. Attributes that do not bind to
  * the element context will be ignored.
  */
-export function setContextBindingsFromAttributes(world: World, entity: Entity, attributes: Attributes): void {
+export function setContextBindingsFromJsxAttributes(world: World, entity: Entity, attributes: Attributes): void {
   const element = world.storage(UiElement).get(entity);
 
   for (const name in attributes) {
@@ -110,12 +110,14 @@ export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, a
     node.interactive = true;
   }
 
+  node.name = attributes.name;
+
   // Hard check for `undefined` here because `false` and `0` is valid assignable data.
   if (attributes.data !== undefined) {
     world.attach(owner, new Data(attributes.data));
   }
 
   if (world.storage(UiElement).has(owner)) {
-    setContextBindingsFromAttributes(world, owner, attributes);
+    setContextBindingsFromJsxAttributes(world, owner, attributes);
   }
 }

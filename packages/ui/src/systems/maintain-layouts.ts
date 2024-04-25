@@ -48,7 +48,7 @@ export class MaintainLayouts extends ReactiveSystem {
 
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
-    this.getParentNode(entity)?.add(this.uiNodes.get(entity).layout);
+    this.getParentNode(entity)?.append(this.uiNodes.get(entity).layout);
   }
 
   /** @inheritDoc */
