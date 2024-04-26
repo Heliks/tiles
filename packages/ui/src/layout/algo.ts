@@ -218,7 +218,7 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
   // console.log('DISTRIBUTE SPACE', node.id, node.constants.size, node.constants.hypotheticalInnerSize, space)
 
   for (const line of lines) {
-    const freeMain = space.main(isRow) - line.size.main(isRow);
+    const freeMain = space.main(isRow) - line.size.main(isRow) - node.style.padding.main(isRow);
     const availableCrossSpace = space.cross(isRow);
 
     usedMain = 0;
