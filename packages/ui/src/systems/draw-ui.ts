@@ -65,7 +65,7 @@ export class DrawUi implements OnInit, System {
       node.container.y = node.layout.pos.y;
     }
     else {
-      const position = this.getViewPositionFromScreenPosition(node.layout.pos);
+      const position = this.getViewPositionFromScreenPosition(node.style.position ?? node.layout.pos);
 
       node.container.x = position.x;
       node.container.y = position.y;

@@ -1,12 +1,13 @@
 import { compute } from '../algo';
 import { Node } from '../node';
 import { Rect } from '../rect';
+import { Sides } from '../sides';
 import { Size } from '../size';
 import { AlignContent, FlexDirection } from '../style';
 import { fill } from '../utils';
 
 
-describe('alignment', () => {
+describe('align', () => {
   let space: Rect;
 
   beforeEach(() => {
@@ -55,5 +56,48 @@ describe('alignment', () => {
     compute(node0, space);
 
     expect(node2.pos).toMatchObject(data.expected);
+  });
+
+  it.each([
+    {
+      align: AlignContent.Start,
+      expected: {
+        x: 5,
+        y: 5
+      }
+    },
+    {
+      align: AlignContent.Center,
+      expected: {
+        x: 5,
+        y: 37.5
+      }
+    },
+    {
+      align: AlignContent.End,
+      expected: {
+        x: 5,
+        y: 70
+      }
+    }
+  ])('should take padding of flex container into account', data => {
+    const node0 = new Node({
+      align: data.align,
+      padding: new Sides(5, 5, 5, 5),
+      size: fill()
+    });
+
+    const node1 = new Node({
+      size: new Rect<Size>(
+        Size.percent(1),
+        Size.px(25)
+      )
+    });
+
+    node0.append(node1);
+
+    compute(node0, space);
+
+    expect(node1.pos).toMatchObject(data.expected);
   });
 });

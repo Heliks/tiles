@@ -227,7 +227,7 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
       const child = line.nodes[i];
       const first = i === 0;
 
-      const freeCross = availableCrossSpace - child.size.cross(isRow);
+      const freeCross = availableCrossSpace - child.size.cross(isRow) - node.style.padding.cross(isRow);
 
       const offsetMain = calculateAlignOffset(freeMain, count, first, node.style.justify) + usedMain;
       const offsetCross = calculateAlignOffset(freeCross, count, first, node.style.align) + usedCross;

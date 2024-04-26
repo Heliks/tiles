@@ -1,3 +1,4 @@
+import { Vec2 } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Style as BaseStyle } from './layout';
 
@@ -12,6 +13,8 @@ export enum DisplayContext {
 
 /** @inheritDoc */
 export interface Style extends BaseStyle {
+
+  position?: Vec2;
 
   /**
    * Specifies the context in which the node should be rendered. If the node is the child

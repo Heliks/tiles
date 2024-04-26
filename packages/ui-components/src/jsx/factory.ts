@@ -15,7 +15,7 @@ declare global {
     type Element = JsxNode;
 
     /** Interface for JSX nodes that are components. */
-    interface Component extends UiComponent {}
+    type Component = UiComponent
 
     /** Property in 'props' that will contain the nodes children. */
     interface ElementChildrenAttribute {
