@@ -1,5 +1,5 @@
 import { World } from '@heliks/tiles-engine';
-import { JsxNode } from './jsx';
+import { JsxNode } from './jsx-node';
 
 
 /**

@@ -1,6 +1,7 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { Rect, Size, UiNode } from '@heliks/tiles-ui';
-import { Element, ElementFactory } from '../element';
+import { Element } from '../metadata';
+import { ElementFactory } from '../tag-registry';
 
 
 /** Block tag that fills 100% x 100% of its available space by default. */

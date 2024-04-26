@@ -1,7 +1,7 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
-import { Attributes } from '../jsx';
 import { Data } from './data';
+import { Attributes } from './jsx-node';
 import { kebabToCamel } from './utils';
 
 

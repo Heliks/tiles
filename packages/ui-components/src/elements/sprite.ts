@@ -2,8 +2,9 @@ import { Handle } from '@heliks/tiles-assets';
 import { Entity, World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { UiElement, UiNode, UiSprite } from '@heliks/tiles-ui';
-import { Element, ElementFactory } from '../element';
-import { Attributes } from '../jsx';
+import { Attributes } from '../jsx-node';
+import { Element } from '../metadata';
+import { ElementFactory } from '../tag-registry';
 
 
 /** Available attributes for {@link Sprite} elements. */

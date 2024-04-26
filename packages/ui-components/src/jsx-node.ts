@@ -1,4 +1,4 @@
-import { Style } from '../style';
+import { Style } from './style';
 
 
 /** List of default attributes that can be assigned to any {@link JsxNode}. */

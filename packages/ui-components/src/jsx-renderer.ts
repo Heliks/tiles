@@ -15,10 +15,11 @@ import {
   UiNode,
   UiText
 } from '@heliks/tiles-ui';
-import { TagRegistry, TagType } from './element';
-import { isJsxNode, JsxNode } from './jsx';
-import { assignJsxAttributes } from './renderer/attributes';
+import { assignJsxAttributes } from './attributes';
+import { isJsxNode, JsxNode } from './jsx-node';
+import { TagType } from './metadata';
 import { Style, TextStyle } from './style';
+import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
 
 
