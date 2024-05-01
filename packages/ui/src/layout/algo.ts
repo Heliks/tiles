@@ -145,13 +145,8 @@ function collectLines(node: Node, space: Rect): Line[] {
   return node.constants.lines;
 }
 
-/**
- * Determines the main size of a container.
- *
- * @param lines Container lines.
- * @param constants Container constants.
- */
-function determineContainerMainSize(lines: Line[], constants: Constants): number {
+/** Returns the definite size of the longest flex line in the flex containers main axis. */
+function getLongestLineSize(lines: Line[], constants: Constants): number {
   if (lines.length === 1) {
     return lines[0].size.main(constants.isRow);
   }
@@ -561,7 +556,7 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
 
   // Calculate container main size if it hasn't been determined yet.
   if (main === undefined) {
-    main = determineContainerMainSize(lines, node.constants);
+    main = getLongestLineSize(lines, node.constants) + node.style.padding.main(node.constants.isRow);
     node.constants.size.setMain(node.constants.isRow, main);
   }
 

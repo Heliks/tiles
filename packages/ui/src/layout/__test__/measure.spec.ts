@@ -4,6 +4,7 @@ import { Rect } from '../rect';
 import { Sides } from '../sides';
 import { Size } from '../size';
 import { FlexDirection } from '../style';
+import { auto, rect } from '../utils';
 
 
 const SIZE_FILL = new Rect<Size>(
@@ -75,7 +76,7 @@ describe('compute', () => {
 
   // Container measurement.
   describe('when measuring flex container', () => {
-    it('should measure definite sized container', () => {
+    it('should measure definite size', () => {
       const node = new Node({
         size: new Rect<Size>(
           Size.px(30),
@@ -88,7 +89,7 @@ describe('compute', () => {
       expect(node.size).toMatchObject(new Rect(30, 25));
     });
 
-    it('should measure percentage sized container', () => {
+    it('should measure percentage size', () => {
       const node = new Node({
         size: new Rect<Size>(
           Size.percent(0.7),
@@ -101,7 +102,7 @@ describe('compute', () => {
       expect(node.size).toMatchObject(new Rect(70, 50));
     });
 
-    it('should measure content sized container', () => {
+    it('should measure content size', () => {
       const node0 = new Node({
         size: SIZE_AUTO.clone()
       });
@@ -129,28 +130,30 @@ describe('compute', () => {
       expect(node0.size).toMatchObject(new Rect(40, 10));
     });
 
-    it('should consider padding for auto sized cross axis', () => {
+    it.each([
+      {
+        direction: FlexDirection.Column,
+        expected: {
+          height: 60,
+          width: 35
+        }
+      },
+      {
+        direction: FlexDirection.Row,
+        expected: {
+          width: 60,
+          height: 35
+        }
+      }
+    ])('should consider padding for auto sized axis (direction: $direction)', data => {
       const node0 = new Node({
+        direction: data.direction,
         padding: new Sides(5, 5, 5, 5),
-        size: new Rect<Size>(
-          Size.percent(1),
-          Size.auto()
-        )
+        size: auto()
       });
 
-      const node1 = new Node({
-        size: new Rect<Size>(
-          Size.px(25),
-          Size.px(25)
-        )
-      });
-
-      const node2 = new Node({
-        size: new Rect<Size>(
-          Size.px(25),
-          Size.px(25)
-        )
-      });
+      const node1 = new Node({ size: rect(25) });
+      const node2 = new Node({ size: rect(25) });
 
       node0
         .append(node1)
@@ -158,11 +161,8 @@ describe('compute', () => {
 
       compute(node0, space);
 
-      expect(node0.size).toMatchObject({
-        width: 100,
-        height: 35
-      });
-    })
+      expect(node0.size).toMatchObject(data.expected);
+    });
   });
 
   // Item measurement

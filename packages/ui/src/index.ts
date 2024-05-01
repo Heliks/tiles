@@ -8,7 +8,6 @@ export * from './attributes';
 export * from './layout';
 export * from './elements';
 export * from './providers';
-export * from './template';
 
 export * from './attribute';
 export * from './context';
