@@ -128,6 +128,41 @@ describe('compute', () => {
 
       expect(node0.size).toMatchObject(new Rect(40, 10));
     });
+
+    it('should consider padding for auto sized cross axis', () => {
+      const node0 = new Node({
+        padding: new Sides(5, 5, 5, 5),
+        size: new Rect<Size>(
+          Size.percent(1),
+          Size.auto()
+        )
+      });
+
+      const node1 = new Node({
+        size: new Rect<Size>(
+          Size.px(25),
+          Size.px(25)
+        )
+      });
+
+      const node2 = new Node({
+        size: new Rect<Size>(
+          Size.px(25),
+          Size.px(25)
+        )
+      });
+
+      node0
+        .append(node1)
+        .append(node2);
+
+      compute(node0, space);
+
+      expect(node0.size).toMatchObject({
+        width: 100,
+        height: 35
+      });
+    })
   });
 
   // Item measurement
@@ -426,7 +461,6 @@ describe('compute', () => {
       expect(node2.size).toMatchObject(new Rect(30, 25));
       expect(node3.size).toMatchObject(new Rect(100, 100));
     });
-
   });
 })
 

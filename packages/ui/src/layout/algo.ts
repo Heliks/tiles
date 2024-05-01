@@ -591,7 +591,7 @@ export function compute(node: Node, space: Rect, measure = false, known?: Immuta
   //     - Otherwise, use the sum of the flex lines' cross sizes, clamped by the used
   //       min and max cross sizes of the flex container.
   if (cross === undefined) {
-    cross = getLinesCrossAxisSum(node);
+    cross = getLinesCrossAxisSum(node) + node.style.padding.cross(node.constants.isRow);
     node.constants.size.setCross(node.constants.isRow, cross);
   }
 
