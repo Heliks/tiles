@@ -1,8 +1,8 @@
 import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks/tiles-engine';
-import { PassByReference, TemplateElement, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
-import { ElementFactory, TagRegistry } from '../element';
-import { createJsxNode, JsxNode } from '../jsx';
+import { Element, PassByReference, PassByValue, TemplateElement, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
+import { createJsxNode, JsxNode } from '../jsx-node';
 import { createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
+import { ElementFactory, TagRegistry } from '../tag-registry';
 import { UiComponent } from '../ui-component';
 
 
@@ -14,6 +14,7 @@ class NoopFactory implements ElementFactory {
   }
 
 }
+
 
 describe('JsxRenderer', () => {
   let app: App;
@@ -43,6 +44,10 @@ describe('JsxRenderer', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
+  function getUiElement<T extends Element = TemplateElement>(entity: Entity): UiElement<{}, T> {
+    return world.storage<UiElement<{}, T>>(UiElement).get(entity);
+  }
 
   // Todo: Should move this functionality to Hierarchy resource at some point.
   function getChildren(parent: Entity): Entity[] {
@@ -98,11 +103,10 @@ describe('JsxRenderer', () => {
       node = createJsxNode('noop');
     });
 
-    it('should bind template expression to given host property', () => {
+    it('should bind string condition as host property to template expression', () => {
       const entity = createTemplateFromJsxNode(world, node, 'foo');
 
-      const template = world.storage<UiElement<{}, TemplateElement>>(UiElement).get(entity);
-      const binding = template.bindings[0] as PassByReference;
+      const binding = getUiElement(entity).bindings[0];
 
       expect(binding).toBeInstanceOf(PassByReference);
       expect(binding).toMatchObject({
@@ -111,13 +115,22 @@ describe('JsxRenderer', () => {
       });
     });
 
-    it('should wrap JSX node in template', () => {
-      const entity = createTemplateFromJsxNode(world, node, 'foo');
+    it('should bind function condition as value to template expression', () => {
+      const condition = jest.fn();
 
-      const template = world
-        .storage<UiElement<{}, TemplateElement<JsxTemplate>>>(UiElement)
-        .get(entity)
-        .instance;
+      const entity = createTemplateFromJsxNode(world, node, condition);
+      const binding = getUiElement(entity).bindings[0];
+
+      expect(binding).toBeInstanceOf(PassByValue);
+      expect(binding).toMatchObject({
+        local: 'expression',
+        value: condition
+      });
+    });
+
+    it('should wrap node in JsxTemplate', () => {
+      const entity = createTemplateFromJsxNode(world, node, 'foo');
+      const template = getUiElement<TemplateElement<JsxTemplate>>(entity).instance;
 
       expect(template.renderer).toBeInstanceOf(JsxTemplate);
       expect(template.renderer.root).toBe(node);
@@ -125,12 +138,6 @@ describe('JsxRenderer', () => {
   });
 
   describe('render', () => {
-    let hierarchy: Hierarchy;
-
-    beforeEach(() => {
-      hierarchy = world.get(Hierarchy);
-    });
-
     describe('when rendering functions', () => {
       it('should render return value', () => {
         const node0 = createJsxNode('noop');
@@ -145,9 +152,6 @@ describe('JsxRenderer', () => {
         expect(spy).toHaveBeenNthCalledWith(2, world, node0, undefined, true);
       });
     });
-
-
-
   });
 
 

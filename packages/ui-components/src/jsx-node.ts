@@ -1,6 +1,33 @@
 import { Style } from './style';
 
 
+/**
+ * Values that can be used as a condition for a {@link JsxNode}.
+ *
+ * - If the condition is a string, it will be treated as the name of a property on the
+ *   nodes host context to which the template expression should be bound.
+ *
+ * ```tsx
+ *  class Foo implements UiComponent {
+ *
+ *    public foo = false;
+ *
+ *    public render() {
+ *      return (
+ *        <div>
+ *          <div if="foo">This only is rendered when the "foo" property evaluates to `true`</div>
+ *        </div>
+ *      )
+ *    }
+ *
+ *  }
+ * ```
+ *
+ * - If the condition is a function, it will be directly bound as value to the template
+ *   expression.
+ */
+export type JsxTemplateCondition = string | (() => boolean);
+
 /** List of default attributes that can be assigned to any {@link JsxNode}. */
 export type Attributes = {
 
@@ -17,27 +44,43 @@ export type Attributes = {
   readonly events?: boolean;
 
   /**
-   * Conditionally displays the node depending on the value of a host property. If it
-   * evaluates to `true`, the node will be shown, if it is `false` it will be removed
-   * entirely from a document.
+   * When set, the {@link JsxNode node} will be conditionally displayed or removed from
+   * the document. Conditional nodes are wrapped in a {@link TemplateElement}.
    *
-   * Conditional nodes will be wrapped in {@link TemplateElement templates}.
+   * - If the condition is a string, it will be treated as the name of a property on the
+   *   nodes host context to which the template expression is bound.
    *
-   * ```ts
+   * ```tsx
    *  class MyComponent implements UiComponent {
    *
    *    public foo = false;
    *
    *    public render() {
-   *      // The <div> element will be wrapped in a TemplateElement and only renders
-   *      // when "foo" evaluates to "true".
-   *      return <div if="foo"></div>;
+   *      // This node will only be rendered when `MyComponent.foo` is truthy. Otherwise,
+   *      // it will be removed from the document entirely.
+   *      return <div if="foo">Hello World</div>
+   *    }
+   *
+   *  }
+   * ```
+   *
+   * - If the condition is a function, it is bound as value to the template expression.
+   *
+   * ```tsx
+   *  class MyComponent implements UiComponent {
+   *
+   *    public foo = false;
+   *
+   *    public render() {
+   *      // This works the same as the example above and checks `MyComponent.foo` once
+   *      // per game tick.
+   *      return <div if={() => this.foo}>Hello World</div>
    *    }
    *
    *  }
    * ```
    */
-  readonly if?: string;
+  readonly if?: JsxTemplateCondition;
 
   /** Specifies a custom name. */
   readonly name?: string;

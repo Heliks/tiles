@@ -1,3 +1,4 @@
+export * from './binding';
 export * from './context';
 export * from './context-ref';
 export * from './pass-by-reference';

@@ -36,13 +36,18 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
   /** @internal */
   private _expression = false;
 
+  public check = (value: unknown) => {
+    return this._expression;
+  }
+
   /**
-   * Determines if the template should be shown or hidden. When the template is hidden,
-   * it is removed from the layout tree entirely.
+   * Updates the template expression depending on if `value` evaluates to `true` or
+   * to `false`. If `value` is a function, it will be called, and it's return value
+   * will be used instead.
    */
   @Input()
   public set expression(value: unknown) {
-    const expression = Boolean(value);
+    const expression = typeof value === 'function' ? value() : Boolean(value);
 
     if (expression !== this._expression) {
       this._changed = true;

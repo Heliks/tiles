@@ -1,7 +1,10 @@
 import { ContextRef } from './context-ref';
 
 
-/** Describes a relationship between a context and its host. */
+/**
+ * Bindings are relationships between an elements' context reference and the reference of
+ * its {@link Host}. They are used to share data between them.
+ */
 export interface Binding {
 
   /**

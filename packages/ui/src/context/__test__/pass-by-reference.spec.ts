@@ -16,18 +16,4 @@ describe('PassByReference', () => {
 
     expect(local.context.bar).toBe('bar');
   });
-
-  it('should assign output values to the parent context', () => {
-    const context = new PassByReference('bar', 'foo');
-
-    const parent = new ContextRef({ foo: 'bar' });
-    const local = new ContextRef({ bar: 'foo' });
-
-    // Set local "bar" property to be an output.
-    local.setOutputs('bar');
-
-    context.resolve(local, parent);
-
-    expect(parent.context.foo).toBe('foo');
-  });
 });

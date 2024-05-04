@@ -11,6 +11,7 @@ import { EventLifecycle } from '../../providers/event-lifecycle';
 import { UiElement } from '../../ui-element';
 import { UiNode } from '../../ui-node';
 import { ElementManager, setupHostContext } from '../element-manager';
+import { MaintainLayouts } from '../maintain-layouts';
 
 
 describe('setupHostContext', () => {
@@ -60,8 +61,10 @@ describe('ElementManager', () => {
     app = runtime()
       .component(UiElement)
       .component(UiNode)
+      .component(Parent)
       .provide(EventLifecycle)
       .provide(Document)
+      .system(MaintainLayouts)
       .system(ElementManager)
       .build();
 

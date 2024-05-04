@@ -16,7 +16,7 @@ import {
   UiText
 } from '@heliks/tiles-ui';
 import { assignJsxAttributes } from './attributes';
-import { isJsxNode, JsxNode } from './jsx-node';
+import { isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
 import { TagType } from './metadata';
 import { Style, TextStyle } from './style';
 import { TagRegistry } from './tag-registry';
@@ -78,16 +78,15 @@ function createJsxEntity(world: World, node: JsxNode): Entity {
 }
 
 /**
- * Wraps the given JSX `node` in a {@link TemplateElement template} and binds the
- * template {@link TemplateElement.expression} to the given `host` property.
+ * Wraps the given JSX `node` in a {@link TemplateElement template}.
  *
  * @param world Entity world.
- * @param host The host property to which the template expression will be bound.
+ * @param condition The condition that will be bound to the template expression.
  * @param node JSX node that should be wrapped into a template.
  *
  * @see JsxTemplate
  */
-export function createTemplateFromJsxNode(world: World, node: JsxNode, host: string): Entity {
+export function createTemplateFromJsxNode(world: World, node: JsxNode, condition: JsxTemplateCondition): Entity {
   const element = new UiElement(new TemplateElement(
     new JsxTemplate(node)
   ));
@@ -95,7 +94,12 @@ export function createTemplateFromJsxNode(world: World, node: JsxNode, host: str
   const uiNode = new UiNode();
   const entity = world.insert(uiNode, element);
 
-  element.bind('expression', host);
+  if (typeof condition === 'string') {
+    element.bind('expression', condition);
+  }
+  else {
+    element.value('expression', condition)
+  }
 
   assignJsxAttributes(world, entity, uiNode, node.attributes);
 

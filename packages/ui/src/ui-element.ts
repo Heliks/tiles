@@ -27,9 +27,9 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   public readonly attributes: AttributeBinding[] = [];
 
   /**
-   * Bindings are relationships between this elements' {@link context} reference and the
-   * reference of its context {@link Host} and decide which data is shared between them
-   * via inputs and outputs.
+   * Contains all bindings for this element.
+   *
+   * Bindings are resolved before the element is updated.
    */
   public readonly bindings: Binding[] = [];
 
@@ -77,13 +77,10 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   }
 
   /**
-   * Binds the given `local` key of the elements {@link context} reference to the key
-   * on the context reference of the elements' {@link host}, establishing data-sharing
-   * between the context of this element and the context of its host.
+   * Binds a `host` property to an {@link Input} on the local {@link context}.
    *
-   * If the `local` key is an input, the elements' context reference will receive data
-   * from the host reference. If it's an output, the host will receive data from the
-   * elements' context instead.
+   * This establishes a data-sharing relationship where the elements host context will
+   * copy the value from the specified `host` property to the local context.
    */
   public bind(local: string, host: string): this {
     this.bindings.push(new PassByReference(local, host));
@@ -92,8 +89,8 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   }
 
   /**
-   * Binds a static `value` to the key of the elements {@link context} reference. The
-   * value will be shared with the reference if the `local` key is an input.
+   * Binds a static `value` to an {@link Input} on the `local` {@link context}. The value will
+   * be shared with the elements local {@link context}.
    */
   public value(local: string, value: unknown): this {
     this.bindings.push(new PassByValue(local, value));
