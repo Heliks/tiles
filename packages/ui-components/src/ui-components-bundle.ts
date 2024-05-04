@@ -1,5 +1,5 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
-import { Div, Fill, SlicePlane, Span, Sprite, SpriteAnimation } from './elements';
+import { Div, Fill, SlicePlane, Span, Sprite, SpriteAnimation, Text } from './elements';
 import { getTagMetadata, TagType } from './metadata';
 import { ElementFactory, TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
@@ -69,7 +69,8 @@ export class UiComponentsBundle implements Bundle {
       .add(SlicePlane)
       .add(Span)
       .add(Sprite)
-      .add(SpriteAnimation);
+      .add(SpriteAnimation)
+      .add(Text);
 
     app
       .provide(TagRegistry)

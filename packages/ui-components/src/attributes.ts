@@ -16,14 +16,13 @@ import { kebabToCamel } from './utils';
 export enum AttributeContextBindingKeyword {
 
   /**
-   * Value passed into the attribute is treated as the name of the host property that
-   * is bound to a local `@Input()`.
+   * Value passed into the attribute is a string that contains an {@link ObjectPath}
+   * to a property on the elements host context. The property is to be bound to the
+   * local input matching the attribute name.
    */
   OneWay = 'bind',
 
-  /**
-   * Value passed into the attribute is directly bound to a local `@Input`.
-   */
+  /** Value passed into the attribute is bound as value to the local context. */
   Value = 'value'
 
 }

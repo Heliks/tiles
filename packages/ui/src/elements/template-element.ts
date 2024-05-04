@@ -1,7 +1,7 @@
 import { Entity, Hierarchy, World } from '@heliks/tiles-engine';
 import { Element } from '../element';
+import { Input } from '../input';
 import { OnDestroy, OnInit } from '../lifecycle';
-import { Input } from '../params';
 import { Document } from '../providers';
 
 

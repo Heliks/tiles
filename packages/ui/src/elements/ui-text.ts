@@ -1,7 +1,7 @@
 import { Text } from 'pixi.js';
 import { Element } from '../element';
+import { Input } from '../input';
 import { Rect, Size } from '../layout';
-import { Input } from '../params';
 
 
 export enum TextBorderStyle {

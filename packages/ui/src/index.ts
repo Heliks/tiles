@@ -12,7 +12,7 @@ export * from './providers';
 export * from './attribute';
 export * from './context';
 export * from './element';
-export * from './params';
+export * from './input';
 export * from './lifecycle';
 export * from './ui-bundle';
 export * from './ui-component';

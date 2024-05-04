@@ -1,5 +1,6 @@
 import { Binding } from './binding';
 import { ContextRef } from './context-ref';
+import { ObjectPath, resolveObjectPath } from './utils';
 
 
 /** @internal */
@@ -9,18 +10,18 @@ export function resolve<T>(target: T, key: keyof T): any {
   return target[key];
 }
 
-/** Passes the value of a property on the host context into the local context. */
+/** Passes the value from the host context into the local context. */
 export class PassByReference implements Binding {
 
   /**
-   * @param local Local context key.
-   * @param host Host context key.
+   * @param local Name of the local input.
+   * @param host Object path to resolve on the host context.
    */
-  constructor(public readonly local: string, public readonly host: string) {}
+  constructor(public readonly local: string, public readonly host: ObjectPath) {}
 
   /** @inheritDoc */
   public resolve(local: ContextRef, host: ContextRef): void {
-    local.setInput(this.local, host.getInput(this.host))
+    local.setInput(this.local, resolveObjectPath(host.context, this.host));
   }
 
 }

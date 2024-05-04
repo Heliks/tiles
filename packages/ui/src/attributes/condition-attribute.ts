@@ -1,8 +1,8 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { Attribute } from '../attribute';
+import { Input } from '../input';
 import { Display } from '../layout';
 import { OnInit } from '../lifecycle';
-import { Input } from '../params';
 import { UiNode } from '../ui-node';
 
 

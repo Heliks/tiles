@@ -1,4 +1,4 @@
-import { getInputs } from '../params';
+import { getInputs } from '../input';
 
 
 /**

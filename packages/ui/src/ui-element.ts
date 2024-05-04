@@ -1,12 +1,10 @@
 import { Entity } from '@heliks/tiles-engine';
 import { Attribute } from './attribute';
 import { AttributeBinding } from './attribute-binding';
-import { ContextRef } from './context';
-import { Binding } from './context/binding';
-import { PassByReference } from './context/pass-by-reference';
-import { PassByValue } from './context/pass-by-value';
+import { Binding, ContextRef, PassByReference, PassByValue } from './context';
+import { parseObjectPath } from './context/utils';
 import { Element } from './element';
-import { getInputs } from './params';
+import { getInputs } from './input';
 
 
 /**
@@ -81,9 +79,18 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
    *
    * This establishes a data-sharing relationship where the elements host context will
    * copy the value from the specified `host` property to the local context.
+   *
+   * It's possible to use an object path as `host` property.
+   *
+   * ```ts
+   *  element.bind('foo', 'foo.bar');
+   * ```
+   *
+   * Note: This is not supported for the `local` key, as only direct properties can be
+   * declared as inputs.
    */
   public bind(local: string, host: string): this {
-    this.bindings.push(new PassByReference(local, host));
+    this.bindings.push(new PassByReference(local, parseObjectPath(host)));
 
     return this;
   }
