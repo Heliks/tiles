@@ -33,7 +33,7 @@ export class JsxTemplate implements TemplateRenderer {
 
   /** @inheritDoc */
   public render(world: World, owner: Entity): Entity {
-    const nodes = world.storage(UiNode);
+    const nodes = world.storage<UiNode<Style>>(UiNode);
     const template = JsxRenderer.render(world, this.root, undefined, false);
 
     // The parent entity for the template is the parent of the owner of the template.
@@ -57,11 +57,11 @@ export class JsxTemplate implements TemplateRenderer {
 /**
  *
  */
-function createJsxEntity(world: World, node: JsxNode): Entity {
+function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): Entity {
   const entry = world.get(TagRegistry).entry(node.tag);
 
   if (entry.type === TagType.Element) {
-    return entry.factory.render(world, node.attributes);
+    return entry.factory.render(world, node.attributes, textStyle);
   }
 
   return world.insert(
@@ -134,9 +134,6 @@ export function getUiComponent<C extends UiComponent>(world: World, entity: Enti
     .instance
 }
 
-
-
-
 /**
  * A {@link UiElement} that renders a {@link UiComponent} on the entity to which this
  * component is attached to.
@@ -191,16 +188,16 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       return createTemplateFromJsxNode(world, node, node.attributes.if);
     }
 
-    const entity = createJsxEntity(world, node);
+    // If the node declares its own text style, overwrite the inherited one. We will also
+    // pass down this new style from now on.
+    if (node.attributes.style?.text) {
+      textStyle = node.attributes.style.text;
+    }
+
+    const entity = createJsxEntity(world, node, textStyle);
     const uiNode = world.storage<UiNode<Style>>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
-
-    // If the node declares its own text style, overwrite the inherited one. We will also
-    // pass down this new style from now on.
-    if (uiNode.style.text) {
-      textStyle = uiNode.style.text;
-    }
 
     for (const _item of node.children) {
       if (_item === undefined) {

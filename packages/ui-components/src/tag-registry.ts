@@ -2,6 +2,7 @@ import { Entity, Type, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
 import { Attributes } from './jsx-node';
 import { TagType } from './metadata';
+import { TextStyle } from './style';
 import { UiComponent } from './ui-component';
 
 
@@ -18,8 +19,9 @@ export interface ElementFactory<A extends Attributes = Attributes> {
    *
    * @param world Entity world
    * @param attributes Attributes for the element to create.
+   * @param text (optional) Inherited text style.
    */
-  render(world: World, attributes: A): Entity;
+  render(world: World, attributes: A, text?: TextStyle): Entity;
 
 }
 
