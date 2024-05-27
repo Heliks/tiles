@@ -355,6 +355,7 @@ function resolveFlexibleLengths(node: Node, line: Line): void {
   //    their outer target main size; for other items, use their outer flex base size.
   node.constants.initialFreeSpace = innerMainSize;
 
+
   for (const child of line.nodes) {
     const inner = child.constants.hypotheticalInnerSize.main(node.constants.isRow);
 
@@ -374,6 +375,9 @@ function resolveFlexibleLengths(node: Node, line: Line): void {
       line.unfrozen.push(child);
     }
   }
+
+  // console.log('IFS', node.id, node.constants.initialFreeSpace, node.children.length)
+
 
   // 4. Loop
   while (true) {

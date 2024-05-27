@@ -9,19 +9,18 @@ let id = 0;
 /**
  *
  */
-export class Node {
+export class Node<S extends Style = Style> {
 
   public id = 0;
 
   /** Other {@link Node nodes} that are direct children of this one. */
   public readonly children: Node[] = [];
 
-  /**
-   * Constants used for internal layout computation. Do not edit manually.
-   *
-   * @internal
-   */
+  /** Constants used for internal layout computation. Do not edit manually. */
   public readonly constants = new Constants();
+
+  /** Contains the parent node, if any. */
+  public parent?: Node;
 
   /** Definite computed size. */
   public readonly size = new Rect(0, 0);
@@ -30,15 +29,15 @@ export class Node {
   public readonly pos = new Vec2();
 
   /** Contains the nodes {@link Style stylesheet}. */
-  public style: Style;
+  public style: S;
 
   /**
    * @param style Styles that should be applied to the node. Missing style properties
    *  will be filled with computed default values.
    */
-  constructor(style: Partial<Style> = {}) {
+  constructor(style: Partial<S> = {}) {
     this.id = ++id;
-    this.style = computeStyleSheet(style);
+    this.style = computeStyleSheet<S>(style);
   }
 
   public has(node: Node): boolean {
@@ -54,6 +53,7 @@ export class Node {
   public append(node: Node): this {
     if (! this.has(node)) {
       this.children.push(node);
+      node.parent = this;
     }
 
     return this;
@@ -66,6 +66,7 @@ export class Node {
     }
 
     this.children.splice(index, 0, node);
+    node.parent = this;
 
     return this;
   }
@@ -97,6 +98,7 @@ export class Node {
 
     if (~index) {
       this.children.splice(index, 1);
+      node.parent = undefined;
     }
 
     return this;

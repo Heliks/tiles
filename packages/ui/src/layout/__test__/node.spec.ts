@@ -14,8 +14,26 @@ describe('Node', () => {
     node3 = new Node();
   });
 
-  describe('when inserting a child at a given array index', () => {
-    it('should insert the node', () => {
+  describe('when adding a child node', () => {
+    it('should add child', () => {
+      node0.append(node1);
+      node0.append(node2);
+
+      expect(node0.children).toEqual([
+        node1,
+        node2
+      ]);
+    });
+
+    it('should assign parent', () => {
+      node0.append(node1);
+
+      expect(node1.parent).toBe(node0);
+    });
+  });
+
+  describe('when adding a child at a specific array index', () => {
+    it('should add child at correct position', () => {
       node0.append(node1);
       node0.append(node2);
 
@@ -28,7 +46,7 @@ describe('Node', () => {
       ]);
     });
 
-    it('should move node to new position if it is already a child', () => {
+    it('should move child to index if it has been a child before', () => {
       node0.append(node1);
       node0.append(node2);
       node0.append(node3);
@@ -40,6 +58,21 @@ describe('Node', () => {
         node3,
         node1
       ]);
+    });
+
+    it('should assign parent', () => {
+      node0.appendAt(node1, 0);
+
+      expect(node1.parent).toBe(node0);
+    });
+  });
+
+  describe('when removing a child', () => {
+    it('should remove parent', () => {
+      node0.append(node1);
+      node0.remove(node1);
+
+      expect(node1.parent).toBeUndefined();
     });
   });
 

@@ -153,7 +153,7 @@ export interface Style {
 }
 
 /** @internal */
-export function computeStyleSheet(style: Partial<Style> = {}): Style {
+export function computeStyleSheet<S extends Style = Style>(style: Partial<S> = {}): S {
   return {
     align: AlignContent.Start,
     basis: Size.auto(),
@@ -170,7 +170,7 @@ export function computeStyleSheet(style: Partial<Style> = {}): Style {
     ),
     wrap: false,
     ...style
-  };
+  } as S;
 }
 
 export function calculateAlignOffset(space: number, items: number, first: boolean, align: AlignContent): number {
