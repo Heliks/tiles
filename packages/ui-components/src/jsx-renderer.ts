@@ -9,8 +9,10 @@ import {
   OnInit,
   Rect,
   Size,
+  Style,
   TemplateElement,
   TemplateRenderer,
+  TextStyle,
   UiElement,
   UiNode,
   UiText
@@ -18,7 +20,6 @@ import {
 import { assignJsxAttributes } from './attributes';
 import { isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
 import { TagType } from './metadata';
-import { Style, TextStyle } from './style';
 import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
 
@@ -232,12 +233,10 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   public static createText(world: World, text: string, style?: TextStyle): Entity {
     const element = new UiText(text);
 
-    if (style) {
-      element.view.style = style;
-    }
-
     return world.insert(
-      new UiNode(),
+      new UiNode({
+        text: style
+      }),
       new UiElement(element)
     );
   }

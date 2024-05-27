@@ -1,8 +1,7 @@
 import { Entity, Type, World } from '@heliks/tiles-engine';
-import { UiElement, UiNode } from '@heliks/tiles-ui';
+import { TextStyle, UiElement, UiNode } from '@heliks/tiles-ui';
 import { Attributes } from './jsx-node';
 import { TagType } from './metadata';
-import { TextStyle } from './style';
 import { UiComponent } from './ui-component';
 
 

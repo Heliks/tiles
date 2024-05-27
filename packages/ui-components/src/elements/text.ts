@@ -1,8 +1,7 @@
 import { Entity, World } from '@heliks/tiles-engine';
-import { UiElement, UiNode, UiText } from '@heliks/tiles-ui';
+import { TextStyle, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx-node';
 import { Element } from '../metadata';
-import { TextStyle } from '../style';
 import { ElementFactory } from '../tag-registry';
 
 
@@ -25,11 +24,7 @@ export class Text implements ElementFactory {
     // The actual text will be set via inputs.
     const text = new UiText('');
 
-    if (style) {
-      text.view.style = style;
-    }
-
-    return world.insert(new UiNode(), new UiElement(text));
+    return world.insert(new UiNode({ text: style }), new UiElement(text));
   }
 
 }

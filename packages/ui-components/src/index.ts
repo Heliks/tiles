@@ -3,7 +3,6 @@ import { UiComponent } from './ui-component';
 
 
 export * from './elements';
-export * from './style';
 
 export * from './attributes';
 export * from './data';

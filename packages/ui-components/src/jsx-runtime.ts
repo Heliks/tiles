@@ -6,8 +6,8 @@
  * directory of the library.
  */
 import { Type } from '@heliks/tiles-engine';
+import { Style } from '@heliks/tiles-ui';
 import { Attributes, JSX_NODE_MARKER, JsxNode } from './jsx-node';
-import { Style } from './style';
 import { UiComponent } from './ui-component';
 
 

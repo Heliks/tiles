@@ -11,6 +11,29 @@ export enum DisplayContext {
   Screen
 }
 
+export interface TextStyle {
+
+  /** Text color. */
+  color?: number;
+
+  /** Text size in px. */
+  fontSize?: number;
+
+  /** Name of the font family that should be used to render this text. */
+  fontFamily?: string;
+
+  /**
+   * If enabled, the text will wrap when it takes more space than available.
+   *
+   * This does not take the size into account that adjacent child nodes to the text might
+   * occupy, hence why wrapping text should be placed in its own element that defines the
+   * boundaries by which it should wrap.
+   */
+  wrap?: boolean;
+
+}
+
+
 /** @inheritDoc */
 export interface Style extends BaseStyle {
 
@@ -31,5 +54,13 @@ export interface Style extends BaseStyle {
    * is the child of another node, this setting will be ignored.
    */
   layer?: LayerId;
+
+  /**
+   * Defines how text should be rendered.
+   *
+   * Details of how this style is used may depend on the individual implementation of
+   * the element that renders the text.
+   */
+  text?: TextStyle;
 
 }

@@ -5,7 +5,8 @@ import { UiNode } from './ui-node';
 
 
 export * from './attributes';
-export * from './layout';
+export { AlignContent, FlexDirection, Node, Rect, Sides, Size, Unit, block, fill, auto, rect } from './layout';
+
 export * from './elements';
 export * from './providers';
 
@@ -14,6 +15,7 @@ export * from './context';
 export * from './element';
 export * from './input';
 export * from './lifecycle';
+export * from './style';
 export * from './ui-bundle';
 export * from './ui-component';
 export * from './ui-composer';

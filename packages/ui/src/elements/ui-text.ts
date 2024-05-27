@@ -1,7 +1,9 @@
+import { Entity, World } from '@heliks/tiles-engine';
 import { Text } from 'pixi.js';
 import { Element } from '../element';
 import { Input } from '../input';
-import { Rect, Size } from '../layout';
+import { Node, Rect, Size } from '../layout';
+import { Style } from '../style';
 
 
 export enum TextBorderStyle {
@@ -24,7 +26,7 @@ export class UiText implements Element {
 
   /** @inheritDoc */
   public view = new Text('', {
-    align: 'center'
+    align: 'left'
   });
 
   /** @inheritDoc */
@@ -53,10 +55,24 @@ export class UiText implements Element {
   }
 
   /** @inheritDoc */
-  public update(): void {
+  public update(world: World, entity: Entity, layout: Node<Style>): void {
     this.view.text = this.text;
+
     this.size.width.value = this.view.width;
     this.size.height.value = this.view.height;
+
+    if (layout.style.text) {
+      const style = this.view.style;
+
+      style.fill = layout.style.text.color;
+      style.fontFamily = layout.style.text.fontFamily ?? UiText.defaultFont;
+      style.fontSize = layout.style.text.fontSize;
+      style.wordWrap = layout.style.text.wrap;
+
+      if (layout.style.text.wrap && layout.parent) {
+        this.view.style.wordWrapWidth = layout.parent.size.width;
+      }
+    }
   }
 
   /**
