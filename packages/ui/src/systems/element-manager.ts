@@ -7,6 +7,7 @@ import { UiNode } from '../ui-node';
 import { MaintainLayouts } from './maintain-layouts';
 
 
+
 /**
  * Assigns the appropriate context host to the element of `entity`. The host will
  * immediately share data with the elements' context.
@@ -184,9 +185,8 @@ export class ElementManager extends ReactiveSystem {
       node.container.removeChild(element.instance.view);
     }
 
-    this.eventLifecycle.unsubscribe(node);
 
-    // Call destroy lifecycle.
+    this.eventLifecycle.unsubscribe(node);
     this.emitOnDestroy(world, entity, element);
   }
 
@@ -218,8 +218,9 @@ export class ElementManager extends ReactiveSystem {
     if (this.document.invalid) {
       // Trigger world update to re-synchronize the systems entity query with changes above.
       world.update();
+     
       this.layouts.update(world);
-
+      
       this.document.invalid = false;
       this.update(world);
     }

@@ -5,6 +5,7 @@ import { OnDestroy, OnInit } from '../lifecycle';
 import { Document } from '../providers';
 
 
+
 export interface TemplateRenderer {
 
   /**
@@ -73,7 +74,7 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
   public destroy(world: World): void {
     if (this.root !== undefined) {
       world.get(Hierarchy).destroy(world, this.root);
-
+      
       this.root = undefined;
       this._changed = false;
       this._expression = false;

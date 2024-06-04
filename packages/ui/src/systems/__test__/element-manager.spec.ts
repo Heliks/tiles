@@ -14,6 +14,7 @@ import { ElementManager, setupHostContext } from '../element-manager';
 import { MaintainLayouts } from '../maintain-layouts';
 
 
+
 describe('setupHostContext', () => {
   let world: World;
 
@@ -303,16 +304,11 @@ describe('ElementManager', () => {
     });
 
     it('should not update elements that are destroyed during onEntityRemoved()', () => {
-
-
       const element2 = new UiElement(new NoopElement());
       const element1 = new UiElement(new SpawnOnInit(element2));
 
       world.insert(new UiNode(), element1);
       world.update();
-
     });
-
-
   });
 });
