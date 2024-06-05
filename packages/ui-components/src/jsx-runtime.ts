@@ -17,6 +17,8 @@ type NodeParams = Attributes & {
 }
 
 declare global {
+  // Safety: Typescript requires this namespace for JSX resolution as per spec.
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     /** Definition for JSX nodes that are tags. <div>, <span>, etc. */
     type Element = JsxNode;
@@ -41,7 +43,8 @@ declare global {
     }
 
     /** Common attributes present on all components.*/
-    interface IntrinsicClassAttributes<C> {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface IntrinsicClassAttributes {}
 
     /** Available HTML elements. <div>, <span>, etc.  */
     interface IntrinsicElements {

@@ -36,10 +36,6 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
   /** @internal */
   private _expression = false;
 
-  public check = (value: unknown) => {
-    return this._expression;
-  }
-
   /**
    * Updates the template expression depending on if `value` evaluates to `true` or
    * to `false`. If `value` is a function, it will be called, and it's return value

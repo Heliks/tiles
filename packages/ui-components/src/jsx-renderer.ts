@@ -123,6 +123,7 @@ export function stringifyUnknownJsxChild(child: unknown): string {
     return JSON.stringify(child);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return child!.toString();
 }
 
@@ -196,7 +197,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     }
 
     const entity = createJsxEntity(world, node, textStyle);
-    const uiNode = world.storage<UiNode<Style>>(UiNode).get(entity);
+    const uiNode = world.storage<UiNode>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
 
@@ -291,8 +292,8 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   }
 
   /** @inheritDoc */
-  public update(world: World): void {
-    // this.instance.update(world);
+  public update(): void {
+    return;
   }
 
 }

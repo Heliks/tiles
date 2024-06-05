@@ -37,8 +37,8 @@ export function getTagMetadata(target: Type): TagMetadata {
  * Elements have dependency injection enabled by default. Using the {@link Injectable()}
  * decorator separately is not required.
  */
-export function Element(tag: string) {
-  return function(target: Type) {
+export function Element(tag: string): Function {
+  return function elementDecorator(target: Type): void {
     setTagMetadata(target, { tag, type: TagType.Element });
   }
 }
@@ -47,8 +47,8 @@ export function Element(tag: string) {
  * Components have dependency injection enabled by default. Using the {@link Injectable()}
  * decorator separately is not required.
  */
-export function Component(tag: string) {
-  return function(target: Type) {
+export function Component(tag: string): Function {
+  return function componentDecorator(target: Type): void {
     setTagMetadata(target, { tag, type: TagType.Component });
   }
 }

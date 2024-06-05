@@ -1,5 +1,4 @@
 import { JsxNode } from './jsx-node';
-import { UiComponent } from './ui-component';
 
 
 export * from './elements';

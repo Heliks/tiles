@@ -186,8 +186,8 @@ export function calculateAlignOffset(space: number, items: number, first: boolea
         return (space / items) / 2;
       case AlignContent.SpaceBetween:
         return 0;
-    case AlignContent.SpaceEvenly:
-      return space / (items + 1);
+      case AlignContent.SpaceEvenly:
+        return space / (items + 1);
     }
   }
   else {

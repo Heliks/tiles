@@ -60,7 +60,7 @@ export class Node<S extends Style = Style> {
   }
 
   /** Inserts a `node` at the given `index`. */
-  public appendAt(node: Node, index: number) {
+  public appendAt(node: Node, index: number): this {
     if (this.has(node)) {
       this.remove(node);
     }

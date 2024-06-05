@@ -228,8 +228,8 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
       const justify = calculateAlignOffset(freeMain, count, first, node.style.justify);
       const align = calculateAlignOffset(freeCross, count, first, node.style.align);
 
-      const offsetMain = calculateAlignOffset(freeMain, count, first, node.style.justify) + usedMain;
-      const offsetCross = calculateAlignOffset(freeCross, count, first, node.style.align) + usedCross;
+      const offsetMain = justify + usedMain;
+      const offsetCross = align + usedCross;
 
       if (isRow) {
         // Todo: Should we get child margin from child constants?

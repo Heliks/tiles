@@ -83,6 +83,7 @@
           "Injectable",
           "Inject",
           "InjectStorage",
+          "Element",
           "Optional",
           "Input",
           "UUID",
