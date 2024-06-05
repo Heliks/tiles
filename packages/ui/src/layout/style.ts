@@ -174,19 +174,37 @@ export function computeStyleSheet<S extends Style = Style>(style: Partial<S> = {
 }
 
 export function calculateAlignOffset(space: number, items: number, first: boolean, align: AlignContent): number {
-  switch (align) {
-    case AlignContent.Start:
-      return 0;
-    case AlignContent.Center:
-      return space / 2;
-    case AlignContent.End:
-      return space;
-    case AlignContent.SpaceAround:
-      return first ? (space / items) / 2 : space / items;
-    case AlignContent.SpaceBetween:
-      return first ? 0 : space / (items - 1);
+  if (first) {
+    switch (align) {
+      case AlignContent.Start:
+        return 0;
+      case AlignContent.Center:
+        return space / 2;
+      case AlignContent.End:
+        return space;
+      case AlignContent.SpaceAround:
+        return (space / items) / 2;
+      case AlignContent.SpaceBetween:
+        return 0;
     case AlignContent.SpaceEvenly:
       return space / (items + 1);
+    }
+  }
+  else {
+    switch (align) {
+      case AlignContent.Start:
+        return 0;
+      case AlignContent.Center:
+        return 0;
+      case AlignContent.End:
+        return 0;
+      case AlignContent.SpaceAround:
+        return space / items;
+      case AlignContent.SpaceBetween:
+        return space / (items - 1);
+      case AlignContent.SpaceEvenly:
+        return space / (items + 1);
+    }
   }
 }
 

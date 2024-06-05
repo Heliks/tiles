@@ -71,8 +71,8 @@ export interface UiComponent {
    *
    * ## Conditional Rendering
    *
-   * Parts of the component view can be made optional by leveraging the fact that
-   * `undefined` is skipped.
+   * Parts of the component view can be made optional by leveraging the fact that the
+   * renderer ignores `undefined` values.
    *
    * ```tsx
    *  class Foo implements UiComponent {

@@ -224,6 +224,10 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
 
       const freeCross = availableCrossSpace - child.size.cross(isRow) - node.style.padding.cross(isRow);
 
+
+      const justify = calculateAlignOffset(freeMain, count, first, node.style.justify);
+      const align = calculateAlignOffset(freeCross, count, first, node.style.align);
+
       const offsetMain = calculateAlignOffset(freeMain, count, first, node.style.justify) + usedMain;
       const offsetCross = calculateAlignOffset(freeCross, count, first, node.style.align) + usedCross;
 
@@ -237,7 +241,7 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
         child.pos.y = offsetMain + child.style.margin.top + node.style.padding.top;
       }
 
-      usedMain += child.constants.outerSize.main(isRow);
+      usedMain += child.constants.outerSize.main(isRow) + justify;
     }
 
     usedCross += line.size.cross(isRow);
