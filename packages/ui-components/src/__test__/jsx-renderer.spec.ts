@@ -106,13 +106,11 @@ describe('JsxRenderer', () => {
     it('should bind string condition as host property to template expression', () => {
       const entity = createTemplateFromJsxNode(world, node, 'foo');
 
-      const binding = getUiElement(entity).bindings[0];
+      const binding = getUiElement(entity).bindings[0] as PassByReference;
 
       expect(binding).toBeInstanceOf(PassByReference);
-      expect(binding).toMatchObject({
-        local: 'expression',
-        host: 'foo'
-      });
+      expect(binding.local).toBe('expression');
+      expect(binding.host).toEqual(['foo']);
     });
 
     it('should bind function condition as value to template expression', () => {
