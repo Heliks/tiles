@@ -77,6 +77,9 @@ export enum AlignContent {
 
 }
 
+/** Alignment modes for justify-content. */
+export type AlignContent2 = AlignContent.Start | AlignContent.Center | AlignContent.End;
+
 /** Defines the layout used for an item. */
 export enum Display {
 
@@ -109,9 +112,6 @@ export interface Style {
    */
   basis: Size;
 
-  grow: number;
-  shrink: number;
-
   /**
    * The direction property specifies how flex items are placed in the flex container,
    * by setting the direction of the flex container’s main axis. This determines the
@@ -122,6 +122,17 @@ export interface Style {
   /** Defines the layout method used for this item. */
   display: Display;
 
+  /**
+   * Defines the flex grow factor, which specifies how much of the flex container's
+   * remaining space should be assigned to the flex item's main size.
+   *
+   * When the flex-container's main size is larger than the combined main sizes of the
+   * flex items, the extra space is distributed among the flex items, with each item
+   * growth being their growth factor value as a proportion of the sum total of all
+   * the container's items' flex grow factors.
+   */
+  grow: number;
+
   /** Aligns flex items along the main-axis of the flex container. */
   justify: AlignContent;
 
@@ -130,6 +141,12 @@ export interface Style {
 
   /** Sets the padding area for all four sides of the node. */
   padding: Sides;
+
+  /**
+   * Defines the flex shrink factor of a flex item. If the size of all flex items is
+   * larger than the flex container, items shrink to fit according to flex-shrink.
+   */
+  shrink: number;
 
   /**
    * Defines the size of the node.

@@ -4,7 +4,7 @@ import { Rect } from '../rect';
 import { Sides } from '../sides';
 import { Size } from '../size';
 import { AlignContent, FlexDirection } from '../style';
-import { fill } from '../utils';
+import { fill, rect } from '../utils';
 
 
 describe('align', () => {
@@ -12,6 +12,44 @@ describe('align', () => {
 
   beforeEach(() => {
     space = new Rect(100, 100);
+  });
+
+  it.each([
+    {
+      align: AlignContent.Start,
+      expected: 0
+    },
+    {
+      align: AlignContent.Center,
+      expected: 37.5
+    },
+    {
+      align: AlignContent.End,
+      expected: 75
+    },
+  ])('should align content as $align on single line', data => {
+    const node0 = new Node({
+      align: data.align,
+      size: fill()
+    });
+
+    const node1 = new Node({ size: rect(25) });
+    const node2 = new Node({ size: rect(25) });
+    const node3 = new Node({ size: rect(25) });
+
+    node0.append(node1);
+    node0.append(node2);
+    node0.append(node3);
+
+    compute(node0, space);
+
+    expect(node1);
+    expect(node2);
+    expect(node3);
+
+    expect(node1.pos.y).toBe(data.expected);
+    expect(node2.pos.y).toBe(data.expected);
+    expect(node2.pos.y).toBe(data.expected);
   });
 
   it.each([

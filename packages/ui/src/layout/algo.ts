@@ -226,7 +226,10 @@ function distributeAvailableSpace(node: Node, lines: Line[], space: Rect): void 
 
 
       const justify = calculateAlignOffset(freeMain, count, first, node.style.justify);
-      const align = calculateAlignOffset(freeCross, count, first, node.style.align);
+
+      // Cross axis doesn't need to offset items between each other, therefore we always
+      // want the initial axis position from the first item.
+      const align = calculateAlignOffset(freeCross, count, true, node.style.align);
 
       const offsetMain = justify + usedMain;
       const offsetCross = align + usedCross;
