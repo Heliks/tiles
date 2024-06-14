@@ -1,11 +1,14 @@
 import { Entity } from '@heliks/tiles-engine';
 import { Attribute } from './attribute';
 import { AttributeBinding } from './attribute-binding';
-import { Binding, ContextRef, PassByReference, PassByValue } from './context';
+import { Binding, ContextRef, PassByFunction, PassByFunctionCallback, PassByReference, PassByValue } from './context';
 import { parseObjectPath } from './context/utils';
 import { Element } from './element';
 import { getInputs } from './input';
 
+
+/** Values that can be passed into {@link UiElement.bind()}. */
+export type UiElementBindingValue = string | PassByFunctionCallback;
 
 /**
  * Component that renders a {@link Element} on entities that are a {@link UiNode}.
@@ -75,10 +78,22 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   }
 
   /**
-   * Binds a `host` property to an {@link Input} on the local {@link context}.
+   * Binds the given function `fn` to a `local` {@link Input}.
    *
-   * This establishes a data-sharing relationship where the elements host context will
-   * copy the value from the specified `host` property to the local context.
+   * Binding a function will cause it to be called once on each frame. The return value
+   * is then passed into the local input.
+   *
+   * ```ts
+   * element.bind('foo', () => Math.random());
+   * ```
+   */
+  public bind(local: string, fn: PassByFunctionCallback): this;
+
+  /**
+   * Binds a `host` property to a `local` {@link Input}.
+   *
+   * This causes the host context to share the value of the host property with the
+   * local input.
    *
    * It's possible to use an object path as `host` property.
    *
@@ -89,8 +104,15 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
    * Note: This is not supported for the `local` key, as only direct properties can be
    * declared as inputs.
    */
-  public bind(local: string, host: string): this {
-    this.bindings.push(new PassByReference(local, parseObjectPath(host)));
+  public bind(local: string, host: string): this;
+
+  /** @internal */
+  public bind(local: string, host: UiElementBindingValue): this {
+    this.bindings.push(
+      typeof host === 'string'
+        ? new PassByReference(local, parseObjectPath(host))
+        : new PassByFunction(local, host)
+    );
 
     return this;
   }

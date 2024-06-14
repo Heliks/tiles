@@ -66,11 +66,12 @@ export function setContextBinding(element: UiElement, local: string, value: unkn
       element.value(local, value);
       break;
     case AttributeContextBindingKeyword.OneWay:
-      if (typeof value !== 'string') {
-        throw new Error('Value must be the name of a property on the host component.');
+      if (typeof value !== 'string' && typeof value !== 'function') {
+        throw new Error('Value must be the name of a property on the host component or a callback function.');
       }
 
-      element.bind(local, value);
+      // Safety: TS can not properly resolve this when casting to UiElementBindingValue.
+      element.bind(local, value as string);
       break;
   }
 }
