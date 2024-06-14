@@ -12,6 +12,7 @@ import {
   UpdateNodes
 } from './systems';
 import { UiElement } from './ui-element';
+import { UiFocus } from './ui-focus';
 import { UiNode } from './ui-node';
 
 
@@ -43,14 +44,17 @@ export class UiBundle implements Bundle {
       .component(Host)
       .component(UiNode)
       .component(UiElement)
-      .schedule()
-      .after(UiSchedule.MaintainElements, AppSchedule.PostUpdate)
-      .schedule()
-      .after(UiSchedule.Compute, UiSchedule.MaintainElements)
+      .schedule().after(UiSchedule.MaintainElements, AppSchedule.PostUpdate)
+      .schedule().after(UiSchedule.Compute, UiSchedule.MaintainElements)
       .provide(Document)
       .provide(EventLifecycle)
-      .system(EventSystem, UiSchedule.Compute)
+      .provide(UiFocus)
+      // The element manager will also maintain layouts in case the document becomes
+      // dirty during its update, hence why this needs to be declared first.
       .system(MaintainLayouts, UiSchedule.Compute)
+      // Process events before elements are updated. This ensures that OnEvent lifecycle
+      // calls happen on the same frame as the event itself.
+      .system(EventSystem, UiSchedule.MaintainElements)
       .system(ElementManager, UiSchedule.MaintainElements)
       .system(UpdateLayouts, UiSchedule.Compute)
       .system(MaintainNodes, UiSchedule.Compute)

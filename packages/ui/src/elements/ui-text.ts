@@ -21,6 +21,9 @@ export class UiText implements Element {
    */
   public static defaultFont = 'serif';
 
+  /**
+   * The text that should be rendered.
+   */
   @Input()
   public text = '';
 
@@ -39,7 +42,7 @@ export class UiText implements Element {
    * @param value The text that should be rendered.
    * @param color Color in which the text should be rendered.
    * @param size Font size in px.
-   * @param size Font family
+   * @param family Font family
    */
   constructor(value: string, color = 0x000000, size = 10, family?: string) {
     this.text = value;
@@ -68,6 +71,13 @@ export class UiText implements Element {
       style.fontFamily = layout.style.text.fontFamily ?? UiText.defaultFont;
       style.fontSize = layout.style.text.fontSize;
       style.wordWrap = layout.style.text.wrap;
+
+
+      if (layout.style.text.borderWidth !== undefined) {
+        style.stroke = layout.style.text.borderColor;
+        style.strokeThickness = layout.style.text.borderWidth;
+        style.strokeStyle = 1;
+      }
 
       if (layout.style.text.wrap && layout.parent) {
         this.view.style.wordWrapWidth = layout.parent.size.width;

@@ -21,6 +21,7 @@ export * from './ui-component';
 export * from './ui-composer';
 export * from './ui-element';
 export * from './ui-event';
+export * from './ui-focus';
 export * from './ui-node';
 
 

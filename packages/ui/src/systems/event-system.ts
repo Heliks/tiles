@@ -1,35 +1,25 @@
-import { Entity, Parent, ProcessingSystem, Query, QueryBuilder, Storage, World } from '@heliks/tiles-engine';
-import { UiNode, UiNodeInteraction } from '../ui-node';
+import { Entity, Injectable, Parent, Query, QueryBuilder, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
 import { UiEvent } from '../ui-event';
+import { UiFocus } from '../ui-focus';
+import { UiNode, UiNodeInteraction } from '../ui-node';
 
 
-/**
- * Processes user interaction events (mouse, touch, etc) of {@link UiNode UI nodes}.
- *
- * @see UiNode.interaction
- */
-export class EventSystem extends ProcessingSystem {
+/** Handles UI events.*/
+@Injectable()
+export class EventSystem extends ReactiveSystem {
 
-  /**
-   * Keeps track of entities on which the pointer is pressing down on.
-   *
-   * @internal
-   */
-  private readonly _down = new Set<Entity>();
-
-  /**
-   * Storage for {@link UiNode} components.
-   *
-   * @internal
-   */
+  /** @internal */
   private nodes!: Storage<UiNode>;
 
-  /**
-   * Storage for {@link UiNode} components.
-   *
-   * @internal
-   */
+  /** @internal */
   private parents!: Storage<Parent>;
+
+  /** @internal */
+  private readonly queue: { [key: Entity]: UiNodeInteraction } = {};
+
+  constructor(public readonly focus: UiFocus) {
+    super();
+  }
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
@@ -40,6 +30,10 @@ export class EventSystem extends ProcessingSystem {
   public onInit(world: World): void {
     this.nodes = world.storage(UiNode);
     this.parents = world.storage(Parent);
+  }
+
+  private capture(): void {
+    this.focus.captured = true;
   }
 
   /** @internal */
@@ -56,81 +50,73 @@ export class EventSystem extends ProcessingSystem {
     }
   }
 
-  /** @internal */
-  private setInteraction(target: Entity, node: UiNode, interaction: UiNodeInteraction): void {
-    if (interaction !== node.interaction) {
-      node.interaction = interaction;
-
-      const event = new UiEvent(target, interaction);
-
-      this.pushInteractionEvent(target, node, event);
-    }
-  }
-
-  /**
-   * Sets the {@link UiNode node} of `target` as "{@link UiNodeInteraction.Down down}". The
-   * change requires a frame tick before it takes effect.
-   */
+  /** Queues a {@link UiNodeInteraction.Down} interaction on the given `target` entity. */
   public down(target: Entity): this {
-    this._down.add(target);
+    this.queue[target] = UiNodeInteraction.Down
 
     return this;
   }
 
-  /**
-   * Sets the {@link UiNode node} of `target` as {@link UiNodeInteraction.Up up}. This only
-   * works if the entity was {@link UiNodeInteraction.Down down} before. The change requires
-   * a frame tick before it takes effect.
-   */
+  /** Queues a {@link UiNodeInteraction.Up} interaction on the given `target` entity. */
   public up(target: Entity): this {
-    this._down.delete(target);
+    this.queue[target] = UiNodeInteraction.Up
 
     return this;
-  }
-
-  /** @internal */
-  private setupViewInteraction(entity: Entity, root: UiNode): void {
-    root.container.interactive = true;
-
-    root.container.on('pointerdown', () => {
-      this.down(entity);
-    });
-
-    root.container.on('pointerup', () => {
-      this.up(entity);
-    });
   }
 
   /** @inheritDoc */
-  public update(): void {
+  public onEntityAdded(world: World, entity: Entity): void {
+    const node = this.nodes.get(entity);
+
+    // Event for UiFocus capture. This will be registered even if the node is not
+    // interactive. Todo: Add a flag to control this behavior for transient nodes?
+    node.container.on('pointerdown', this.capture.bind(this));
+
+    // All nodes need to be made interactive for UiFocus capture.
+    node.container.interactive = true;
+
+    if (node.interactive) {
+      node.container
+        .on('pointerdown', () => this.down(entity))
+        .on('pointerup', () => this.up(entity));
+    }
+  }
+
+  /** @inheritDoc */
+  public onEntityRemoved(world: World, entity: Entity): void {
+    this.nodes.get(entity).container.removeAllListeners();
+  }
+
+  public consume(entity: Entity): UiNodeInteraction {
+    const event = this.queue[entity] ?? UiNodeInteraction.None;
+
+    this.queue[entity] = UiNodeInteraction.None;
+
+    return event;
+  }
+
+  /** @inheritDoc */
+  public update(world: World): void {
+    super.update(world);
+
+    // Reset the captured UI event.
+    this.focus.captured = false;
+
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
-      // If node is not interactive, skip processing entirely.
+      // If node is not interactive, skip processing the next step.
       if (! node.interactive) {
         continue;
       }
 
-      // Make PIXI view interactive if necessary.
-      if (! node.container.interactive) {
-        this.setupViewInteraction(entity, node);
+      const interaction = this.consume(entity);
+
+      if (interaction !== UiNodeInteraction.None) {
+        const event = new UiEvent(entity, interaction);
+
+        this.pushInteractionEvent(entity, node, event);
       }
-
-      if (this._down.has(entity)) {
-        this.setInteraction(entity, node, UiNodeInteraction.Down);
-
-        continue;
-      }
-
-      // When node is not pressed, but still has the interaction, the press was released
-      // on this frame.
-      if (node.interaction === UiNodeInteraction.Down) {
-        this.setInteraction(entity, node, UiNodeInteraction.Up);
-
-        continue;
-      }
-
-      this.setInteraction(entity, node, UiNodeInteraction.None);
     }
   }
 

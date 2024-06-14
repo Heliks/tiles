@@ -8,11 +8,11 @@ import { UiEvent } from './ui-event';
 /** Possible interactions with {@link UiNode ui nodes}. */
 export enum UiNodeInteraction {
   /** User is currently not interacting with this node. */
-  None,
+  None = 'none',
   /** Node is pressed down (e.g. mouse down, touch down) */
-  Down,
+  Down = 'down',
   /** Node was released this frame (e.g. mouse up, touch up). */
-  Up
+  Up = 'up'
 }
 
 /**

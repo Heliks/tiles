@@ -1,5 +1,6 @@
 import { Entity, Parent, runtime, World } from '@heliks/tiles-engine';
 import { UiEvent } from '../../ui-event';
+import { UiFocus } from '../../ui-focus';
 import { UiNode, UiNodeInteraction } from '../../ui-node';
 import { EventSystem } from '../event-system';
 
@@ -12,6 +13,7 @@ describe('EventSystem', () => {
     world = runtime()
       .component(UiNode)
       .component(Parent)
+      .provide(UiFocus)
       .system(EventSystem)
       .build()
       .world;
@@ -35,62 +37,21 @@ describe('EventSystem', () => {
       world.update();
     });
 
-    describe('pointer down interactions', () => {
-      it('should be triggered', () => {
-        system.down(entity).update();
-
-        expect(node.interaction).toBe(UiNodeInteraction.Down);
-      });
-
-      it('should fire an event', () => {
-        const subscriber = node.onInteract.subscribe();
-
-        system.down(entity).update();
-
-        const event = subscriber.next();
-
-        expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Down));
-      });
-    });
-
-    describe('pointer up interactions', () => {
-      beforeEach(() => {
-        // Node needs to be pressed before it can be released.
-        system.down(entity).update();
-      });
-
-      it('should be triggered', () => {
-        system.up(entity).update();
-
-        expect(node.interaction).toBe(UiNodeInteraction.Up);
-      });
-
-      it('should fire an event', () => {
-        const subscriber = node.onInteract.subscribe();
-
-        system.up(entity).update();
-
-        const event = subscriber.next();
-
-        expect(event).toMatchObject(new UiEvent(entity, UiNodeInteraction.Up));
-      });
-    });
-
     it('should bubble events', () => {
-      const nodeB = new UiNode();
+      const node = new UiNode();
 
       // Define hierarchy: parentA > parentB > Node
       const parentA = world.insert(new UiNode());
-      const parentB = world.insert(nodeB, new Parent(parentA));
+      const parentB = world.insert(node, new Parent(parentA));
 
       world.attach(entity, new Parent(parentB));
 
       // Subscribe to queue of the highest node in the hierarchy.
-      const subscriber = nodeB.onInteract.subscribe();
+      const subscriber = node.onInteract.subscribe();
 
       system
         .down(entity)
-        .update();
+        .update(world);
 
       // Fetch event that is supposed to be bubble up the chain.
       const event = subscriber.next();

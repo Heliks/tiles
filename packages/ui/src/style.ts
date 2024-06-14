@@ -13,6 +13,12 @@ export enum DisplayContext {
 
 export interface TextStyle {
 
+  /** Defines the color of the text border. */
+  borderColor?: number;
+
+  /** Defines the width of the text border */
+  borderWidth?: number;
+
   /** Text color. */
   color?: number;
 
