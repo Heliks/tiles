@@ -19,6 +19,9 @@ export interface SpriteAttributes<I = unknown> extends Attributes {
   /** Sprite tint color. */
   tint?: number;
 
+  /** Sprite scale. */
+  scale?: number;
+
 }
 
 /** Element that displays a sprite. */
@@ -31,6 +34,10 @@ export class Sprite implements ElementFactory<SpriteAttributes> {
 
     if (attributes.tint !== undefined) {
       sprite.view.tint = attributes.tint;
+    }
+
+    if (attributes.scale !== undefined) {
+      sprite.scale = attributes.scale;
     }
 
     return world.insert(

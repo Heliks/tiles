@@ -1,8 +1,8 @@
+import { Node, Rect, Size } from '@heliks/flex';
 import { Entity, World } from '@heliks/tiles-engine';
 import { Text } from 'pixi.js';
 import { Element } from '../element';
 import { Input } from '../input';
-import { Node, Rect, Size } from '../layout';
 import { Style } from '../style';
 
 

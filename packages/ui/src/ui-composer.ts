@@ -1,10 +1,10 @@
+import { FlexDirection } from '@heliks/flex';
 import { Handle } from '@heliks/tiles-assets';
 import { Entity, Parent, World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { Element } from './element';
 import { UiSprite, UiText, UiTexture } from './elements';
-import { FlexDirection } from './layout';
 import { Style } from './style';
 import { UiElement } from './ui-element';
 import { UiNode } from './ui-node';

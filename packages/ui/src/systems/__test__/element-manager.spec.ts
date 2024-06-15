@@ -1,6 +1,5 @@
 import { App, Parent, runtime, World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
-import { NoopAttribute } from '../../__test__/utils/noop-attribute';
 import { NoopElement } from '../../__test__/utils/noop-element';
 import { SpawnOnInit } from '../../__test__/utils/spawn-on-init';
 import { SpawnOnUpdate } from '../../__test__/utils/spawn-on-update';
@@ -12,7 +11,6 @@ import { UiElement } from '../../ui-element';
 import { UiNode } from '../../ui-node';
 import { ElementManager, setupHostContext } from '../element-manager';
 import { MaintainLayouts } from '../maintain-layouts';
-
 
 
 describe('setupHostContext', () => {
@@ -93,22 +91,6 @@ describe('ElementManager', () => {
 
       expect(onInit).toHaveBeenCalledWith(world, entity);
     });
-
-    it('should call OnInit lifecycle on attributes', () => {
-      class OnInitAttribute extends NoopAttribute implements OnInit {
-        onInit = jest.fn();
-      }
-
-      const attribute = new OnInitAttribute();
-      const element = new UiElement(new NoopElement());
-      const entity = world.insert(element);
-
-      element.attr('foo', attribute);
-
-      system.emitOnInit(world, entity, element);
-
-      expect(attribute.onInit).toHaveBeenCalledWith(world, entity);
-    });
   });
 
   describe('emitOnBeforeInit()', () => {
@@ -126,23 +108,6 @@ describe('ElementManager', () => {
 
       expect(onBeforeInit).toHaveBeenCalledWith(world, entity);
     });
-
-    it('should call OnBeforeInit lifecycle on attributes', () => {
-      class OnBeforeInitAttribute extends NoopAttribute implements OnBeforeInit {
-        onBeforeInit = jest.fn();
-      }
-
-      const element = new UiElement(new NoopElement());
-      const attribute = new OnBeforeInitAttribute();
-
-      const entity = world.insert(element);
-
-      element.attr('foo', attribute);
-
-      system.emitOnBeforeInit(world, entity, element);
-
-      expect(attribute.onBeforeInit).toHaveBeenCalledWith(world, entity);
-    });
   });
 
   describe('emitOnDestroy()', () => {
@@ -159,22 +124,6 @@ describe('ElementManager', () => {
       const onDestroy = element.instance.onDestroy;
 
       expect(onDestroy).toHaveBeenCalledWith(world, entity);
-    });
-
-    it('should call OnDestroy lifecycle on attributes', () => {
-      class OnDestroyAttribute extends NoopAttribute implements OnDestroy {
-        onDestroy = jest.fn();
-      }
-
-      const element = new UiElement(new NoopElement());
-      const attribute = new OnDestroyAttribute();
-      const entity = world.insert(element);
-
-      element.attr('foo', attribute);
-
-      system.emitOnDestroy(world, entity, element);
-
-      expect(attribute.onDestroy).toHaveBeenCalledWith(world, entity);
     });
   });
 

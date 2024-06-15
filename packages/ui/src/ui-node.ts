@@ -1,6 +1,6 @@
+import { Display, Node } from '@heliks/flex';
 import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { Container } from 'pixi.js';
-import { Display, Node } from './layout';
 import { Style } from './style';
 import { UiEvent } from './ui-event';
 

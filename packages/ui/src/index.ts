@@ -3,14 +3,26 @@ import { Style } from './style';
 import { UiComposer } from './ui-composer';
 import { UiNode } from './ui-node';
 
+// Re-export flex algorithm for convenience.
+export {
+  AlignContent,
+  FlexDirection,
+  Node,
+  Rect,
+  Sides,
+  Size,
+  Unit,
+  block,
+  fill,
+  auto,
+  rect
+} from '@heliks/flex';
 
-export * from './attributes';
-export { AlignContent, FlexDirection, Node, Rect, Sides, Size, Unit, block, fill, auto, rect } from './layout';
-
+// Directories.
 export * from './elements';
 export * from './providers';
 
-export * from './attribute';
+// Files.
 export * from './context';
 export * from './element';
 export * from './input';

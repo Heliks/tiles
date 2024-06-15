@@ -1,10 +1,7 @@
 import { Entity } from '@heliks/tiles-engine';
-import { Attribute } from './attribute';
-import { AttributeBinding } from './attribute-binding';
 import { Binding, ContextRef, PassByFunction, PassByFunctionCallback, PassByReference, PassByValue } from './context';
 import { parseObjectPath } from './context/utils';
 import { Element } from './element';
-import { getInputs } from './input';
 
 
 /** Values that can be passed into {@link UiElement.bind()}. */
@@ -19,13 +16,6 @@ export type UiElementBindingValue = string | PassByFunctionCallback;
  * - `C`: The elements' context type. Usually this is the element itself.
  */
 export class UiElement<C extends object = object, E extends Element<C> = Element<C>> {
-
-  /**
-   * All {@link Attribute attributes} that are attached to this element. Attributes
-   * are evaluated before the element itself and can additionally modify its behavior
-   * or appearance.
-   */
-  public readonly attributes: AttributeBinding[] = [];
 
   /**
    * Contains all bindings for this element.
@@ -59,22 +49,6 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   /** @see Element.getContext */
   public getContext(): C {
     return this.instance.getContext();
-  }
-
-  /**
-   * Adds an {@link Attribute} and binds the `key` of the local {@link context} reference
-   * as the input that will be passed into the attribute.
-   */
-  public attr(key: string, attribute: Attribute): this {
-    const input = getInputs(attribute)[0];
-
-    this.attributes.push(new AttributeBinding(
-      attribute,
-      key,
-      input
-    ));
-
-    return this;
   }
 
   /**

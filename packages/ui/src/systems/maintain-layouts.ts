@@ -1,3 +1,4 @@
+import { Node } from '@heliks/flex';
 import {
   Entity,
   Injectable,
@@ -9,7 +10,6 @@ import {
   Storage,
   World
 } from '@heliks/tiles-engine';
-import { Node } from '../layout';
 import { UiNode } from '../ui-node';
 
 

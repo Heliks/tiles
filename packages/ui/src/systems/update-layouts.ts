@@ -1,3 +1,4 @@
+import { compute, Rect } from '@heliks/flex';
 import {
   Injectable,
   InjectStorage,
@@ -8,7 +9,6 @@ import {
   Screen,
   Storage
 } from '@heliks/tiles-engine';
-import { compute, Rect } from '../layout';
 import { UiNode } from '../ui-node';
 
 

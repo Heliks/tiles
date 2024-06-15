@@ -1,5 +1,5 @@
+import { Display } from '@heliks/flex';
 import { Injectable, InjectStorage, ProcessingSystem, Query, QueryBuilder, Storage } from '@heliks/tiles-engine';
-import { Display } from '../layout';
 import { UiNode } from '../ui-node';
 
 

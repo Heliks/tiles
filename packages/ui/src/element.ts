@@ -1,6 +1,6 @@
+import { Node as LayoutNode, Rect, Size } from '@heliks/flex';
 import { Entity, World } from '@heliks/tiles-engine';
 import { Drawable } from '@heliks/tiles-pixi';
-import { Node as LayoutNode, Rect, Size } from './layout';
 
 
 /**

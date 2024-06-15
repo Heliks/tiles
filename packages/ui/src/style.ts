@@ -1,6 +1,6 @@
+import { Style as BaseStyle } from '@heliks/flex';
 import { Vec2 } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
-import { Style as BaseStyle } from './layout';
 
 
 /** Defines the context to which {@link UiNode nodes} are aligned to. */

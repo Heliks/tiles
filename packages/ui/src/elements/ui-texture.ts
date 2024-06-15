@@ -1,8 +1,8 @@
+import { Rect, Size } from '@heliks/flex';
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
 import { Element } from '../element';
-import { Rect, Size } from '../layout';
 
 
 /** Displays a texture. */

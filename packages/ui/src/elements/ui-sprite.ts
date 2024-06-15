@@ -1,9 +1,10 @@
+import { Rect, Size } from '@heliks/flex';
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
 import { Element } from '../element';
-import { Rect, Size } from '../layout';
+import { Input } from '../input';
 
 
 /** Displays a sprite. */
@@ -17,6 +18,10 @@ export class UiSprite<I = unknown> implements Element {
     Size.px(0),
     Size.px(0)
   );
+
+  /** Sprite scale. */
+  @Input()
+  public scale = 1;
 
   /** @internal */
   private currentId?: I;
@@ -50,10 +55,13 @@ export class UiSprite<I = unknown> implements Element {
       this.view.visible = true;
       this.view.texture = asset.texture(this.spriteIndex);
 
+      this.view.scale.x = this.scale;
+      this.view.scale.y = this.scale;
+
       this.currentId = this.spriteIndex;
 
-      this.size.width.value = this.view.texture.width;
-      this.size.height.value = this.view.texture.height;
+      this.size.width.value = this.view.texture.width * this.scale;
+      this.size.height.value = this.view.texture.height * this.scale;
     }
   }
 

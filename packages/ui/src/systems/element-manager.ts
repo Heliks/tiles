@@ -7,7 +7,6 @@ import { UiNode } from '../ui-node';
 import { MaintainLayouts } from './maintain-layouts';
 
 
-
 /**
  * Assigns the appropriate context host to the element of `entity`. The host will
  * immediately share data with the elements' context.
@@ -54,70 +53,24 @@ export class ElementManager extends ReactiveSystem {
       .build();
   }
 
-  /**
-   * Emits the {@link OnBeforeInit} lifecycle on the given `element` and its attributes.
-   *
-   * @param world Entity world.
-   * @param entity Owner of the {@link element} component.
-   * @param element Component on which the lifecycle will be called.
-   */
+  /** @internal */
   public emitOnBeforeInit(world: World, entity: Entity, element: UiElement): void {
-    // OnInit lifecycle for attributes.
-    for (const item of element.attributes) {
-      if (canSetupBeforeInit(item.attribute)) {
-        item.attribute.onBeforeInit(world, entity);
-      }
-    }
-
     if (canSetupBeforeInit(element.instance)) {
       element.instance.onBeforeInit(world, entity);
     }
   }
 
-  /**
-   * Emits the {@link OnInit} lifecycle on the given `element` and its attributes.
-   *
-   * @param world Entity world.
-   * @param entity Owner of the {@link element} component.
-   * @param element Component on which the lifecycle will be called.
-   */
+  /** @internal */
   public emitOnInit(world: World, entity: Entity, element: UiElement): void {
-    // OnInit lifecycle for attributes.
-    for (const item of element.attributes) {
-      if (canInit(item.attribute)) {
-        item.attribute.onInit(world, entity);
-      }
-    }
-
     if (canInit(element.instance)) {
       element.instance.onInit(world, entity);
     }
   }
 
-  /**
-   * Emits the {@link OnDestroy} lifecycle on the given `element` and its attributes.
-   *
-   * @param world Entity world.
-   * @param entity Owner of the {@link element} component.
-   * @param element Component on which the lifecycle will be called.
-   */
+  /** @internal */
   public emitOnDestroy(world: World, entity: Entity, element: UiElement): void {
-    // OnInit lifecycle for attributes.
-    for (const item of element.attributes) {
-      if (canDestroy(item.attribute)) {
-        item.attribute.onDestroy(world, entity);
-      }
-    }
-
     if (canDestroy(element.instance)) {
       element.instance.onDestroy(world, entity);
-    }
-  }
-
-  private updateAttributes(node: UiNode, element: UiElement, context: ContextRef): void {
-    for (const item of element.attributes) {
-      item.resolve(context);
-      item.attribute.update(node);
     }
   }
 
@@ -125,15 +78,8 @@ export class ElementManager extends ReactiveSystem {
     const element = elements.get(entity);
     const node = nodes.get(entity);
 
-    // Note: Data is shared with the context host and attributes are evaluated even if
-    // the node is invisible, because when an attribute receives a new input, it could
-    // possibly make the element visible again.
     if (element.host !== undefined) {
-      const host = elements.get(element.host);
-
-      this.updateAttributes(node, element, host.context);
-
-      element.share(host);
+      element.share(elements.get(element.host));
     }
 
     if (node.hidden()) {
@@ -184,7 +130,6 @@ export class ElementManager extends ReactiveSystem {
     if (element.instance.view) {
       node.container.removeChild(element.instance.view);
     }
-
 
     this.eventLifecycle.unsubscribe(node);
     this.emitOnDestroy(world, entity, element);
