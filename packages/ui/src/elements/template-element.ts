@@ -5,7 +5,6 @@ import { OnDestroy, OnInit } from '../lifecycle';
 import { Document } from '../providers';
 
 
-
 export interface TemplateRenderer {
 
   /**
@@ -31,30 +30,16 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
   /** Contains the root entity of the rendered template. */
   public root?: Entity;
 
-  /** @internal */
-  private _changed = false;
+  /**
+   * The template will be rendered as long as this value evaluates to `true`, and
+   * destroyed when it changes to `false`. If the expression is a function, it will
+   * be called and its return value will be used instead.
+   */
+  @Input()
+  public expression: unknown = false;
 
   /** @internal */
   private _expression = false;
-
-  /**
-   * Updates the template expression depending on if `value` evaluates to `true` or
-   * to `false`. If `value` is a function, it will be called, and it's return value
-   * will be used instead.
-   */
-  @Input()
-  public set expression(value: unknown) {
-    const expression = typeof value === 'function' ? value() : Boolean(value);
-
-    if (expression !== this._expression) {
-      this._changed = true;
-      this._expression = expression;
-    }
-  }
-
-  public get expression(): unknown {
-    return this._expression;
-  }
 
   constructor(public readonly renderer: R) {}
 
@@ -63,6 +48,7 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
     return this;
   }
 
+  /** Renders the template if it isn't already rendered. */
   public render(world: World, entity: Entity): void {
     if (this.root !== undefined) {
       throw new Error('Component is already rendered.');
@@ -71,30 +57,39 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
     this.root = this.renderer.render(world, entity);
   }
 
+  /** Destroys the rendered template, if any. */
   public destroy(world: World): void {
     if (this.root !== undefined) {
       world.get(Hierarchy).destroy(world, this.root);
       
       this.root = undefined;
-      this._changed = false;
       this._expression = false;
     }
   }
 
+  /** Evaluates the template {@link expression}. */
+  public evaluate(): boolean {
+    return typeof this.expression === 'function' ? this.expression() : Boolean(this.expression);
+  }
+
   public apply(world: World, entity: Entity): void {
-    if (this._changed) {
-      if (this._expression) {
-        this.render(world, entity);
-      }
-      else {
-        this.destroy(world);
-      }
+    const expression = this.evaluate();
 
-      // Changes were applied successfully.
-      this._changed = false;
-
-      world.get(Document).invalidate();
+    // Expression has not changed. Exit early.
+    if (expression === this._expression) {
+      return;
     }
+
+    this._expression = expression;
+
+    if (this._expression) {
+      this.render(world, entity);
+    }
+    else {
+      this.destroy(world);
+    }
+
+    world.get(Document).invalidate();
   }
 
   /** @inheritDoc */

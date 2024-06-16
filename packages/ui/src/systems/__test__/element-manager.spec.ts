@@ -1,10 +1,10 @@
-import { App, Parent, runtime, World } from '@heliks/tiles-engine';
+import { App, Entity, Parent, runtime, World } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
 import { NoopElement } from '../../__test__/utils/noop-element';
 import { SpawnOnInit } from '../../__test__/utils/spawn-on-init';
 import { SpawnOnUpdate } from '../../__test__/utils/spawn-on-update';
-import { Host } from '../../context';
-import { OnBeforeInit, OnDestroy, OnInit } from '../../lifecycle';
+import { ContextRef, Host } from '../../context';
+import { OnBeforeInit, OnChanges, OnDestroy, OnInit } from '../../lifecycle';
 import { Document } from '../../providers/document';
 import { EventLifecycle } from '../../providers/event-lifecycle';
 import { UiElement } from '../../ui-element';
@@ -128,7 +128,7 @@ describe('ElementManager', () => {
   });
 
   describe('onEntityAdded()', () => {
-    it('should initialize the elements ContextRef', () => {
+    it('should initialize the elements context reference', () => {
       // Test context.
       const context = {};
       const element = new UiElement({
@@ -140,6 +140,25 @@ describe('ElementManager', () => {
       system.onEntityAdded(world, world.insert(new UiNode(), element));
 
       expect(element.context.context).toBe(context);
+    });
+
+    it('should enable change tracking when context reference has OnChanges lifecycle', () => {
+      const element = new NoopElement();
+
+      element.getContext = jest.fn().mockReturnValue({
+        onChanges: () => {}
+      });
+
+      const entity = world.insert(
+        new UiNode(),
+        new UiElement(element)
+      );
+
+      system.onEntityAdded(world, entity);
+
+      const context = world.storage(UiElement).get(entity).context;
+
+      expect(context.track).toBeTruthy();
     });
 
     it('should insert element view as first child into node container', () => {
@@ -258,6 +277,49 @@ describe('ElementManager', () => {
 
       world.insert(new UiNode(), element1);
       world.update();
+    });
+  });
+
+  describe('updateChanges()', () => {
+    let component: UiElement;
+    let element: NoopElement & OnChanges;
+    let entity: Entity;
+
+    beforeEach(() => {
+      element = new class extends NoopElement {
+        foo = false;
+        onChanges = jest.fn();
+      }
+
+      component = new UiElement(element);
+
+      // Create a context reference from the inner element and track changes. Usually
+      // this happens in onEntityAdded().
+      component.context = ContextRef.from(element);
+      component.context.track = true;
+
+      // Trigger a change that tests can react on.
+      component.context.setInput('foo', true);
+
+      // Create the elements owner.
+      entity = world.insert(component);
+    });
+
+    it('it should call on changes lifecycle when context has changes', () => {
+      system.updateChanges(world, entity, component);
+
+      expect(element.onChanges).toHaveBeenCalledWith(world, entity, {
+        foo: {
+          previous: false,
+          current: true
+        }
+      });
+    });
+
+    it('it should reset changes after OnInit lifecycle invocation', () => {
+      system.updateChanges(world, entity, component);
+
+      expect(component.context.changes).toMatchObject({});
     });
   });
 });

@@ -1,4 +1,5 @@
 import { getInputs } from '../input';
+import { ValueChanges } from '../lifecycle';
 
 
 /**
@@ -9,16 +10,30 @@ import { getInputs } from '../input';
 export class ContextRef<C extends object = object> {
 
   /**
+   * Indicates if one of the data-bound properties on the referenced context had their
+   * value changed since the last invocation of the {@link OnInit} lifecycle.
+   */
+  public changed = false;
+
+  /**
+   * Tracks changes to data-bound properties on the referenced context since its last
+   * invocation of the {@link OnInit} lifecycle. {@link track Tracking} must be enabled
+   * on this reference.
+   */
+  public changes: ValueChanges<C> = {};
+
+  /**
    * Keys of the referenced {@link context} that are inputs. Input properties receive
    * data from their host context.
    */
   public readonly inputs = new Set<string>();
 
   /**
-   * Indicates if one of the {@link inputs} that are passed into the reference context
-   * had their value changed recently.
+   * If set to `true`, changes to data-bound properties (e.g. inputs) on the referenced
+   * context will be tracked at {@link changes} and passed into its {@link OnInit}
+   * lifecycle.
    */
-  public changed = false;
+  public track = false;
 
   /**
    * @param context Referenced context.
@@ -55,12 +70,21 @@ export class ContextRef<C extends object = object> {
   }
 
   public setInput(property: string, value: unknown): void {
-    if (this.getInput(property) !== value) {
+    const previous = this.getInput(property);
+
+    if (previous !== value) {
       // Safety: We don't really care what is assigned here. Type safety should be
       // ensured at compile time.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.context[property as keyof C] = value as any;
-      this.changed = true;
+
+      if (this.track) {
+        this.changed = true;
+        this.changes[property as keyof C] = {
+          current: value,
+          previous
+        };
+      }
     }
   }
 

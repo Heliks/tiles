@@ -1,6 +1,6 @@
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
 import { ContextRef, Host } from '../context';
-import { canDestroy, canInit, canSetupBeforeInit } from '../lifecycle';
+import { canDestroy, canInit, canListenToChanges, canSetupBeforeInit } from '../lifecycle';
 import { Document, EventLifecycle } from '../providers';
 import { UiElement } from '../ui-element';
 import { UiNode } from '../ui-node';
@@ -74,9 +74,28 @@ export class ElementManager extends ReactiveSystem {
     }
   }
 
+  /**
+   * Triggers the {@link OnChanges} lifecycle if the given elements changes are tracked
+   * and there are unprocessed input changes.
+   */
+  public updateChanges(world: World, entity: Entity, element: UiElement): void {
+    if (element.context.track && element.context.changed) {
+      element.context.changed = false;
+
+      if (canListenToChanges(element.context.context)) {
+        element.context.context.onChanges(world, entity, element.context.changes);
+
+        // Reset consumed changes.
+        element.context.changes = {}
+      }
+    }
+  }
+
   public updateEntity(world: World, elements: Storage<UiElement>, nodes: Storage<UiNode>, entity: Entity): void {
     const element = elements.get(entity);
     const node = nodes.get(entity);
+
+    this.updateChanges(world, entity, element);
 
     if (element.host !== undefined) {
       element.share(elements.get(element.host));
@@ -111,6 +130,9 @@ export class ElementManager extends ReactiveSystem {
     }
 
     element.context = ContextRef.from(element.getContext());
+
+    // Track input changes if the context implements the OnChanges lifecycle.
+    element.context.track = canListenToChanges(element.context.context);
 
     setupHostContext(world, entity);
 

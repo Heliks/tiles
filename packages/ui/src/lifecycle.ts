@@ -69,16 +69,45 @@ export interface OnEvent {
 
 }
 
+/**
+ * A simple change from a previous value to a new one on a UI resource.
+ *
+ * @see ValueChanges
+ */
+export interface ValueChange {
+  previous: any;
+  current: any;
+}
+
+/**
+ * A map of {@link ValueChange changes} on a UI resource, stored at the property they
+ * changed on the resource. This is passed in the {@link OnChanges} lifecycle.
+ */
+export type ValueChanges<C = unknown> = {
+  [K in keyof C]?: ValueChange;
+}
+
+/**
+ * A lifecycle hook that is called after any data-bound property on a UI resource has
+ * been changed. Implement this to react to changes in inputs.
+ */
+export interface OnChanges {
+
+  /**
+   * Callback that is invoked after a data-bound property on a UI resource has
+   * been changed.
+   *
+   * @param world Entity world.
+   * @param entity Owner of the UI resource in which the lifecycle occurred.
+   * @param changes A map of all changes that occurred.
+   */
+  onChanges(world: World, entity: Entity, changes: ValueChanges): void;
+
+}
 
 /** Returns `true` if the given `target` has an {@link OnInit} lifecycle event. */
 export function canInit(target: unknown): target is OnInit {
   return Boolean((target as OnInit)?.onInit);
-}
-
-export function emitOnInit(target: unknown, world: World, entity: Entity): void {
-  if (canInit(target)) {
-    target.onInit(world, entity);
-  }
 }
 
 export function canSetupBeforeInit(target: unknown): target is OnBeforeInit {
@@ -93,4 +122,9 @@ export function canDestroy(target: unknown): target is OnDestroy {
 /** Returns `true` if the given `target` has an {@link OnEvent} lifecycle event. */
 export function canReceiveEvents(target: unknown): target is OnEvent {
   return Boolean((target as OnEvent)?.onEvent);
+}
+
+/** Returns `true` if the given `target` has an {@link OnChanges} lifecycle event. */
+export function canListenToChanges(target: object): target is OnChanges {
+  return Boolean((target as OnChanges).onChanges);
 }
