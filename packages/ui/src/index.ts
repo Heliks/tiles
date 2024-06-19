@@ -29,7 +29,6 @@ export * from './input';
 export * from './lifecycle';
 export * from './style';
 export * from './ui-bundle';
-export * from './ui-component';
 export * from './ui-composer';
 export * from './ui-element';
 export * from './ui-event';

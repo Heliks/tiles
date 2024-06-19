@@ -1,16 +1,16 @@
 import { Node } from '@heliks/flex';
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
-import { World } from '@heliks/tiles-engine';
+import { Entity, World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { NineSlicePlane, Texture } from 'pixi.js';
-import { Element } from '../element';
+import { Element, Postprocess } from '../element';
 
 
 /**
  * Displays a {@link NineSlicePlane} texture that can be stretched in all directions
  * using 9-slice scaling.
  */
-export class UiSlicePlane<I = unknown> implements Element {
+export class UiSlicePlane<I = unknown> implements Element, Postprocess {
 
   /** @inheritDoc */
   public readonly view = new NineSlicePlane(Texture.WHITE, 0, 0, 0, 0);
@@ -62,7 +62,7 @@ export class UiSlicePlane<I = unknown> implements Element {
   }
 
   /** @inheritDoc */
-  public update(world: World, _: unknown, layout: Node): void {
+  public update(world: World): void {
     const texture = this.getPlaneTexture(world);
 
     if (! texture) {
@@ -71,12 +71,14 @@ export class UiSlicePlane<I = unknown> implements Element {
 
     this.view.texture = texture;
 
-    // Inherit view size from node that displays this element.
-    this.view.width = layout.size.width;
-    this.view.height = layout.size.height;
-
     // Texture is loaded, therefore sprite can be made visible again.
     this.view.visible = true;
+  }
+
+  /** @inheritDoc */
+  public postprocess(world: World, entity: Entity, layout: Node): void {
+    this.view.width = layout.size.width;
+    this.view.height = layout.size.height;
   }
 
 }

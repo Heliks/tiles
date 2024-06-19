@@ -5,6 +5,7 @@ import { Document, EventLifecycle } from './providers';
 import {
   DrawUi,
   ElementManager,
+  ElementPostprocessor,
   EventSystem,
   MaintainLayouts,
   MaintainNodes,
@@ -59,6 +60,7 @@ export class UiBundle implements Bundle {
       .system(UpdateLayouts, UiSchedule.Compute)
       .system(MaintainNodes, UiSchedule.Compute)
       .system(UpdateNodes, UiSchedule.Compute)
+      .system(ElementPostprocessor, UiSchedule.Compute)
       .system(DrawUi, RendererSchedule.Update);
   }
 

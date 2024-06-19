@@ -159,10 +159,16 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   public instance!: T;
 
   /**
+   * Invalidating the component will destroy the entity hierarchy and rebuilds them
+   * on the same frame.
+   */
+  public invalid = false;
+
+  /**
    * Contains the root entity of the {@link UiNode} tree that is being rendered by
    * this UI component.
    */
-  public root!: Entity;
+  public root?: Entity;
 
   /**
    * @param component UI Component type that should be rendered by this element. Will be
@@ -264,6 +270,20 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     this.root = entity;
   }
 
+  public destroy(world: World, entity: Entity) {
+    if (! this.root) {
+      return;
+    }
+
+    world.get(Hierarchy).destroy(world, this.root);
+
+    if (canDestroy(this.instance)) {
+      this.instance.onDestroy(world, entity);
+    }
+
+    this.root = undefined;
+  }
+
   /** @inheritDoc */
   public onInit(world: World, entity: Entity): void {
     world.attach(entity, new Host());
@@ -274,25 +294,23 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     }
 
     this.render(world, entity);
-
-    // this.root = this.instance.render(world);
-    // this.instance.update(world);
-
-    // The component node tree is always a child of this element.
-    world.attach(this.root, new Parent(entity));
   }
 
   /** @inheritDoc */
   public onDestroy(world: World, entity: Entity): void {
-    world.get(Hierarchy).destroy(world, this.root);
-
-    if (canDestroy(this.instance)) {
-      this.instance.onDestroy(world, entity);
-    }
+    this.destroy(world, entity);
   }
 
   /** @inheritDoc */
-  public update(): void {
+  public update(world: World, entity: Entity): void {
+    if (this.invalid) {
+      this.destroy(world, entity);
+      this.render(world, entity);
+      this.invalid = false;
+    }
+
+    this.instance.update?.(world);
+    
     return;
   }
 
