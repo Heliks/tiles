@@ -31,10 +31,7 @@ export class UpdateLayouts extends ProcessingSystem {
   public build(query: QueryBuilder): Query {
     // We are only interested in top-level nodes because layout computation is recursive,
     // therefore, children don't need to be computed separately.
-    return query
-      .contains(UiNode)
-      .excludes(Parent)
-      .build();
+    return query.contains(UiNode).excludes(Parent).build();
   }
 
   /** @inheritDoc */

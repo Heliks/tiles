@@ -301,11 +301,11 @@ describe('ElementManager', () => {
       // Trigger a change that tests can react on.
       component.context.setInput('foo', true);
 
-      // Create the elements owner.
+      // Create the elements' owner.
       entity = world.insert(component);
     });
 
-    it('it should call on changes lifecycle when context has changes', () => {
+    it('should invoke the OnInit lifecycle when context has changes', () => {
       system.updateChanges(world, entity, component);
 
       expect(element.onChanges).toHaveBeenCalledWith(world, entity, {

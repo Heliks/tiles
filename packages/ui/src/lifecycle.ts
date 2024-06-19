@@ -75,13 +75,15 @@ export interface OnEvent {
  * @see ValueChanges
  */
 export interface ValueChange {
-  previous: any;
   current: any;
+  previous: any;
 }
 
 /**
  * A map of {@link ValueChange changes} on a UI resource, stored at the property they
  * changed on the resource. This is passed in the {@link OnChanges} lifecycle.
+ * 
+ * - `T`: The context on which values were changed.
  */
 export type ValueChanges<C = unknown> = {
   [K in keyof C]?: ValueChange;

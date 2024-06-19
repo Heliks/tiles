@@ -4,6 +4,20 @@ import { Drawable } from '@heliks/tiles-pixi';
 
 
 /**
+ * UI {@link Element elements} that implement this interface will be post-processed
+ * after all UI systems are finished with the current frame, but before they are
+ * passed into the renderer schedule. While most elements influence the layout, some
+ * may want to act on the fully calculated layout (a.E.: stretching across the entire
+ * background, etc.). This is where this logic can be implemented.
+ */
+export interface Postprocess {
+
+  /** Callback that is invoked after all UI and layout calculations are done. */
+  postprocess(world: World, entity: Entity, layout: LayoutNode): void;
+
+}
+
+/**
  * Implementation of a UI element.
  *
  * The element adds behavior to the {@link UiNode} to which it is attached to. Like HTML

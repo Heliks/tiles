@@ -78,7 +78,8 @@ export class EventSystem extends ReactiveSystem {
     if (node.interactive) {
       node.container
         .on('pointerdown', () => this.down(entity))
-        .on('pointerup', () => this.up(entity));
+        .on('pointerup', () => this.up(entity))
+        .on('pointercancel', () => console.log('POINTERCANCEL', entity));
     }
   }
 

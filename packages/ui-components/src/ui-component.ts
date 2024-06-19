@@ -96,4 +96,9 @@ export interface UiComponent {
    */
   render(world: World): JsxNode;
 
+  /**
+   * If defined, this function will be called once per frame.
+   */
+  update?(world: World): void;
+
 }

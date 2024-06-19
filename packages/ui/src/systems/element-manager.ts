@@ -130,8 +130,6 @@ export class ElementManager extends ReactiveSystem {
     }
 
     element.context = ContextRef.from(element.getContext());
-
-    // Track input changes if the context implements the OnChanges lifecycle.
     element.context.track = canListenToChanges(element.context.context);
 
     setupHostContext(world, entity);
@@ -177,13 +175,11 @@ export class ElementManager extends ReactiveSystem {
       }
     }
 
-    // If new elements were spawned during this pass, run the system again. This makes
-    // sure that new elements are fully processed on the same frame as they are spawned,
-    // preventing a short flickering as they appear. As this re-synchronizes entity
-    // queries, the new elements are also available to be processed by subsequent
-    // systems, like the layout update.
+    // If the document was invalidated by creating or destroying elements during this
+    // pass, we'll run the system again. This ensures that new elements are fully
+    // processed on the same frame as they are spawned, which prevents flickering and
+    // other frame related issues.
     if (this.document.invalid) {
-      // Trigger world update to re-synchronize the systems entity query with changes above.
       world.update();
      
       this.layouts.update(world);
