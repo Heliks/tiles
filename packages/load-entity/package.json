@@ -16,7 +16,7 @@
   "devDependencies": {
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
     "@heliks/tiles-assets": "workspace:^",

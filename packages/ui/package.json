@@ -24,11 +24,11 @@
     "pixi.js": "^5.3.3"
   },
   "devDependencies": {
-    "@types/node": "20.11.22",
+    "@types/node": "^20.9.0",
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
     "@heliks/tiles-pixi": "workspace:^",
-    "typescript": "^4.7.4",
+    "typescript": "^5.4.5",
     "pixi.js": "^5.3.3"
   }
 }
