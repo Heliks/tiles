@@ -182,8 +182,6 @@ export interface ParamInjection {
   index: number;
   /** If `true` the container will pass `undefined` if a binding can not be resolved. */
   optional: boolean;
-  /** The property key of the parameter. */
-  key: string | symbol;
 }
 
 

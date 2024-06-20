@@ -57,7 +57,7 @@ export class RigidBody {
   public dirty = true;
 
   // Todo: Document
-  public disabled = false;
+  public enabled = true;
 
   /**
    * Bitset that contains the collision group that will be assigned to attached colliders

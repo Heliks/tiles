@@ -3,7 +3,7 @@
   "description": "Tiles Box2D Module",
   "devDependencies": {
     "@heliks/tiles-engine": "workspace:^",
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   },
   "files": [
     "lib/*"
