@@ -1,24 +1,21 @@
 import { Injectable, Pivot, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { TmxGeometry } from '../parser';
+import { parseBitSet, TmxBitSet } from './bitset';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 /**
  * Properties found on shape {@link TmxGeometry geometry} that is supposed to be
- * parsed to a {@link Collider collider}
+ * parsed into a {@link Collider}.
  */
 export interface ColliderProps {
-
-  /** If `true`, the collider will be made into a {@link Collider.sensor sensor}. */
+  /** If `true`, the collider will be made into a {@link Collider.sensor}. */
   sensor?: boolean;
-
-  /** @see RigidBody.group */
-  group?: number;
-
-  /** @see RigidBody.mask */
-  mask?: number;
-
+  /** Bitset for the colliders collision group, if any. */
+  group?: TmxBitSet;
+  /** Bitset for the colliders collision mask, if any. */
+  mask?: TmxBitSet;
 }
 
 /** Creates physics components from {@link TmxGeometry Tiled geometry}. */
@@ -48,8 +45,14 @@ export class TmxPhysicsFactory {
     const collider = new Collider(shape);
 
     collider.sensor = Boolean(geometry.properties.sensor);
-    collider.group = geometry.properties.group;
-    collider.mask = geometry.properties.mask;
+
+    if (geometry.properties.group) {
+      collider.group = parseBitSet(geometry.properties.group);
+    }
+
+    if (geometry.properties.mask) {
+      collider.mask = parseBitSet(geometry.properties.mask);
+    }
 
     return collider;
   }

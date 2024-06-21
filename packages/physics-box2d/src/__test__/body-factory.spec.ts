@@ -1,16 +1,14 @@
-import { b2CircleShape, b2FixtureDef, b2PolygonShape, b2World } from '@flyover/box2d';
+import { b2CircleShape, b2FixtureDef, b2PolygonShape, b2World } from '@heliks/box2d';
 import { Circle, Rectangle } from '@heliks/tiles-engine';
-import { Collider, Material, MaterialManager } from '@heliks/tiles-physics';
+import { Collider, Material } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
 
 
 describe('BodyFactory', () => {
-  let materials: MaterialManager;
   let factory: Box2dBodyFactory;
 
   beforeEach(() => {
-    materials = new MaterialManager();
-    factory   = new Box2dBodyFactory(new b2World({ x: 0, y: 0 }), materials);
+    factory = new Box2dBodyFactory(new b2World({ x: 0, y: 0 }));
   });
 
   describe('fixtures', () => {
@@ -36,10 +34,7 @@ describe('BodyFactory', () => {
 
     it('should inherit material properties', () => {
       const material = new Material('test', 5, 6, 7);
-
-      materials.register(material);
-
-      const fixture = factory.getFixtureDef(new Collider(new Rectangle(0, 0), 'test'));
+      const fixture = factory.getFixtureDef(new Collider(new Rectangle(0, 0), material));
 
       expect(fixture).toMatchObject({
         density: material.density,

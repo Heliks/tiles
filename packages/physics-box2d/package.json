@@ -1,14 +1,14 @@
 {
   "author": "Felix Wolf",
   "dependencies": {
-    "@flyover/box2d": "1.0.1"
+    "@heliks/box2d": "file:../../../box2d.ts"
   },
   "description": "Box2D Adapter for @heliks/tiles-physics",
   "devDependencies": {
     "@heliks/tiles-engine": "workspace:^",
     "@heliks/tiles-physics": "workspace:^",
     "@heliks/tiles-pixi": "workspace:^",
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   },
   "files": [
     "lib/*"

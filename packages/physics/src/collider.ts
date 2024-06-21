@@ -1,5 +1,5 @@
 import { Circle, Rectangle, UUID, uuid } from '@heliks/tiles-engine';
-import { MaterialId } from './material';
+import { Material } from './material';
 
 
 /** A shape that can be attached to a collider to give it its physical form. */
@@ -9,11 +9,9 @@ export type ColliderShape = Circle | Rectangle;
 export interface ColliderData {
 
   /**
-   * Id of a physics material. If this is set the collider will inherit physical
-   * properties of that material such as friction or restitution.
-   * @see Material
+   * Material that is used by this collider. 
    */
-  material?: MaterialId;
+  material?: Material;
 
   /**
    * If set to `true` the collider will act as a sensor. Sensors detect collisions but
@@ -72,10 +70,9 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
 
   /**
    * @param shape Physical shape of the collider.
-   * @param material Id of a physics material. If this is set the collider will inherit
-   *  physical properties of that material such as friction or restitution.
+   * @param material (optional) The colliders material.
    */
-  constructor(public shape: T, public material?: MaterialId) {}
+  constructor(public shape: T, public material?: Material) {}
 
   /**
    * Creates a collider with a `Rectangle` shape.

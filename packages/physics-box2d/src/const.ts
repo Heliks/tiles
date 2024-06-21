@@ -1,4 +1,4 @@
-import { b2World } from '@flyover/box2d';
+import { b2World } from '@heliks/box2d';
 import { EventQueue, token, XY } from '@heliks/tiles-engine';
 
 

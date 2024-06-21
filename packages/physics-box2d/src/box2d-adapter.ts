@@ -1,4 +1,4 @@
-import { b2World } from '@flyover/box2d';
+import { b2World } from '@heliks/box2d';
 import { AppBuilder, EventQueue, Type, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';
@@ -7,7 +7,6 @@ import { B2_RAYCASTS, B2_WORLD } from './const';
 
 
 /* eslint-disable new-cap */
-
 export class Box2dAdapter implements PhysicsAdapter {
 
   /**

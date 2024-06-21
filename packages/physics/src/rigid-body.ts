@@ -2,7 +2,7 @@ import { ChangeAwareValue, Entity, EventQueue, Ignore, UUID, Vec2 } from '@helik
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
-import { MaterialId } from './material';
+import { Material } from './material';
 
 
 export enum RigidBodyType {
@@ -111,15 +111,15 @@ export class RigidBody {
    * @param material (optional) Default material for attached colliders that don't
    *  specify their own. Updating this does not affect already attached colliders.
    */
-  constructor(public readonly type = RigidBodyType.Static, public material?: MaterialId) {}
+  constructor(public readonly type = RigidBodyType.Static, public material?: Material) {}
 
   /** Creates a new dynamic rigid body. */
-  public static dynamic(material?: MaterialId): RigidBody {
+  public static dynamic(material?: Material): RigidBody {
     return new RigidBody(RigidBodyType.Dynamic, material);
   }
 
   /** Creates a new kinematic rigid body. */
-  public static kinematic(material?: MaterialId): RigidBody {
+  public static kinematic(material?: Material): RigidBody {
     return new RigidBody(RigidBodyType.Kinematic, material);
   }
 
