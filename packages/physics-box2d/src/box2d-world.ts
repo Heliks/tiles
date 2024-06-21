@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { b2Body, b2World } from '@flyover/box2d';
+import { b2Body, b2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
 import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
@@ -91,14 +91,14 @@ export class Box2dWorld extends Physics {
       return;
     }
 
-    body.SetActive(!component.disabled);
+    body.SetEnabled(component.enabled);
 
     syncBodyPosition(body, component, transform);
     syncBodyRotation(body, component, transform);
 
     // Apply force.
     if (component._force.read()) {
-      body.ApplyForce(component._force.value, body.GetWorldCenter());
+      body.ApplyForceToCenter(component._force.value, true);
     }
 
     syncBodyVelocity(body, component);
@@ -107,7 +107,7 @@ export class Box2dWorld extends Physics {
 
   /** @inheritDoc */
   public drawDebugData(): void {
-    this.world.DrawDebugData();
+    this.world.DebugDraw();
   }
 
   /** @inheritDoc */

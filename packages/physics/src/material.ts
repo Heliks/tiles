@@ -1,6 +1,3 @@
-import { MaterialId } from './material-manager';
-
-
 /**
  * A physics material is used to adjust physical properties density, friction and
  * restitution of a `Collider`.
@@ -20,7 +17,7 @@ export class Material {
    *  collider should be, closer  to 0 is less bouncy, closer to 1 more.
    */
   constructor(
-    public readonly id: MaterialId,
+    public readonly id: string,
     public readonly density = 0,
     public readonly friction = 0,
     public readonly restitution = 0
