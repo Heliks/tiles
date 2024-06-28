@@ -1,12 +1,39 @@
-import { Entity, Injectable, Parent, Query, QueryBuilder, ReactiveSystem, Storage, World } from '@heliks/tiles-engine';
+import {
+  Entity,
+  Injectable,
+  Parent,
+  Query,
+  QueryBuilder,
+  ReactiveSystem,
+  Storage,
+  Ticker,
+  World
+} from '@heliks/tiles-engine';
 import { UiEvent } from '../ui-event';
 import { UiFocus } from '../ui-focus';
 import { UiNode, UiNodeInteraction } from '../ui-node';
 
 
+export interface LongPressTimer {
+  origin: Entity;
+  timer: number;
+}
+
 /** Handles UI events.*/
 @Injectable()
 export class EventSystem extends ReactiveSystem {
+
+  /**
+   * Contains the active long-press timer, if any.
+   */
+  public longPress?: LongPressTimer;
+
+  /**
+   * Time in MS that the user needs to press down until a {@link UiEvent} with a
+   * {@link UiNodeInteraction.LongPress} interaction will be triggered on the origin
+   * of the active {@link longPress}.
+   */
+  public longPressTimeMs = 500;
 
   /** @internal */
   private nodes!: Storage<UiNode>;
@@ -17,7 +44,7 @@ export class EventSystem extends ReactiveSystem {
   /** @internal */
   private readonly queue: { [key: Entity]: UiNodeInteraction } = {};
 
-  constructor(public readonly focus: UiFocus) {
+  constructor(public readonly focus: UiFocus, public readonly ticker: Ticker) {
     super();
   }
 
@@ -37,7 +64,7 @@ export class EventSystem extends ReactiveSystem {
   }
 
   /** @internal */
-  private pushInteractionEvent(entity: Entity, node: UiNode, event: UiEvent): void {
+  public pushInteractionEvent(entity: Entity, node: UiNode, event: UiEvent): void {
     node.onInteract.push(event);
 
     // Bubble events.
@@ -78,8 +105,7 @@ export class EventSystem extends ReactiveSystem {
     if (node.interactive) {
       node.container
         .on('pointerdown', () => this.down(entity))
-        .on('pointerup', () => this.up(entity))
-        .on('pointercancel', () => console.log('POINTERCANCEL', entity));
+        .on('pointerup', () => this.up(entity));
     }
   }
 
@@ -88,12 +114,56 @@ export class EventSystem extends ReactiveSystem {
     this.nodes.get(entity).container.removeAllListeners();
   }
 
-  public consume(entity: Entity): UiNodeInteraction {
+  /**
+   * Returns the next queued {@link UiNodeInteraction} for the {@link UiNode} of the
+   * given `entity`, or {@link UiNodeInteraction.None} if no interaction is queued.
+   *
+   * This removes the interaction from the {@link queue}.
+   *
+   * When the queued interaction is a {@link UiNodeInteraction.Down}, a {@link longPress}
+   * timer will be triggered. Consuming a {@link UiNodeInteraction.Down} interaction will
+   * cancel any active long-press timer.
+   */
+  public consumeQueuedInteraction(entity: Entity): UiNodeInteraction {
     const event = this.queue[entity] ?? UiNodeInteraction.None;
 
     this.queue[entity] = UiNodeInteraction.None;
 
+    switch (event) {
+      case UiNodeInteraction.Up:
+        this.longPress = undefined;
+        break;
+      case UiNodeInteraction.Down:
+        this.longPress = {
+          origin: entity,
+          timer: 0
+        };
+        break;
+    }
+
     return event;
+  }
+
+  /**
+   * Updates the active {@link longPress} timer, if any.
+   *
+   * Might trigger a {@link UiEvent} with a {@link UiNodeInteraction.LongPress} interaction
+   * on the timers origin if it has exceeded the {@link longPressTimeMs} limit.
+   */
+  public updateLongPress(): void {
+    if (this.longPress) {
+      this.longPress.timer += this.ticker.delta;
+
+      if (this.longPress.timer >= this.longPressTimeMs) {
+        this.pushInteractionEvent(
+          this.longPress.origin,
+          this.nodes.get(this.longPress.origin),
+          new UiEvent(this.longPress.origin, UiNodeInteraction.LongPress)
+        )
+
+        this.longPress = undefined;
+      }
+    }
   }
 
   /** @inheritDoc */
@@ -103,6 +173,8 @@ export class EventSystem extends ReactiveSystem {
     // Reset the captured UI event.
     this.focus.captured = false;
 
+    this.updateLongPress();
+
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
@@ -111,12 +183,10 @@ export class EventSystem extends ReactiveSystem {
         continue;
       }
 
-      const interaction = this.consume(entity);
+      const interaction = this.consumeQueuedInteraction(entity);
 
       if (interaction !== UiNodeInteraction.None) {
-        const event = new UiEvent(entity, interaction);
-
-        this.pushInteractionEvent(entity, node, event);
+        this.pushInteractionEvent(entity, node, new UiEvent(entity, interaction));
       }
     }
   }

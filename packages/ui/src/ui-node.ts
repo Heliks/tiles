@@ -12,7 +12,9 @@ export enum UiNodeInteraction {
   /** Node is pressed down (e.g. mouse down, touch down) */
   Down = 'down',
   /** Node was released this frame (e.g. mouse up, touch up). */
-  Up = 'up'
+  Up = 'up',
+  /** Triggered when the user presses down for a certain period of time. */
+  LongPress = 'lp'
 }
 
 /**
