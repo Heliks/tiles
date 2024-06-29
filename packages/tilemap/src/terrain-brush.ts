@@ -1,6 +1,6 @@
 import { getRandomItem, Grid } from '@heliks/tiles-engine';
-import { LocalTileset, Terrain, TerrainBit, TerrainId, TerrainRule } from './tileset';
 import { Tilemap } from './tilemap';
+import { LocalTileset, Terrain, TerrainBit, TerrainId, TerrainRule } from './tileset';
 
 
 /**
@@ -117,7 +117,7 @@ export class TerrainBrush {
     const idx = this.grid.getIndex(col, row);
     const gId = this.getTileId(col, row);
 
-    if (this.tilemap.set(idx, gId)) {
+    if (! this.isTerrainTile(col, row) && this.tilemap.set(idx, gId)) {
       this._updateNeighbourTile(col, row - 1);
       this._updateNeighbourTile(col + 1, row - 1);
       this._updateNeighbourTile(col - 1, row - 1);

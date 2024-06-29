@@ -1,8 +1,8 @@
 import { Grid } from '@heliks/tiles-engine';
-import { Tilemap } from '../tilemap';
-import { LocalTileset, Terrain, TerrainBit, TerrainRule } from '../tileset';
-import { createEmptyTileset } from '../tileset/__test__/utils';
 import { TerrainBrush } from '../terrain-brush';
+import { Tilemap } from '../tilemap';
+import { LocalTileset, Terrain, TerrainBit } from '../tileset';
+import { createEmptyTileset } from '../tileset/__test__/utils';
 
 
 describe('TerrainBrush', () => {
@@ -58,7 +58,6 @@ describe('TerrainBrush', () => {
     expect(terrainId).toBe(data.terrainId);
   });
 
-
   it('should draw terrain', () => {
     tilemap.setAll([
       0, 0, 0,
@@ -108,5 +107,27 @@ describe('TerrainBrush', () => {
       4, 5, 6
     ]);
   });
+
+  it.each([
+    { col: 0, row: 0, expected: true },
+    { col: 1, row: 0, expected: false },
+    { col: 2, row: 0, expected: true },
+    { col: 0, row: 1, expected: true },
+    { col: 1, row: 1, expected: false },
+    { col: 2, row: 1, expected: false }
+  ])('should only draw tile if cell is not occupied by a terrain tile (x: $col y: $row)', data => {
+    tilemap.setAll([
+      0, 1, 0,
+      0, 1, 1,
+      1, 1, 1
+    ]);
+
+    // Note: TileID "1" in the tilemap above is a local tile index of "0".
+    terrain.rule(0);
+
+    const result = brush.draw(data.col, data.row);
+
+    expect(result).toBe(data.expected);
+  })
 });
 
