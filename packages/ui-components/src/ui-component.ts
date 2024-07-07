@@ -1,4 +1,4 @@
-import { World } from '@heliks/tiles-engine';
+import { Entity, World } from '@heliks/tiles-engine';
 import { JsxNode } from './jsx-node';
 
 
@@ -93,8 +93,11 @@ export interface UiComponent {
    *
    *  }
    * ```
+   *
+   * @param world Entity world
+   * @param owner Entity that owns the component.
    */
-  render(world: World): JsxNode;
+  render(world: World, owner: Entity): JsxNode;
 
   /**
    * If defined, this function will be called once per frame.

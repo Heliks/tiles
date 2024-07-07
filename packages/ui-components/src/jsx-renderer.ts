@@ -263,7 +263,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       throw new Error('Component is already rendered and must be destroyed first.')
     }
 
-    const entity = JsxRenderer.render(world, this.instance.render(world));
+    const entity = JsxRenderer.render(world, this.instance.render(world, parent));
 
     world.attach(entity, new Parent(parent));
 
