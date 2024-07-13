@@ -117,6 +117,10 @@ export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, a
     world.attach(owner, new Data(attributes.data));
   }
 
+  if (attributes.ref) {
+    attributes.ref.entity = owner;
+  }
+
   if (world.storage(UiElement).has(owner)) {
     setContextBindingsFromJsxAttributes(world, owner, attributes);
   }

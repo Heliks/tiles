@@ -9,6 +9,7 @@ export * from './helpers';
 export * from './jsx-node';
 export * from './jsx-renderer';
 export * from './metadata';
+export * from './ref';
 export * from './tag-registry';
 export * from './ui-component';
 export * from './ui-components-bundle';

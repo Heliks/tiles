@@ -95,9 +95,9 @@ export interface UiComponent {
    * ```
    *
    * @param world Entity world
-   * @param owner Entity that owns the component.
+   * @param entity Entity that owns the component.
    */
-  render(world: World, owner: Entity): JsxNode;
+  render(world: World, entity: Entity): JsxNode;
 
   /**
    * If defined, this function will be called once per frame.

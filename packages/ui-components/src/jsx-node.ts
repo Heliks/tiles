@@ -1,4 +1,5 @@
 import { Style } from '@heliks/tiles-ui';
+import { Ref } from './ref';
 
 
 /**
@@ -84,6 +85,12 @@ export type Attributes = {
 
   /** Specifies a custom name. */
   readonly name?: string;
+
+  /**
+   * When set, the entity that will be created in the process of rendering the element
+   * will be assigned to this reference.
+   */
+  readonly ref?: Ref;
 
   /**
    * Styles to apply to the {@link JsxNode}.
