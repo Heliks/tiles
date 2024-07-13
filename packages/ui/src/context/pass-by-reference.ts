@@ -20,8 +20,10 @@ export class PassByReference implements Binding {
   constructor(public readonly local: string, public readonly host: ObjectPath) {}
 
   /** @inheritDoc */
-  public resolve(local: ContextRef, host: ContextRef): void {
-    local.setInput(this.local, resolveObjectPath(host.context, this.host));
+  public resolve(local: ContextRef, host?: ContextRef): void {
+    if (host) {
+      local.setInput(this.local, resolveObjectPath(host.context, this.host));
+    }
   }
 
 }

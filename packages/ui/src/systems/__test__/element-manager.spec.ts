@@ -29,25 +29,25 @@ describe('setupHostContext', () => {
 
     // Element context references are not set up yet, therefore, when the setup tries
     // to share data, it would cause an error.
-    element.share = jest.fn();
+    element.resolve = jest.fn();
 
     setupHostContext(world, entity3);
 
     expect(element.host).toBe(entity1);
   });
 
-  it('should share data with host after it was assigned', () => {
+  it('should resolve element bindings', () => {
     const element1 = new UiElement(new NoopElement());
     const element2 = new UiElement(new NoopElement());
 
     const entity1 = world.insert(element1, new Host());
     const entity2 = world.insert(element2, new Parent(entity1));
 
-    element2.share = jest.fn();
+    element2.resolve = jest.fn();
 
     setupHostContext(world, entity2);
 
-    expect(element2.share).toHaveBeenCalledWith(element1);
+    expect(element2.resolve).toHaveBeenCalledWith(element1.context);
   });
 });
 

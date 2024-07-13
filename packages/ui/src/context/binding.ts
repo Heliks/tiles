@@ -1,18 +1,13 @@
 import { ContextRef } from './context-ref';
 
 
-/**
- * Bindings are relationships between an elements' context reference and the reference of
- * its {@link Host}. They are used to share data between them.
- */
+/** Data-binding of a local {@link ContextRef}. */
 export interface Binding {
 
   /**
-   * Resolves the binding.
-   *
-   * @param contextRef The local context reference.
-   * @param hostRef The local contexts' host reference.
+   * @param local Local context reference.
+   * @param host Reference of the host context, if any.
    */
-  resolve(contextRef: ContextRef, hostRef: ContextRef): void;
+  resolve(local: ContextRef, host?: ContextRef): void;
 
 }

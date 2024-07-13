@@ -3,11 +3,10 @@ import { UiElement } from '../ui-element';
 
 
 /**
- * Marks a context host on an entity that is a {@link UiElement}.
+ * Marks an entity with a {@link UiElement} component as a host context.
  *
- * Elements that are children of the entity who owns this component, will share data
- * with the owners {@link ContextRef}. Each child will use the first host encountered
- * when going up its parent chain.
+ * Elements that are children of the owner of this component can share data with the
+ * owners context. Each child will use the first host encountered in its parent tree.
  *
  * ```md
  *  - ElementA (host)
@@ -53,7 +52,7 @@ export class Host {
     const element = elements.get(entity);
 
     element.host = host;
-    element.share(elements.get(host));
+    element.resolve(elements.get(host).context);
 
     return true;
   }

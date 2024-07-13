@@ -8,21 +8,22 @@ import { MaintainLayouts } from './maintain-layouts';
 
 
 /**
- * Assigns the appropriate context host to the element of `entity`. The host will
- * immediately share data with the elements' context.
+ * Assigns the appropriate context host to the element of `entity`, if any. The elements
+ * bindings will be resolved afterward, regardless if a host was assigned or not.
  */
 export function setupHostContext(world: World, entity: Entity): void {
-  const host = Host.get(world, entity);
-  
-  if (host === undefined) {
-    return;
-  }
-
   const elements = world.storage(UiElement);
   const element = elements.get(entity);
 
-  element.host = host;
-  element.share(elements.get(host));
+  element.host = Host.get(world, entity);
+
+  let ref;
+
+  if (element.host !== undefined) {
+    ref = elements.get(element.host).context;
+  }
+
+  element.resolve(ref);
 }
 
 /** Manages {@link UiElement} components that are attached to {@link UiNode nodes}.*/
@@ -97,15 +98,19 @@ export class ElementManager extends ReactiveSystem {
 
     this.updateChanges(world, entity, element);
 
+    let host;
+
     if (element.host !== undefined) {
-      element.share(elements.get(element.host));
+      host = elements.get(element.host).context;
     }
+
+    element.resolve(host);
 
     if (node.hidden()) {
       return;
     }
 
-    this.eventLifecycle.trigger(world, node, element.instance);
+    this.eventLifecycle.trigger(world, entity, node, element.instance);
 
     element.instance.update(world, entity, node.layout);
 

@@ -30,20 +30,20 @@ describe('EventLifecycle', () => {
 
       node.interactive = true;
 
-      const entity = world.insert(node, element);
+      const owner = world.insert(node, element);
 
       // The system can only receive UiEvents that occur after it has initialized the
       // subscription for the interaction event queue.
       service.setup(node);
 
-      const event = new UiEvent(entity, UiNodeInteraction.Down);
+      const event = new UiEvent(owner, UiNodeInteraction.Down);
 
       node.onInteract.push(event);
 
       // Execute the lifecycle event.
-      service.trigger(world, node, element.instance);
+      service.trigger(world, owner, node, element.instance);
 
-      expect(element.instance.onEvent).toHaveBeenCalledWith(world, event);
+      expect(element.instance.onEvent).toHaveBeenCalledWith(world, event, owner);
     });
   });
 

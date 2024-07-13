@@ -2,7 +2,7 @@ import { Binding } from './binding';
 import { ContextRef } from './context-ref';
 
 
-/** Passes a static value into the local {@link ContextRef context}. */
+/** Passes a static value into the local context. */
 export class PassByValue implements Binding {
 
   /**

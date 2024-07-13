@@ -1,4 +1,4 @@
-import { Subscriber, World } from '@heliks/tiles-engine';
+import { Entity, Subscriber, World } from '@heliks/tiles-engine';
 import { Element } from '../element';
 import { canReceiveEvents } from '../lifecycle';
 import { UiEvent } from '../ui-event';
@@ -45,14 +45,14 @@ export class EventLifecycle {
     }
   }
 
-  public trigger(world: World, node: UiNode, element: Element): void {
+  public trigger(world: World, owner: Entity, node: UiNode, element: Element): void {
     const viewRef = element.getContext();
 
     if (canReceiveEvents(viewRef)) {
       const subscriber = this.subscriber(node);
 
       for (const event of subscriber.read()) {
-        viewRef.onEvent(world, event);
+        viewRef.onEvent(world, event, owner);
       }
     }
   }

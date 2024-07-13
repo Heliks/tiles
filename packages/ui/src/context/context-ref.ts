@@ -3,7 +3,7 @@ import { ValueChanges } from '../lifecycle';
 
 
 /**
- * Reference to a context with which other context references can share data with.
+ * Reference to a local context.
  *
  * - `C`: The referenced context.
  */

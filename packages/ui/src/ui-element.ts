@@ -101,15 +101,10 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
     return this;
   }
 
-  /**
-   * Resolves all bindings, using the given `host` element as context host.
-   *
-   * Inputs of the elements {@link context} reference will receive data from the context
-   * reference of the `host` element. Outputs will send data to it instead.
-   */
-  public share(host: UiElement): void {
+  /** Resolves all data {@link bindings} to the local {@link context}. */
+  public resolve(host?: ContextRef): void {
     for (const binding of this.bindings) {
-      binding.resolve(this.context, host.context);
+      binding.resolve(this.context, host);
     }
   }
 

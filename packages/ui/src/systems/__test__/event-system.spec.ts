@@ -24,6 +24,7 @@ describe('EventSystem', () => {
 
     // Fixme: https://trello.com/c/JZxxJwm9/82
     system.boot(world);
+    system.longPressTimeMs = 1000;
   });
 
   describe('on update', () => {

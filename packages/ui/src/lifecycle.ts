@@ -64,8 +64,9 @@ export interface OnEvent {
    *
    * @param world Entity world.
    * @param event UI event that has been triggered.
+   * @param entity Owner of the UI resource.
    */
-  onEvent(world: World, event: UiEvent): void;
+  onEvent(world: World, event: UiEvent, entity: Entity): void;
 
 }
 
