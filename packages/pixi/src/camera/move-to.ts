@@ -6,40 +6,32 @@ import { CameraEffect } from './camera-effects';
 /** @internal */
 const MAX_DISTANCE = 5;
 
-/** Smoothly moves the {@link Camera camera} to a certain point in the world. */
+/** Smoothly moves the {@link Camera} to a certain point in the world. */
 export class MoveTo implements CameraEffect {
 
-  /** Target position that the camera should move to. */
+  /** @internal */
   public readonly target: Vec2;
 
   /** @internal */
   private readonly dest = new Vec2();
 
-  /** @internal */
-  private readonly _fixed: {
-    x: string;
-    y: string;
-  };
-
   /**
    * @param x Target world position along x-axis.
    * @param y Target world position along y-axis.
-   * @param speed Speed in which the camera moves. Lower values mean slower camera movement.
-   * @param tolerance Tolerance by which this camera effect will determine if the camera
-   *  successfully arrived at its target.
+   * @param speed Speed by which the camera moves.
+   * @param arrival If set to `false`, the effect will not finish even if the camera
+   *  has arrived at the target location and must be cleared manually.
+   * @param tolerance Tolerance in location difference when determining if the camera has
+   *  arrived at the target location.
    */
-  constructor(x: number, y: number, public readonly speed = 1, public readonly tolerance = 2) {
+  constructor(
+    x: number,
+    y: number,
+    public readonly speed = 1,
+    public readonly arrival = true,
+    public readonly tolerance = 0.01
+  ) {
     this.target = new Vec2(x, y)
-    this._fixed = {
-      x: x.toFixed(tolerance),
-      y: y.toFixed(tolerance)
-    };
-  }
-
-  /** @internal */
-  private isArrived(camera: Camera): boolean {
-    return camera.world.x.toFixed(this.tolerance) === this._fixed.x
-        && camera.world.y.toFixed(this.tolerance) === this._fixed.y;
   }
 
   /** @inheritDoc */
@@ -60,7 +52,7 @@ export class MoveTo implements CameraEffect {
     camera.world.x += this.dest.x;
     camera.world.y += this.dest.y;
 
-    return this.isArrived(camera);
+    return this.arrival && distance < this.tolerance;
   }
 
 }

@@ -2,9 +2,6 @@ import { CameraEffect, CameraEffects } from '../camera-effects';
 
 
 class NoopEffect implements CameraEffect {
-
-  constructor(public readonly id: number) {}
-
   update = jest.fn();
 }
 
@@ -16,13 +13,16 @@ describe('CameraEffects', () => {
   });
 
   it('should remove identical active effects when adding an effect', () => {
+    const replacement = new NoopEffect();
+
     effects
-      .add(new NoopEffect(1))
-      .add(new NoopEffect(2));
+      .add(new NoopEffect())
+      .add(replacement);
 
-    const active = effects.active[0] as NoopEffect;
+    // Extract remaining active effect.
+    const active = Array.from(effects.active.values())[0];
 
-    expect(active.id).toBe(2);
-    expect(effects.active).toHaveLength(1);
+    expect(effects.active.size).toBe(1);
+    expect(active).toBe(replacement);
   });
 });

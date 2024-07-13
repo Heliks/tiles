@@ -35,7 +35,7 @@ export class CameraSystem implements System {
     );
   }
 
-  /** Sets the scale on all {@link Layers layers} according to the camera zoom. */
+  /** Sets the scale on all {@link Layers} according to the camera zoom. */
   private updateLayerScales(): void {
     this.layers.container.scale.set(this.screen.scale.x, this.screen.scale.y)
 
@@ -50,15 +50,13 @@ export class CameraSystem implements System {
   }
 
   /**
-   * Calls `update` on all active {@link CameraEffects camera effects} and removes the
-   * from the list of active effects if they have completed.
+   * Updates all active {@link CameraEffects camera effects}. Effects that are finished
+   * will be removed from the list of active effects.
    */
   private updateEffects(world: World): void {
-    for (let i = this.effects.active.length - 1; i >= 0; i--) {
-      const effect = this.effects.active[i];
-
+    for (const effect of this.effects.active) {
       if (effect.update(world, this.camera)) {
-        this.effects.active.splice(i, 1);
+        this.effects.remove(effect);
       }
     }
   }
@@ -66,8 +64,8 @@ export class CameraSystem implements System {
   /** @inheritDoc */
   public update(world: World): void {
     if (this.camera.enabled) {
-      this.updateLayerScales();
       this.updateEffects(world);
+      this.updateLayerScales();
       this.computeScenePivot();
     }
   }

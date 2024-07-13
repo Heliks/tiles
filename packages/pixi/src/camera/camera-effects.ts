@@ -1,12 +1,8 @@
-import { Type, World } from '@heliks/tiles-engine';
+import { getType, Type, World } from '@heliks/tiles-engine';
 import { Camera } from './camera';
 
 
-/**
- * An effect that modifies {@link Camera camera} values over a period of time.
- *
- * @see CameraEffects
- */
+/** An effect that modifies {@link Camera} values over a period of time. */
 export interface CameraEffect {
 
   /**
@@ -36,19 +32,24 @@ export interface CameraEffect {
 export class CameraEffects {
 
   /** Contains all active {@link CameraEffect effects}. */
-  public readonly active: CameraEffect[] = [];
+  public readonly active = new Set<CameraEffect>();
 
-  /** Removes the active camera effect of the given `type`. */
-  public remove(type: Type<CameraEffect>): boolean {
-    const index = this.active.findIndex(item => item instanceof type);
+  /** Removes any active effect that matches the given class `type`. */
+  public removeType(type: Type<CameraEffect>): void {
+    for (const effect of this.active) {
+      if (effect instanceof type) {
+        this.active.delete(effect);
 
-    if (~index) {
-      this.active.splice(index, 1);
-
-      return true;
+        return;
+      }
     }
+  }
 
-    return false;
+  /** Removes the given camera `effect`. */
+  public remove(effect: CameraEffect): this {
+    this.active.delete(effect);
+
+    return this;
   }
 
   /**
@@ -56,10 +57,8 @@ export class CameraEffects {
    * will be canceled and replaced with the new effect.
    */
   public add(effect: CameraEffect): this {
-    // Make sure the same effect doesn't run twice.
-    this.remove(effect.constructor as Type)
-
-    this.active.push(effect);
+    this.removeType(getType(effect));
+    this.active.add(effect);
 
     return this;
   }
