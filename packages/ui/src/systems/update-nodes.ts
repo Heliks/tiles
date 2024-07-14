@@ -24,7 +24,7 @@ export class UpdateNodes extends ProcessingSystem {
     for (const entity of this.query.entities) {
       const node = this.nodes.get(entity);
 
-      // Hide PIXI container if node is display:none
+      node.container.alpha = node.style.opacity ?? 1;
       node.container.visible = node.style.display !== Display.None;
     }
   }

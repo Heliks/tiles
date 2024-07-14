@@ -43,23 +43,27 @@ export interface TextStyle {
 /** @inheritDoc */
 export interface Style extends BaseStyle {
 
+  // Todo: Remove this maybe?
   position?: Vec2;
 
   /**
    * Specifies the context in which the node should be rendered. If the node is the child
    * of another node, this setting will be ignored.
-   *
-   * @see DisplayContext
    */
   context?: DisplayContext;
 
   /**
-   * ID of the renderer {@link LayerId layer} where the node should be rendered.
-   *
-   * If not defined, the node will be rendered on the first layer available. If the node
-   * is the child of another node, this setting will be ignored.
+   * ID of the renderer layer where the node should be rendered. If not defined, the node
+   * will be rendered on the first layer available. If the node is the child of another,
+   * this setting will be ignored.
    */
   layer?: LayerId;
+
+  /**
+   * Defines the opacity in which the node is rendered in a range from 0 to 1. By default,
+   * nodes will be rendered with an opacity of 1.
+   */
+  opacity?: number;
 
   /**
    * Defines how text should be rendered.
