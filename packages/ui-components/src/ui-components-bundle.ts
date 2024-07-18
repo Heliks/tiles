@@ -16,7 +16,7 @@ export interface UiBundle {
 
 }
 
-
+/** UI component framework on top of the `@heliks/tiles-ui` package. */
 export class UiComponentsBundle implements Bundle {
 
   private readonly declarations = new Set<Type>();

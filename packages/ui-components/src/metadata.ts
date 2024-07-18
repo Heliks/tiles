@@ -34,8 +34,12 @@ export function getTagMetadata(target: Type): TagMetadata {
 }
 
 /**
- * Elements have dependency injection enabled by default. Using the {@link Injectable()}
- * decorator separately is not required.
+ * Marks a {@link ElementFactory element} and defines element metadata on how the
+ * element is used during runtime.
+ *
+ * Elements have dependency injection enabled by default.
+ *
+ * @see ElementFactory
  */
 export function Element(tag: string): Function {
   return function elementDecorator(target: Type): void {
@@ -44,8 +48,12 @@ export function Element(tag: string): Function {
 }
 
 /**
- * Components have dependency injection enabled by default. Using the {@link Injectable()}
- * decorator separately is not required.
+ * Marks a {@link UiComponent} and defines component metadata on how the component is
+ * used during runtime.
+ *
+ * Components have dependency injection enabled by default.
+ *
+ * @see UiComponent
  */
 export function Component(tag: string): Function {
   return function componentDecorator(target: Type): void {

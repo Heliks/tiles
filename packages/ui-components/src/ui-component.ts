@@ -5,9 +5,32 @@ import { JsxNode } from './jsx-node';
 /**
  * Implementation of a UI component.
  *
- * ## Lifecycle
+ * UI components next to {@link ElementFactory elements}, are the fundamental building
+ * block for UI composition and provide a more traditional event-based API on top of
+ * the UI node graph.
  *
- * Components can implement UI lifecycle hooks.
+ * Each component must be decorated with the {@link Component} decorator and registered
+ * on the {@link UiComponentsBundle} before it can be used.
+ *
+ * ```tsx
+ *  // Declare the component.
+ *  @Component('foo')
+ *  class MyComponent implements UiComponent {
+ *    render() {
+ *      return <div>Hello World</div>;
+ *    }
+ *  }
+ *
+ *  // Add it to the UiComponentsBundle when creating the game runtime.
+ *  runtime()
+ *    // ...
+ *    .bundle(
+ *      new UiComponentsBundle()
+ *        .add(MyComponent)
+ *    );
+ * ```
+ *
+ * UI components can control their behavior by implementing UI lifecycle events.
  */
 export interface UiComponent {
 

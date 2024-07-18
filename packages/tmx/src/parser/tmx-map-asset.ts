@@ -20,12 +20,14 @@ export class TmxMapAsset<P = unknown, L extends TmxLayer = TmxLayer, T extends T
   public readonly tilesets = new LocalTilesetBag<T>();
 
   /**
+   * @param file Path from which the file was loaded.
    * @param grid Grid that represents the dimensions of the tilemap in pixels.
    * @param chunkLayout Grid that arranges map chunks. Columns and rows determine amount
    *  of chunks in each direction, cell size determines amount of tiles in each chunk.
    * @param properties Custom properties.
    */
   constructor(
+    public readonly file: string,
     public readonly grid: Grid,
     public readonly chunkLayout: Grid,
     public readonly properties: P

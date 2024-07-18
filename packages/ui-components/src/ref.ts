@@ -4,9 +4,8 @@ import { Entity } from '@heliks/tiles-engine';
 /**
  * A reference to the internal {@link Entity} that is created when rendering a {@link JsxNode}.
  *
- * ```ts
+ * ```tsx
  *  class MyComponent implements UiNode {
- *
  *    // After the component has been rendered, the entity of the <div> element can
  *    // be accessed here.
  *    public ref = new Ref();
@@ -14,7 +13,6 @@ import { Entity } from '@heliks/tiles-engine';
  *    public render(): JsxNode {
  *      return <div ref={this.ref}></div>;
  *    }
- *
  *  }
  * ```
  */

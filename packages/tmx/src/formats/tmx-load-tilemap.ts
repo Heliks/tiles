@@ -138,8 +138,9 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData)
 }
 
 /** @internal */
-function parseTilemap<P = unknown>(data: TmxMapData): TmxMapAsset<P> {
+function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<P> {
   return new TmxMapAsset<P>(
+    file,
     new Grid(
       data.width,
       data.height,
@@ -156,20 +157,19 @@ function parseTilemap<P = unknown>(data: TmxMapData): TmxMapAsset<P> {
  *
  * ## Tilesets
  *
- * The format will automatically load tilesets that are attached to the map. For this,
- * the {@link TmxLoadTileset `.tsj` format} is used.
+ * Tilesets that are attached to the map will be loaded automatically.
+ *
+ * See: {@link TmxLoadTileset}
  *
  * ## Shapes
  *
- * To be consistent with other engine modules all shape positions are converted so that
- * the shape pivot is the shape center. By default tiled uses the top-left corner as
- * shape pivot.
+ * To be consistent with other engine modules, all shape positions are converted to
+ * relative to the shapes center. By default, tiled used the top-left corner instead.
  *
  * ### Ellipses
  *
- * The engine does not support elliptic shapes, hence why all ellipses are converted
- * to circles. The circle radius will be calculated from the larger of the two sides of
- * the ellipsis.
+ * Elliptic shapes are not supported by the game engine, hence why all ellipses are
+ * converted to circles. The radius will be the larger of the two sides of the ellipsis.
  *
  * - `P`: Expected custom properties.
  */
@@ -180,9 +180,9 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, TmxMapAss
 
   /** @inheritDoc */
   public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<TmxMapAsset<P>> {
-    const tilemap = parseTilemap<P>(data);
+    const tilemap = parseTilemap<P>(file, data);
     const tilesets = await parseLocalTilesets(loader, file, data);
-
+    
     for (const tileset of tilesets) {
       tilemap.tilesets.set(tileset);
     }
