@@ -46,8 +46,10 @@ export class Vec2 implements XY {
   public normalize(): this {
     const magnitude = this.magnitude();
 
-    this.x /= magnitude;
-    this.y /= magnitude;
+    if (magnitude > 0) {
+      this.x /= magnitude;
+      this.y /= magnitude;
+    }
 
     return this;
   }
