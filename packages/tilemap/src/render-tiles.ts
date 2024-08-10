@@ -7,11 +7,10 @@ import {
   ReactiveSystem,
   Ticker,
   Transform,
-  Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Camera, Container, SpriteSheet, Stage } from '@heliks/tiles-pixi';
-import { AnimatedSprite, Sprite } from 'pixi.js';
+import { Camera, SpriteSheet, Stage } from '@heliks/tiles-pixi';
+import { AnimatedSprite, Container, Sprite } from 'pixi.js';
 import { Tilemap } from './tilemap';
 import { LocalTileset } from './tileset';
 
@@ -132,14 +131,6 @@ export class RenderTiles extends ReactiveSystem {
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
-
-    // Move tilemap anchor to center.
-    tilemap.view
-      .setPivot(0.5)
-      .setFixedSize(new Vec2(
-        tilemap.grid.width,
-        tilemap.grid.height
-      ));
 
     this.render(tilemap);
 

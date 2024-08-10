@@ -1,6 +1,6 @@
 import { createPackedArray, Grid, UUID } from '@heliks/tiles-engine';
-import { Container, LayerId } from '@heliks/tiles-pixi';
-import { AnimatedSprite } from 'pixi.js';
+import { LayerId } from '@heliks/tiles-pixi';
+import { AnimatedSprite, Container } from 'pixi.js';
 import { LocalTilesetBag, Tileset } from './tileset';
 
 
