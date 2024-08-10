@@ -1,4 +1,4 @@
-import { Entity, Inject, Injectable, Parent, Transform, World } from '@heliks/tiles-engine';
+import { Entity, Inject, Injectable, Transform, World } from '@heliks/tiles-engine';
 import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../../parser';
 import { TmxSpawnerConfig } from '../tmx-spawner-config';
 import { TmxDefaultObjectFactory } from './tmx-default-object-factory';
@@ -47,19 +47,14 @@ export class TmxObjectSpawner {
     return this.factories.get(type!) ?? this.factory;
   }
 
-  public createLocalTransform(map: TmxMapAsset, obj: TmxObject): Transform {
-    const x = (obj.shape.x / this.config.unitSize) - (map.grid.cols / 2);
-    const y = (obj.shape.y / this.config.unitSize) - (map.grid.rows / 2);
-
-    return new Transform(0, 0, 0, x, y);
-  }
-
   public async spawn(world: World, root: Entity, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity> {
     const entity = await this.getFactory(obj.type).create(world, map, layer, obj);
 
     world.attach(entity, new TmxObjectMetadata(obj.id, obj.name));
-    world.attach(entity, new Parent(root));
-    world.attach(entity, this.createLocalTransform(map, obj));
+    world.attach(entity, new Transform(
+      obj.shape.x / this.config.unitSize,
+      obj.shape.y / this.config.unitSize
+    ));
 
     return entity;
   }

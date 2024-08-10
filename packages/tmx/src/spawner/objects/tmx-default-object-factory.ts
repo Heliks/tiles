@@ -1,9 +1,10 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { Entity, EntityBuilder, Injectable, Vec2, World } from '@heliks/tiles-engine';
+import { Entity, EntityBuilder, Injectable, Rectangle, Vec2, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '@heliks/tiles-pixi';
 import {
   isTile,
   TmxCustomTile,
+  TmxGeometry,
   TmxGeometryObject,
   TmxMapAsset,
   TmxObject,
@@ -15,6 +16,13 @@ import { ColliderProps, TmxPhysicsFactory } from '../tmx-physics-factory';
 import { SpawnableAsset, SpawnLayerProperties } from '../tmx-spawner';
 import { TmxObjectFactory } from './tmx-object-factory';
 
+
+/** @internal */
+function isPointGeometry(geometry: TmxGeometry): boolean {
+  return geometry.shape instanceof Rectangle
+      && geometry.shape.width === 0
+      && geometry.shape.height === 0;
+}
 
 /** Default {@link TmxObjectFactory}. */
 @Injectable()
@@ -77,9 +85,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
     if (isTile(obj)) {
       this.composeTileObject(map, layer, obj, entity);
     }
-    else {
-      // If the object is just free floating geometry, treat the object geometry as
-      // the rigid body itself.
+    else if (!isPointGeometry(obj)) {
       entity.use(this.physics.shape(obj as TmxGeometryObject<ColliderProps>));
     }
 

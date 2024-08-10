@@ -8,26 +8,27 @@ import { parseCustomProperties } from './tmx-properties';
 
 
 /**
- * A freely placed object created from a shape.
+ * Geometry object on a {@link TmxLayerKind.Objects object layers}.
  *
  * - `P`: Custom Properties
+ * - `T`: Allowed value for "type" property.
  * - `C`: Geometric shape of the object.
- * - `T`: Custom type.
  */
 export type TmxGeometryObject<P = unknown, T extends string = string, S extends ColliderShape = ColliderShape> = TmxGeometry<P, S, T>;
 
 /**
- * A freely placed object that uses a tile as its sprite.
+ * Tile object on a {@link TmxLayerKind.Objects object layers}.
  *
  * - `P`: Custom Properties
+ * - `T`: Allowed values for "type" property.
  * - `C`: Geometric shape of the object.
  */
 export interface TmxTileObject<P = unknown, T extends string = string> extends TmxGeometry<P, Rectangle, T> {
 
-  /** If set to `true`, the sprite of the object will be flipped along the x-axis. */
+  /** If set to `true`, the sprite of the object will be flipped along its x-axis. */
   flipX: boolean;
 
-  /** If set to `true`, the sprite of the object will be flipped along the y-axis. */
+  /** If set to `true`, the sprite of the object will be flipped along its y-axis. */
   flipY: boolean;
 
   /** Global ID of the tile that this object is using as its sprite. */
@@ -36,10 +37,14 @@ export interface TmxTileObject<P = unknown, T extends string = string> extends T
 }
 
 /**
- * An object that is placed on an {@link ObjectLayer object layer}.
+ * An object that is placed on a {@link ObjectLayer object layer}.
  *
  * - `P`: Custom Properties
+ * - `T`: Allowed value for "type" property.
  * - `C`: Geometric shape of the object.
+ *
+ * @see TmxGeometryObject
+ * @see TmxTileobject
  */
 export type TmxObject<P = {}, T extends string = string, S extends ColliderShape = ColliderShape> = TmxGeometryObject<P, T, S> | TmxTileObject<P, T>;
 

@@ -6,17 +6,15 @@ import { HasProperties, parseCustomProperties } from './tmx-properties';
 
 
 /**
- * Contains information about geometry. Colliders attached to a tile, freely placed
- * shapes in an object layer, etc. are all considered geometry objects.
+ * Defines a geometry.
+ *
+ * For example: Colliders attached to a tile, shapes placed on object layers, etc.
  *
  * - `P`: Custom properties.
  * - `S`: Geometric shape.
- * - `T`: Custom type.
+ * - `T`: Allowed value for "type" property.
  */
-export interface TmxGeometry<
-  P = {},
-  S extends ColliderShape = ColliderShape,
-  T extends string = string> extends HasProperties<P>, HasCustomType<T> {
+export interface TmxGeometry<P = {}, S extends ColliderShape = ColliderShape, T extends string = string> extends HasProperties<P>, HasCustomType<T> {
 
   /** Unique identifier. */
   readonly id: number;

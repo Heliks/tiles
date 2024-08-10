@@ -8,7 +8,15 @@ import { TmxSpawnerSystem } from './tmx-spawner-system';
 
 
 /**
+ * Provides map handling functionality for map files using the TMX format.
+ *
+ * Latest supported TMX version: 1.10.2
+ *
  * ## Physics
+ *
+ * ### Geometry
+ *
+ * Geometry on object layers other than points will be converted into {@link RigidBody rigid bodies}.
  *
  * ### Object types
  *
