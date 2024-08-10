@@ -1,6 +1,6 @@
 import { Injectable, ProcessingSystem, Query, QueryBuilder, Transform, World } from '@heliks/tiles-engine';
-import { RigidBody } from './rigid-body';
 import { Physics } from './physics';
+import { RigidBody } from './rigid-body';
 
 
 /** Synchronizes `RigidBody` components with their counterpart in the physics world. */

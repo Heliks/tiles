@@ -56,6 +56,13 @@ export class Layer {
     return this;
   }
 
+  /** Removes `drawable` from the layer container. */
+  public remove(drawable: Drawable): this {
+    this.container.removeChild(drawable)
+
+    return this;
+  }
+
   /** Sets the layer {@link sorter}. */
   public sortBy(sorter: LayerSorter): this {
     this.sorter = sorter;
@@ -82,10 +89,10 @@ export class Layer {
    *
    * When zooming is disabled, this layer will ignore all camera zoom. This means that
    * everything rendered on this layer will stay the same size regardless of how far the
-   * camera has been zoomed in or out. This is useful for creating UI layers that are
-   * sized independently from the normal game world.
+   * camera has been zoomed in or out. This is useful for UI layers that are sized
+   * independently of the normal game world.
    *
-   * All layers have zoom enabled by default.
+   * Zoom is enabled by default.
    */
   public zoom(value: boolean): this {
     this.isZoomEnabled = value;

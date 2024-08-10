@@ -8,9 +8,9 @@ import { ElementFactory } from '../tag-registry';
 /**
  * Displays a text.
  *
- * This element should only be used when you want to bind a text that dynamically
- * changes in value. For everything else, the JSX renderer supports using strings
- * directly in templates:
+ * This tag should only be used when you want to bind a text that dynamically changes
+ * in value. For everything else, the JSX renderer supports using strings directly in
+ * templates:
  *
  * ```tsx
  *  const foo = <div>Hello World></div>;

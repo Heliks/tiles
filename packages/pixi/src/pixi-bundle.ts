@@ -113,6 +113,10 @@ export class PixiBundle implements Bundle, OnInit {
     if (this.config.autoResize) {
       renderer.setAutoResize(true);
     }
+
+    // Allows the PixiJS debug tools to capture the application.
+    (window as any).__PIXI_STAGE__ = renderer.root;
+    (window as any).__PIXI_RENDERER__ = renderer.renderer;
   }
 
 }

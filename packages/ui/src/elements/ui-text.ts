@@ -72,7 +72,6 @@ export class UiText implements Element {
       style.fontSize = layout.style.text.fontSize;
       style.wordWrap = layout.style.text.wrap;
 
-
       if (layout.style.text.borderWidth !== undefined) {
         style.stroke = layout.style.text.borderColor;
         style.strokeThickness = layout.style.text.borderWidth;
