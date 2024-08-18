@@ -19,8 +19,17 @@ export interface TextStyle {
   /** Defines the width of the text border */
   borderWidth?: number;
 
-  /** Text color. */
-  color?: number;
+  /**
+   * Color in which the text is filled. Can be filled with a gradient by specifying
+   * multiple colors.
+   */
+  color?: number | number[];
+
+  /**
+   * Defines the points where the text {@link color colors} will fade into each other
+   * when multiple colors are specified.
+   */
+  colorStops?: number[];
 
   /** Text size in px. */
   fontSize?: number;
@@ -64,6 +73,30 @@ export interface Style extends BaseStyle {
    * nodes will be rendered with an opacity of 1.
    */
   opacity?: number;
+
+  /**
+   * Amount of rotation that is applied to the node around its {@link pivot}. The
+   * rotation is measured in radians. Positive values will rotate the node clockwise,
+   * and negative values, counter-clockwise.
+   */
+  rotation?: number;
+
+  /**
+   * Sets the point around which transformations are applied to the node. For example,
+   * when applying a {@link rotation}, this is the point around which it rotates. The
+   * pivot should be a percentage value between `0` and `1`.
+   *
+   * Functionally this is the replacement for the CSS transform origin.
+   *
+   * ```ts
+   *  style.pivot = new Vec(0, 0);      // Top-left
+   *  style.pivot = new Vec(0.5, 0.5);  // Center
+   *  style.pivot = new Vec(1, 1);      // Bottom-right
+   * ```
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+   */
+  pivot?: Vec2;
 
   /**
    * Defines how text should be rendered.

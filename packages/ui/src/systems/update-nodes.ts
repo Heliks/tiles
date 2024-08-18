@@ -25,7 +25,13 @@ export class UpdateNodes extends ProcessingSystem {
       const node = this.nodes.get(entity);
 
       node.container.alpha = node.style.opacity ?? 1;
+      node.container.rotation = node.style.rotation ?? 0;
       node.container.visible = node.style.display !== Display.None;
+
+      if (node.style.pivot) {
+        node.container.pivot.x = node.container.width * node.style.pivot.x;
+        node.container.pivot.y = node.container.height * node.style.pivot.y;
+      }
     }
   }
 

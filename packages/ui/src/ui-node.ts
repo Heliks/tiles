@@ -1,5 +1,5 @@
 import { Display, Node } from '@heliks/flex';
-import { EventQueue, Pivot, PivotPreset } from '@heliks/tiles-engine';
+import { EventQueue } from '@heliks/tiles-engine';
 import { Container } from 'pixi.js';
 import { Style } from './style';
 import { UiEvent } from './ui-event';
@@ -75,9 +75,6 @@ export class UiNode<S extends Style = Style> {
    * has one applied via its parent).
    */
   public readonly layout: Node;
-
-  /** Node pivot. This does not affect the pivot of child nodes. */
-  public pivot: Pivot = PivotPreset.TOP_LEFT;
 
   /** The stylesheet that is applied to this node. */
   public readonly style: S;

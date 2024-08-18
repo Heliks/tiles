@@ -46,14 +46,8 @@ export class DrawUi implements OnInit, System {
 
   /** @internal */
   private updateNodePosition(entity: Entity, node: UiNode): void {
-    // Set PIXI pivot based on node pivot.
-    node.pivot.getPosition(
-      node.container.width,
-      node.container.height,
-      node.container.pivot
-    );
-
     if (node.style.context === DisplayContext.World) {
+      // Todo
       // node.container.x = node.layout.pos.x * this.camera.unitSize;
       // node.container.y = node.layout.pos.y * this.camera.unitSize;
 
@@ -69,6 +63,12 @@ export class DrawUi implements OnInit, System {
 
       node.container.x = position.x;
       node.container.y = position.y;
+    }
+
+    // Adjust position for styled pivot.
+    if (node.style.pivot) {
+      node.container.x += node.container.width * node.style.pivot.x;
+      node.container.y += node.container.height * node.style.pivot.y;
     }
   }
 

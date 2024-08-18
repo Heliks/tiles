@@ -68,6 +68,7 @@ export class UiText implements Element {
       const style = this.view.style;
 
       style.fill = layout.style.text.color;
+      style.fillGradientStops = layout.style.text.colorStops;
       style.fontFamily = layout.style.text.fontFamily ?? UiText.defaultFont;
       style.fontSize = layout.style.text.fontSize;
       style.wordWrap = layout.style.text.wrap;
@@ -83,7 +84,7 @@ export class UiText implements Element {
       }
     }
   }
-
+  
   /**
    * Applies a border to the text.
    *
