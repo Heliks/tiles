@@ -3,6 +3,7 @@ export {
   AlignContent,
   FlexDirection,
   Node,
+  Position,
   Rect,
   Sides,
   Size,

@@ -51,10 +51,7 @@ export interface TextStyle {
 
 /** @inheritDoc */
 export interface Style extends BaseStyle {
-
-  // Todo: Remove this maybe?
-  position?: Vec2;
-
+  
   /**
    * Specifies the context in which the node should be rendered. If the node is the child
    * of another node, this setting will be ignored.

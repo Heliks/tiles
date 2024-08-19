@@ -239,8 +239,8 @@ importers:
   packages/ui:
     dependencies:
       '@heliks/flex':
-        specifier: 0.0.2
-        version: 0.0.2
+        specifier: 0.0.3-rc2
+        version: 0.0.3-rc2
     devDependencies:
       '@heliks/tiles-assets':
         specifier: workspace:^
@@ -286,10 +286,6 @@ importers:
         version: 5.4.5
 
 packages:
-
-  /-@0.0.1:
-    resolution: {integrity: sha512-3HfneK3DGAm05fpyj20sT3apkNcvPpCuccOThOPdzz8sY7GgQGe0l93XH9bt+YzibcTIgUAIMoyVJI740RtgyQ==}
-    dev: false
 
   /@aashutoshrathi/word-wrap@1.2.6:
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
@@ -696,12 +692,8 @@ packages:
     resolution: {integrity: sha512-YH9ghFsGX0IjAYBqM49JsZdczusYPuFhxyNlw0K14ALrdLV63kCI3qt9ymlDV0HepTwt7nUJEmhdAOU3SgJxSw==}
     dev: false
 
-  /@heliks/flex@0.0.2:
-    resolution: {integrity: sha512-dq0sLcbi/j16aarx1Y0X2EhtyJy0cooIoskJ5LITn46nGbSOU0dLZ0ndxnemOzxcegOblsgCpNbBAdqgNQz6jg==}
-    dependencies:
-      '-': 0.0.1
-      g: 2.0.1
-      pnpm: 8.15.8
+  /@heliks/flex@0.0.3-rc2:
+    resolution: {integrity: sha512-j2b5spDCTCrWfcVTQ0WPgg27j4/MBUHTkVmCo11QwO3hsop+YwHpE55gMoenKYgTEnYR5v1q+xwH6vd9o0LxKw==}
     dev: false
 
   /@humanwhocodes/config-array@0.10.7:
@@ -2328,10 +2320,6 @@ packages:
     resolution: {integrity: sha512-dsKNQNdj6xA3T+QlADDA7mOSlX0qiMINjn0cgr+eGHGsbSHzTabcIogz2+p/iqP1Xs6EP/sS2SbqH+brGTbq0g==}
     dev: true
 
-  /g@2.0.1:
-    resolution: {integrity: sha512-Fi6Ng5fZ/ANLQ15H11hCe+09sgUoNvDEBevVgx3KoYOhsH5iLNPn54hx0jPZ+3oSWr+xajnp2Qau9VmPsc7hTA==}
-    dev: false
-
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
@@ -3526,12 +3514,6 @@ packages:
     dependencies:
       find-up: 4.1.0
     dev: true
-
-  /pnpm@8.15.8:
-    resolution: {integrity: sha512-0aAp4aRHrZC8ls1YsPrUhtKZPVMYVjlve6vy2D6xgju4PFo9D8GPZ1stEDIdSesWH+zjb+gTSqWCPs0hX+7Tkg==}
-    engines: {node: '>=16.14'}
-    hasBin: true
-    dev: false
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
