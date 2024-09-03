@@ -9,13 +9,33 @@ import { TmxSpawnerConfig } from './tmx-spawner-config';
  * Properties found on shape {@link TmxGeometry geometry} that is supposed to be
  * parsed into a {@link Collider}.
  */
-export interface ColliderProps {
-  /** If `true`, the collider will be made into a {@link Collider.sensor}. */
+export interface TmxPhysicsOptions {
+
+  /**
+   * If `true`, the collider will be made into a {@link Collider.sensor}.
+   * @deprecated
+   */
   sensor?: boolean;
-  /** Bitset for the colliders collision group, if any. */
+  /**
+   * Bitset for the colliders collision group, if any.
+   * @deprecated
+   */
   group?: TmxBitSet;
-  /** Bitset for the colliders collision mask, if any. */
+  /**
+   * Bitset for the colliders collision mask, if any.
+   * @deprecated
+   */
   mask?: TmxBitSet;
+
+  $collider?: {
+    /** @see Collider.group */
+    group?: number;
+    /** @see Collider.mask */
+    mask?: number;
+    /** @see Collider.sensor */
+    sensor?: boolean;
+  };
+
 }
 
 /** Creates physics components from {@link TmxGeometry Tiled geometry}. */
@@ -28,30 +48,42 @@ export class TmxPhysicsFactory {
   constructor(public readonly config: TmxSpawnerConfig) {}
 
   /** @internal */
-  private collider(geometry: TmxGeometry<ColliderProps>, scale: XY): Collider {
+  private collider(geometry: TmxGeometry<TmxPhysicsOptions>, scale: XY): Collider {
     const shape = geometry.shape.copy();
 
-    // Apply scale factor.
-    if (shape instanceof Rectangle) {
-      shape.scale(scale);
-    }
-    else {
-      shape.scale(Math.max(scale.x, scale.y));
-    }
+    // When the parser converts ellipsis into circles it chooses the larger of the two
+    // sides. Do the same for the circle shape.
+    shape instanceof Rectangle
+      ? shape.scale(scale)
+      : shape.scale(Math.max(scale.x, scale.y));
 
-    // Scale shape size & position by configured unit size.
+    // Apply unit size to applied scale factor.
     shape.scale(1 / this.config.unitSize);
 
     const collider = new Collider(shape);
 
-    collider.sensor = Boolean(geometry.properties.sensor);
+    if (geometry.properties.$collider) {
+      const {
+        group,
+        mask,
+        sensor
+      } = geometry.properties.$collider;
 
-    if (geometry.properties.group) {
-      collider.group = parseBitSet(geometry.properties.group);
+      collider.sensor = Boolean(sensor);
+      collider.group = group && group > -1 ? group : undefined;
+      collider.mask = mask && mask > -1 ? mask : undefined;
     }
+    else {
+      // Todo: Deprecation.
+      collider.sensor = Boolean(geometry.properties.sensor);
 
-    if (geometry.properties.mask) {
-      collider.mask = parseBitSet(geometry.properties.mask);
+      if (geometry.properties.group) {
+        collider.group = parseBitSet(geometry.properties.group);
+      }
+
+      if (geometry.properties.mask) {
+        collider.mask = parseBitSet(geometry.properties.mask);
+      }
     }
 
     return collider;
@@ -67,7 +99,7 @@ export class TmxPhysicsFactory {
    * @param pivot Tile pivot ("objectalignment") of the tiles parent tileset.
    * @param scale Scale factor.
    */
-  public tile(width: number, height: number, shapes: TmxGeometry<ColliderProps>[], pivot: Pivot, scale = new Vec2(1, 1)): RigidBody {
+  public tile(width: number, height: number, shapes: TmxGeometry<TmxPhysicsOptions>[], pivot: Pivot, scale = new Vec2(1, 1)): RigidBody {
     const body = new RigidBody();
 
     for (const item of shapes) {
@@ -84,14 +116,11 @@ export class TmxPhysicsFactory {
   }
 
   /**
-   * Creates a {@link RigidBody} component from the {@link TmxGeometry} of a free-
-   * floating shape placed on an {@link TmxObjectLayer object layer}.
-   *
-   * The position of the physics {@link Collider} that is created from the geometry is
-   * always 0/0. This is because we assume that the entity to which the rigid body will
-   * be attached to, is positioned with a {@link Transform} component.
+   * Transforms the given `geometry` into a {@link RigidBody}, using the shape of the
+   * geometry as {@link Collider}. The collider position will always be 0/0 because
+   * the entire body is expected to be positioned with a {@link Transform} component.
    */
-  public shape(geometry: TmxGeometry<ColliderProps>, scale = new Vec2(1, 1)): RigidBody {
+  public shape(geometry: TmxGeometry<TmxPhysicsOptions>, scale = new Vec2(1, 1)): RigidBody {
     const collider = this.collider(geometry, scale);
 
     collider.shape.x = 0;

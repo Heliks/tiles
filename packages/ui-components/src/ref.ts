@@ -18,19 +18,21 @@ import { Entity } from '@heliks/tiles-engine';
  */
 export class Ref {
 
-  /** Contains the referenced {@link Entity} after it has been initialized. */
+  /** Contains the referenced entity after it has been initialized. */
   public entity?: Entity;
 
-  /**
-   * Returns the referenced {@link Entity}. Throws an error if the reference is not
-   * yet initialized.
-   */
+  /** Returns the referenced entity. */
   public get(): Entity {
     if (this.entity === undefined) {
       throw new Error('Invalid reference');
     }
 
     return this.entity;
+  }
+
+  /** Returns `true` when this is a valid reference to an entity. */
+  public valid(): boolean {
+    return this.entity !== undefined;
   }
 
 }

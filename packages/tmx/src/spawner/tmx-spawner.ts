@@ -70,9 +70,9 @@ export class TmxSpawner<M extends SpawnableAsset = SpawnableAsset> {
   constructor(private readonly objects: TmxObjectSpawner) {}
 
   /** @internal */
-  private async spawnObjectLayer(world: World, root: Entity, map: M, layer: TmxObjectLayer): Promise<void> {
+  private async spawnObjectLayer(world: World, map: M, layer: TmxObjectLayer): Promise<void> {
     await Promise.all(
-      layer.data.map(item => this.objects.spawn(world, root, map, layer, item))
+      layer.data.map(item => this.objects.spawn(world, map, layer, item))
     );
   }
 
@@ -89,7 +89,7 @@ export class TmxSpawner<M extends SpawnableAsset = SpawnableAsset> {
         spawnTileLayer(world, entity, map, layer, renderLayer);
         break;
       case TmxLayerKind.Objects:
-        await this.spawnObjectLayer(world, entity, map, layer);
+        await this.spawnObjectLayer(world, map, layer);
         break;
       default:
         throw new Error(`Unsupported layer type ${layer.kind}`);

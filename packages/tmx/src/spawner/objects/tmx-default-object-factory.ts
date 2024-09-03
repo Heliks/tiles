@@ -12,7 +12,7 @@ import {
   TmxTileObject,
   TmxTileset
 } from '../../parser';
-import { ColliderProps, TmxPhysicsFactory } from '../tmx-physics-factory';
+import { TmxPhysicsFactory, TmxPhysicsOptions } from '../tmx-physics-factory';
 import { SpawnableAsset, SpawnLayerProperties } from '../tmx-spawner';
 import { TmxObjectFactory } from './tmx-object-factory';
 
@@ -57,7 +57,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
     const local = map.tilesets.getFromGlobalId(obj.tileId);
 
     const tileIdx = local.getLocalIndex(obj.tileId);
-    const tile = local.tileset.tile<TmxCustomTile<unknown, ColliderProps>>(tileIdx);
+    const tile = local.tileset.tile<TmxCustomTile<unknown, TmxPhysicsOptions>>(tileIdx);
     const scale = this.getScaleFactor(local.tileset, obj, tileIdx);
     const size = this.getSpriteSize(local.tileset, tileIdx);
 
@@ -86,7 +86,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
       this.composeTileObject(map, layer, obj, entity);
     }
     else if (!isPointGeometry(obj)) {
-      entity.use(this.physics.shape(obj as TmxGeometryObject<ColliderProps>));
+      entity.use(this.physics.shape(obj as TmxGeometryObject<TmxPhysicsOptions>));
     }
 
     return entity.build();

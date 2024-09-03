@@ -2,28 +2,26 @@ import { Entity, World } from '@heliks/tiles-engine';
 import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../../parser';
 
 
-/**
- * Factory that creates a map entity from a {@link TmxObject}.
- *
- * Factories relate to a specific TMX "type" (or "class" in later versions) and will be
- * responsible for creating all entities of that type.
- */
+/** Transforms a specific type of {@link TmxObject} into an entity. */
 export interface TmxObjectFactory {
 
   /**
-   * The factory will spawn entities from TMX objects of this type ("or class"). If no
-   * type is specified, this factory will be used as the default factory for objects
-   * that either don't have a type or have a type without a special object factory.
+   * The factory transforms {@link TmxObject map objects} that match this type. If this
+   * is `undefined`, this factory is supposed to be used when an object either does not
+   * specify a `type` at all, or if there is no implementation of the type that it uses.
+   *
+   * Note: In the Tiled editor, this is called "class" in later versions.
    */
   readonly type?: string;
 
   /**
-   * Implementations of the factory logic.
+   * Implementation of the logic that transforms the given `obj` into an entity. This
+   * can be async, to allow lazy loading logic for custom object types.
    *
-   * @param world World to which the entity should be spawned.
-   * @param map Map on which the object exists.
-   * @param layer Map layer on which the object exists.
-   * @param obj The object from which the entity should be created.
+   * @param world Entity world.
+   * @param map The map asset on which the object exists.
+   * @param layer The map layer on which the object exists.
+   * @param obj The object that is to be transformed into an entity.
    */
   create(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Entity | Promise<Entity>;
 

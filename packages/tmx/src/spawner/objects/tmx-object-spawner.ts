@@ -47,7 +47,7 @@ export class TmxObjectSpawner {
     return this.factories.get(type!) ?? this.factory;
   }
 
-  public async spawn(world: World, root: Entity, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity> {
+  public async spawn(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity> {
     const entity = await this.getFactory(obj.type).create(world, map, layer, obj);
 
     world.attach(entity, new TmxObjectMetadata(obj.id, obj.name));
