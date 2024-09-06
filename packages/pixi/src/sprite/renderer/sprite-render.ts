@@ -1,7 +1,7 @@
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
 import { Serializeable, UUID, Vec2, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
-import { LayerId } from '../../layer';
+import { Layer, LayerId } from '../../layer';
 import { getMaterialFromId, ShaderMaterial } from '../../material';
 import { SpriteSheet } from '../sprite-sheet';
 
@@ -68,19 +68,30 @@ export class SpriteRender implements Serializeable<SpriteRenderData> {
   /** A {@link ShaderMaterial material} that should be applied to the sprite. */
   public material?: ShaderMaterial;
 
+  /** Scale factor of the sprite. */
+  public scale = new Vec2(1, 1);
+
   /**
-   * Contains the material that is currently applied to the {@link _sprite}. If this
-   * diverges from the set {@link material}, the sprite filters will be updated.
+   * After the component has been added to the world, this will contain the layer on
+   * which the sprite is currently being rendered.
+   *
+   * @internal
+   */
+  public _layer!: Layer;
+
+  /**
+   * Contains the layer ID that is currently being used to determine {@link _layer}
+   *
+   * @internal
+   */
+  public _layerId?: LayerId;
+
+  /**
+   * Contains the material that is currently being applied to the sprite.
    *
    * @internal
    */
   public _material?: ShaderMaterial;
-
-  /** Scale factor of the sprite. */
-  public scale = new Vec2(1, 1);
-
-  /** @internal */
-  public _layer?: LayerId;
 
   /** The opacity of the sprite. Value from 0-1. */
   public set opacity(opacity: number) {

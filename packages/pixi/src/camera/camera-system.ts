@@ -42,9 +42,11 @@ export class CameraSystem implements System {
     for (const layer of this.layers.items) {
       if (layer.isZoomEnabled) {
         layer.container.scale.set(this.camera.zoom);
+        layer.cameraTransformMultiplier = 1;
       }
       else {
         layer.container.scale.set(1);
+        layer.cameraTransformMultiplier = this.camera.zoom;
       }
     }
   }

@@ -45,6 +45,12 @@ export class Layer {
   public isZoomEnabled = true;
 
   /**
+   * Transform components of entities that render on this layer should be multiplied by
+   * this factor to achieve the correct world position with a zoomed {@link Camera}.
+   */
+  public cameraTransformMultiplier = 1;
+
+  /**
    * @param id Unique Layer ID.
    */
   constructor(public readonly id: LayerId) {}

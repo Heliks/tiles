@@ -1,5 +1,5 @@
-import { Layer, LayerId } from './layer';
 import { Container } from 'pixi.js';
+import { Layer, LayerId } from './layer';
 
 
 /**
@@ -17,62 +17,73 @@ import { Container } from 'pixi.js';
 export class Layers {
 
   /**
-   * Container where the individual {@link Layer layer} containers will be rendered. The
-   * order is guaranteed to be synchronized with the {@link items} order.
+   * Container where {@link Layer layers} will be rendered. The order of children in
+   * this container is guaranteed to be in sync with the {@link items} array.
    */
   public readonly container = new Container();
 
-  /** @internal */
+  /** Array that contains all known layers in the order in which they are rendered. */
   public readonly items: Layer[] = [];
 
+  /** Lookup for the index that a layer occupies. */
+  private readonly lookup = new Map<LayerId, number>();
+
   /**
-   * Returns the current index position of the {@link Layer} matching `id` in the layer
-   * order. Returns `-1` if `id` does not match any layers.
+   * Returns the index of the layer matching `id`. Throws an error if the ID does not
+   * match any layers.
    */
   public getIndex(id: LayerId): number {
-    return this.items.findIndex(layer => layer.id === id);
+    const index = this.lookup.get(id)
+
+    if (index === undefined) {
+      throw new Error(`Invalid layer ${id}`);
+    }
+
+    return index;
   }
 
-  /** @internal */
-  private insertAt(layer: Layer, index: number): void {
+  /** Inserts a new {@link Layer} at the given `index`. */
+  public insertAt(id: LayerId, index: number): Layer {
+    if (this.lookup.has(id)) {
+      throw new Error(`A layer with ID ${id} already exists.`);
+    }
+
+    const layer = new Layer(id);
+
     this.items.splice(index, 0, layer);
     this.container.addChildAt(layer.container, index);
+
+    // Re-calculate lookup table.
+    this.lookup.clear();
+
+    for (let i = 0, l = this.items.length; i < l; i++) {
+      this.lookup.set(this.items[i].id, i);
+    }
+
+    return layer;
   }
 
   /**
    * Inserts a new {@link Layer layer}.
    */
   public add(id: LayerId): Layer {
-    const layer = new Layer(id);
-
-    this.items.push(layer);
-    this.container.addChild(layer.container);
-
-    return layer;
+    return this.insertAt(id, this.items.length);
   }
 
   /**
-   * Inserts a new {@link Layer layer} after the layer matching `afterId`. Throws an
-   * error if the layer after which it should be inserted does not exist.
+   * Inserts a new {@link Layer} after the layer matching `afterId`. Throws an error if
+   * the layer after which it should be inserted does not exist.
    */
   public after(id: LayerId, afterId: LayerId): Layer {
-    const layer = new Layer(id);
-
-    this.insertAt(layer, this.getIndex(afterId) + 1);
-
-    return layer;
+    return this.insertAt(id, this.getIndex(afterId) + 1);
   }
 
   /**
-   * Inserts a new {@link Layer layer} before the layer matching `beforeId`. Throws an
-   * error if the layer before it should be inserted does not exist.
+   * Inserts a new {@link Layer} before the layer matching `beforeId`. Throws an error if
+   * the layer before it should be inserted does not exist.
    */
   public before(id: LayerId, beforeId: LayerId): Layer {
-    const layer = new Layer(id);
-
-    this.insertAt(layer, this.getIndex(beforeId));
-
-    return layer;
+    return this.insertAt(id, this.getIndex(beforeId));
   }
 
   /**
@@ -80,15 +91,8 @@ export class Layers {
    * that id exists.
    */
   public get(id: LayerId): Layer {
-    const index = this.getIndex(id);
-
-    if (index === -1) {
-      throw new Error(`Unknown layer ${id}`);
-    }
-
-    return this.items[ index ];
+    return this.items[ this.getIndex(id) ];
   }
-
 
   /**
    * Returns the {@link Layer} at the given `index`. Throws an error if no layer exists

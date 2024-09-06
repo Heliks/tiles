@@ -41,9 +41,8 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @internal */
   private insert(sprite: SpriteRender): void {
-    this.stage.add(sprite._sprite, sprite.layer);
-
-    sprite._layer = sprite.layer;
+    sprite._layer = this.stage.add(sprite._sprite, sprite.layer);
+    sprite._layerId = sprite.layer;
   }
 
   /** @internal */
@@ -83,9 +82,8 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @internal */
   private updatePosition(render: SpriteRender, transform: Transform): void {
-    render._sprite.x = transform.world.x * this.config.unitSize;
-    render._sprite.y = transform.world.y * this.config.unitSize;
-    // render._sprite.rotation = transform.rotation;
+    render._sprite.x = transform.world.x * render._layer.cameraTransformMultiplier * this.config.unitSize;
+    render._sprite.y = transform.world.y * render._layer.cameraTransformMultiplier * this.config.unitSize;
   }
 
   /** @inheritDoc */
@@ -104,7 +102,7 @@ export class SpriteRenderer extends ReactiveSystem {
       const spritesheet = this.storage.get(render.spritesheet);
 
       // Switch render group.
-      if (render.layer !== render._layer) {
+      if (render.layer !== render._layerId) {
         this.updateLayer(render);
       }
 

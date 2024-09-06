@@ -1,7 +1,7 @@
-import { Task } from './task';
 import { ScheduleId } from '@heliks/ecs';
 import { App } from '../app';
 import { isAfterInstruction, isBeforeInstruction, RegistrationInstruction } from './registration';
+import { Task } from './task';
 
 
 /**
