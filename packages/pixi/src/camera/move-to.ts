@@ -52,8 +52,10 @@ export class MoveTo implements CameraEffect {
     if (distance > this.tolerance) {
       camera.world.x += this.dest.x;
       camera.world.y += this.dest.y;
+
+      return false;
     }
-    
+
     return this.arrival;
   }
 
