@@ -1,7 +1,7 @@
 import { Injectable, Pivot, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { TmxGeometry } from '../parser';
-import { parseBitSet, TmxBitSet } from './bitset';
+import { TmxBitSet } from './bitset';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
@@ -72,18 +72,6 @@ export class TmxPhysicsFactory {
       collider.sensor = Boolean(sensor);
       collider.group = group && group > -1 ? group : undefined;
       collider.mask = mask && mask > -1 ? mask : undefined;
-    }
-    else {
-      // Todo: Deprecation.
-      collider.sensor = Boolean(geometry.properties.sensor);
-
-      if (geometry.properties.group) {
-        collider.group = parseBitSet(geometry.properties.group);
-      }
-
-      if (geometry.properties.mask) {
-        collider.mask = parseBitSet(geometry.properties.mask);
-      }
     }
 
     return collider;

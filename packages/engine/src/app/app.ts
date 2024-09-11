@@ -23,7 +23,7 @@ export enum AppSchedule {
    * Runs after the {@link Update} schedule. System that rely on data from other systems
    * to have finished their computation should run here.
    */
-  PostUpdate = 'app:update'
+  PostUpdate = 'app:post-update'
 
 }
 
