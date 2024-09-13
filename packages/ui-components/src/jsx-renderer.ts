@@ -270,7 +270,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     this.root = entity;
   }
 
-  public destroy(world: World, entity: Entity) {
+  public destroy(world: World, entity: Entity): void {
     if (! this.root) {
       return;
     }

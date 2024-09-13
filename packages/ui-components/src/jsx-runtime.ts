@@ -35,10 +35,12 @@ declare global {
     interface IntrinsicAttributes {
       readonly style?: Partial<Style>;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key: string]: any
     }
 
     interface ElementAttributesProperty {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: any;
     }
 

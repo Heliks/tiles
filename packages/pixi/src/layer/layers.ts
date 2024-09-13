@@ -10,9 +10,8 @@ import { Layer, LayerId } from './layer';
  * other drawables can then use that ID to tell the renderer that they want to be placed
  * in the {@link container} of that particular layer.
  *
- * The renderer will scale all layers appropriately according to resolution and zoom
- * factor, which means that on a 200x200px wide screen with a 100x100px resolution, a
- * drawable with a size of 20x20px is rendered as 40x40px.
+ * The content of layers is scaled automatically according to resolution and camera z
+ * zoom factor.
  */
 export class Layers {
 

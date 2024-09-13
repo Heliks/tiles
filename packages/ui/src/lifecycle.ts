@@ -76,7 +76,9 @@ export interface OnEvent {
  * @see ValueChanges
  */
 export interface ValueChange {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   current: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   previous: any;
 }
 
