@@ -61,7 +61,7 @@ export class JsxTemplate implements TemplateRenderer {
 function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): Entity {
   const entry = world.get(TagRegistry).entry(node.tag);
 
-  if (entry.type === TagType.Element) {
+  if (entry.type === TagType.Node) {
     return entry.factory.render(world, node.attributes, textStyle);
   }
 
@@ -127,14 +127,7 @@ export function stringifyUnknownJsxChild(child: unknown): string {
   return child!.toString();
 }
 
-/** Returns the {@link UiComponent} instance of the given entity. */
-export function getUiComponent<C extends UiComponent>(world: World, entity: Entity): C {
-  return world
-    .storage(UiElement<object, JsxRenderer<C>>)
-    .get(entity)
-    .instance
-    .instance
-}
+
 
 /**
  * A {@link UiElement} that renders a {@link UiComponent} on the entity to which this

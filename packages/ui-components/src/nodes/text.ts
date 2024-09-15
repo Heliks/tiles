@@ -1,8 +1,8 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { TextStyle, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx-node';
-import { Element } from '../metadata';
-import { ElementFactory } from '../tag-registry';
+import { Tag } from '../metadata';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
 /**
@@ -16,8 +16,8 @@ import { ElementFactory } from '../tag-registry';
  *  const foo = <div>Hello World></div>;
  * ```
  */
-@Element('text')
-export class Text implements ElementFactory {
+@Tag('text')
+export class Text implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World, attributes: Attributes, style?: TextStyle): Entity {

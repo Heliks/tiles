@@ -1,12 +1,12 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { Rect, Size, UiNode } from '@heliks/tiles-ui';
-import { Element } from '../metadata';
-import { ElementFactory } from '../tag-registry';
+import { Tag } from '../metadata';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
 /** Block tag that fills 100% x 100% of its available space by default. */
-@Element('fill')
-export class Fill implements ElementFactory {
+@Tag('fill')
+export class Fill implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World): Entity {

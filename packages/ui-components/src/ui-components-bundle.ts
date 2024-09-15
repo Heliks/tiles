@@ -1,81 +1,69 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
-import { Div, Fill, SlicePlane, Span, Sprite, SpriteAnimation, Text, Texture } from './elements';
-import { getTagMetadata, TagType } from './metadata';
-import { ElementFactory, TagRegistry } from './tag-registry';
+import { getTagMetadata } from './metadata';
+import { Div, Fill, SlicePlane, Span, Sprite, SpriteAnimation, Text, Texture } from './nodes';
+import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
+import { UiNodeRenderer } from './ui-node-renderer';
 
 
-/** Bundles declarations for UI directives. */
-export interface UiBundle {
-
-  /** List of all elements provided by this bundle. */
-  elements?: Type<ElementFactory>[];
-
-  /** List of all components provided by this bundle. */
+export interface ResourceDeclarations {
+  nodes?: Type<UiNodeRenderer>[];
   components?: Type<UiComponent>[];
-
 }
 
 /** UI component framework on top of the `@heliks/tiles-ui` package. */
 export class UiComponentsBundle implements Bundle {
 
-  private readonly declarations = new Set<Type>();
+  /** Contains declarations that are added to this bundle by default. */
+  private readonly default: ResourceDeclarations = {
+    nodes: [
+      Div,
+      Fill,
+      SlicePlane,
+      Span,
+      Sprite,
+      SpriteAnimation,
+      Text,
+      Texture
+    ]
+  };
 
-  public add(type: Type): this {
-    this.declarations.add(type);
-    return this;
-  }
+  constructor(private readonly declarations: ResourceDeclarations) {}
 
-  public bundle(bundle: UiBundle): this {
-    if (bundle.components) {
-      for (const type of bundle.components) {
-        this.add(type);
-      }
+  /** @internal */
+  private registerComponentDeclarations(world: World): void {
+    const store = world.get(TagRegistry);
+    const types = [
+      ...this.declarations.components ?? [],
+      ...this.default.components ?? []
+    ];
+
+    for (const type of types) {
+      store.component(getTagMetadata(type).tag, type);
     }
-
-    if (bundle.elements) {
-      for (const type of bundle.elements) {
-        this.add(type);
-      }
-    }
-
-    return this;
   }
 
   /** @internal */
-  private register(world: World): void {
+  private registerElementDeclarations(world: World): void {
     const store = world.get(TagRegistry);
+    const types = [
+      ...this.declarations.nodes ?? [],
+      ...this.default.nodes ?? []
+    ];
 
-    for (const type of this.declarations) {
-      const metadata = getTagMetadata(type);
-
-      switch (metadata.type) {
-        case TagType.Component:
-          store.component(metadata.tag, type);
-          break;
-        case TagType.Element:
-          store.element(metadata.tag, world.make(type));
-          break;
-      }
+    for (const type of types) {
+      store.element(getTagMetadata(type).tag, world.make(type));
     }
   }
 
   /** @inheritDoc */
   public build(app: AppBuilder): void {
-    // Add tags that are provided by default.
-    this
-      .add(Div)
-      .add(Fill)
-      .add(SlicePlane)
-      .add(Span)
-      .add(Sprite)
-      .add(SpriteAnimation)
-      .add(Text)
-      .add(Texture);
-
     app
       .provide(TagRegistry)
-      .run(this.register.bind(this));
+      .run(world => {
+        this.registerComponentDeclarations(world);
+        this.registerElementDeclarations(world);
+      });
   }
 
 }

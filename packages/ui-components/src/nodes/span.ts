@@ -1,11 +1,11 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { UiNode } from '@heliks/tiles-ui';
-import { Element } from '../metadata';
-import { ElementFactory } from '../tag-registry';
+import { Tag } from '../metadata';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
-@Element('span')
-export class Span implements ElementFactory {
+@Tag('span')
+export class Span implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World): Entity {

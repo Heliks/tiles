@@ -14,8 +14,8 @@ export class Document {
    * Invalidates the current document so that it is re-evaluated on this frame, which re-
    * triggers all checks for element insertion and layout calculation.
    *
-   * Note: This should be used with caution. If the document never becomes valid the
-   * layout validation crashes in an infinite loop.
+   * Note: Use with caution. This can cause an infinite loop when layout never becomes
+   * valid during this frame.
    */
   public invalidate(): void {
     this.invalid = true;

@@ -3,8 +3,8 @@ import { Entity, World } from '@heliks/tiles-engine';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { UiElement, UiNode, UiSprite } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx-node';
-import { Element } from '../metadata';
-import { ElementFactory } from '../tag-registry';
+import { Tag } from '../metadata';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
 /** Available attributes for {@link Sprite} elements. */
@@ -25,8 +25,8 @@ export interface SpriteAttributes<I = unknown> extends Attributes {
 }
 
 /** Element that displays a sprite. */
-@Element('sprite')
-export class Sprite implements ElementFactory<SpriteAttributes> {
+@Tag('sprite')
+export class Sprite implements UiNodeRenderer<SpriteAttributes> {
 
   /** @inheritDoc */
   public render(world: World, attributes: SpriteAttributes): Entity {

@@ -1,39 +1,19 @@
-import { Entity, Type, World } from '@heliks/tiles-engine';
-import { TextStyle } from '@heliks/tiles-ui';
-import { Attributes } from './jsx-node';
+import { Type } from '@heliks/tiles-engine';
 import { TagType } from './metadata';
 import { UiComponent } from './ui-component';
+import { UiNodeRenderer } from './ui-node-renderer';
 
 
-/**
- * Transforms a JSX node into an entity with a {@link UiNode} component. Additional
- * settings may be made to the node or an {@link UiElement} component may be added,
- * depending on the implementation of the element.
- */
-export interface ElementFactory<A extends Attributes = Attributes> {
+/** Registry entry for a tag that renders a {@link UiNode}. */
+export type TagRegistryNodeEntry = { factory: UiNodeRenderer, type: TagType.Node };
 
-  /**
-   * Called to render a JSX element (e.g. <div>, <span>, etc.). The entity that is
-   * produced by this function *must* have a {@link UiNode} component.
-   *
-   * @param world Entity world
-   * @param attributes Attributes for the element to create.
-   * @param text (optional) Inherited text style.
-   */
-  render(world: World, attributes: A, text?: TextStyle): Entity;
-
-}
-
-/** Registry entry for tags that are elements. */
-export type ElementEntry = { factory: ElementFactory, type: TagType.Element };
-
-/** Registry entry for tags that are components. */
-export type ComponentEntry = { component: Type<UiComponent>, type: TagType.Component };
+/** Registry entry for a tag that renders a {@link UiComponent}. */
+export type TagRegistryComponentEntry = { component: Type<UiComponent>, type: TagType.Component };
 
 /** An entry for the {@link TagRegistry}. */
-export type TagRegistryEntry = ElementEntry | ComponentEntry;
+export type TagRegistryEntry = TagRegistryNodeEntry | TagRegistryComponentEntry;
 
-/** Stores entries for each known tag that can be used in a JSX context. */
+/** Stores metadata for each valid tag-name in JSX. */
 export class TagRegistry {
 
   /** Contains all registry entries mapped to their tag name. */
@@ -52,10 +32,10 @@ export class TagRegistry {
    * Registers a `tag` as an element, using `factory` to render it when it is used in
    * a JSX context. Throws an error if the given tag name is already in use.
    */
-  public element(tag: string, factory: ElementFactory): this {
+  public element(tag: string, factory: UiNodeRenderer): this {
     this.set(tag, {
       factory,
-      type: TagType.Element
+      type: TagType.Node
     });
 
     return this;

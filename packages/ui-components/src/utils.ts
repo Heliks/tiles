@@ -14,3 +14,4 @@ function _formatCamelCaseSegment(segment: string, index: number): string {
 export function kebabToCamel(value: string): string {
   return value.split('-').map(_formatCamelCaseSegment).join('');
 }
+

@@ -4,8 +4,8 @@ import { getTypeName, Injectable, Type } from '@heliks/tiles-engine';
 export enum TagType {
   /** Tag wants to render a {@link UiComponent}. */
   Component,
-  /** Tag wants to render a basic {@link UiNode}. */
-  Element
+  /** Tag wants to render a {@link UiNode}. */
+  Node
 }
 
 interface TagMetadata {
@@ -34,24 +34,22 @@ export function getTagMetadata(target: Type): TagMetadata {
 }
 
 /**
- * Marks a {@link ElementFactory element} and defines element metadata on how the
- * element is used during runtime.
+ * Adds tag metadata to a {@link UiNodeRenderer}.
  *
- * Elements have dependency injection enabled by default.
+ * This enables dependency injection on the decorated object.
  *
- * @see ElementFactory
+ * @see UiNodeRenderer
  */
-export function Element(tag: string): Function {
-  return function elementDecorator(target: Type): void {
-    setTagMetadata(target, { tag, type: TagType.Element });
+export function Tag(tag: string): Function {
+  return function tagDecorator(target: Type): void {
+    setTagMetadata(target, { tag, type: TagType.Node });
   }
 }
 
 /**
- * Marks a {@link UiComponent} and defines component metadata on how the component is
- * used during runtime.
+ * Adds component metadata to a {@link UiComponent}.
  *
- * Components have dependency injection enabled by default.
+ * This enables dependency injection on the decorated object.
  *
  * @see UiComponent
  */

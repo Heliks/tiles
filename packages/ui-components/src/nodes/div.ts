@@ -1,11 +1,11 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { Rect, Size, UiNode } from '@heliks/tiles-ui';
-import { Element } from '../metadata';
-import { ElementFactory } from '../tag-registry';
+import { Tag } from '../metadata';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
-@Element('div')
-export class Div implements ElementFactory {
+@Tag('div')
+export class Div implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World): Entity {
