@@ -1,6 +1,7 @@
-import { AssetStorage } from '@heliks/tiles-assets';
+import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { Injectable, ProcessingSystem, Query, QueryBuilder, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
+import { SpriteSheet } from '../sprite-sheet';
 import { SpriteAnimation } from './sprite-animation';
 
 
@@ -24,19 +25,23 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies the transform on the given `animation` component, using `render` to create
-   * the new animation. This function assumes that the `transform` property is set on
-   * the animation component. Returns `true` if the transform was successful.
+   * Applies animation data of the given `spritesheet` to a sprite `animation`.
+   *
+   * @param animation Sprite animation to which animation data should be applied.
+   * @param spritesheet Asset handle for the sprite-sheet from which the animation data
+   *  will be resolved. Applying the animation will fail if this is not fully loaded.
+   * @param name Name of the animation data, defined on the given `sprite-sheet`.
+   *
+   * @returns A boolean indicating if the animation was successfully changed. This can
+   *  fail if the provided sprite-sheet is not fully loaded.
    */
-  protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet = this.assets.get(render.spritesheet);
+  public apply(animation: SpriteAnimation, spritesheet: Handle<SpriteSheet>, name: string): boolean {
+    const sheet = this.assets.get(spritesheet);
 
     if (! sheet) {
       return false;
     }
 
-    // Safety: At this point we know that the "transform" value contains something.
-    const name = animation.transform as string;
     const data = sheet.getAnimation(name);
 
     animation.reset();
@@ -47,6 +52,10 @@ export class SpriteAnimationSystem extends ProcessingSystem {
     animation.frames = [
       ...data.frames
     ];
+
+    if (data.frameDuration) {
+      animation.frameDuration = data.frameDuration;
+    }
 
     return true;
   }
@@ -61,7 +70,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       const display = displays.get(entity);
 
       // Apply animation transform if necessary.
-      if (animation.transform && this.transformAnimation(animation, display)) {
+      if (animation.transform && this.apply(animation, display.spritesheet, animation.transform)) {
         animation.transform = undefined;
       }
 

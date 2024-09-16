@@ -43,11 +43,12 @@ export class SpriteAnimation {
   public speed = 1;
 
   /**
-   * Name of the animation that should be played next. The animation data that will be
-   * used is from the [[SpriteDisplay]] component adjacent to this component. Does not
-   * wait for the current animation to complete.
+   * Name of the animation that should be played next.
    *
-   * Do not modify this directly. Use `play()` to modify the current animation.
+   * The animation data is resolved from the adjacent {@link SpriteRender} component of
+   * the owner of this animation. This doesn't wait for the current animation to complete.
+   *
+   * Don't modify this directly. Use {@link play()} to properly switch the animation.
    *
    * @see play()
    */

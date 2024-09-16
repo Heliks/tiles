@@ -2,11 +2,12 @@ import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks
 import { Element, PassByReference, PassByValue, TemplateElement, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
 import { createJsxNode, JsxNode } from '../jsx-node';
 import { createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
-import { TagRegistry, UiNodeRenderer } from '../tag-registry';
+import { TagRegistry } from '../tag-registry';
 import { UiComponent } from '../ui-component';
+import { UiNodeRenderer } from '../ui-node-renderer';
 
 
-class NoopFactory implements TagRenderer {
+class NoopFactory implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World): Entity {
