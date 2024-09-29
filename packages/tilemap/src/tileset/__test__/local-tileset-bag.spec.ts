@@ -1,6 +1,6 @@
-import { LocalTilesetBag } from '../local-tileset-bag';
-import { LocalTileset } from '../local-tileset';
 import { Grid } from '@heliks/tiles-engine';
+import { LocalTileset } from '../local-tileset';
+import { LocalTilesetBag } from '../local-tileset-bag';
 import { Tileset } from '../tileset';
 import { createEmptyTileset } from './utils';
 
@@ -66,6 +66,51 @@ describe('LocalTilesetBag', () => {
       bag.add(createTileset(3, 3));
 
       expect(() => bag.getFromGlobalId(25)).toThrow();
+    });
+  });
+
+  describe('translate()', () => {
+    let bag0: LocalTilesetBag;
+    let bag1: LocalTilesetBag;
+
+    beforeEach(() => {
+      bag0 = new LocalTilesetBag();
+      bag1 = new LocalTilesetBag();
+    });
+
+    it('should translate a global ID to another tileset collection', () => {
+      const tileset = createTileset(5, 5);
+
+      // Add noise.
+      bag0.add(createTileset(5, 5));
+      bag1.add(createTileset(3, 3));
+      bag1.add(createTileset(3, 3));
+
+      bag0.add(tileset);  // <- ID range 26-50
+      bag1.add(tileset);  // <- ID range 19-43
+
+      // Translate the global ID 30 (local ID 5).
+      const translated = bag0.translate(bag1, 30);
+
+      // Global ID 30 correlates to a local ID of 5 in a range of 26-50. The translated
+      // ID is therefore 23 in ID range 19-43.
+      expect(translated).toBe(23);
+    });
+
+    it('should add tileset if it isn\'t part of the target collection', () => {
+      const tileset = createTileset(5, 5);
+
+      bag0.add(createTileset(3, 3))
+      bag0.add(tileset); // 10 - 34
+
+      bag1.add(createTileset(5, 5));
+
+      // Translate the global ID 12 (local ID 3).
+      const translated = bag0.translate(bag1, 12);
+
+      // The tileset should receive the range 26-50 in bag1. The local ID 3 therefore
+      // correlates to 28.
+      expect(translated).toBe(28)
     });
   });
 });

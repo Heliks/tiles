@@ -107,5 +107,30 @@ export class LocalTilesetBag<T extends Tileset = Tileset> {
     return this.items.find(item => item.tileset.name === name);
   }
 
+  /**
+   * Translates a global tile ID from this collection to another.
+   *
+   * If the target collection doesn't yet contain the {@link Tileset} that correlates to
+   * the given ID, it will be added in the process.
+   *
+   * @param target Collection to which `globalId` will be translated.
+   * @param globalId Global tile ID to translate.
+   *
+   * @returns A global tile ID on the target tileset collection that correlates to the
+   *  same tile as `globalId` in the source collection.
+   */
+  public translate(target: LocalTilesetBag, globalId: number): number {
+    const local = this.getFromGlobalId(globalId);
+    const localId = local.getLocalId(globalId);
+
+    let remote = target.find(local.tileset);
+
+    if (! remote) {
+      remote = target.add(local.tileset);
+    }
+
+    return remote.getGlobalId(localId);
+  }
+
 }
 
