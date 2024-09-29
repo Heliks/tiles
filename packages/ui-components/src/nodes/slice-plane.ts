@@ -1,6 +1,6 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Entity, World } from '@heliks/tiles-engine';
-import { SpriteSheet } from '@heliks/tiles-pixi';
+import { SpriteId, SpriteSheet } from '@heliks/tiles-pixi';
 import { UiElement, UiNode, UiSlicePlane } from '@heliks/tiles-ui';
 import { Attributes } from '../jsx-node';
 import { Tag } from '../metadata';
@@ -8,17 +8,13 @@ import { UiNodeRenderer } from '../ui-node-renderer';
 
 
 /** Available attributes for {@link SlicePlane} elements. */
-export interface SlicePlaneAttributes<I = unknown> extends Attributes {
-
+export interface SlicePlaneAttributes extends Attributes {
   /** Spritesheet from which the slice plane texture will be created. */
-  spritesheet: Handle<SpriteSheet<I>>;
-
+  spritesheet: Handle<SpriteSheet>;
   /** ID of the sprite that should be used as the slice plane texture. */
-  sprite: I;
-
+  sprite: SpriteId;
   /** Width of each side of the slice plane in px. */
   sides: number;
-
 }
 
 /** Element that uses the {@link UiSlicePlane} element as {@link UiElement}. */

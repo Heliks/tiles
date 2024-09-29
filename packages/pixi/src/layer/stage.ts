@@ -1,5 +1,5 @@
 import { Injectable, isDefined } from '@heliks/tiles-engine';
-import { Drawable } from '../drawable';
+import { Drawable } from '../common';
 import { Layer, LayerId } from './layer';
 import { Layers } from './layers';
 

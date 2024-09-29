@@ -17,7 +17,7 @@ export interface TmxEmbeddedLocalTilesetData extends TmxTilesetData {
 export type TmxLocalTilesetData = TmxExternalLocalTilesetData | TmxEmbeddedLocalTilesetData;
 
 export interface TmxEditorSettingsData {
-  chunksize?: {
+  chunksize?: { 
     height: number;
     width: number;
   }

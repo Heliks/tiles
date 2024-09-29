@@ -1,6 +1,7 @@
-import { AppBuilder, AppSchedule, Bundle, OnInit, Screen, World } from '@heliks/tiles-engine';
+import { AppBuilder, AppSchedule, Bundle, OnInit, Vec2, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
 import { CameraBundle } from './camera';
+import { Screen } from './common';
 import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
 import { Layers, SortChildren, Stage } from './layer';
@@ -10,16 +11,9 @@ import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } 
 import { UpdateRenderer } from './update-renderer';
 
 
-/** @internal */
-function checkScreenPresence(builder: AppBuilder): void {
-  if (! builder.container.has(Screen)) {
-    throw new Error('Renderer requires a "Screen" to be present.');
-  }
-}
-
 export enum RendererSchedule {
-  Update,
-  Render
+  Update = 'renderer:update',
+  Render = 'renderer:render'
 }
 
 /** Configuration for the renderer bundle. */
@@ -40,7 +34,7 @@ export interface RendererBundleOptions {
   autoResize?: boolean;
 
   /**
-   * Background color of the game stage.
+   * Initial background color of the game stage.
    */
   background?: number;
 
@@ -62,6 +56,15 @@ export interface RendererBundleOptions {
    * Must be a valid input for `document.querySelector()`.
    */
   selector: string;
+
+  /**
+   * Requested width and height of the screen.
+   *
+   * The actual amount of pixels being rendered may differ from this amount, as the
+   * renderer can be resized and scaled independently of this value. For example,
+   * when {@link autoResize} is enabled.
+   */
+  resolution: Vec2;
 
   /**
    * The unit size tells the renderer how many pixels are equivalent to one game unit.
@@ -121,8 +124,6 @@ export class PixiBundle implements Bundle, OnInit {
 
   /** @inheritDoc */
   public build(app: AppBuilder): void {
-    checkScreenPresence(app);
-
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();
 
@@ -131,6 +132,7 @@ export class PixiBundle implements Bundle, OnInit {
       .component(SpriteRender)
       .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
       .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
+      .provide(Screen, new Screen(this.config.resolution))
       .provide(Layers, this.getRendererLayers())
       .provide(RendererConfig, new RendererConfig(this.config.unitSize ?? 1))
       .provide(PIXI.Renderer, this.createPIXIRenderer())

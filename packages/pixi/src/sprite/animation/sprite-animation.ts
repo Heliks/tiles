@@ -2,7 +2,7 @@ import { UUID } from '@heliks/tiles-engine';
 
 
 /** Component to animate a `SpriteDisplay` component. */
-@UUID('86314eb4-6d13-429c-bd27-b24242db10d7')
+@UUID('pixi.SpriteAnimation')
 export class SpriteAnimation {
 
   /** Elapsed time since the animation has started. */
@@ -58,10 +58,7 @@ export class SpriteAnimation {
    * @param frames Contains the indexes of all sprites of which the animation consists.
    * @param frameDuration Duration in ms of how long each frame is displayed.
    */
-  constructor(
-    public frames: number[] = [],
-    public frameDuration = 100
-  ) {}
+  constructor(public frames: number[] = [], public frameDuration = 100) {}
 
   /** Resets the animation back to the beginning. */
   public reset(): this {

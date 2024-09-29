@@ -1,4 +1,5 @@
-import { Injectable, Screen, System, World } from '@heliks/tiles-engine';
+import { Injectable, System, World } from '@heliks/tiles-engine';
+import { Screen } from '../common';
 import { RendererConfig } from '../config';
 import { Layers } from '../layer';
 import { Camera } from './camera';

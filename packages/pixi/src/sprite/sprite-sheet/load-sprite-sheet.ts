@@ -104,6 +104,7 @@ function parse(texture: Texture, data: SpriteSheetData): SpriteSheet {
  *
  * ```json
  *  {
+ *    "type": "slices",
  *    "image": 'foo.png'
  *    "imageWidth": 100,
  *    "imageHeight": 100,

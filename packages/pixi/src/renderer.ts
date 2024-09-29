@@ -1,9 +1,9 @@
-import { EventQueue, Injectable, Screen, ScreenEvent, Subscriber } from '@heliks/tiles-engine';
+import { EventQueue, Injectable, Subscriber } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { RenderTexture } from 'pixi.js';
+import { Container, RenderTexture } from 'pixi.js';
+import { Drawable, Screen, ScreenEvent } from './common';
 import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
-import { Container, Drawable } from './drawable';
 import { Layers } from './layer';
 
 

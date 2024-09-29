@@ -3,7 +3,7 @@ import { Serializeable, UUID, Vec2, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { Layer, LayerId } from '../../layer';
 import { getMaterialFromId, ShaderMaterial } from '../../material';
-import { SpriteSheet } from '../sprite-sheet';
+import { SpriteId, SpriteSheet } from '../sprite-sheet';
 
 
 export interface MaterialData {
@@ -11,14 +11,14 @@ export interface MaterialData {
   uuid: UUID;
 }
 
-export interface SpriteRenderData {
+export interface SpriteRenderData<I extends SpriteId> {
   anchorX: number;
   anchorY: number;
   flipX: boolean;
   flipY: boolean;
   opacity: number;
   spritesheet: string;
-  spriteIndex: number;
+  spriteIndex: I;
   scaleX: number;
   scaleY: number;
   visible: boolean;
@@ -38,13 +38,9 @@ function createMaterialFromData(data: MaterialData): ShaderMaterial {
   return t;
 }
 
-
-/**
- * Component that when attached to an entity, will render a sprite. By default, the
- * sprite anchor is the middle of the sprite.
- */
-@UUID('039f5dc4-b1fd-410e-a170-d32d2746c6be')
-export class SpriteRender implements Serializeable<SpriteRenderData> {
+/** Component that renders a sprite on the entity to which it is attached to. */
+@UUID('pixi.SpriteRender')
+export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeable<SpriteRenderData<I>> {
 
   /** @internal */
   public readonly _sprite = new Sprite();
@@ -117,8 +113,8 @@ export class SpriteRender implements Serializeable<SpriteRenderData> {
    * @param layer (optional) Renderer layer ID.
    */
   constructor(
-    public spritesheet: Handle<SpriteSheet>,
-    public spriteIndex: number,
+    public spritesheet: Handle<SpriteSheet<I>>,
+    public spriteIndex: I,
     public layer?: LayerId
   ) {
     // Using the middle position instead of the top-left position will save us extra
@@ -130,7 +126,7 @@ export class SpriteRender implements Serializeable<SpriteRenderData> {
    * Sets the index of the sprite that should be rendered. Returns `false` if that index
    * is already set. If the sprite was changed, the component is marked as {@link dirty}.
    */
-  public setIndex(index: number): boolean {
+  public setIndex(index: I): boolean {
     if (this.spriteIndex === index) {
       return false;
     }
@@ -174,7 +170,7 @@ export class SpriteRender implements Serializeable<SpriteRenderData> {
   }
 
   /** @inheritDoc */
-  public serialize(): SpriteRenderData {
+  public serialize(): SpriteRenderData<I> {
     const { flipX, flipY, layer, opacity, spriteIndex, visible } = this;
 
     return {
@@ -193,7 +189,7 @@ export class SpriteRender implements Serializeable<SpriteRenderData> {
   }
 
   /** @inheritDoc */
-  public deserialize(world: World, data: SpriteRenderData): void {
+  public deserialize(world: World, data: SpriteRenderData<I>): void {
     this.spritesheet = world.get(AssetLoader).load(data.spritesheet);
     this.spriteIndex = data.spriteIndex;
     this.layer = data.layer;

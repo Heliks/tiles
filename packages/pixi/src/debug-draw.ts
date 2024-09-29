@@ -1,7 +1,7 @@
-import { Injectable, Screen, Vec2 } from '@heliks/tiles-engine';
+import { Injectable, Vec2 } from '@heliks/tiles-engine';
 import { Sprite, Texture } from 'pixi.js';
-import { Align } from './align';
 import { Camera } from './camera';
+import { Screen } from './common';
 import { RendererConfig } from './config';
 import { hex2rgb } from './utils';
 
@@ -150,14 +150,9 @@ export class DebugDraw {
   /**
    * Draws a `text` message at the given `x` and `y` position.
    */
-  public text(text: string, x: number, y: number, align = Align.Center): void {
+  public text(text: string, x: number, y: number): void {
     this.context.font = '4px Arial';
     this.context.fillStyle = "red";
-
-    if (align === Align.TopLeft) {
-      x -= (this.screen.resolution.x / 2);
-      y -= (this.screen.resolution.y / 2);
-    }
 
     this.context.fillText(text, x, y);
   }

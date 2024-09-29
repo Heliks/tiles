@@ -8,7 +8,7 @@ import { LocalTilesetBag, Tileset } from './tileset';
  * Component that when added to an entity, will render a tilemap on its world position. A
  * tilemap is essentially a grid where each cell can possibly contain a tile.
  */
-@UUID('415ca0bf-6b43-4481-9064-3313c3fa1b01')
+@UUID('tilemap.Tilemap')
 export class Tilemap<T extends Tileset = Tileset> {
 
   /**

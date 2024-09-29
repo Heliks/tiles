@@ -1,5 +1,7 @@
 Bundle that provides a 2D rendering pipeline via the PIXI.js library.
 
+- The PIXI.JS [DevTools](https://chromewebstore.google.com/detail/pixijs-devtools/aamddddknhcagpehecnhphigffljadon?hl=en&pli=1) extension can be used with this bundle.
+
 ## Usage
 
 To use the renderer, add its bundle to the game runtime:
@@ -9,6 +11,7 @@ runtime()
   // ... Runtime configuration.
   .bundle(
     new PixiBundle({
+      resolution: new Vec2(180, 320),
       selector: '#stage'
     })
   )
@@ -19,6 +22,10 @@ runtime()
 ### Settings
 
 #### Required
+
+- **resolution** `Vec2`: 
+  
+  Requested amount of pixels in width and height.
 
 - **selector** `string`:
 
@@ -45,7 +52,7 @@ runtime()
 
 - **background** `number` (Default: `0x000000`):
 
-  Background color of the game stage.
+  Initial background color of the game stage.
 
 - **layers** `Function`:
 
@@ -91,6 +98,7 @@ runtime()
   .bundle(
     new PixiBundle({
       layers: setupRendererLayers,
+      resolution: new Vec2(180, 320),
       selector: '#stage'
     })
   )

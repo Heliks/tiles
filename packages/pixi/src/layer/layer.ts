@@ -1,4 +1,5 @@
-import { Container, Drawable } from '../drawable';
+import { Container } from 'pixi.js';
+import { Drawable } from '../common';
 
 
 /** Sorting function for children of a {@link Layer}. */

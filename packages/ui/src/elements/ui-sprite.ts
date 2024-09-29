@@ -1,14 +1,14 @@
 import { Rect, Size } from '@heliks/flex';
 import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { World } from '@heliks/tiles-engine';
-import { SpriteSheet } from '@heliks/tiles-pixi';
+import { SpriteId, SpriteSheet } from '@heliks/tiles-pixi';
 import { Sprite } from 'pixi.js';
 import { Element } from '../element';
 import { Input } from '../input';
 
 
 /** Displays a sprite. */
-export class UiSprite<I = unknown> implements Element {
+export class UiSprite<I extends SpriteId = SpriteId> implements Element {
 
   /** @inheritDoc */
   public readonly view = new Sprite();

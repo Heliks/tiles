@@ -8,14 +8,11 @@ import { UiNodeRenderer } from '../ui-node-renderer';
 
 
 /** Available attributes for {@link SpriteAnimation} elements. */
-export interface SpriteAnimationAttributes<I = unknown> extends Attributes {
-
-  /** Spritesheet used to display the sprite. */
-  spritesheet: Handle<SpriteSheet<I>>;
-
+export interface SpriteAnimationAttributes extends Attributes {
   /** Name of the animation that is played by the element. */
   animation: string;
-
+  /** Spritesheet used to display the sprite. */
+  spritesheet: Handle<SpriteSheet>;
 }
 
 /** Element that displays a sprite animation. */

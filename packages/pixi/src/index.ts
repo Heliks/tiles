@@ -1,11 +1,11 @@
 export * from './camera';
-export * from './config';
-export * from './drawable';
+export * from './common';
+export * from './common/drawable';
 export * from './layer';
 export * from './material';
 export * from './sprite';
 
-export * from './align';
+export * from './config';
 export * from './debug-draw';
 export * from './load-texture';
 export * from './pixi-bundle';

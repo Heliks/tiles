@@ -6,9 +6,9 @@ import {
   ProcessingSystem,
   Query,
   QueryBuilder,
-  Screen,
   Storage
 } from '@heliks/tiles-engine';
+import { Screen } from '@heliks/tiles-pixi';
 import { UiNode } from '../ui-node';
 
 

@@ -1,5 +1,4 @@
-import { EventQueue } from "@heliks/event-queue";
-import { Vec2 } from "@heliks/tiles-math";
+import { EventQueue, Vec2 } from '@heliks/tiles-engine';
 
 
 /**
@@ -11,12 +10,10 @@ export enum ScreenEvent {
 
 /**
  * Describes the dimensions of the "Screen" for graphical applications. In traditional
- * game engines, this is usually called a "Window". There are two sizes associated with
- * a screen. The requested size (resolution) and the absolute amount of pixels on the
- * monitor (size).
+ * game engines, this is usually called the "Window".
  *
- * For non-graphical applications such as server apps or text-adventures that run in a
- * node console, it is not required to configure a screen.
+ * There are two sizes associated with a screen. The requested size (resolution) and the
+ * absolute amount of pixels on the monitor (size).
  */
 export class Screen {
 
@@ -41,8 +38,8 @@ export class Screen {
 
   /**
    * @param resolution Contains the requested width and height of the screen. The actual
-   *  amount of pixels that are rendered may differ from this value, depending on the
-   *  size of the canvas element on which the game will eventually be rendered.
+   *  amount of rendered pixels may differ from this value, as the renderer canvas can
+   *  be resized and scaled independently of resolution.
    */
   constructor(public readonly resolution: Vec2) {
     this.size = resolution.clone();

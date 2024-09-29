@@ -10,8 +10,11 @@ export interface SpriteAnimationFrames {
   frameDuration?: number;
 }
 
+/** Valid types for a sprite ID. */
+export type SpriteId = number | string;
+
 /** A collection of sprites. */
-export abstract class SpriteSheet<I = unknown> {
+export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
 
   /** @internal */
   private readonly animations = new Map<string, SpriteAnimationFrames>();

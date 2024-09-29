@@ -1,4 +1,5 @@
-import { Injectable, Screen, Vec2, XY } from '@heliks/tiles-engine';
+import { Injectable, Vec2, XY } from '@heliks/tiles-engine';
+import { Screen } from '../common';
 import { RendererConfig } from '../config';
 
 
