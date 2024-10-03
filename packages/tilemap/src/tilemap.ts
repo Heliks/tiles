@@ -1,15 +1,58 @@
-import { createPackedArray, Grid, UUID } from '@heliks/tiles-engine';
+import { AssetLoader } from '@heliks/tiles-assets';
+import { createPackedArray, Grid, Serialize, UUID, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { AnimatedSprite, Container } from 'pixi.js';
-import { LocalTilesetBag, Tileset } from './tileset';
+import { LocalTileset, LocalTilesetBag, Tileset } from './tileset';
 
+
+/** Serialized data of a {@link LocalTileset} */
+export interface LocalTilesetData {
+  /** @see LocalTileset.firstId */
+  firstId: number;
+  /** @see LocalTileset.firstId */
+  file: string;
+}
+
+/** Serialized data of a {@link Tilemap} */
+export interface TilemapData {
+  /** @see Tilemap.data */
+  data: number[];
+  /** @see Tilemap.tilesets */
+  tilesets: LocalTilesetData[];
+}
 
 /**
- * Component that when added to an entity, will render a tilemap on its world position. A
- * tilemap is essentially a grid where each cell can possibly contain a tile.
+ * Component that renders a tilemap at the world position of the entity to which it is
+ * attached to.
+ *
+ * ## Serialization
+ *
+ * Tilemaps fully support automatic serialization. However, since tilemaps don't accept
+ * asset handles & require their tilesets to be fully loaded at the time they are created,
+ * they must be deserialized manually.
+ *
+ * Invoke `Tilemap.restore()` to manually restore a tilemap from serialized data:
+ *
+ * ```ts
+ *  async function load(world: World): Promise<Tilemap> {
+ *    const tilemap = new Tilemap();
+ *
+ *    // Restore happens async.
+ *    await Tilemap.restore(world, tilemap, data);
+ *
+ *    // Insert tilemap into the world.
+ *    world.insert(tilemap, new Transform(0, 0));
+ *
+ *    return tilemap;
+ *  }
+ *
+ *  load(world).then(tilemap => {
+ *    console.log('Loaded restored tilemap', tilemap);
+ *  });
+ * ```
  */
 @UUID('tilemap.Tilemap')
-export class Tilemap<T extends Tileset = Tileset> {
+export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapData> {
 
   /**
    * Grid data. Each index represents a grid cell and each value a tile ID. If a cell
@@ -74,6 +117,45 @@ export class Tilemap<T extends Tileset = Tileset> {
    */
   constructor(public readonly grid: Grid, public readonly layer?: LayerId) {
     this.data = createPackedArray(grid.size, 0);
+  }
+
+  /** @internal */
+  private static async _tilesets(world: World, data: LocalTilesetData): Promise<LocalTileset> {
+    const loader = world.get(AssetLoader);
+    const handle = await loader.async<Tileset>(data.file);
+
+    return new LocalTileset(loader.assets.resolve(handle), data.firstId);
+  }
+
+  /**
+   * Restores serialized `data` on the given `tilemap`.
+   *
+   * @param world Entity world.
+   * @param tilemap Tilemap on which data will be restored.
+   * @param data Data to restore.
+   */
+  public static async restore(world: World, tilemap: Tilemap, data: TilemapData): Promise<void> {
+    const tilesets = await Promise.all(
+      data.tilesets.map(item => Tilemap._tilesets(world, item))
+    );
+
+    // Todo: This could potentially become unsafe in the future.
+    tilemap.tilesets.items.push(...tilesets);
+
+    // Data can be set only after tilesets have been restored.
+    tilemap.setAll(data.data);
+  }
+
+  /** @inheritDoc */
+  public serialize(): TilemapData {
+    const tilesets = this.tilesets.items.map(local => {
+      return {
+        file: local.tileset.file,
+        firstId: local.firstId
+      };
+    });
+
+    return { tilesets, data: this.data };
   }
 
   /**

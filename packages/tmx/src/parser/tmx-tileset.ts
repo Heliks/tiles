@@ -43,10 +43,11 @@ export class TmxTileset<P = unknown, T extends TmxCustomTile = TmxCustomTile> ex
   /**
    * @param spritesheet Handle to the {@link SpriteSheet} used by this tileset.
    * @param size Total amount of tiles that are contained in this tileset.
+   * @param file Path to the source file from which the tileset was loaded.
    * @param props Custom properties found on the tileset itself.
    */
-  constructor(spritesheet: Handle<SpriteSheet>, size: number, public readonly props: P) {
-    super(spritesheet, size);
+  constructor(spritesheet: Handle<SpriteSheet>, size: number, file: string, public readonly props: P) {
+    super(spritesheet, size, file);
   }
 
 }

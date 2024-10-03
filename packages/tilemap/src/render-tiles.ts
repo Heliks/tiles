@@ -1,4 +1,4 @@
-import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 import {
   Entity,
   Injectable,
@@ -33,14 +33,12 @@ export class RenderTiles extends ReactiveSystem {
   /**
    * @param assets {@link AssetStorage}
    * @param camera {@link Camera}
-   * @param loader {@link AssetLoader}
    * @param stage {@link Stage}
    * @param ticker {@link Ticker}
    */
   constructor(
     private readonly assets: AssetStorage,
     private readonly camera: Camera,
-    private readonly loader: AssetLoader,
     private readonly stage: Stage,
     private readonly ticker: Ticker
   ) {

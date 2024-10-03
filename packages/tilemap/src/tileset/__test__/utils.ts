@@ -9,5 +9,5 @@ import { Tileset } from '../tileset';
  * given `grid` dimensions.
  */
 export function createEmptyTileset(grid: Grid): Tileset {
-  return new Tileset(Handle.from('noop.png'), grid.size);
+  return new Tileset(Handle.from('noop.png'), grid.size, 'test.json');
 }

@@ -186,7 +186,7 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
       texture
     ));
 
-    const tileset = new Tileset(handle, grid.size);
+    const tileset = new Tileset(handle, grid.size, file);
 
     tileset.name = data.name;
 

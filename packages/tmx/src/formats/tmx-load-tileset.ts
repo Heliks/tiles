@@ -72,8 +72,9 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
     const props = parseCustomProperties<TmxTilesetProps>(data);
     const spritesheet = createSpriteGrid(grid, texture, props)
-    const handle = loader.data(file, spritesheet);
-    const tileset = new TmxTileset(handle, grid.size, props);
+    const handle = loader.data('tmx/' + file, spritesheet);
+
+    const tileset = new TmxTileset(handle, grid.size, file, props);
 
     tileset.pivot = parsePivot(data);
 
