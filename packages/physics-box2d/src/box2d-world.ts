@@ -55,10 +55,7 @@ export class Box2dWorld extends Physics {
   public setup(world: World): void {
     // Sets up a custom Box2D contact-listener which will forward events to the
     // event-queue.
-    this.world.SetContactListener(new Box2dContactListener(
-      world.get(ContactEvents),
-      world
-    ));
+    this.world.SetContactListener(new Box2dContactListener(world.get(ContactEvents)));
   }
 
   /** @inheritDoc */

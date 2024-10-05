@@ -4,7 +4,7 @@ import { Collider, Material } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
 
 
-describe('BodyFactory', () => {
+describe('Box2dBodyFactory', () => {
   let factory: Box2dBodyFactory;
 
   beforeEach(() => {

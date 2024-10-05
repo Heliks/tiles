@@ -1,34 +1,29 @@
 /* eslint-disable new-cap */
 import { b2Contact, b2ContactListener } from '@heliks/box2d';
-import { World } from '@heliks/tiles-engine';
-import { ColliderContact, ContactEvents, ContactEventType } from '@heliks/tiles-physics';
+import { Injectable } from '@heliks/tiles-engine';
+import { Collider, ColliderContact, ContactEvents, ContactEventType, RigidBody } from '@heliks/tiles-physics';
 import { FixtureUserData } from './types';
 
 
-/** Listens to Box2D contact events and forwards them to an `EventQueue`. */
+/** Handles Box2D contact events and forwards them to the physics system. */
+@Injectable()
 export class Box2dContactListener extends b2ContactListener {
 
-  constructor(
-    protected readonly queue: ContactEvents,
-    protected readonly world: World
-  ) {
+  constructor(protected readonly queue: ContactEvents) {
     super();
   }
 
-  /** @internal */
-  public static onContactEnd(fixtureData: FixtureUserData): void {
-    const index = fixtureData.body.contacts.findIndex(item => Boolean(
-      item.colliderA.id === fixtureData.collider.id &&
-      item.entityA === fixtureData.entity
-    ));
+  /** Removes the {@link ColliderContact} between the given `body` and `collider`. */
+  public static remove(body: RigidBody, collider: Collider): void {
+    const index = body.contacts.findIndex(item => item.colliderB.id === collider.id);
 
     if (~index) {
-      const contact = fixtureData.body.contacts[index];
+      const contact = body.contacts[index];
 
-      fixtureData.body.contacts.splice(index, 1);
+      body.contacts.splice(index, 1);
 
       // Push event to onContactEnd queue if available.
-      fixtureData.body.onContact?.push({ contact, type: ContactEventType.End });
+      body.onContact?.push({ contact, type: ContactEventType.End });
     }
   }
 
@@ -70,8 +65,8 @@ export class Box2dContactListener extends b2ContactListener {
     const dataA = contact.GetFixtureA().GetUserData();
     const dataB = contact.GetFixtureB().GetUserData();
 
-    Box2dContactListener.onContactEnd(dataA);
-    Box2dContactListener.onContactEnd(dataB);
+    Box2dContactListener.remove(dataA.body, dataB.collider);
+    Box2dContactListener.remove(dataB.body, dataA.collider);
     
     this.push(dataA, dataB, ContactEventType.Begin);
   }
