@@ -45,13 +45,6 @@ export class CameraEffects {
     }
   }
 
-  /** Removes the given camera `effect`. */
-  public remove(effect: CameraEffect): this {
-    this.active.delete(effect);
-
-    return this;
-  }
-
   /**
    * Adds the given `effect`. If an effect of the same type is already active, it
    * will be canceled and replaced with the new effect.
@@ -59,6 +52,20 @@ export class CameraEffects {
   public add(effect: CameraEffect): this {
     this.removeType(getType(effect));
     this.active.add(effect);
+
+    return this;
+  }
+
+  /** Removes the given camera `effect`. */
+  public remove(effect: CameraEffect): this {
+    this.active.delete(effect);
+
+    return this;
+  }
+
+  /** Clears all active camera effects. */
+  public clear(): this {
+    this.active.clear();
 
     return this;
   }
