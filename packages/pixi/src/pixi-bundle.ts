@@ -54,8 +54,11 @@ export interface RendererBundleOptions {
    * selector when the game is initialized.
    *
    * Must be a valid input for `document.querySelector()`.
+   *
+   * If this is left `undefined`, the renderer can be manually attached to any DOM
+   * node with {@link Renderer.appendTo}.
    */
-  selector: string;
+  selector?: string;
 
   /**
    * Requested width and height of the screen.
@@ -147,16 +150,25 @@ export class PixiBundle implements Bundle, OnInit {
       .system(UpdateRenderer, RendererSchedule.Render);
   }
 
-  /** @inheritDoc */
-  public onInit(world: World): void {
-    const renderer = world.get(Renderer);
-    const element = document.querySelector(this.config.selector);
+  /** @internal */
+  private append(renderer: Renderer, selector: string): void {
+    const element = document.querySelector(selector);
 
     if (! element) {
-      throw new Error(`Renderer stage target is undefined. Used selector: ${this.config.selector}`);
+      throw new Error(`Renderer stage target is undefined. Used selector: ${selector}`);
     }
 
     renderer.appendTo(element);
+  }
+
+  /** @inheritDoc */
+  public onInit(world: World): void {
+    const renderer = world.get(Renderer);
+
+    if (this.config.selector) {
+      this.append(renderer, this.config.selector);
+    }
+
     renderer.setAutoResize(this.config.autoResize ?? true);
 
     // Allows the PixiJS debug tools to capture the application.

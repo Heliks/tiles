@@ -18,7 +18,7 @@ export interface SpriteRenderData<I extends SpriteId> {
   flipY: boolean;
   opacity: number;
   spritesheet: string;
-  spriteIndex: I;
+  spriteId: I;
   scaleX: number;
   scaleY: number;
   visible: boolean;
@@ -51,9 +51,6 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
    * @see setAnchor
    */
   public anchor = new Vec2(0, 0);
-
-  /** Indicates if the sprite needs to be re-rendered.*/
-  public dirty = true;
 
   /** If set to `true` the sprite will be flipped on the x axis. */
   public flipX = false;
@@ -89,6 +86,13 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
    */
   public _material?: ShaderMaterial;
 
+  /**
+   * Contains the currently applied sprite ID, if any.
+   *
+   * @internal
+   */
+  public _spriteId?: SpriteId;
+
   /** The opacity of the sprite. Value from 0-1. */
   public set opacity(opacity: number) {
     this._sprite.alpha = opacity;
@@ -109,32 +113,17 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
 
   /**
    * @param spritesheet Asset {@link Handle} that points to a {@link Spritesheet},
-   * @param spriteIndex Index of the sprite that should be rendered.
+   * @param spriteId Index of the sprite that should be rendered.
    * @param layer (optional) Renderer layer ID.
    */
   constructor(
     public spritesheet: Handle<SpriteSheet<I>>,
-    public spriteIndex: I,
+    public spriteId: I,
     public layer?: LayerId
   ) {
     // Using the middle position instead of the top-left position will save us extra
     // calculations during the renderer update.
     this.setAnchor(0.5, 0.5);
-  }
-
-  /**
-   * Sets the index of the sprite that should be rendered. Returns `false` if that index
-   * is already set. If the sprite was changed, the component is marked as {@link dirty}.
-   */
-  public setIndex(index: I): boolean {
-    if (this.spriteIndex === index) {
-      return false;
-    }
-
-    this.spriteIndex = index;
-    this.dirty = true;
-
-    return true;
   }
 
   /** Flips the sprite. */
@@ -171,7 +160,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
 
   /** @inheritDoc */
   public serialize(): SpriteRenderData<I> {
-    const { flipX, flipY, layer, opacity, spriteIndex, visible } = this;
+    const { flipX, flipY, layer, opacity, spriteId, visible } = this;
 
     return {
       anchorX: this.anchor.x,
@@ -182,7 +171,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
       opacity,
       scaleX: this.scale.x,
       scaleY: this.scale.y,
-      spriteIndex,
+      spriteId,
       spritesheet: this.spritesheet.file,
       visible
     };
@@ -191,7 +180,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
   /** @inheritDoc */
   public deserialize(world: World, data: SpriteRenderData<I>): void {
     this.spritesheet = world.get(AssetLoader).load(data.spritesheet);
-    this.spriteIndex = data.spriteIndex;
+    this.spriteId = data.spriteId;
     this.layer = data.layer;
 
     this.opacity = data.opacity;

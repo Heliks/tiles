@@ -107,9 +107,9 @@ export class SpriteRenderer extends ReactiveSystem {
       }
 
       // Update sprite texture.
-      if (render.dirty && spritesheet) {
-        render.dirty = false;
-        sprite.texture = spritesheet.texture(render.spriteIndex);
+      if (spritesheet && render.spriteId !== render._spriteId) {
+        sprite.texture = spritesheet.texture(render.spriteId);
+        render._spriteId = render.spriteId;
       }
 
       render._sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;

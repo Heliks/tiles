@@ -96,7 +96,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         display.flipX = animation.flipX;
         display.flipY = animation.flipY;
 
-        display.setIndex(animation.frames[nextFrame]);
+        display.spriteId = animation.frames[nextFrame];
 
         if (nextFrame === 0) {
           animation.loops++;
