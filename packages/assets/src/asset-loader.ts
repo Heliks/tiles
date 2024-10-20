@@ -1,6 +1,6 @@
 import { Injectable, ltrim, noIndent, Type, uuid } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
-import { Format, LoadType } from './format';
+import { Format, Fs } from './fs';
 import { getExtension, join, normalize } from './utils';
 
 
@@ -43,8 +43,9 @@ export class AssetLoader {
 
   /**
    * @param assets Resource where loaded assets are stored.
+   * @param fs The asset loaders internal file-system.
    */
-  constructor(public readonly assets: AssetStorage) {}
+  constructor(public readonly assets: AssetStorage, public readonly fs: Fs) {}
 
   /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
   public getPath(path: string): string {
@@ -85,40 +86,20 @@ export class AssetLoader {
   }
 
   /** Fetches the contents of `file`. */
-  public fetch<T>(file: string): Promise<T> {
-    const format = this.getFormatFromFile<T>(file);
+  public async fetch<T>(file: string): Promise<T> {
+    const format = this.getFormat<T>(file);
 
-    return fetch(this.getPath(file)).then(response => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let stream: Promise<any>;
+    const full = this.getPath(file);
+    const data = await this.fs.load(full, format);
 
-      // Parse the fetched data according to the type specified
-      // in the format.
-      switch (format.type) {
-        case LoadType.ArrayBuffer:
-          stream = response.arrayBuffer();
-          break;
-        case LoadType.Blob:
-          stream = response.blob();
-          break;
-        case LoadType.Text:
-          stream = response.text();
-          break;
-        case LoadType.Json:
-        default:
-          stream = response.json();
-          break;
-      }
-
-      // Process raw data using the asset format.
-      return stream.then(
-        data => format.process(data, file, this)
-      );
-    });
+    return format.process(data, file, this);
   }
 
-  /** @internal */
-  private getFormatFromFile<T = unknown>(file: string): Format<unknown, T, AssetLoader> {
+  /**
+   * Returns the appropriate {@link Format} for the extension of the given `file`. Throws
+   * an error if the files extension is not supported.
+   */
+  public getFormat<T = unknown>(file: string): Format<unknown, T, AssetLoader> {
     const extension = getExtension(file);
 
     if (! extension) {

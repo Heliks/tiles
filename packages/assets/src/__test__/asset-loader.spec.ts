@@ -1,5 +1,6 @@
 import { AssetStorage, Handle, Load } from '../asset';
 import { AssetLoader } from '../asset-loader';
+import { Fetch } from '../fs';
 
 
 describe('AssetLoader', () => {
@@ -8,7 +9,7 @@ describe('AssetLoader', () => {
 
   beforeEach(() => {
     storage = new AssetStorage();
-    loader = new AssetLoader(storage);
+    loader = new AssetLoader(storage, new Fetch());
   });
 
   it('should load collections', () => {
