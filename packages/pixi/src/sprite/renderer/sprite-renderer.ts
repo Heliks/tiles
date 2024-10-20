@@ -82,6 +82,7 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @internal */
   private updatePosition(render: SpriteRender, transform: Transform): void {
+    render._sprite.rotation = transform.rotation;
     render._sprite.x = transform.world.x * render._layer.cameraTransformMultiplier * this.config.unitSize;
     render._sprite.y = transform.world.y * render._layer.cameraTransformMultiplier * this.config.unitSize;
   }
