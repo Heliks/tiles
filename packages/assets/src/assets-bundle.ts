@@ -1,5 +1,7 @@
-import { Bundle, GameBuilder } from '@heliks/tiles-engine';
+import { AppBuilder, Bundle, World } from '@heliks/tiles-engine';
+import { AssetStorage } from './asset';
 import { AssetLoader } from './asset-loader';
+import { Fetch, Format, Fs } from './fs';
 
 
 /**
@@ -9,18 +11,49 @@ import { AssetLoader } from './asset-loader';
  */
 export class AssetsBundle implements Bundle {
 
+  /** @internal */
+  private readonly formats: Format<unknown, unknown, AssetLoader>[] = [];
+
   /**
-   * @param root (optional) Root path from which assets should be loaded. The loader
-   *  will prepend this to every file path that ot loads.
+   * @param root Root path from which assets are loaded.
+   * @param fs Implementation of the file-system used by the asset loader.
    */
-  constructor(private readonly root = '') {}
+  constructor(private readonly root = '', private readonly fs: Fs = new Fetch()) {}
+
+  /**
+   * Registers an asset {@link Format} to be used by the {@link AssetLoader}. Only one
+   * format per file extension is allowed..
+   *
+   * @see AssetLoader.use
+   */
+  public use(format: Format<unknown, unknown, AssetLoader>): this {
+    this.formats.push(format);
+
+    return this;
+  }
+
+  /** @internal */
+  private setupRootPath(world: World): void {
+    world.get(AssetLoader).root = this.root;
+  }
+
+  /** @internal */
+  private setupFormats(world: World): void {
+    const loader = world.get(AssetLoader);
+
+    for (const format of this.formats) {
+      loader.use(format);
+    }
+  }
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
-    builder.provide({
-      token: AssetLoader,
-      value: new AssetLoader(this.root)
-    });
+  public build(builder: AppBuilder): void {
+    builder
+      .provide(AssetStorage)
+      .provide(Fs, this.fs)
+      .provide(AssetLoader)
+      .run(this.setupRootPath.bind(this))
+      .run(this.setupFormats.bind(this));
   }
 
 }

@@ -4,15 +4,12 @@
     "es6": true
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:unicorn/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "unicorn"
-  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-function-return-type": [
       "warn",
       {
@@ -28,8 +25,6 @@
         }
       }
     ],
-    "unicorn/prefer-dom-node-remove": "off",
-    "unicorn/numeric-separators-style": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "block-spacing": "error",
     "brace-style": ["error", "stroustrup"],
@@ -83,15 +78,19 @@
     "new-cap": [
       "error",
       {
-        "capIsNewExceptions": ["Injectable", "Inject", "InjectStorage", "Optional", "b2*"]
+        "capIsNewExceptions": [
+          "Ignore",
+          "Injectable",
+          "Inject",
+          "InjectStorage",
+          "Tag",
+          "Optional",
+          "Input",
+          "UUID",
+          "b2*"
+        ]
       }
     ],
-    "space-unary-ops": ["off"],
-    "unicorn/no-fn-reference-in-iterator": "off",
-    "unicorn/prevent-abbreviations": "off",
-    "unicorn/no-abusive-eslint-disable": "off",
-    "unicorn/prefer-math-trunc": "off",
-    "@typescript-eslint/ban-types": "off",
-    "unicorn/prefer-node-remove": "off"
+    "space-unary-ops": ["off"]
   }
 }

@@ -1,14 +1,9 @@
-import { Format } from '../formats';
 import { Type } from '@heliks/tiles-engine';
 
-
-/** Function that returns an asset format. */
-export type FormatGetter = () => Format<unknown, unknown>;
 
 /** @see AssetCollectionMetadata */
 export interface LoadProperty<C> {
   key: keyof C;
-  format: FormatGetter;
   path: string;
 }
 
@@ -44,13 +39,13 @@ export function getCollectionMetadata<C>(type: Type<C>): AssetCollectionMetadata
  * class MyCollection {
  *
  *   // The loader will load the asset and store its handle here.
- *   @Load('foo.png', () => new TextureFormat())
+ *   @Load('foo.png')
  *   public foo!: Handle<Texture>;
  *
  * }
  * ```
  */
-export function Load(path: string, format: FormatGetter): PropertyDecorator {
+export function Load(path: string): PropertyDecorator {
   return function loadDecorator(target: Object, key: string | symbol) {
     let meta = METADATA.get(target.constructor);
 
@@ -63,8 +58,6 @@ export function Load(path: string, format: FormatGetter): PropertyDecorator {
       METADATA.set(target.constructor, meta);
     }
 
-    meta.properties.push(
-      { format, key, path } as LoadProperty<unknown>
-    );
+    meta.properties.push({ key, path } as LoadProperty<unknown>);
   };
 }

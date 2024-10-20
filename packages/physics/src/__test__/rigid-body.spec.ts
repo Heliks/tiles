@@ -1,5 +1,6 @@
 import { Rectangle } from '@heliks/tiles-engine';
 import { Collider } from '../collider';
+import { Material } from '../material';
 import { RigidBody } from '../rigid-body';
 
 
@@ -15,14 +16,15 @@ describe('RigidBody', () => {
     });
 
     it('should inherit the bodies default material', () => {
-      const materialId = 0;
       const body = new RigidBody();
       const coll = Collider.rect(0, 0);
 
-      body.material = materialId;
+      const material = new Material('foo', 1, 2, 3);
+
+      body.material = material;
       body.attach(coll);
 
-      expect(coll.material).toBe(materialId)
+      expect(coll.material).toBe(material)
     });
 
     it('should be attached using shapes', () => {

@@ -1,10 +1,9 @@
-import { Sprite, Texture } from 'pixi.js';
 import { Injectable, Vec2 } from '@heliks/tiles-engine';
-import { hex2rgb } from './utils';
+import { Sprite, Texture } from 'pixi.js';
 import { Camera } from './camera';
-import { Screen } from './screen';
-import { Align } from './align';
-
+import { Screen } from './common';
+import { RendererConfig } from './config';
+import { hex2rgb } from './utils';
 
 
 /**
@@ -37,10 +36,15 @@ export class DebugDraw {
   private readonly canvas = document.createElement('canvas');
 
   /**
-   * @param camera @link camera
-   * @param screen @link screen
+   * @param camera {@see Camera}
+   * @param config {@see RendererConfig}
+   * @param screen {@see Screen}
    */
-  constructor(private readonly camera: Camera, private readonly screen: Screen) {
+  constructor(
+    private readonly camera: Camera,
+    private readonly config: RendererConfig,
+    private readonly screen: Screen
+  ) {
     const ctx = this.canvas.getContext('2d');
 
     if (!ctx) {
@@ -108,8 +112,8 @@ export class DebugDraw {
   /** Adds a translation transformation on the `x` and `y` axis. */
   public translate(x: number, y: number): this {
     this.context.translate(
-      x - (this.camera.world.x * this.screen.unitSize),
-      y - (this.camera.world.y * this.screen.unitSize)
+      x - (this.camera.world.x * this.config.unitSize),
+      y - (this.camera.world.y * this.config.unitSize)
     );
 
     return this;
@@ -146,14 +150,9 @@ export class DebugDraw {
   /**
    * Draws a `text` message at the given `x` and `y` position.
    */
-  public text(text: string, x: number, y: number, align = Align.Center): void {
+  public text(text: string, x: number, y: number): void {
     this.context.font = '4px Arial';
     this.context.fillStyle = "red";
-
-    if (align === Align.TopLeft) {
-      x -= (this.screen.resolution.x / 2);
-      y -= (this.screen.resolution.y / 2);
-    }
 
     this.context.fillText(text, x, y);
   }

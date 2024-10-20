@@ -1,4 +1,4 @@
-import { ClassType, Bundle } from '@heliks/tiles-engine';
+import { Bundle, Type } from '@heliks/tiles-engine';
 import { Physics } from './physics';
 
 
@@ -10,6 +10,6 @@ export interface PhysicsAdapter extends Bundle {
    * If a type is returned instead of an instance, the provider will be instantiated
    * using the service container.
    */
-  getPhysicsType(): Physics | ClassType<Physics>;
+  getPhysicsType(): Type<Physics>;
 
 }

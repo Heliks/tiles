@@ -1,12 +1,12 @@
-/* eslint-disable new-cap */
-import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@flyover/box2d';
-import { Camera, DebugDraw, Renderer, RendererPlugin, Screen } from '@heliks/tiles-pixi';
-import { Inject, Injectable, OnInit, PI_2, Subscriber } from '@heliks/tiles-engine';
+import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@heliks/box2d';
+import { Inject, Injectable, OnInit, PI_2, Subscriber, System } from '@heliks/tiles-engine';
+import { Camera, DebugDraw, Renderer } from '@heliks/tiles-pixi';
 import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 
+/* eslint-disable new-cap */
 
 @Injectable()
-export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
+export class Box2dDebugDraw extends b2Draw implements OnInit, System {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {
@@ -14,13 +14,12 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
   }
 
   /** @internal */
-  private raycasts$!: Subscriber;
+  private raycasts$!: Subscriber<RaycastEvent>;
 
   constructor(
     private readonly camera: Camera,
     private readonly debugDraw: DebugDraw,
     private readonly renderer: Renderer,
-    private readonly screen: Screen,
     @Inject(B2_RAYCASTS)
     private readonly raycasts: RaycastQueue,
     @Inject(B2_WORLD)
@@ -47,13 +46,13 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
     this.ctx.strokeStyle = '#ff00e5';
 
     this.ctx.moveTo(
-      (raycast.start.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.start.y - this.camera.world.y) * this.screen.unitSize
+      (raycast.start.x - this.camera.world.x) * this.camera.unitSize,
+      (raycast.start.y - this.camera.world.y) * this.camera.unitSize
     );
 
     this.ctx.lineTo(
-      (raycast.end.x - this.camera.world.x) * this.screen.unitSize,
-      (raycast.end.y - this.camera.world.y) * this.screen.unitSize
+      (raycast.end.x - this.camera.world.x) * this.camera.unitSize,
+      (raycast.end.y - this.camera.world.y) * this.camera.unitSize
     );
 
     this.ctx.stroke();
@@ -62,10 +61,10 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
 
   /** @inheritDoc */
   public update(): void {
-    this.world.DrawDebugData();
+    this.world.DebugDraw();
 
     // Draw raycasts.
-    for (const raycast of this.raycasts.read(this.raycasts$)) {
+    for (const raycast of this.raycasts$.read()) {
       this.drawRaycast(raycast);
     }
   }
@@ -76,8 +75,8 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
 
     // Apply translate with unit size.
     this.debugDraw.translate(
-      transform.p.x * this.screen.unitSize,
-      transform.p.y * this.screen.unitSize
+      transform.p.x * this.camera.unitSize * this.camera.zoom,
+      transform.p.y * this.camera.unitSize * this.camera.zoom
     );
 
     // Set rotation
@@ -92,14 +91,14 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
   /** Helper method to draw the lines of a polygon. */
   protected drawPolygonVertices(vertices: b2Vec2[]): void {
     this.ctx.moveTo(
-      vertices[0].x * this.screen.unitSize,
-      vertices[0].y * this.screen.unitSize
+      vertices[0].x * this.camera.unitSize * this.camera.zoom,
+      vertices[0].y * this.camera.unitSize * this.camera.zoom
     );
 
     for (const vertex of vertices) {
       this.ctx.lineTo(
-        vertex.x * this.screen.unitSize,
-        vertex.y * this.screen.unitSize
+        vertex.x * this.camera.unitSize * this.camera.zoom,
+        vertex.y * this.camera.unitSize * this.camera.zoom
       );
     }
 
@@ -144,9 +143,9 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, RendererPlugin {
     const ctx = this.ctx;
 
     // Apply unit size to radius and position.
-    const radius = _radius * this.screen.unitSize;
-    const cx = center.x * this.screen.unitSize;
-    const cy = center.y * this.screen.unitSize;
+    const radius = _radius * this.camera.unitSize * this.camera.zoom;
+    const cx = center.x * this.camera.unitSize * this.camera.zoom;
+    const cy = center.y * this.camera.unitSize * this.camera.zoom;
 
     ctx.beginPath();
 

@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { b2Body, b2Fixture } from '@flyover/box2d';
+import { b2Body, b2Fixture } from '@heliks/box2d';
 import { Collider } from '@heliks/tiles-physics';
 
 

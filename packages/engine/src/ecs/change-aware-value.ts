@@ -3,6 +3,8 @@
  *
  * Note: If `T` is a reference (e.g. object, array) and a property of that reference is
  * modified, the change needs to be propagated manually.
+ *
+ * @deprecated
  */
 export class ChangeAwareValue<T> {
 

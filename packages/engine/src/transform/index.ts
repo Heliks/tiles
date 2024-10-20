@@ -1,5 +1,6 @@
-export * from './transform-bundle';
+export { Transform } from '@heliks/ecs-transform';
+export { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 
-// Re-export types from packages.
-export * from '@heliks/ecs-hierarchy';
-export * from '@heliks/ecs-transform';
+export * from './transform-bundle';
+export * from './update-hierarchy';
+export * from './update-transforms';

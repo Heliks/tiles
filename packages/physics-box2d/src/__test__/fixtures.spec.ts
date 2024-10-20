@@ -1,6 +1,6 @@
-import { b2World } from '@flyover/box2d';
+import { b2World } from '@heliks/box2d';
 import { Rectangle } from '@heliks/tiles-engine';
-import { Collider, MaterialManager, RigidBody } from '@heliks/tiles-physics';
+import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
 import { getColliderFixture, syncBodyFixtures } from '../fixtures';
 
@@ -11,7 +11,6 @@ describe('synchronize fixtures', () => {
       x: 0,
       y: 0
     }),
-    new MaterialManager()
   );
 
   it('should update collision filters', () => {

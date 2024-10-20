@@ -1,6 +1,5 @@
-import { AssetLoader, Format, getDirectory, Handle, LoadType } from '@heliks/tiles-assets';
-import { World } from '@heliks/tiles-engine';
-import { LoadTexture, PackedSprite, PackedSpriteSheet, SpriteSheet } from '@heliks/tiles-pixi';
+import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
+import { PackedSprite, PackedSpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 
@@ -24,34 +23,41 @@ function createPackedSprite(data: AsepriteFrameData): PackedSprite {
 }
 
 /**
- * Asset loader format that loads spritesheets exported by aseprite.
- *
- * The format will always create a `PackedSpriteSheet`, regardless if the sprite sheet
- * was packed by aseprite or not.
+ * Asset loader {@link Format} that loads sprite-sheets exported by aseprite.
  *
  * Supports both "Hash" and "Array" outputs.
+ *
+ * - File extension: `.aseprite.json`.
+ *
+ * ## Usage
+ *
+ * Add the `AsepriteFormat` to your `AssetsBundle`. The format will now load all files
+ * with the extension `.aseprite.json`.
+ *
+ * ```ts
+ *  runtime()
+ *    .bundle(
+ *      new AssetsBundle()
+ *        .use(new AsepriteFormat())
+ *    )
+ * ```
+ *
+ * ## Animations
+ *
+ * As individual frame durations are not supported by the animation system, the frame
+ * duration for the entire animation is defined by the duration of its first frame.
  */
 export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
 
   /** @inheritDoc */
-  public readonly name = 'PIXI:aseprite';
+  public readonly extensions = ['aseprite.json'];
 
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-  /** Utility method that uses the `AssetLoader` to load a `SpriteSheet` from `path`. */
-  public static load(world: World, path: string): Handle<SpriteSheet> {
-    return world.get(AssetLoader).load(path, new AsepriteFormat());
-  }
-
-  /** @inheritDoc */
-  public getAssetType(): typeof SpriteSheet {
-    return SpriteSheet;
-  }
-
   /** @internal */
   protected getTexture(file: string, loader: AssetLoader, image: string): Promise<Texture> {
-    return loader.fetch(getDirectory(file, image), new LoadTexture());
+    return loader.fetch(getDirectory(file, image));
   }
 
   /** @inheritDoc */
@@ -60,19 +66,24 @@ export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
     const collection = new PackedSpriteSheet(texture);
 
     let i = 0;
+    let frameData: AsepriteFrameData[] = [];
 
     if (Array.isArray(data.frames)) {
+      frameData = data.frames;
+
       for (let l = data.frames.length; i < l; i++) {
         collection.setPackedSprite(i, createPackedSprite(data.frames[i]));
       }
     }
     else {
       for (const name in data.frames) {
-        if (data.frames.hasOwnProperty(name)) {
-          collection.setPackedSprite(i, createPackedSprite(data.frames[name]));
+        const frame = data.frames[name];
 
-          i++;
-        }
+        collection.setPackedSprite(i, createPackedSprite(frame));
+
+        frameData.push(frame);
+
+        i++;
       }
     }
 
@@ -80,11 +91,21 @@ export class AsepriteFormat implements Format<AsepriteData, PackedSpriteSheet> {
     for (const tag of data.meta.frameTags) {
       const frames = [];
 
+      let frameDuration = 100;
+
       for (let i = tag.from; i < (tag.to + 1); i++) {
         frames.push(i);
+
+        // The animation system currently doesn't support individual frame durations,
+        // so the frame duration for the entire animation is decided by the first frame
+        // in an animation.
+        if (i === tag.from) {
+          frameDuration = frameData[i].duration;
+        }
       }
 
       collection.setAnimation(tag.name, {
+        frameDuration,
         frames
       });
     }

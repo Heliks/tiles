@@ -1,9 +1,8 @@
+import { TmxHasPropertyData } from './utils';
+import { TmxTileData } from './tile';
 
-import { TmxShape } from './shape';
-import { TmxHasProperties } from './utils';
 
-
-export enum TmxTilesetObjectAlignment {
+export enum TmxTilesetAlignData {
   Right = 'right',
   Left = 'left',
   Center = 'center',
@@ -15,20 +14,8 @@ export enum TmxTilesetObjectAlignment {
   BottomRight = 'bottomright'
 }
 
-export interface TmxTilesetTile extends TmxHasProperties {
-  animation?: {
-    duration: number;
-    tileid: number;
-  }[];
-  /** Note: This is actually the tile index, not the ID. */
-  id: number;
-  objectgroup?: {
-    objects: TmxShape[]
-  }
-}
-
 /** @see https://doc.mapeditor.org/en/stable/reference/json-map-format/#tileset */
-export interface TmxTileset extends TmxHasProperties {
+export interface TmxTilesetData extends TmxHasPropertyData {
   backgroundcolor: string;
   columns: number;
   image: string;
@@ -37,11 +24,11 @@ export interface TmxTileset extends TmxHasProperties {
   name: string;
   margin: number;
   spacing: number;
-  objectalignment?: TmxTilesetObjectAlignment;
+  objectalignment?: TmxTilesetAlignData;
   tilecount: number;
   tiledversion: string;
   tileheight: number;
   tilewidth: number;
-  tiles?: TmxTilesetTile[];
+  tiles?: TmxTileData[];
   type: 'tileset';
 }

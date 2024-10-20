@@ -24,7 +24,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
     "sourceSize": { "w": 32, "h": 32 },
-    "duration": 100
+    "duration": 150
    },
    {
     "filename": "Sprite-0001 3.",
@@ -33,7 +33,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
     "sourceSize": { "w": 32, "h": 32 },
-    "duration": 100
+    "duration": 200
    },
    {
     "filename": "Sprite-0001 4.",

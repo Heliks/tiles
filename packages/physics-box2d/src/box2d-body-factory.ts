@@ -1,8 +1,7 @@
 /* eslint-disable new-cap */
-import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@flyover/box2d';
-import { Entity, Transform } from '@heliks/tiles-engine';
-import { Inject, Injectable } from '@heliks/tiles-injector';
-import { Collider, MaterialManager, RigidBody } from '@heliks/tiles-physics';
+import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@heliks/box2d';
+import { Entity, Inject, Injectable, Transform } from '@heliks/tiles-engine';
+import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { B2_WORLD } from './const';
 import { b2ParseBodyType, b2ParseShape } from './utils';
 
@@ -12,8 +11,7 @@ export class Box2dBodyFactory {
 
   constructor(
     @Inject(B2_WORLD)
-    private readonly world: b2World,
-    private readonly materials: MaterialManager
+    private readonly world: b2World
   ) {}
 
   /**
@@ -27,11 +25,9 @@ export class Box2dBodyFactory {
 
     // Assign material. Hard check here because the number 0 is a valid material id.
     if (collider.material !== undefined) {
-      const material = this.materials.get(collider.material);
-
-      def.density = material.density;
-      def.friction = material.friction;
-      def.restitution = material.restitution;
+      def.density = collider.material.density;
+      def.friction = collider.material.friction;
+      def.restitution = collider.material.restitution;
     }
 
     // Collision groups are inherited by the rigid body itself.

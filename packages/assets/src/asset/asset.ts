@@ -1,62 +1,49 @@
-import { AbstractType, Type } from '@heliks/tiles-engine';
+import { uuid, UUID } from '@heliks/tiles-engine';
+import { Handle } from './handle';
 
-export enum LoadingState {
-  /** Asset is currently loading. */
+
+export enum AssetState {
+  /** Asset has been created, but has not been loaded yet. */
+  Pending,
+  /** Asset is in the process of getting loaded. */
   Loading,
-  /** Asset is fully loaded and can be used. */
+  /** Asset has been fully loaded and can be accessed in the storage. */
   Loaded
 }
 
-/** A unique pointer to an asset. */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class Handle<T = unknown> {
+/**
+ * External data loaded from the filesystem or network.
+ *
+ * Each asset is unique to its source file, which means that if the same file is loaded
+ * twice, the {@link AssetLoader loader} will re-use the same asset internally.
+ *
+ * Loaded assets can be retrieved from the {@link AssetStorage storage}.
+ *
+ * - `T`: Asset data.
+ */
+export class Asset<T = unknown> {
 
-  /** Contains the loading state of the asset to which this handle points to. */
-  public state = LoadingState.Loading;
+  /** Contains the assets current state. */
+  public state = AssetState.Pending;
 
   /**
-   * @param path Path of the asset file that this handle points to.
+   * @param id Identifier unique for {@link file}.
+   * @param file Path to the file from which this asset was loaded.
+   * @param data If the asset is {@link AssetState.Loaded}, contains the asset data.
    */
-  constructor(public readonly path: string) {}
+  constructor(public readonly id: UUID, public readonly file: string, public data?: T) {}
 
-}
+  /** Creates a new {@link Asset} from raw `data`. */
+  public static from<T>(file: string, data: T): Asset<T> {
+    return new Asset(uuid(file), file, data);
+  }
 
-/**
- * Represents an asset type. This can be any kind of arbitrary class symbol as long as
- * it uniquely correlates to a specific type of asset. The loader will use this symbol
- * as key to store the storage for assets of that type.
- *
- * For example, a renderer most likely wants to load textures. We can simply define this
- * as `AssetType<Texture>`, where `Texture` will be used as the key to access the storage
- * for that asset type.
- */
-export type AssetType<T = unknown> = AbstractType<T> | Type<T>;
-
-/**
- * A loaded asset
- *
- * @typeparam T Asset data.
- */
-export interface Asset<T> {
-  /** The assets processed data. */
-  readonly data: T;
   /**
-   * The name of the asset type. Will be inherited from the `Format` that processed
-   * this asset.
+   * Creates a new {@link Handle} that can be used to look up the loaded asset in its
+   * appropriate {@link AssetStorage asset storage}.
    */
-  readonly name: string;
-}
+  public handle(): Handle<T> {
+    return new Handle(this.id, this.file);
+  }
 
-/**
- * A storage for assets.
- *
- * @typeparam T The kind of data of each asset in this storage.
- */
-export interface AssetStorage<T> {
-  /** Returns the `Asset` stored under the given handle. */
-  get(handle: Handle<T>): Asset<T> | undefined;
-  /** Returns `true` if an asset is stored under the given handle. */
-  has(handle: Handle<T>): boolean;
-  /** Stores `asset` under `handle`. */
-  set(handle: Handle<T>, asset: Asset<T>): this;
 }

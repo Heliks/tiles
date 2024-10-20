@@ -1,134 +1,109 @@
-import { Bundle, ClassType, GameBuilder, hasOnInit, OnInit, Provider, Struct, World } from '@heliks/tiles-engine';
+import { AppBuilder, AppSchedule, Bundle, OnInit, Vec2, World } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { Camera } from './camera';
+import { CameraBundle } from './camera';
+import { Screen } from './common';
+import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
+import { Layers, SortChildren, Stage } from './layer';
 import { Renderer } from './renderer';
-import { RendererPlugin, RendererPlugins } from './renderer-plugins';
-import { RendererSystem } from './renderer-system';
-import { Screen } from './screen';
+import { Screenshot } from './screenshot';
 import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
-import { Overlay, Stage } from './stage';
+import { UpdateRenderer } from './update-renderer';
 
+
+export enum RendererSchedule {
+  Update = 'renderer:update',
+  Render = 'renderer:render'
+}
 
 /** Configuration for the renderer bundle. */
-export interface RendererBundleConfig {
+export interface RendererBundleOptions {
 
-  /** Enables anti-aliasing if set to `true`. Enabled by default. */
+  /**
+   * Enables or disables antialiasing.
+   */
   antiAlias?: boolean;
 
   /**
-   * If set to a selector string that is valid for `document.querySelector()`, the
-   * renderer will be automatically appended to the element matched with that selector
-   * when the game is initialized.
-   */
-  appendTo?: string;
-
-  /**
-   * If set to `true` the renderer will be automatically resized to fit its parent
-   * element.
+   * Enables or disables auto-resizing.
+   *
+   * When enabled, the renderer will automatically resize the canvas element to fit
+   * its parent element. This causes the entire game scene to be scaled to match the
+   * games' resolution.
    */
   autoResize?: boolean;
 
   /**
-   * Unless [[transparent]] is set to `true` this color will fill the background of the
-   * game stage. This will default to `0x0` (black).
+   * Initial background color of the game stage.
    */
   background?: number;
 
   /**
-   * The resolution in which the game should be rendered. First index is width, second
-   * is height in px.
+   * Defines the layer hierarchy used by the renderer.
+   *
+   * In most cases each game that is being developed wants to define its own layer
+   * hierarchy to specifically fit its needs. If no custom hierarchy is defined, the
+   * renderer will put everything on a single layer.
    */
-  resolution: [number, number];
+  layers?: (layers: Layers) => void;
 
   /**
-   * If `true` the empty background of the renderers stage will not be filled in with
-   * a solid color.
+   * Selector for the renderer canvas.
+   *
+   * The renderer will automatically append the canvas to the element matched by this
+   * selector when the game is initialized.
+   *
+   * Must be a valid input for `document.querySelector()`.
+   *
+   * If this is left `undefined`, the renderer can be manually attached to any DOM
+   * node with {@link Renderer.appendTo}.
    */
-  transparent?: boolean;
+  selector?: string;
 
   /**
-   * Multiplier for [[Transform]] component values. For example, when `unitSize` is `16`
-   * and `Transform.x` is `2`, systems like`SpriteRenderer` will calculate a position on
-   * the x axis as `32px` (16 * 2).
+   * Requested width and height of the screen.
+   *
+   * The actual amount of pixels being rendered may differ from this amount, as the
+   * renderer can be resized and scaled independently of this value. For example,
+   * when {@link autoResize} is enabled.
    */
-  unitSize: number;
+  resolution: Vec2;
+
+  /**
+   * The unit size tells the renderer how many pixels are equivalent to one game unit.
+   *
+   * When working with a non-pixel based physics engine, it's highly recommended to use
+   * a unit size to translate between an arbitrary unit and pixels. The renderer will
+   * apply this unit size to all transform values to translate that unit back to pixels
+   * for rendering.
+   *
+   * For example, given a unit size of `16`, an entity at the world position x:5 / y:5
+   * will be rendered on the screen at the position x:80px / y:80px.
+   */
+  unitSize?: number;
 
 }
 
-/**
- * Bundle that provides a WebGL drawing context via PIXI.JS.
- *
- * To ensure that rendering does not appear out of sync it is recommended that the
- * renderer plugin runs as late as possible in the system execution order.
- */
+/** Bundle that provides a 2D rendering pipeline via the PIXI.js library. */
 export class PixiBundle implements Bundle, OnInit {
 
-  /** Plugins added to the renderer. */
-  private readonly plugins: ClassType<RendererPlugin>[] = [];
-
-  /**
-   * @param config Renderer configuration.
-   */
-  constructor(public readonly config: RendererBundleConfig) {}
-
-  /**
-   * Adds a `plugin`.
-   *
-   * Plugins essentially work like normal game systems, with the difference that they
-   * are executed by the renderer instead of the system dispatcher. This ensures that
-   * all rendering is done at the same time so that different rendering operations do
-   * not appear out of sync.
-   */
-  public plugin(plugin: ClassType<RendererPlugin>): this {
-    this.plugins.push(plugin);
-
-    return this;
-  }
-
-  /** @internal */
-  private getPluginProvider(): Provider {
-    return {
-      factory: container => {
-        const plugins = new RendererPlugins();
-
-        // Instantiate each registered plugin using the service container.
-        for (const item of this.plugins) {
-          plugins.add(container.make(item));
-        }
-
-        return plugins;
-      },
-      singleton: true,
-      token: RendererPlugins
-    };
-  }
+  constructor(public readonly config: RendererBundleOptions) {}
 
   /** @internal */
   private createPIXIRenderer(): PIXI.Renderer {
-    const config: Struct = {};
+    const antialias = Boolean(this.config.antiAlias);
 
-    if (this.config.transparent) {
-      config.transparent = true;
-    }
-    else {
-      // By default render the background as black.
-      config.backgroundColor = this.config.background ?? 0x0;
-    }
-
-    if (config.antiAlias) {
-      config.antialias = true;
-    }
-    else {
+    if (! antialias) {
       // Prevent sub-pixel smoothing when anti aliasing is disabled.
       // Fixme: figure out if this can be somehow set on the renderer as it currently
       //  forces two games running on the same page to use the same scale mode.
       PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-
-      config.antialias = false;
     }
 
-    const renderer = new PIXI.Renderer(config);
+    const renderer = new PIXI.Renderer({
+      antialias,
+      backgroundColor: this.config.background ?? 0x0
+    });
 
     // Disable context menu on the renderers <canvas> DOM element.
     renderer.view.addEventListener('contextmenu', e => e.preventDefault());
@@ -136,67 +111,71 @@ export class PixiBundle implements Bundle, OnInit {
     return renderer;
   }
 
+  /** @internal */
+  private getRendererLayers(): Layers {
+    const layers = new Layers();
+
+    if (this.config.layers) {
+      this.config.layers(layers);
+    }
+    else {
+      layers.add('default');
+    }
+
+    return layers;
+  }
+
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(app: AppBuilder): void {
     // Prevents the "Thanks for using PIXI" message from showing up in the console.
     PIXI.utils.skipHello();
 
-    // Provide the PIXI renderer.
-    builder.provide({
-      token: PIXI.Renderer,
-      value: this.createPIXIRenderer()
-    });
-
-    builder
+    app
       .component(SpriteAnimation)
       .component(SpriteRender)
-      .provide({
-        token: Screen,
-        value: new Screen(
-          this.config.resolution[0],
-          this.config.resolution[1],
-          this.config.resolution[0],
-          this.config.resolution[1],
-          this.config.unitSize
-        )
-      })
-      .provide(this.getPluginProvider())
-      .provide(Camera)
+      .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)
+      .schedule().after(RendererSchedule.Render, RendererSchedule.Update)
+      .provide(Screen, new Screen(this.config.resolution))
+      .provide(Layers, this.getRendererLayers())
+      .provide(RendererConfig, new RendererConfig(this.config.unitSize ?? 1))
+      .provide(PIXI.Renderer, this.createPIXIRenderer())
+      .bundle(new CameraBundle())
       .provide(DebugDraw)
       .provide(Stage)
-      .provide(Overlay)
       .provide(Renderer)
-      // Should run before the SpriteDisplaySystem so that sprites are updated on the
-      // same frame where the animation possibly transformed them.
-      .system(SpriteAnimationSystem)
-      .system(SpriteRenderer)
-      .system(RendererSystem);
+      .provide(Screenshot)
+      .system(SortChildren)
+      .system(SpriteAnimationSystem, RendererSchedule.Update)
+      .system(SpriteRenderer, RendererSchedule.Update)
+      .system(UpdateRenderer, RendererSchedule.Render);
+  }
+
+  /** @internal */
+  private append(renderer: Renderer, selector: string): void {
+    const element = document.querySelector(selector);
+
+    if (! element) {
+      throw new Error(`Renderer stage target is undefined. Used selector: ${selector}`);
+    }
+
+    renderer.appendTo(element);
   }
 
   /** @inheritDoc */
   public onInit(world: World): void {
     const renderer = world.get(Renderer);
 
-    if (this.config.appendTo) {
-      const element = document.querySelector(this.config.appendTo);
-
-      if (! element) {
-        throw new Error(`Renderer stage target is undefined. Used selector: ${this.config.appendTo}`);
-      }
-
-      renderer.appendTo(element);
+    if (this.config.selector) {
+      this.append(renderer, this.config.selector);
     }
 
-    if (this.config.autoResize) {
-      renderer.setAutoResize(true);
-    }
+    renderer.setAutoResize(this.config.autoResize ?? true);
 
-    // Call onInit lifecycle on plugins as well.
-    for (const plugin of world.get(RendererPlugins).items) {
-      if (hasOnInit(plugin)) {
-        plugin.onInit(world);
-      }
-    }
+    // Allows the PixiJS debug tools to capture the application.
+    /* eslint-disable */
+    (window as any).__PIXI_STAGE__ = renderer.root;
+    (window as any).__PIXI_RENDERER__ = renderer.renderer;
+    /* eslint-enable */
   }
 
 }

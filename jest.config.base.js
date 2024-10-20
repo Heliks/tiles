@@ -10,8 +10,8 @@ const DEFAULT_TEST_CONFIG = {
     "**/*.spec.ts"
   ],
   setupFiles: [],
-  moduleNameMapper: {
-    '^uuid$': require.resolve('uuid')
+  moduleNameMapper:{
+    "^uuid$": "uuid"
   },
   moduleFileExtensions: [
     "js",

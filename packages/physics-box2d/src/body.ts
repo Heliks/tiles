@@ -1,12 +1,13 @@
 /* eslint-disable new-cap */
 
-import { b2Body } from '@flyover/box2d';
-import { RigidBody } from '@heliks/tiles-physics';
+import { b2Body } from '@heliks/box2d';
 import { Transform } from '@heliks/tiles-engine';
+import { RigidBody } from '@heliks/tiles-physics';
 
 
 export function syncBodyVelocity(body: b2Body, component: RigidBody): void {
   const velocity = body.GetLinearVelocity();
+
 
   if (component._velocity.read()) {
     body.SetLinearVelocity(component.getVelocity());

@@ -1,1 +1,2 @@
-Plugin to render tilemaps. 
+Package to render & interact with tilemaps.
+

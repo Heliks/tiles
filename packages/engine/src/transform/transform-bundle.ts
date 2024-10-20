@@ -1,8 +1,8 @@
 import { Hierarchy, Parent } from '@heliks/ecs-hierarchy';
 import { Transform } from '@heliks/ecs-transform';
+import { AppBuilder, Bundle } from '../app';
 import { UpdateHierarchy } from './update-hierarchy';
 import { UpdateTransforms } from './update-transforms';
-import { Bundle, GameBuilder } from '../game';
 
 
 /**
@@ -14,16 +14,11 @@ import { Bundle, GameBuilder } from '../game';
 export class TransformBundle implements Bundle {
 
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
-    const hierarchy = new Hierarchy();
-
+  public build(builder: AppBuilder): void {
     builder
       .component(Parent)
       .component(Transform)
-      .provide({
-        token: Hierarchy,
-        value: hierarchy
-      })
+      .provide(Hierarchy, new Hierarchy())
       .system(UpdateHierarchy)
       .system(UpdateTransforms);
   }
