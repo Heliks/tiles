@@ -45,7 +45,10 @@ export class Screen {
     this.size = resolution.clone();
   }
 
-  /** Sets the pixel {@link size} of the screen to the given `width` and `height`. */
+  /**
+   * Resizes the screen to the given `width` and height`. The {@link resolution} is
+   * retained by updating the screen {@link scale} factor.
+   */
   public resize(width: number, height: number): this {
     this.size.x = width;
     this.size.y = height;
