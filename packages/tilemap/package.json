@@ -1,17 +1,19 @@
 {
   "author": "Felix Wolf",
   "peerDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0"
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "pixi.js": "^5.3.3"
   },
   "description": "Tilemap Module",
   "devDependencies": {
-    "@heliks/tiles-assets": "^0.0.0",
-    "@heliks/tiles-engine": "^0.0.0",
-    "@heliks/tiles-pixi": "^0.0.0",
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "pixi.js": "^5.3.3",
     "reflect-metadata": "^0.1.13",
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   },
   "files": [
     "lib/*"
@@ -26,5 +28,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.0"
+  "version": "0.0.1"
 }

@@ -1,8 +1,8 @@
-import { ChangeAwareValue, EventQueue, Vec2 } from '@heliks/tiles-engine';
+import { ChangeAwareValue, Entity, EventQueue, Ignore, UUID, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
-import { MaterialId } from './material';
+import { Material } from './material';
 
 
 export enum RigidBodyType {
@@ -26,6 +26,7 @@ export enum RigidBodyType {
 }
 
 /** A 2D rigid body component. */
+@UUID('physics.RigidBody')
 export class RigidBody {
 
   /** Colliders attached to this body. */
@@ -36,6 +37,7 @@ export class RigidBody {
    * rigid body. The `entityA` (`colliderA`...) properties is guaranteed to contain the
    * information to this body.
    */
+  @Ignore()
   public readonly contacts: ColliderContact[] = [];
 
   /**
@@ -51,10 +53,11 @@ export class RigidBody {
    * If this flag is set to `true`, the entire rigid body will be re-build on the next
    * frame. Some changes to the rigid body require this to take effect.
    */
+  @Ignore()
   public dirty = true;
 
   // Todo: Document
-  public disabled = false;
+  public enabled = true;
 
   /**
    * Bitset that contains the collision group that will be assigned to attached colliders
@@ -85,18 +88,22 @@ export class RigidBody {
    * If set to an event queue, contact events that include a collider that is attached
    * to this rigid body, will be emitted here.
    */
+  @Ignore()
   public onContact?: EventQueue<ContactEvent>;
 
   /** Set to `true` to allow the rigid body to rotate. */
   public rotate = false;
 
   /** @internal */
+  @Ignore()
   public readonly _force = new ChangeAwareValue(new Vec2());
 
   /** @internal */
+  @Ignore()
   public readonly _position = new ChangeAwareValue(new Vec2(0, 0));
 
   /** @internal */
+  @Ignore()
   public readonly _velocity = new ChangeAwareValue(new Vec2(0, 0));
 
   /**
@@ -104,15 +111,15 @@ export class RigidBody {
    * @param material (optional) Default material for attached colliders that don't
    *  specify their own. Updating this does not affect already attached colliders.
    */
-  constructor(public readonly type = RigidBodyType.Static, public material?: MaterialId) {}
+  constructor(public readonly type = RigidBodyType.Static, public material?: Material) {}
 
   /** Creates a new dynamic rigid body. */
-  public static dynamic(material?: MaterialId): RigidBody {
+  public static dynamic(material?: Material): RigidBody {
     return new RigidBody(RigidBodyType.Dynamic, material);
   }
 
   /** Creates a new kinematic rigid body. */
-  public static kinematic(material?: MaterialId): RigidBody {
+  public static kinematic(material?: Material): RigidBody {
     return new RigidBody(RigidBodyType.Kinematic, material);
   }
 
@@ -202,6 +209,21 @@ export class RigidBody {
     this.dirty = true;
 
     return this;
+  }
+
+  /**
+   * Returns `true` if any {@link colliders collider} collides with a collider that
+   * belongs to the given `entity`. This does not work if this body has no colliders
+   * that can physically collide with the rigid body of that entity.
+   */
+  public hasContactWith(entity: Entity): boolean {
+    for (const contact of this.contacts) {
+      if (contact.entityB === entity) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }

@@ -1,11 +1,9 @@
-import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
+import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { SpriteRender } from '.';
-import { Renderer } from '../../renderer';
-import { Screen } from '../../screen';
-import { Stage } from '../../stage';
-import { SpriteSheet } from '../sprite-sheet';
+import { RendererConfig } from '../../config';
+import { Stage } from '../../layer';
 
 
 @Injectable()
@@ -15,32 +13,44 @@ export class SpriteRenderer extends ReactiveSystem {
    * Maps sprites to their respective entities. This reverse mapping is to work around
    * the fact that an entity might not be alive when it is removed which makes it
    * impossible to access the sprite via the `SpriteRender` component.
+   *
+   * @internal
    */
   private sprites = new Map<Entity, Sprite>();
 
-  /** @internal */
-  private storage: AssetStorage<SpriteSheet>;
-
+  /**
+   * @param storage {@see AssetStorage}
+   * @param config {@see RendererConfig}
+   * @param stage {@see Stage}
+   */
   constructor(
-    private readonly dimensions: Screen,
-    private readonly renderer: Renderer,
-    private readonly stage: Stage,
-    loader: AssetLoader
+    private readonly storage: AssetStorage,
+    private readonly config: RendererConfig,
+    private readonly stage: Stage
   ) {
     super();
-
-    this.storage = loader.storage(SpriteSheet);
   }
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
-    return builder.contains(SpriteRender).contains(Transform).build();
+    return builder
+      .contains(SpriteRender)
+      .contains(Transform)
+      .build();
   }
 
-  public updateRenderGroup(world: World, render: SpriteRender): void {
-    this.stage.insert(render._sprite, render.group);
+  /** @internal */
+  private insert(sprite: SpriteRender): void {
+    sprite._layer = this.stage.add(sprite._sprite, sprite.layer);
+    sprite._layerId = sprite.layer;
+  }
 
-    render._group = render.group;
+  /** @internal */
+  private updateLayer(sprite: SpriteRender): void {
+    // Remove from current container.
+    sprite._sprite.parent.removeChild(sprite._sprite);
+
+    this.insert(sprite);
   }
 
   /** @inheritDoc */
@@ -48,7 +58,7 @@ export class SpriteRenderer extends ReactiveSystem {
     const render = world.storage(SpriteRender).get(entity);
 
     // Add to render group if necessary.
-    this.updateRenderGroup(world, render);
+    this.insert(render);
     this.sprites.set(entity, render._sprite);
   }
 
@@ -59,6 +69,22 @@ export class SpriteRenderer extends ReactiveSystem {
     if (sprite) {
       sprite.parent.removeChild(sprite);
     }
+  }
+
+  /** @internal */
+  private updateMaterial(render: SpriteRender): void {
+    if (render.material !== render._material) {
+      // If no material is applied, reset the sprite filters.
+      render._sprite.filters = render.material ? render.material.filters() : [];
+      render._material = render.material;
+    }
+  }
+
+  /** @internal */
+  private updatePosition(render: SpriteRender, transform: Transform): void {
+    render._sprite.rotation = transform.rotation;
+    render._sprite.x = transform.world.x * render._layer.cameraTransformMultiplier * this.config.unitSize;
+    render._sprite.y = transform.world.y * render._layer.cameraTransformMultiplier * this.config.unitSize;
   }
 
   /** @inheritDoc */
@@ -72,39 +98,26 @@ export class SpriteRenderer extends ReactiveSystem {
     // Update sprites.
     for (const entity of this.query.entities) {
       const render = displays.get(entity);
-      const sheet =
-        render.spritesheet instanceof Handle
-          ? this.storage.get(render.spritesheet)?.data
-          : render.spritesheet;
-
       const sprite = render._sprite;
 
-      // Change render group.
-      if (render.group !== render._group) {
-        // Remove from current container.
-        render._sprite.parent.removeChild(render._sprite);
+      const spritesheet = this.storage.get(render.spritesheet);
 
-        this.updateRenderGroup(world, render);
+      // Switch render group.
+      if (render.layer !== render._layerId) {
+        this.updateLayer(render);
       }
 
-      // No sheet means that the asset hasn't finished loading yet.
-      if (render.dirty && sheet) {
-        render.dirty = false;
-
-        sprite.texture = sheet.texture(render.spriteIndex);
+      // Update sprite texture.
+      if (spritesheet && render.spriteId !== render._spriteId) {
+        sprite.texture = spritesheet.texture(render.spriteId);
+        render._spriteId = render.spriteId;
       }
 
-      // Flip sprite.
-      sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
-      sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
+      render._sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
+      render._sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;
 
-      // Update the sprites position.
-      const trans = transforms.get(entity);
-
-      sprite.x = trans.world.x * this.dimensions.unitSize;
-      sprite.y = trans.world.y * this.dimensions.unitSize;
-
-      sprite.rotation = trans.rotation;
+      this.updateMaterial(render);
+      this.updatePosition(render, transforms.get(entity));
     }
   }
 

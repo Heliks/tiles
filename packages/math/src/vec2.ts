@@ -1,9 +1,10 @@
-/** A two-dimensional vector. */
+/** Position of a point. */
 export interface XY {
   x: number;
   y: number;
 }
 
+/** A two-dimensional vector. */
 export class Vec2 implements XY {
 
   /**
@@ -20,12 +21,20 @@ export class Vec2 implements XY {
     return Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y);
   }
 
-  /**
-   * Returns the distance between the vector and `point`. The distance is the length of a
-   * straight line connecting them.
-   */
-  public distance(point: XY): number {
-    return Math.hypot(point.x - this.x, point.y - this.y);
+  /** Creates a unit vector from `radians`. */
+  public static fromRadians(radians: number): Vec2 {
+    return new Vec2(
+      Math.sin(radians),
+      Math.cos(radians)
+    );
+  }
+
+  /** Updates the `x` and `y` position of the vector. */
+  public set(x: number, y: number): this {
+    this.x = x;
+    this.y = y;
+
+    return this;
   }
 
   /** Returns the vectors magnitude (length). */
@@ -37,8 +46,10 @@ export class Vec2 implements XY {
   public normalize(): this {
     const magnitude = this.magnitude();
 
-    this.x /= magnitude;
-    this.y /= magnitude;
+    if (magnitude > 0) {
+      this.x /= magnitude;
+      this.y /= magnitude;
+    }
 
     return this;
   }
@@ -88,6 +99,14 @@ export class Vec2 implements XY {
   /** Returns `true` if `point` is equal to this vector. */
   public equals(point: XY): boolean {
     return this.x === point.x && this.y === point.y;
+  }
+
+  /**
+   * Returns the distance between the vector and `point`. The distance is the length of a
+   * straight line connecting them.
+   */
+  public distance(point: XY): number {
+    return Math.hypot(point.x - this.x, point.y - this.y);
   }
 
 }

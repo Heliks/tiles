@@ -1,5 +1,5 @@
-import { Circle, Rectangle, uuid } from '@heliks/tiles-engine';
-import { MaterialId } from './material';
+import { Circle, Rectangle, UUID, uuid } from '@heliks/tiles-engine';
+import { Material } from './material';
 
 
 /** A shape that can be attached to a collider to give it its physical form. */
@@ -9,27 +9,26 @@ export type ColliderShape = Circle | Rectangle;
 export interface ColliderData {
 
   /**
-   * Id of a physics material. If this is set the collider will inherit physical
-   * properties of that material such as friction or restitution.
-   * @see Material
+   * Material that is used by this collider. 
    */
-  material?: MaterialId;
+  material?: Material;
 
   /**
-   * If set to `true` the collider will act as a sensor. Sensors will detect collisions
-   * but won't produce any responses and can only collide when one of the colliding
-   * bodies is dynamic. E.g. when attached to a kinematic body a sensor won't detect
-   * collisions with a static or another kinematic body.
+   * If set to `true` the collider will act as a sensor. Sensors detect collisions but
+   * don't produce a collision response. They can only collide when one of the colliding
+   * {@link RigidBody bodies} is {@link RigidBodyType.Dynamic dynamic}. This means that
+   * when attached to a {@link RigidBodyType.Kinematic kinematic} body, the sensor will
+   * not detect collisions with {@link RigidBodyType.Static} or other kinematic bodies.
    */
   sensor: boolean;
 
 }
 
-
 /**
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
  */
+@UUID('physics.Collider')
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /** Unique identifier. */
@@ -71,10 +70,9 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
 
   /**
    * @param shape Physical shape of the collider.
-   * @param material Id of a physics material. If this is set the collider will inherit
-   *  physical properties of that material such as friction or restitution.
+   * @param material (optional) The colliders material.
    */
-  constructor(public shape: T, public material?: MaterialId) {}
+  constructor(public shape: T, public material?: Material) {}
 
   /**
    * Creates a collider with a `Rectangle` shape.

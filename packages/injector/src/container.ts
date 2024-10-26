@@ -1,10 +1,11 @@
 import { getMetadata } from './meta';
 import { SingletonBinding } from './singleton-binding';
-import { Binding, BindingFactory, ClassType, Container as Base, InjectorToken, ParamInjection } from './types';
+import { Binding, Container as Base, InjectorToken, ParamInjection, Type, ValueFactory } from './types';
 import { stringifyToken } from './utils';
 import { ValueBinding } from './value-binding';
 
 
+/** @inheritDoc */
 export class Container implements Base {
 
   /** Maps stuff that is bound to other stuff */
@@ -13,6 +14,13 @@ export class Container implements Base {
   /** @inheritDoc */
   public bind<T = unknown>(token: InjectorToken, value: T): this {
     this.bindings.set(token, new ValueBinding<T>(value));
+
+    return this;
+  }
+
+  /** @inheritDoc */
+  public unbind(token: InjectorToken): this {
+    this.bindings.delete(token);
 
     return this;
   }
@@ -33,7 +41,7 @@ export class Container implements Base {
       }
 
       this.bindings.set(
-        instance.constructor as ClassType,
+        instance.constructor as Type,
         new ValueBinding(instance)
       );
     }
@@ -42,14 +50,14 @@ export class Container implements Base {
   }
 
   /** @inheritDoc */
-  public singleton<T = unknown>(token: InjectorToken, resolver: BindingFactory<T, Container>): this {
-    this.bindings.set(token, new SingletonBinding(resolver));
+  public singleton<T = unknown>(token: InjectorToken, factory: ValueFactory<T, Container>): this {
+    this.bindings.set(token, new SingletonBinding(factory));
 
     return this;
   }
 
   /** @inheritDoc */
-  public factory<T = unknown>(token: InjectorToken, factory: BindingFactory<T, Container>): this {
+  public factory<T = unknown>(token: InjectorToken, factory: ValueFactory<T, Container>): this {
     this.bindings.set(token, {
       resolve: factory
     });
@@ -68,6 +76,11 @@ export class Container implements Base {
     return binding.resolve(this);
   }
 
+  /** @inheritDoc */
+  public has(token: InjectorToken): boolean {
+    return this.bindings.has(token);
+  }
+
   /** @internal */
   private resolveTokenList(tokens: InjectorToken[], overrides?: ParamInjection[]): unknown[] {
     const result = [];
@@ -82,7 +95,6 @@ export class Container implements Base {
         if (override) {
           // Optional dependencies that don't exist resolve to undefined.
           if (override.optional && !this.bindings.has(override.token)) {
-            // eslint-disable-next-line unicorn/no-useless-undefined
             result.push(undefined);
 
             continue;
@@ -106,7 +118,7 @@ export class Container implements Base {
   }
 
   /** @inheritDoc */
-  public make<T>(target: ClassType<T>, params: unknown[] = [], bind = false): T {
+  public make<T>(target: Type<T>, params: unknown[] = [], bind = false): T {
     const meta = getMetadata(target);
 
     let values = params;

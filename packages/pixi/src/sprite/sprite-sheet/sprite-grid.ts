@@ -1,19 +1,23 @@
 import { Grid, Vec2 } from '@heliks/tiles-engine';
-import { Sprite, Texture } from 'pixi.js';
+import { Texture } from 'pixi.js';
 import { cropTexture } from '../../utils';
 import { SpriteSheet } from './sprite-sheet';
 
-/** A sprite-sheet that sorts individuals sprites on a grid. */
-export class SpriteGrid extends SpriteSheet {
+
+/**
+ * A {@link SpriteSheet} that arranges sprites in a grid on a source texture. The ID of
+ * each individual sprite is equivalent to the index of the grid cell that it occupies.
+ *
+ * The size of each sprite in the grid has the same size. For spritesheets that require
+ * inconsistent sprite sizes, a {@link SpriteSlices} spritesheet can be used.
+ */
+export class SpriteGrid extends SpriteSheet<number> {
 
   /**
    * @param grid Grid layer for the sprite sheet.
-   * @param _texture Texture from which the sprites will be created.
+   * @param source Source texture from which sprite textures will be created.
    */
-  constructor(
-    private readonly grid: Grid,
-    private readonly _texture: Texture
-  ) {
+  constructor(public readonly grid: Grid, public readonly source: Texture) {
     super();
   }
 
@@ -23,25 +27,17 @@ export class SpriteGrid extends SpriteSheet {
   }
 
   /** @inheritDoc */
-  public texture(index: number): Texture {
+  protected _texture(index: number): Texture {
     return cropTexture(
-      this._texture,
-      this.grid.position(index),
+      this.source,
+      this.grid.getPosition(index),
       this.getSpriteSize()
     );
   }
 
   /** @inheritDoc */
-  public sprite(index: number): Sprite {
-    return new Sprite(this.texture(index));
-  }
-
-  /** Returns a vector of the size of each individual sprite in this sprite sheet. */
   public getSpriteSize(): Vec2 {
-    return new Vec2(
-      this.grid.cellWidth,
-      this.grid.cellHeight
-    );
+    return new Vec2(this.grid.cellWidth, this.grid.cellHeight);
   }
 
 }

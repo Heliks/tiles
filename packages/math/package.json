@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-math",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,6 +15,6 @@
     "build:watch": "tsc -w"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   }
 }

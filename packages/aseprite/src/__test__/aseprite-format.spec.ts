@@ -1,8 +1,7 @@
-import { AssetLoader } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage, Fetch } from '@heliks/tiles-assets';
 import { SpriteSheet } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { AsepriteFormat } from '../aseprite-format';
-import { AsepriteData } from '../file-format';
 
 
 class AsepriteFormatMock extends AsepriteFormat {
@@ -20,22 +19,29 @@ describe('AsepriteFormat', () => {
 
   beforeEach(() => {
     format = new AsepriteFormatMock();
-    loader = new AssetLoader();
+    loader = new AssetLoader(new AssetStorage(), new Fetch());
   });
 
-  function parse(data: AsepriteData): Promise<SpriteSheet> {
-    return format.process(data, './', loader);
+  function parse(file: string): Promise<SpriteSheet> {
+    return format.process(require(file), './', loader);
   }
 
-  it('should parse frames with output type "Array"', async () => {
-    const result = await parse(require('./output-array.json'));
+  it.each([
+    './output-array.json',
+    './output-hash.json'
+  ])('should parse file', async (file) => {
+    expect(
+      await parse(file)
+    ).toBeInstanceOf(SpriteSheet)
+  })
 
-    expect(result.size()).toBeGreaterThan(0);
-  });
+  it.each([
+    './output-array.json',
+    './output-hash.json'
+  ])('should parse frame duration of animation "tag2" in %s', async (file) => {
+    const spritesheet = await parse(file);
+    const animation = spritesheet.getAnimation('tag2');
 
-  it('should parse frames with output type "Hash"', async () => {
-    const result = await parse(require('./output-hash.json'));
-
-    expect(result.size()).toBeGreaterThan(0);
+    expect(animation.frameDuration).toBe(150);
   });
 });

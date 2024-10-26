@@ -1,12 +1,10 @@
-import { AssetStorage } from '@heliks/tiles-assets';
-import { EventQueue, Injectable, Vec2 } from '@heliks/tiles-engine';
-import { RenderTexture } from 'pixi.js';
+import { EventQueue, Injectable, Subscriber } from '@heliks/tiles-engine';
 import * as PIXI from 'pixi.js';
-import { Camera } from './camera';
+import { Container, RenderTexture } from 'pixi.js';
+import { Drawable, Screen, ScreenEvent } from './common';
+import { RendererConfig } from './config';
 import { DebugDraw } from './debug-draw';
-import { Container, Drawable } from './drawable';
-import { Screen } from './screen';
-import { Overlay, Stage } from './stage';
+import { Layers } from './layer';
 
 
 /** Event that occurs every time the renderer is resized. */
@@ -20,31 +18,23 @@ export class Renderer {
   /** Queues events for when the renderer is resized. */
   public readonly onResize = new EventQueue<OnResizeEvent>();
 
-  /** Asset storage for loaded textures. */
-  public readonly textures: AssetStorage<PIXI.Texture> = new Map();
+  /**
+   * Root container that holds all {@link Drawable drawables} that are rendered. It's
+   * not recommended to manually add anything here. Instead, the {@link Stage} can be
+   * used to add drawables as needed.
+   */
+  public readonly root = new Container();
 
   /**
    * If set to `true`, the renderer will automatically be resized every time the window
    * size or screen resolution changes.
+   *
+   * @internal
    */
   private isAutoResizeEnabled = false;
 
-  /**
-   * Contains half of the screen size *scaled* to the screen scale. We cache this
-   * here so we don't have to do this calculation on every frame. This is updated
-   * every time when screen is re-scaled.
-   *
-   * @see Screen.size
-   * @see Screen.scale
-   * @see updateCamera
-   */
-  private readonly screenSizeScaled2 = new Vec2(0, 0);
-
-  /**
-   * Root container that holds all draw-ables that make up the whole game scene.
-   * @see Container
-   */
-  protected readonly root = new Container();
+  /** @internal */
+  private readonly onScreenUpdate$: Subscriber<ScreenEvent>;
 
   /** Contains the renderers height in px. */
   public get height(): number {
@@ -57,13 +47,14 @@ export class Renderer {
   }
 
   constructor(
-    public readonly camera: Camera,
+    public readonly config: RendererConfig,
     public readonly debugDraw: DebugDraw,
-    public readonly overlay: Overlay,
+    public readonly layers: Layers,
     public readonly screen: Screen,
-    public readonly stage: Stage,
     public readonly renderer: PIXI.Renderer
   ) {
+    this.onScreenUpdate$ = screen.events.subscribe();
+
     window.addEventListener('resize', this.onWindowResize.bind(this));
 
     // Create the scenes render hierarchy.
@@ -71,8 +62,7 @@ export class Renderer {
     // 2. Overlay
     // 3. Debug
     this.root.addChild(
-      this.stage,
-      this.overlay,
+      this.layers.container,
       this.debugDraw.view
     );
   }
@@ -150,32 +140,12 @@ export class Renderer {
   }
 
   /** Applies `screen` dimensions to the renderer. */
-  private updateRendererDimensions(screen: Screen): void {
-    this.screenSizeScaled2.x = (this.screen.size.x / this.screen.scale.x) >> 1;
-    this.screenSizeScaled2.y = (this.screen.size.y / this.screen.scale.y) >> 1;
-
-    this.renderer.resize(screen.size.x, screen.size.y);
-
-    // Note: Because of an issue in PIXi.JS stage and debug draw are resized directly
-    // and independently from the renderer because the "artificial" texture used
-    // inside of the debug draw will be rendered blurry otherwise.
-    this.stage.scale.set(screen.scale.x, screen.scale.y);
+  private updateRendererDimensions(): void {
+    this.renderer.resize(this.screen.size.x, this.screen.size.y);
 
     this.debugDraw
-      .resize(screen.size.x, screen.size.y)
-      .scale(screen.scale.x, screen.scale.y);
-
-    // As the overlay it is fixed in size and position we can update this here instead
-    // of doing it every frame.
-    this.overlay.pivot.set(-(screen.size.x >> 1), -(screen.size.y >> 1));
-  }
-
-  /** @internal */
-  private updateCamera(): void {
-    this.stage.pivot.set(
-      (this.camera.world.x * this.screen.unitSize) - this.screenSizeScaled2.x,
-      (this.camera.world.y * this.screen.unitSize) - this.screenSizeScaled2.y
-    );
+      .resize(this.screen.size.x, this.screen.size.y)
+      .scale(this.screen.scale.x, this.screen.scale.y);
   }
 
   /**
@@ -188,25 +158,24 @@ export class Renderer {
     this.renderer.render(drawable, texture);
   }
 
+  /** @internal */
+  private onScreenResize(): void {
+    this.updateRendererDimensions();
+
+    this.onResize.push({
+      screen: this.screen
+    });
+  }
+
   /**
    * Updates the renderer and re-draws the current scene. Will be automatically called
    * once on each frame by the [[RendererSystem]].
    */
   public update(): void {
-    const screen = this.screen;
-
-    if (screen.dirty) {
-      this.updateRendererDimensions(screen);
-
-      this.onResize.push({
-        screen: this.screen
-      });
-
-      screen.dirty = false;
-    }
-
-    if (this.camera.enabled) {
-      this.updateCamera();
+    for (const event of this.onScreenUpdate$.read()) {
+      if (event === ScreenEvent.Resize) {
+        this.onScreenResize();
+      }
     }
 
     this.debugDraw.texture.update();

@@ -1,8 +1,8 @@
-import { Bundle, GameBuilder, Provider } from '@heliks/tiles-engine';
+import { AppBuilder, Bundle } from '@heliks/tiles-engine';
 import { ContactEvents } from './events';
-import { MaterialManager } from './material';
 import { Physics } from './physics';
 import { PhysicsAdapter } from './physics-adapter';
+import { RigidBody } from './rigid-body';
 import { SyncBodies } from './sync-bodies';
 import { SyncWorlds } from './sync-worlds';
 import { UpdateWorld } from './update-world';
@@ -21,28 +21,18 @@ export class PhysicsBundle implements Bundle {
    * @param adapter Physics adapter used to run the physics simulation.
    */
   constructor(private readonly adapter: PhysicsAdapter) {}
-
-  /** @internal */
-  private getPhysicsProvider(): Provider {
-    const type = this.adapter.getPhysicsType();
-
-    return {
-      instantiate: typeof type === 'function',
-      token: Physics,
-      value: type
-    };
-  }
-
   /** @inheritDoc */
-  public build(builder: GameBuilder): void {
+  public build(builder: AppBuilder): void {
     if (! this.adapter) {
       throw new Error('A physics adapter must be configured.');
     }
 
     builder
-      .provide(MaterialManager)
+      .component(RigidBody)
       .bundle(this.adapter)
-      .provide(this.getPhysicsProvider())
+      .singleton(Physics, container => {
+        return container.make<Physics>(this.adapter.getPhysicsType());
+      })
       .provide(ContactEvents)
       .system(UpdateWorld)
       .system(SyncWorlds)

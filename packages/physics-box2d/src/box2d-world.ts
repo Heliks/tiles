@@ -1,12 +1,12 @@
 /* eslint-disable new-cap */
-import { b2Body, b2World } from '@flyover/box2d';
+import { b2Body, b2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
+import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
 import { syncBodyFixtures } from './fixtures';
-import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 
 
 /** User data that will be assigned to `b2Fixture` instances. */
@@ -55,10 +55,7 @@ export class Box2dWorld extends Physics {
   public setup(world: World): void {
     // Sets up a custom Box2D contact-listener which will forward events to the
     // event-queue.
-    this.world.SetContactListener(new Box2dContactListener(
-      world.get(ContactEvents),
-      world
-    ));
+    this.world.SetContactListener(new Box2dContactListener(world.get(ContactEvents)));
   }
 
   /** @inheritDoc */
@@ -91,14 +88,14 @@ export class Box2dWorld extends Physics {
       return;
     }
 
-    body.SetActive(!component.disabled);
+    body.SetEnabled(component.enabled);
 
     syncBodyPosition(body, component, transform);
     syncBodyRotation(body, component, transform);
 
     // Apply force.
     if (component._force.read()) {
-      body.ApplyForce(component._force.value, body.GetWorldCenter());
+      body.ApplyForceToCenter(component._force.value, true);
     }
 
     syncBodyVelocity(body, component);
@@ -107,7 +104,7 @@ export class Box2dWorld extends Physics {
 
   /** @inheritDoc */
   public drawDebugData(): void {
-    this.world.DrawDebugData();
+    this.world.DebugDraw();
   }
 
   /** @inheritDoc */
@@ -130,7 +127,7 @@ export class Box2dWorld extends Physics {
     // Since this can run fairly often we only push these events in case there are any
     // subscribers to this queue to prevent the creation of unnecessary garbage that has
     // to be collected. This will mostly be used to draw debug information anyway.
-    if (this.raycasts.subscriberAmount > 0) {
+    if (this.raycasts.size() > 0) {
       this.raycasts.push({
         start,
         end

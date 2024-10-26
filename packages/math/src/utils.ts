@@ -1,4 +1,4 @@
-/** Returns a random float between `min` and `max`. */
-export function rand(max: number, min = 0): number {
-  return Math.random() * (max - min) + min
+/** Caps `value` to the boundaries `min` and `max`. */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
 }

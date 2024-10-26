@@ -1,16 +1,14 @@
 {
   "author": "Felix Wolf",
   "dependencies": {
-    "@flyover/box2d": "1.0.1"
+    "@heliks/box2d": "1.0.1"
   },
   "description": "Box2D Adapter for @heliks/tiles-physics",
   "devDependencies": {
     "@heliks/tiles-engine": "workspace:^",
-    "@heliks/tiles-injector": "workspace:^",
     "@heliks/tiles-physics": "workspace:^",
     "@heliks/tiles-pixi": "workspace:^",
-    "@heliks/tiles-math": "workspace:^",
-    "typescript": "^4.7.4"
+    "typescript": "^5.4.5"
   },
   "files": [
     "lib/*"
@@ -20,10 +18,8 @@
   "name": "@heliks/tiles-physics-box2d",
   "peerDependencies": {
     "@heliks/tiles-engine": "workspace:^",
-    "@heliks/tiles-injector": "workspace:^",
     "@heliks/tiles-physics": "workspace:^",
-    "@heliks/tiles-pixi": "workspace:^",
-    "@heliks/tiles-math": "workspace:^"
+    "@heliks/tiles-pixi": "workspace:^"
   },
   "scripts": {
     "build": "tsc",
@@ -31,5 +27,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.0"
+  "version": "0.0.1"
 }

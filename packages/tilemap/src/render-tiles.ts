@@ -1,36 +1,19 @@
 import { AssetStorage } from '@heliks/tiles-assets';
-import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, Vec2, World } from '@heliks/tiles-engine';
-import { Container, RendererPlugin, Screen, Stage } from '@heliks/tiles-pixi';
+import {
+  Entity,
+  Injectable,
+  Query,
+  QueryBuilder,
+  ReactiveSystem,
+  Ticker,
+  Transform,
+  World
+} from '@heliks/tiles-engine';
+import { Camera, SpriteSheet, Stage } from '@heliks/tiles-pixi';
+import { AnimatedSprite, Container, Sprite } from 'pixi.js';
 import { Tilemap } from './tilemap';
+import { LocalTileset } from './tileset';
 
-
-/** @internal */
-function render(tilemap: Tilemap): void {
-  tilemap.view.removeChildren();
-
-  for (let i = 0, l = tilemap.data.length; i < l; i++) {
-    const gId = tilemap.data[i];
-
-    if (gId === 0) {
-      continue;
-    }
-
-    const pos = tilemap.grid.position(i);
-    const loc = tilemap.tilesets.getFromGlobalId(gId);
-
-    const sprite = loc.tileset.sprite(
-      loc.getLocalId(gId) - 1
-    );
-
-    // The y position needs to be adjusted for tiles that are larger than the tilemap
-    // on which they are placed. Most map editors will anchor the tile at the bottom
-    // left of the grid cell, so we do the same.
-    sprite.x = pos.x;
-    sprite.y = pos.y - (sprite.height - tilemap.grid.cellHeight);
-
-    tilemap.view.addChild(sprite);
-  }
-}
 
 /**
  * Renderer plugin that draws `Tilemap` components attached to entities.
@@ -38,25 +21,36 @@ function render(tilemap: Tilemap): void {
  * @see Tilemap
  */
 @Injectable()
-export class RenderTiles extends ReactiveSystem implements RendererPlugin {
+export class RenderTiles extends ReactiveSystem {
 
-  /** Asset storage for tilemaps. */
-  public readonly cache: AssetStorage<Tilemap> = new Map();
-
-  /** Entities mapped to their PIXI.js display object. */
+  /**
+   * Entities mapped to their PIXI.js display object.
+   *
+   * @internal
+   */
   private readonly containers = new Map<Entity, Container>();
 
   /**
-   * @param screen
-   * @param stage
+   * @param assets {@link AssetStorage}
+   * @param camera {@link Camera}
+   * @param stage {@link Stage}
+   * @param ticker {@link Ticker}
    */
-  constructor(private readonly screen: Screen, private readonly stage: Stage) {
+  constructor(
+    private readonly assets: AssetStorage,
+    private readonly camera: Camera,
+    private readonly stage: Stage,
+    private readonly ticker: Ticker
+  ) {
     super();
   }
 
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
-    return builder.contains(Tilemap).contains(Transform).build();
+    return builder
+      .contains(Tilemap)
+      .contains(Transform)
+      .build();
   }
 
   /** @inheritDoc */
@@ -64,21 +58,81 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
     this.boot(world);
   }
 
+  /** @internal */
+  private createAnimatedSprite(local: LocalTileset, name: string): AnimatedSprite {
+    const spritesheet = this.assets.resolve(local.tileset.spritesheet);
+    const animation = spritesheet.getAnimation(name);
+
+    return new AnimatedSprite(
+      animation.frames.map(frame => {
+        const texture = spritesheet.texture(frame);
+
+        return {
+          texture,
+          time: animation.frameDuration ?? 100
+        };
+      })
+    )
+  }
+
+  /** @internal */
+  private createStaticSprite(local: LocalTileset, tileIdx: number): Sprite {
+    return this
+      .assets
+      // Note: We lose the `Handle` generic here. This is a bug in typescript.
+      .resolve<SpriteSheet>(local.tileset.spritesheet)
+      .sprite(tileIdx);
+  }
+
+  /** @internal */
+  private render(tilemap: Tilemap): void {
+    tilemap.view.removeChildren();
+    tilemap._animations.length = 0;
+
+    for (let i = 0, l = tilemap.data.length; i < l; i++) {
+      const gId = tilemap.data[i];
+
+      if (gId === 0) {
+        continue;
+      }
+
+      let sprite;
+
+      const local = tilemap.tilesets.getFromGlobalId(gId);
+      const index = local.getLocalIndex(gId);
+
+      const animation = local.tileset.getAnimationName(index);
+
+      if (animation) {
+        sprite = this.createAnimatedSprite(local, animation);
+        sprite.play();
+
+        tilemap._animations.push(sprite);
+      }
+      else {
+        sprite = this.createStaticSprite(local, index);
+      }
+
+      const tilePos = tilemap.grid.getPosition(i);
+
+      // Adjust y-axis for tiles that are larger than the cell size of the tilemap on
+      // which they are placed.
+      sprite.x = tilePos.x;
+      sprite.y = tilePos.y - (sprite.height - tilemap.grid.cellHeight);
+
+      tilemap.view.addChild(sprite);
+    }
+
+    tilemap.dirty = false;
+  }
+
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const tilemap = world.storage(Tilemap).get(entity);
 
-    // Move tilemap anchor to center.
-    tilemap.view
-      .setPivot(0.5)
-      .setFixedSize(new Vec2(
-        tilemap.grid.width,
-        tilemap.grid.height
-      ));
+    this.render(tilemap);
 
-    render(tilemap);
-
-    this.stage.insert(tilemap.view, tilemap.group);
+    this.stage.add(tilemap.view, tilemap.layer);
     this.containers.set(entity, tilemap.view);
   }
 
@@ -91,6 +145,13 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
     }
   }
 
+  /** @internal */
+  private updateTileAnimations(tilemap: Tilemap): void {
+    for (const sprite of tilemap._animations) {
+      sprite.update(this.ticker.getDeltaSeconds());
+    }
+  }
+
   /** @inheritDoc */
   public update(world: World): void {
     super.update(world);
@@ -100,11 +161,13 @@ export class RenderTiles extends ReactiveSystem implements RendererPlugin {
       const tilemap = world.storage(Tilemap).get(entity);
 
       if (tilemap.dirty) {
-        render(tilemap);
+        this.render(tilemap);
       }
 
-      tilemap.view.x = transform.world.x * this.screen.unitSize;
-      tilemap.view.y = transform.world.y * this.screen.unitSize;
+      tilemap.view.x = transform.world.x * this.camera.unitSize;
+      tilemap.view.y = transform.world.y * this.camera.unitSize;
+
+      this.updateTileAnimations(tilemap);
     }
   }
 

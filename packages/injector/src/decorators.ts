@@ -79,7 +79,7 @@ export function Injectable(): ClassDecorator {
  * ```
  */
 export function Inject(token: InjectorToken, optional = false): ParameterDecorator {
-  return (target: object, key: string | symbol, index: number) => {
+  return (target: object, key: string | symbol | undefined, index: number) => {
     const metaData = getMetadata(target);
 
     if (!metaData.paramOverrides) {
@@ -88,7 +88,6 @@ export function Inject(token: InjectorToken, optional = false): ParameterDecorat
 
     metaData.paramOverrides.push({
       index,
-      key,
       optional,
       token: token
     });

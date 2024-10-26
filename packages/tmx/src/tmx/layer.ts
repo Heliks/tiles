@@ -1,14 +1,16 @@
-import { TmxHasProperties } from './utils';
+import { TmxGeometryData } from './geometry';
+import { TmxHasPropertyData } from './utils';
 
 
-export enum TmxLayerType {
+export enum TmxLayerTypeData {
   Objects = 'objectgroup',
   Tiles = 'tilelayer',
   Group = 'group',
   Image = 'image'
 }
 
-interface TmxBaseLayer extends TmxHasProperties {
+interface TmxBaseLayerData extends TmxHasPropertyData {
+  class?: string;
   width: number;
   height: number;
   name: string;
@@ -20,7 +22,7 @@ interface TmxBaseLayer extends TmxHasProperties {
   y: number;
 }
 
-interface TmxChunk {
+interface TmxChunkData {
   data: number[];
   height: number;
   width: number;
@@ -28,44 +30,33 @@ interface TmxChunk {
   y: number;
 }
 
-interface TmxInfiniteTileLayer extends TmxBaseLayer {
-  chunks: TmxChunk[];
+interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
+  chunks: TmxChunkData[];
   data: undefined;
-  type: TmxLayerType.Tiles;
+  type: TmxLayerTypeData.Tiles;
 }
 
-interface TmxFixedTileLayer extends TmxBaseLayer {
+interface TmxFiniteTileLayerData extends TmxBaseLayerData {
   chunks: undefined;
   data: number[];
-  type: TmxLayerType.Tiles;
+  type: TmxLayerTypeData.Tiles;
 }
 
-export type TmxTileLayer =
-  TmxFixedTileLayer |
-  TmxInfiniteTileLayer;
+export type TmxTileLayerData = TmxFiniteTileLayerData | TmxInfiniteTileLayerData;
 
-export interface TmxObject extends TmxHasProperties {
+export interface TmxObjectData extends TmxGeometryData, TmxHasPropertyData {
   gid?: number;
-  height: number;
-  id: number;
-  name: string;
-  rotation: number;
-  type: string;
-  visible: boolean;
-  width: number;
-  x: number;
-  y: number;
 }
 
 /** JSON format for object layers. */
-export interface TmxObjectLayer extends TmxBaseLayer {
-  objects: TmxObject[];
-  type: TmxLayerType.Objects;
+export interface TmxObjectLayerData extends TmxBaseLayerData {
+  objects: TmxObjectData[];
+  type: TmxLayerTypeData.Objects;
 }
 
-export interface TmxGroupLayer extends TmxBaseLayer {
-  layers: (TmxGroupLayer | TmxTileLayer | TmxObjectLayer)[];
-  type: TmxLayerType.Group;
+export interface TmxGroupLayerData<L extends TmxBaseLayerData> extends TmxBaseLayerData {
+  layers: L[];
+  type: TmxLayerTypeData.Group;
 }
 
-export type TmxLayer = TmxTileLayer | TmxObjectLayer | TmxGroupLayer;
+export type TmxLayerData = TmxTileLayerData | TmxObjectLayerData | TmxGroupLayerData<TmxLayerData>;

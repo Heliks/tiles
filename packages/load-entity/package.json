@@ -1,0 +1,26 @@
+{
+  "name": "@heliks/tiles-load-entity",
+  "version": "0.0.1",
+  "description": "Package that provides a file format to load entities from files.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "pixi.js": "^5.3.3"
+  }
+}

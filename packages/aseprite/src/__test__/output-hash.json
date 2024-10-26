@@ -21,7 +21,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
     "sourceSize": { "w": 32, "h": 32 },
-    "duration": 100
+    "duration": 150
    },
    "Sprite-0001 3.": {
     "frame": { "x": 0, "y": 0, "w": 1, "h": 1 },
@@ -29,7 +29,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
     "sourceSize": { "w": 32, "h": 32 },
-    "duration": 100
+    "duration": 200
    },
    "Sprite-0001 4.": {
     "frame": { "x": 0, "y": 0, "w": 1, "h": 1 },

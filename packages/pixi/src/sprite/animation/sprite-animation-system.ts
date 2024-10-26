@@ -1,20 +1,22 @@
-import { AssetLoader, AssetStorage, Handle } from '@heliks/tiles-assets';
+import { AssetStorage, Handle } from '@heliks/tiles-assets';
 import { Injectable, ProcessingSystem, Query, QueryBuilder, Ticker, World } from '@heliks/tiles-engine';
 import { SpriteRender } from '../renderer';
-import { SpriteAnimation } from './sprite-animation';
 import { SpriteSheet } from '../sprite-sheet';
+import { SpriteAnimation } from './sprite-animation';
 
 
 @Injectable()
 export class SpriteAnimationSystem extends ProcessingSystem {
 
-  /** @internal */
-  private storage: AssetStorage<SpriteSheet>;
-
-  constructor(private readonly ticker: Ticker, loader: AssetLoader) {
+  /**
+   * @param assets {@see AssetStorage}
+   * @param ticker {@see Ticker}
+   */
+  constructor(
+    private readonly assets: AssetStorage,
+    private readonly ticker: Ticker
+  ) {
     super();
-
-    this.storage = loader.storage(SpriteSheet);
   }
 
   /** @inheritDoc */
@@ -23,23 +25,23 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies the transform on the given `animation` component, using `render` to create
-   * the new animation. This function assumes that a the `transform` property is set on
-   * the animation component. Returns `true` if the transform was successful.
+   * Applies animation data of the given `spritesheet` to a sprite `animation`.
+   *
+   * @param animation Sprite animation to which animation data should be applied.
+   * @param spritesheet Asset handle for the sprite-sheet from which the animation data
+   *  will be resolved. Applying the animation will fail if this is not fully loaded.
+   * @param name Name of the animation data, defined on the given `sprite-sheet`.
+   *
+   * @returns A boolean indicating if the animation was successfully changed. This can
+   *  fail if the provided sprite-sheet is not fully loaded.
    */
-  protected transformAnimation(animation: SpriteAnimation, render: SpriteRender): boolean {
-    const sheet =
-      render.spritesheet instanceof Handle
-        ? this.storage.get(render.spritesheet)?.data
-        : render.spritesheet;
+  public apply(animation: SpriteAnimation, spritesheet: Handle<SpriteSheet>, name: string): boolean {
+    const sheet = this.assets.get(spritesheet);
 
     if (! sheet) {
       return false;
     }
 
-    // At this point we already know that the "transform" value contains something so
-    // we can safely cast this.
-    const name = animation.transform as string;
     const data = sheet.getAnimation(name);
 
     animation.reset();
@@ -51,10 +53,12 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       ...data.frames
     ];
 
+    if (data.frameDuration) {
+      animation.frameDuration = data.frameDuration;
+    }
+
     return true;
   }
-
-  public r = 0;
 
   /** @inheritDoc */
   public update(world: World): void {
@@ -66,12 +70,12 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       const display = displays.get(entity);
 
       // Apply animation transform if necessary.
-      if (animation.transform && this.transformAnimation(animation, display)) {
+      if (animation.transform && this.apply(animation, display.spritesheet, animation.transform)) {
         animation.transform = undefined;
       }
 
       // Cancel if the animation is complete and does not loop.
-      if (! animation.loop && animation.isComplete()) {
+      if (animation.paused || (! animation.loop && animation.isComplete())) {
         continue;
       }
 
@@ -82,7 +86,6 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       }
 
       // Calculate the next frame index based on the effective frame duration.
-      // eslint-disable-next-line unicorn/prefer-math-trunc
       const nextFrame = (animation.elapsedTime / (animation.frameDuration / animation.speed))
         % animation.frames.length | 0;
 
@@ -93,7 +96,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         display.flipX = animation.flipX;
         display.flipY = animation.flipY;
 
-        display.setIndex(animation.frames[nextFrame]);
+        display.spriteId = animation.frames[nextFrame];
 
         if (nextFrame === 0) {
           animation.loops++;
