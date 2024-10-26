@@ -16,8 +16,8 @@ export type SpriteId = number | string;
 /** A collection of sprites. */
 export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
 
-  /** @internal */
-  private readonly animations = new Map<string, SpriteAnimationFrames>();
+  /** Contains all known animations, mapped to their name. */
+  public readonly animations = new Map<string, SpriteAnimationFrames>();
 
   /** @internal */
   private readonly cache = new Map<I, Texture>();

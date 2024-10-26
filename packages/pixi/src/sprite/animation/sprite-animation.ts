@@ -33,6 +33,9 @@ export class SpriteAnimation {
    */
   public loops = 0;
 
+  /** While set to `true`, the animation will not progress. */
+  public paused = false;
+
   /** The name of the animation that is currently playing. */
   public playing?: string;
 

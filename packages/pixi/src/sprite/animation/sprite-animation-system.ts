@@ -75,7 +75,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       }
 
       // Cancel if the animation is complete and does not loop.
-      if (! animation.loop && animation.isComplete()) {
+      if (animation.paused || (! animation.loop && animation.isComplete())) {
         continue;
       }
 
