@@ -1,4 +1,4 @@
-import { AssetLoader, AssetStorage } from '@heliks/tiles-assets';
+import { AssetLoader, AssetStorage, Fetch } from '@heliks/tiles-assets';
 import { Texture } from 'pixi.js';
 import { CustomPropertyType } from '../../properties';
 import { LoadTileset, TilesetData } from '../load-tileset';
@@ -32,7 +32,7 @@ describe('LoadTileset', () => {
 
   beforeEach(() => {
     format = new LoadTileset();
-    loader = new AssetLoader(new AssetStorage());
+    loader = new AssetLoader(new AssetStorage(), new Fetch());
 
     // The only time we fetch something it is to load the tileset texture. Overwrite
     // this so an empty texture is returned every time.

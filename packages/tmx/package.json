@@ -33,5 +33,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.1-rc8"
+  "version": "0.0.1"
 }
