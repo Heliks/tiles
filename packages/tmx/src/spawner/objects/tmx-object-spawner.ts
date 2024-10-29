@@ -50,7 +50,12 @@ export class TmxObjectSpawner {
   public async spawn(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity> {
     const entity = await this.getFactory(obj.type).create(world, map, layer, obj);
 
-    world.attach(entity, new TmxObjectMetadata(obj.id, obj.name));
+    world.attach(entity, new TmxObjectMetadata(
+      obj.id,
+      obj.properties,
+      obj.name
+    ));
+
     world.attach(entity, new Transform(
       obj.shape.x / this.config.unitSize,
       obj.shape.y / this.config.unitSize
