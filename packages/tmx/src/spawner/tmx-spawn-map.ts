@@ -29,8 +29,7 @@ export enum TmxSpawnState {
 export class TmxSpawnMap {
 
   /**
-   * Contains all layer root entities that were spawned by this map spawner. Each entity
-   * is guaranteed to have a {@link TmxLayerRoot} component.
+   * Contains all layer root entities that were spawned by this map spawner.
    */
   public readonly layers: Entity[] = [];
 

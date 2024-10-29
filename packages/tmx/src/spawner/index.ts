@@ -1,6 +1,5 @@
 export * from './objects';
 
-export * from './tmx-layer-root';
 export * from './tmx-physics-factory';
 export * from './tmx-spawner';
 export * from './tmx-spawn-map';
