@@ -1,15 +1,14 @@
-/**
- * Component that carries Tiled meta-information.
- *
- * This component is attached to all entities that are created from objects that are
- * placed on object layers.
- */
-export class TmxObjectMetadata {
+import { HasProperties } from '../../parser';
+
+
+/** Carries metadata about the TMX object from which this entity was spawned. */
+export class TmxObjectMetadata<P = unknown> implements HasProperties<P> {
 
   /**
-   * @param id Unique Id.
-   * @param name Custom name assigned to the object.
+   * @param id Tiled internal object ID.
+   * @param properties Custom properties.
+   * @param name Custom name.
    */
-  constructor(public readonly id: number, public readonly name?: string) {}
+  constructor(public readonly id: number, public readonly properties: P, public readonly name?: string) {}
 
 }
