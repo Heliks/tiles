@@ -27,10 +27,9 @@ import { TmxSpawnerSystem } from './tmx-spawner-system';
  *
  * ### Measurements
  *
- * If physics are involved it's usually recommended to not use pixel values for positions
- * and measurements, as most physics engines work best with small numbers. To allow this,
- * the tmx spawner can convert appropriate units with a `unitSize`. For example, a shape
- * that would normally be 32x32 pixels, would only be 2x2 with a unit size of `16`.
+ * For Physics, it's recommended to define a `unitSize` to convert Tileds pixel values
+ * into arbitrary units. For example, a 32x32px shape, would shrinked to 2x2 when using
+ * a unit size of `16`.
  */
 export class TmxSpawnerBundle implements Bundle {
 

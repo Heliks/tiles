@@ -51,7 +51,7 @@ function createSpriteGrid(grid: Grid, texture: Texture, props: TmxTilesetProps):
 }
 
 /**
- * Asset loader format to parse Tiled `.tsj` tilemaps.
+ * Asset loader format to parse Tiled `.tsj` files.
  *
  * @see TmxLoadTilemap
  */
