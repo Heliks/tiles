@@ -120,11 +120,11 @@ export class AssetLoader {
    *
    * @internal
    */
-  private getAsset(file: string): Asset {
+  private getAsset<T>(file: string): Asset<T> {
     const normalized = normalize(file);
     const assetId = uuid(normalized);
 
-    let asset = this.assets.getAsset(assetId);
+    let asset = this.assets.getAsset<T>(assetId);
 
     if (asset) {
       return asset;
@@ -192,16 +192,13 @@ export class AssetLoader {
     return asset.handle();
   }
 
-  /**
-   * Loads `data` into the asset storage as if it were a loaded file. Returns an asset
-   * handle with which the asset can be accessed in the {@link AssetStorage}.
-   */
-  public data<T>(file: string, data: T): Handle<T> {
-    const asset = this.getAsset(file);
+  /** Inserts `data` into the asset storage as if it were a loaded file. */
+  public insert<T>(file: string, data: T): Asset<T> {
+    const asset = this.getAsset<T>(file);
 
     asset.data = data;
 
-    return asset.handle();
+    return asset;
   }
 
   /**

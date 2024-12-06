@@ -57,9 +57,9 @@ export class MaintainNodes implements OnInit, System {
   }
 
   /** @internal */
-  private remove(world: World, roots: Storage<UiNode>, entity: Entity): void {
-    const root = roots.get(entity);
-    
+  private remove(world: World, nodes: Storage<UiNode>, entity: Entity): void {
+    const root = nodes.get(entity);
+
     root.container.parent?.removeChild(root.container);
   }
 

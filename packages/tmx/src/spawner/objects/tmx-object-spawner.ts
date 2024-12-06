@@ -57,7 +57,7 @@ export class TmxObjectSpawner {
     ));
 
     world.attach(entity, new Transform(
-      obj.shape.x / this.config.unitSize,
+      obj.shape.x / this.config.unitSize, 
       obj.shape.y / this.config.unitSize
     ));
 
