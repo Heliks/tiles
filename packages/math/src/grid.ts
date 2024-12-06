@@ -1,5 +1,5 @@
-import { Vec2, XY } from './vec2';
 import { clamp } from './utils';
+import { Vec2, XY } from './vec2';
 
 
 export class Grid {
@@ -28,8 +28,8 @@ export class Grid {
   constructor(
     public readonly cols: number,
     public readonly rows: number,
-    public readonly cellWidth: number,
-    public readonly cellHeight: number
+    public readonly cellWidth = 1,
+    public readonly cellHeight = 1
   ) {}
 
   /**
@@ -82,6 +82,11 @@ export class Grid {
   /** Returns `true` if `col` and `row` are within the bounds of this grid. */
   public isLocationInBounds(col: number, row: number): boolean {
     return col < this.cols && col >= 0 && row < this.rows && row >= 0;
+  }
+
+  /** Returns a new {@link Grid} that is identical to this one. */
+  public clone(): Grid {
+    return new Grid(this.cols, this.rows, this.cellWidth, this.cellHeight);
   }
 
 }

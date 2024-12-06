@@ -181,10 +181,9 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
     const texture = await loader.fetch<Texture>(texturePath);
 
     // Manually create the sprite grid from texture.
-    const handle = loader.data(texturePath, new SpriteGrid(
-      grid,
-      texture
-    ));
+    const handle = loader
+      .insert(texturePath, new SpriteGrid(grid, texture))
+      .handle();
 
     const tileset = new Tileset(handle, grid.size, file);
 

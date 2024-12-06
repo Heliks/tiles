@@ -27,15 +27,6 @@ runtime()
   
   Requested amount of pixels in width and height.
 
-- **selector** `string`:
-
-  Selector for the renderer canvas.
-
-  The renderer will automatically append the canvas to the element matched by this
-  selector when the game is initialized.
-
-  Must be a valid input for `document.querySelector()`.
-
 #### Optional
 
 - **antiAlias** `boolean` (Default: `false`):
@@ -59,6 +50,13 @@ runtime()
   If defined, allows for custom configuration of renderer layers.
 
   See: [Layers](#Layers)
+
+- **selector** `string`:
+
+  The renderer will automatically append the canvas to the element matched by this
+  selector when the game is initialized.
+
+  Must be a valid input for `document.querySelector()`.
 
 - **unitSize** `number` (Default: `1`):
 

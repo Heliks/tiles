@@ -3,7 +3,6 @@ import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { TmxLayer, TmxLayerKind, TmxMapAsset, TmxObjectLayer, TmxTileLayer } from '../parser';
 import { TmxObjectFactory, TmxObjectSpawner } from './objects';
-import { TmxLayerRoot } from './tmx-layer-root';
 import { TmxSpawnMap } from './tmx-spawn-map';
 
 
@@ -78,11 +77,7 @@ export class TmxSpawner<M extends SpawnableAsset = SpawnableAsset> {
 
   /** @internal */
   public async spawnLayer(world: World, map: M, layer: TmxLayer, renderLayer?: LayerId): Promise<Entity> {
-    const entity = world
-      .create()
-      .use(new TmxLayerRoot(layer))
-      .use(new Transform(0, 0))
-      .build();
+    const entity = world.create().use(new Transform()).build();
 
     switch (layer.kind) {
       case TmxLayerKind.Tiles:

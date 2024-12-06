@@ -153,7 +153,26 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<
 }
 
 /**
- * Asset loader format to parse Tiled `.tmj` tile-maps.
+ * Asset loader format to parse Tiled `.tmj` files.
+ *
+ * ## Usage
+ *
+ * Add the `TmxLoadTilemap` and `TmxLoadTileset` formats to your asset loader:
+ *
+ * ```ts
+ *  runtime()
+ *    .bundle(
+ *      new AssetsBundle()
+ *        .use(new TmxLoadTilemap())
+ *        .use(new TmxLoadTileset())
+ *    )
+ *  // ...
+ * ```
+ *
+ * ### Requirements
+ *
+ * - {@link PhysicsBundle}
+ * - {@link TilemapBundle}
  *
  * ## Tilesets
  *
@@ -163,13 +182,15 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<
  *
  * ## Shapes
  *
- * To be consistent with other engine modules, all shape positions are converted to
- * relative to the shapes center. By default, tiled used the top-left corner instead.
+ * The position of shapes (a.E. Tiled Collision Editor shapes, Shape objects, etc.) will
+ * be converted to be center aligned. This makes it easier to re-use these shapes for the
+ * physics engine.
  *
  * ### Ellipses
  *
- * Elliptic shapes are not supported by the game engine, hence why all ellipses are
- * converted to circles. The radius will be the larger of the two sides of the ellipsis.
+ * The physics engine doesn't support elliptic shapes, hence why they will be converted
+ * to circles. The radius of the circle is determined based on the larger of the two
+ * sides of the ellipsis.
  *
  * - `P`: Expected custom properties.
  */

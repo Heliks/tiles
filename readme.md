@@ -10,7 +10,7 @@ $ pnpm install
 
 ## Requirements:
 
-- Node 14
+- Node 18
 - pnpm
 
 Install dependencies via `pnpm`.
