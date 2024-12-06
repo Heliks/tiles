@@ -14,7 +14,8 @@ describe('UiSprite', () => {
 
     spritesheet = world
       .get(AssetLoader)
-      .data('foo.spritesheet', new SpriteGrid(new Grid(5, 5, 10, 10), Texture.WHITE));
+      .insert('foo.spritesheet', new SpriteGrid(new Grid(5, 5, 10, 10), Texture.WHITE))
+      .handle();
   })
 
   it('should calculate element size', () => {

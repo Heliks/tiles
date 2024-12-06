@@ -23,7 +23,7 @@ describe('SpriteAnimationSystem', () => {
     system = world.get(SpriteAnimationSystem);
 
     spritesheet = new SpriteGrid(new Grid(5, 5, 16, 16), Texture.WHITE);
-    spritesheetHandle = world.get(AssetLoader).data('',  spritesheet);
+    spritesheetHandle = world.get(AssetLoader).insert('',  spritesheet).handle();
   });
 
   describe('apply()', () => {
