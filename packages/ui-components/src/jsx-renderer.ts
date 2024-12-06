@@ -41,13 +41,14 @@ export class JsxTemplate implements TemplateRenderer {
     const parent = world.storage(Parent).get(owner).entity;
     const parentNode = nodes.get(parent);
 
+
     // The position in the layout tree matters. The layout node of the template is
     // inserted at the same location as the template element.
     parentNode.layout.appendBefore(
       nodes.get(owner).layout,
       nodes.get(template).layout
     );
-    
+
     world.attach(template, new Parent(parent));
 
     return template;
@@ -279,6 +280,14 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
 
   /** @inheritDoc */
   public onInit(world: World, entity: Entity): void {
+    // This case happens when the parent component is destroyed before its children
+    // are initialized. The renderer will discard this entity and insert another in
+    // its place, therefore, the initialization needs to be canceled here or the
+    // component will be rendered twice.
+    if (! world.alive(entity)) {
+      return;
+    }
+
     world.attach(entity, new Host());
 
     // Call onInit lifecycle hook if it is implemented by the component.
