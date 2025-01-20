@@ -125,6 +125,6 @@ export interface UiComponent {
   /**
    * If defined, this function will be called once per frame.
    */
-  update?(world: World): void;
+  update?(world: World, entity: Entity): void;
 
 }

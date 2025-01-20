@@ -9,14 +9,17 @@ import { Element } from '../element';
 /** Displays an animated sprite. */
 export class UiAnimatedSprite implements Element {
 
-  /** @inheritDoc */
-  public readonly view = new Sprite();
+  /** Scale factor that is applied to the animated sprite. */
+  public scale = 1;
 
   /** @inheritDoc */
   public readonly size = new Rect(
     Size.px(0),
     Size.px(0)
   );
+
+  /** @inheritDoc */
+  public readonly view = new Sprite();
 
   /**
    * Currently playing animation.
@@ -102,8 +105,11 @@ export class UiAnimatedSprite implements Element {
       }
     }
 
-    this.size.width.value = this.view.texture.width;
-    this.size.height.value = this.view.texture.height;
+    this.view.scale.x = this.scale;
+    this.view.scale.y = this.scale;
+
+    this.size.width.value = this.view.texture.width * this.scale;
+    this.size.height.value = this.view.texture.height * this.scale;
   }
 
 }

@@ -311,7 +311,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       this.invalid = false;
     }
 
-    this.instance.update?.(world);
+    this.instance.update?.(world, entity);
     
     return;
   }

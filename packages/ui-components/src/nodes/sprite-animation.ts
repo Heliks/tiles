@@ -11,6 +11,8 @@ import { UiNodeRenderer } from '../ui-node-renderer';
 export interface SpriteAnimationAttributes extends Attributes {
   /** Name of the animation that is played by the element. */
   animation: string;
+  /** Sprite scale factor. */
+  scale?: number;
   /** Spritesheet used to display the sprite. */
   spritesheet: Handle<SpriteSheet>;
 }
@@ -21,14 +23,18 @@ export class SpriteAnimation implements UiNodeRenderer<SpriteAnimationAttributes
 
   /** @inheritDoc */
   public render(world: World, attributes: SpriteAnimationAttributes): Entity {
+    const element = new UiAnimatedSprite(
+      attributes.spritesheet,
+      attributes.animation
+    );
+
+    if (attributes.scale !== undefined) {
+      element.scale = attributes.scale;
+    }
+
     return world.insert(
       new UiNode(),
-      new UiElement(
-        new UiAnimatedSprite(
-          attributes.spritesheet,
-          attributes.animation
-        )
-      )
+      new UiElement(element)
     );
   }
 

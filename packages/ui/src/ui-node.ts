@@ -17,9 +17,11 @@ export enum UiNodeInteraction {
   LongPress = 'lp'
 }
 
+export type UiLayout = Node;
+
 /**
  * Component that is attached to entities that are UI nodes. This is the lowest level
- * building block for higher level UI component composition.
+ * building block for higher level UI composition.
  *
  * The unit in which the position is measured depends on the screen alignment. If it is
  * aligned to the screen, the position is measured in pixels. If it is aligned to the
@@ -74,7 +76,7 @@ export class UiNode<S extends Style = Style> {
    * a formatting context. (e.g. applies a {@link Style stylesheet} to its children, or
    * has one applied via its parent).
    */
-  public readonly layout: Node;
+  public readonly layout: UiLayout;
 
   /** The stylesheet that is applied to this node. */
   public readonly style: S;
