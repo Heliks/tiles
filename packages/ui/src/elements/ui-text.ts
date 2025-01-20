@@ -1,9 +1,11 @@
-import { Node, Rect, Size } from '@heliks/flex';
+import { Node, rect } from '@heliks/flex';
 import { Entity, World } from '@heliks/tiles-engine';
 import { Text } from 'pixi.js';
 import { Element } from '../element';
 import { Input } from '../input';
+import { OnInit } from '../lifecycle';
 import { Style } from '../style';
+import { TextFactory } from '../text-factory';
 
 
 export enum TextBorderStyle {
@@ -13,7 +15,7 @@ export enum TextBorderStyle {
 }
 
 /** Displays text. */
-export class UiText implements Element {
+export class UiText implements Element, OnInit {
 
   /**
    * Name of the default font that should be used for new {@link UiText} elements. The
@@ -21,22 +23,20 @@ export class UiText implements Element {
    */
   public static defaultFont = 'serif';
 
-  /**
-   * The text that should be rendered.
-   */
+  /** The text that is displayed by this element. */
   @Input()
   public text = '';
 
   /** @inheritDoc */
-  public view = new Text('', {
+  public readonly size = rect(0);
+
+  /** @inheritDoc */
+  public readonly view = new Text('', {
     align: 'left'
   });
 
-  /** @inheritDoc */
-  public readonly size = new Rect(
-    Size.px(0),
-    Size.px(0)
-  );
+  /** @internal */
+  private _parser!: TextFactory;
 
   /**
    * @param value The text that should be rendered.
@@ -58,6 +58,11 @@ export class UiText implements Element {
   }
 
   /** @inheritDoc */
+  public onInit(world: World): void {
+    this._parser = world.get(TextFactory);
+  }
+
+  /** @inheritDoc */
   public update(world: World, entity: Entity, layout: Node<Style>): void {
     this.view.text = this.text;
 
@@ -65,19 +70,7 @@ export class UiText implements Element {
     this.size.height.value = this.view.height;
 
     if (layout.style.text) {
-      const style = this.view.style;
-
-      style.fill = layout.style.text.color;
-      style.fillGradientStops = layout.style.text.colorStops;
-      style.fontFamily = layout.style.text.fontFamily ?? UiText.defaultFont;
-      style.fontSize = layout.style.text.fontSize;
-      style.wordWrap = layout.style.text.wrap;
-
-      if (layout.style.text.borderWidth !== undefined) {
-        style.stroke = layout.style.text.borderColor;
-        style.strokeThickness = layout.style.text.borderWidth;
-        style.strokeStyle = 1;
-      }
+      this._parser.parse(layout.style.text, this.view.style);
 
       if (layout.style.text.wrap && layout.parent) {
         this.view.style.wordWrapWidth = layout.parent.size.width;

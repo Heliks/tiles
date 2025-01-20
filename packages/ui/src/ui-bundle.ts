@@ -12,6 +12,7 @@ import {
   UpdateLayouts,
   UpdateNodes
 } from './systems';
+import { TextFactory } from './text-factory';
 import { UiElement } from './ui-element';
 import { UiFocus } from './ui-focus';
 import { UiNode } from './ui-node';
@@ -50,6 +51,7 @@ export class UiBundle implements Bundle {
       .provide(Document)
       .provide(EventLifecycle)
       .provide(UiFocus)
+      .provide(TextFactory)
       // The element manager will also maintain layouts in case the document becomes
       // dirty during its update, hence why this needs to be declared first.
       .system(MaintainLayouts, UiSchedule.Compute)
