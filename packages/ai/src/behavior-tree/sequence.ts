@@ -3,12 +3,10 @@ import { Composite } from './composite';
 
 
 /**
- * A sequence is a type of composite node that visits each of its children in order,
- * from left to right. If the node reports a {@link NodeState.Success success} state,
- * the sequence moves on to the next node.
- *
- * If any child fails, the sequence is stopped immediately and fails. The sequence is
- * successful when all children returned a success state.
+ * Composite node that visits each of its children in order, from left to right. If a
+ * child returns a success state, the sequence moves on to the next. If a child returns
+ * failure state, the entire sequence stops and returns a failure state. The sequence
+ * returns a success state if all of its children were successful.
  */
 export class Sequence<D> extends Composite<D> {
 
