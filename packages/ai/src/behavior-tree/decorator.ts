@@ -2,9 +2,9 @@ import { BehaviorNode, NodeState } from './behavior-node';
 
 
 /**
- * Decorator nodes are a type of node that has exactly one node as a child of which it
- * modifies the {@link NodeState} of. Usually this is done to invert a success state
- * to a failure state or vice versa.
+ * Decorators visit their child node and modifies its result. Each decorator can only
+ * have a single child. An example for a decorator would be the {@link Succeeder}, which
+ * always returns a success state regardless of the actual state produced by the child.
  */
 export abstract class Decorator<D> implements BehaviorNode<D> {
 

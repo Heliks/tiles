@@ -3,10 +3,9 @@ import { Decorator } from './decorator';
 
 
 /**
- * Decorator node that will always return {@link NodeState.Success}, or if the node
- * is currently running, a {@link NodeState.Running}. This is useful for cases where
- * a failure is expected, but we don't want to stop processing a composite node like
- * a sequence.
+ * A decorator that will always return a success state regardless of what result the
+ * child of this decorator actually returned. This is useful in cases where a failure
+ * is expected, like continuing to process a {@link Composite}.
  */
 export class Succeeder<D> extends Decorator<D> {
 

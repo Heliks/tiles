@@ -2,9 +2,9 @@ import { BehaviorNode, NodeState } from './behavior-node';
 
 
 /**
- * Composite nodes are a type of {@link BehaviorNode} that contains child nodes and
- * instructions on how to visit each of them. For example, a {@link Sequence} is a
- * composite node that visits all of its children in order from left to right.
+ * Composite nodes contain child nodes and instructions how and when they are being
+ * visited. For example, a {@link Sequence} is a composite node that visits all of
+ * its children from left to right.
  */
 export abstract class Composite<D> implements BehaviorNode<D> {
 

@@ -1,7 +1,7 @@
 {
   "name": "@heliks/tiles-ai",
   "version": "0.0.2-rc01",
-  "description": "Provides utilities for common AI tasks",
+  "description": "Tiles utilities for common AI tasks",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Felix Wolf",
