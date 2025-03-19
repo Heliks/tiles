@@ -14,7 +14,7 @@ import {
 } from '../../parser';
 import { TmxPhysicsFactory, TmxPhysicsOptions } from '../tmx-physics-factory';
 import { SpawnableAsset, SpawnLayerProperties } from '../tmx-spawner';
-import { TmxObjectFactory } from './tmx-object-factory';
+import { TmxObjectType } from './tmx-object-type';
 
 
 /** @internal */
@@ -24,9 +24,12 @@ function isPointGeometry(geometry: TmxGeometry): boolean {
       && geometry.shape.height === 0;
 }
 
-/** Default {@link TmxObjectFactory}. */
+/**
+ * The default {@link TmxObjectType} for map objects used by the {@link TmxObjectSpawner}
+ * if no custom default type was configured.
+ */
 @Injectable()
-export class TmxDefaultObjectFactory implements TmxObjectFactory {
+export class TmxObjectTypeDefault implements TmxObjectType {
 
   /**
    * @param assets {@see AssetStorage}
@@ -85,7 +88,7 @@ export class TmxDefaultObjectFactory implements TmxObjectFactory {
     if (isTile(obj)) {
       this.composeTileObject(map, layer, obj, entity);
     }
-    else if (!isPointGeometry(obj)) {
+    else if (! isPointGeometry(obj)) {
       entity.use(this.physics.shape(obj as TmxGeometryObject<TmxPhysicsOptions>));
     }
 
