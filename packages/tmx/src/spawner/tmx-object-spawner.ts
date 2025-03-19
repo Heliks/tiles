@@ -1,16 +1,16 @@
 import { Entity, Inject, Injectable, Transform, World } from '@heliks/tiles-engine';
 import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../../parser';
 import { TmxSpawnerConfig } from '../tmx-spawner-config';
-import { TmxDefaultObjectFactory } from './tmx-default-object-factory';
-import { TmxObjectFactory } from './tmx-object-factory';
 import { TmxObjectMetadata } from './tmx-object-metadata';
+import { TmxObjectType } from './tmx-object-type';
+import { TmxObjectTypeDefault } from './tmx-object-type-default';
 
 
 @Injectable()
 export class TmxObjectSpawner {
 
   /** @internal */
-  private readonly factories = new Map<string, TmxObjectFactory>();
+  private readonly factories = new Map<string, TmxObjectType>();
 
   /**
    * @param config Spawner config.
@@ -18,14 +18,14 @@ export class TmxObjectSpawner {
    *  from map objects. This factory will only be used if the object that is being
    *  spawned does not have its own factory defined.
    */
-  constructor(@Inject(TmxDefaultObjectFactory) public factory: TmxObjectFactory, public readonly config: TmxSpawnerConfig) {}
+  constructor(@Inject(TmxObjectTypeDefault) public factory: TmxObjectType, public readonly config: TmxSpawnerConfig) {}
 
   /**
    * Registers the given `factory` to be used to create entities from objects that
    * match its `type`. If the factory does not specify a type, it will be used as
    * the default object factory.
    */
-  public register(factory: TmxObjectFactory): this {
+  public register(factory: TmxObjectType): this {
     if (factory.type) {
       this.factories.set(factory.type, factory);
     }
@@ -37,10 +37,10 @@ export class TmxObjectSpawner {
   }
 
   /**
-   * Returns the appropriate {@link TmxObjectFactory} for the given object type`. Returns
+   * Returns the appropriate {@link TmxObjectType} for the given object type`. Returns
    * the default {@link factory} if that type does not have its own.
    */
-  public getFactory(type?: string): TmxObjectFactory {
+  public getFactory(type?: string): TmxObjectType {
     // Safety: Using an undefined key should always fail to return a factory, therefore
     // we don't need the additional check here.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
