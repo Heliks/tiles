@@ -1,4 +1,4 @@
-import { b2World } from '@heliks/box2d';
+import { B2World } from '@heliks/box2d';
 import { Rectangle } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
@@ -7,7 +7,7 @@ import { getColliderFixture, syncBodyFixtures } from '../fixtures';
 
 describe('synchronize fixtures', () => {
   const factory = new Box2dBodyFactory(
-    new b2World({
+    new B2World({
       x: 0,
       y: 0
     }),

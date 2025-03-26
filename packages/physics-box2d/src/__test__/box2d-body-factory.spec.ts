@@ -1,4 +1,4 @@
-import { b2CircleShape, b2FixtureDef, b2PolygonShape, b2World } from '@heliks/box2d';
+import { B2CircleShape, B2FixtureDef, B2PolygonShape, B2World } from '@heliks/box2d';
 import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { Collider, Material } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
@@ -8,27 +8,27 @@ describe('Box2dBodyFactory', () => {
   let factory: Box2dBodyFactory;
 
   beforeEach(() => {
-    factory = new Box2dBodyFactory(new b2World({ x: 0, y: 0 }));
+    factory = new Box2dBodyFactory(new B2World({ x: 0, y: 0 }));
   });
 
   describe('fixtures', () => {
     it('should be returned', () => {
       const fixture = factory.getFixtureDef(new Collider(new Rectangle(1, 1)));
 
-      expect(fixture).toBeInstanceOf(b2FixtureDef);
+      expect(fixture).toBeInstanceOf(B2FixtureDef);
     });
 
     it('should have be able to have a rectangle shape', () => {
       const fixture = factory.getFixtureDef(new Collider(new Rectangle(1, 1)));
 
-      expect(fixture.shape).toBeInstanceOf(b2PolygonShape);
+      expect(fixture.shape).toBeInstanceOf(B2PolygonShape);
     });
 
     it('should be able to have a circle shape', () => {
       const radians = 1;
       const fixture = factory.getFixtureDef(new Collider(new Circle(radians)));
 
-      expect(fixture.shape).toBeInstanceOf(b2CircleShape)
+      expect(fixture.shape).toBeInstanceOf(B2CircleShape)
       expect(fixture.shape.m_radius).toBe(radians);
     });
 

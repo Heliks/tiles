@@ -1,5 +1,6 @@
 import { Entity, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Collider } from './collider';
+import { Ray } from './ray';
 import { RigidBody } from './rigid-body';
 
 
@@ -51,10 +52,12 @@ export abstract class Physics {
   public abstract impulse(entity: Entity, force: Vec2): void;
 
   /**
-   * Performs a raycast from the given `start` to `end` point. Obstacles that collided
-   * with the ray are returned. If an `obstacles` array is provided, the obstacles
-   * that the ray encounters are added to that array instead.
+   * Performs a raycast.
+   *
+   * A raycast projects an invisible line (ray) from an origin point to a target point
+   * and determines the colliders that it intersects. How intersections are reported,
+   * depends on the implementation of the ray.
    */
-  public abstract raycast(start: XY, end: XY, obstacles?: RaycastObstacle[]): RaycastObstacle[];
+  public abstract raycast(ray: Ray, from: XY, to: XY): void;
 
 }

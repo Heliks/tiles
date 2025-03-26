@@ -26,7 +26,7 @@ export enum RigidBodyType {
 }
 
 /** A 2D rigid body component. */
-@UUID('physics.RigidBody')
+@UUID('tiles_physics_rigid_body')
 export class RigidBody {
 
   /** Colliders attached to this body. */

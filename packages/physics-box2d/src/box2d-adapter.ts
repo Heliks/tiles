@@ -1,7 +1,8 @@
-import { b2World } from '@heliks/box2d';
+import { B2World } from '@heliks/box2d';
 import { AppBuilder, EventQueue, Type, Vec2 } from '@heliks/tiles-engine';
 import { PhysicsAdapter } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from './box2d-body-factory';
+import { Box2dRaycaster } from './box2d-raycaster';
 import { Box2dWorld } from './box2d-world';
 import { B2_RAYCASTS, B2_WORLD } from './const';
 
@@ -23,12 +24,13 @@ export class Box2dAdapter implements PhysicsAdapter {
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
     // noinspection JSPotentiallyInvalidConstructorUsage
-    const world = new b2World(this.gravity);
+    const world = new B2World(this.gravity);
 
     builder
       .provide(B2_RAYCASTS, new EventQueue())
       .provide(B2_WORLD, world)
-      .provide(Box2dBodyFactory);
+      .provide(Box2dBodyFactory)
+      .provide(Box2dRaycaster);
   }
 
 }

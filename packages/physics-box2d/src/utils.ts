@@ -1,16 +1,16 @@
 /* eslint-disable new-cap */
-import { b2BodyType, b2CircleShape, b2PolygonShape, b2Shape } from '@heliks/box2d';
+import { B2BodyType, B2CircleShape, B2PolygonShape, B2Shape } from '@heliks/box2d';
 import { Circle } from '@heliks/tiles-engine';
 import { ColliderShape, RigidBodyType } from '@heliks/tiles-physics';
 
 
-export function b2ParseShape(shape: ColliderShape): b2Shape {
+export function B2ParseShape(shape: ColliderShape): B2Shape {
   // Circles.
   if (shape instanceof Circle) {
-    return new b2CircleShape().Set(shape, shape.radius);
+    return new B2CircleShape().Set(shape, shape.radius);
   }
 
-  const box = new b2PolygonShape();
+  const box = new B2PolygonShape();
 
   // Convert the polygon to a box.
   box.SetAsBox(
@@ -22,15 +22,15 @@ export function b2ParseShape(shape: ColliderShape): b2Shape {
   return box;
 }
 
-export function b2ParseBodyType(type: RigidBodyType): b2BodyType {
+export function B2ParseBodyType(type: RigidBodyType): B2BodyType {
   // assign body type
   switch (type) {
     case RigidBodyType.Dynamic:
-      return b2BodyType.b2_dynamicBody;
+      return B2BodyType.B2_dynamicBody;
     case RigidBodyType.Kinematic:
-      return b2BodyType.b2_kinematicBody;
+      return B2BodyType.B2_kinematicBody;
     default:
     case RigidBodyType.Static:
-      return b2BodyType.b2_staticBody;
+      return B2BodyType.B2_staticBody;
   }
 }
