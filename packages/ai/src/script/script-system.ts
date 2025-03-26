@@ -1,14 +1,6 @@
-import {
-  ComponentEvent,
-  Entity,
-  Injectable,
-  Query,
-  QueryBuilder,
-  ReactiveSystem,
-  Subscriber,
-  World
-} from '@heliks/tiles-engine';
+import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, World } from '@heliks/tiles-engine';
 import { Script } from './script';
+import { start, stop } from './setup';
 
 
 /**
@@ -19,36 +11,26 @@ import { Script } from './script';
 @Injectable()
 export class ScriptSystem extends ReactiveSystem {
 
-  /** @internal */
-  private events!: Subscriber<ComponentEvent<Script>>;
-
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
     return builder.contains(Script).build();
   }
 
   /** @inheritDoc */
-  public boot(world: World): void {
-    this.events = world.storage(Script).events.subscribe();
-
-    super.boot(world);
-  }
-
-  /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const component = world.storage(Script).get(entity);
 
-    component.start(
+    start(
       world,
       entity,
+      component,
       component.script
     );
   }
 
   /** @inheritDoc */
   public onEntityRemoved(world: World, entity: Entity): void {
-    // Invoke stop callback on running script.
-    world.storage(Script).get(entity).stop(world, entity);
+    stop(world, entity, world.storage(Script).get(entity));
   }
 
   /** @inheritDoc */
@@ -62,9 +44,10 @@ export class ScriptSystem extends ReactiveSystem {
 
       // Script behavior has changed.
       if (component.script !== component._running) {
-        component.start(
+        start(
           world,
           entity,
+          component,
           component.script
         );
       }

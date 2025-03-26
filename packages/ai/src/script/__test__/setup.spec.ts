@@ -1,8 +1,9 @@
 import { Entity, runtime, World } from '@heliks/tiles-engine';
 import { Script } from '../script';
+import { start } from '../setup';
 
 
-describe('Script', () => {
+describe('Script setup', () => {
   let world: World;
 
   beforeEach(() => {
@@ -26,7 +27,7 @@ describe('Script', () => {
         update: jest.fn()
       };
 
-      component.start(world, entity, script);
+      start(world, entity, component, script);
 
       expect(component._running).toBe(script);
     });
@@ -37,7 +38,7 @@ describe('Script', () => {
         update: jest.fn()
       };
 
-      component.start(world, entity, script);
+      start(world, entity, component, script);
 
       expect(script.start).toHaveBeenCalled();
     });
@@ -46,8 +47,8 @@ describe('Script', () => {
       const prev = { stop: jest.fn(), update: jest.fn() };
       const next = { update: jest.fn() };
 
-      component.start(world, entity, prev);
-      component.start(world, entity, next);
+      start(world, entity, component, prev);
+      start(world, entity, component, next);
 
       expect(prev.stop).toHaveBeenCalled();
     });
