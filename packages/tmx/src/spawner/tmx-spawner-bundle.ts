@@ -1,5 +1,7 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
-import { TmxDefaultObjectFactory, TmxObjectFactory, TmxObjectSpawner } from './objects';
+import { TmxObjectSpawner } from './tmx-object-spawner';
+import { TmxObjectType } from './tmx-object-type';
+import { TmxObjectTypeDefault } from './tmx-object-type-default';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
 import { TmxSpawnMap } from './tmx-spawn-map';
 import { TmxSpawner } from './tmx-spawner';
@@ -8,33 +10,63 @@ import { TmxSpawnerSystem } from './tmx-spawner-system';
 
 
 /**
- * Provides map handling functionality for map files using the TMX format.
+ * Map spawner / handler for TMX tilemaps.
  *
  * Latest supported TMX version: 1.10.2
  *
  * ## Physics
  *
+ * When using a physics engine, it's recommended to define a `unitSize` to convert Tileds
+ * pixel values into arbitrary units. For example, a 32x32px shape, would shrink to 2x2
+ * with a unit size of `16`.
+ *
  * ### Geometry
  *
- * Geometry on object layers other than points will be converted into {@link RigidBody rigid bodies}.
+ * Floating geometry on object layers *other than points* will have their geometrical
+ * shape attached to them as a {@link RigidBody}.
+ *
+ * Ellipses are converted into circles by the TMX parser.
  *
  * ### Object types
  *
- * Sometimes it's necessary to manually compose an object rather than letting the spawner
- * do it automatically. For this, you can use a custom object type (or "class" in newer
- * versions) in tiled and {@link type register} your custom {@link TmxObjectType type}
- * implementation on the spawner.
+ * Custom {@link TmxObjectType object types} can be declared to customize the spawning
+ * behavior of certain types of map objects, or to modify the default spawning behavior.
  *
- * ### Measurements
+ * ```ts
+ *  // This object type handles map objects with the type "foo".
+ *  class MyDefaultType implements TmxObjectType {
  *
- * For Physics, it's recommended to define a `unitSize` to convert Tileds pixel values
- * into arbitrary units. For example, a 32x32px shape, would shrinked to 2x2 when using
- * a unit size of `16`.
+ *    public create(): Entity {
+ *      ....
+ *    }
+ *
+ *  }
+ *
+ *  // This object type overwrites the default spawning behavior.
+ *  class MyDefaultType implements TmxObjectType {
+ *
+ *    // This object type only matches TMX objects that have this type.
+ *    public readonly type = 'foo';
+ *
+ *    public create(): Entity {
+ *      ....
+ *    }
+ *
+ *  }
+ *
+ *  runtime()
+ *    // ...
+ *    .bundle(
+ *      new TmxSpawnerBundle()
+ *        .type(MyDefaultType)
+ *        .type(MyCustomType)
+ *    )
+ * ```
  */
 export class TmxSpawnerBundle implements Bundle {
 
   /** @internal */
-  private factories = new Set<Type<TmxObjectFactory>>();
+  private types = new Set<Type<TmxObjectType>>();
 
   /**
    * @param unitSize Amount of pixels that are treated as one in-game unit by the
@@ -51,7 +83,7 @@ export class TmxSpawnerBundle implements Bundle {
   private setup(world: World): void {
     const spawner = world.get(TmxObjectSpawner);
 
-    for (const type of this.factories) {
+    for (const type of this.types) {
       spawner.register(world.make(type));
     }
   }
@@ -62,7 +94,7 @@ export class TmxSpawnerBundle implements Bundle {
       .component(TmxSpawnMap)
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
       .provide(TmxPhysicsFactory)
-      .provide(TmxDefaultObjectFactory)
+      .provide(TmxObjectTypeDefault)
       .provide(TmxObjectSpawner)
       .provide(TmxSpawner)
       .system(TmxSpawnerSystem)
@@ -73,8 +105,8 @@ export class TmxSpawnerBundle implements Bundle {
    * Overwrites the default {@link TmxObjectType object type} {@link Type type } used to
    * compose entities for {@link TmxObject objects} that do not have a custom type.
    */
-  public type(type: Type<TmxObjectFactory>): this {
-    this.factories.add(type);
+  public type(type: Type<TmxObjectType>): this {
+    this.types.add(type);
 
     return this;
   }

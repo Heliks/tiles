@@ -19,9 +19,9 @@ describe('SpriteEventSystem', () => {
     });
 
     it('should set latest queued event as active', () => {
-      events.queue.push(SpriteEvents.Up);
-      events.queue.push(SpriteEvents.None);
-      events.queue.push(SpriteEvents.Down);
+      events._queue.push(SpriteEvents.Up);
+      events._queue.push(SpriteEvents.None);
+      events._queue.push(SpriteEvents.Down);
 
       process(events);
 

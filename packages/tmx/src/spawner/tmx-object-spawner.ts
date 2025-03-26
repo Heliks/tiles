@@ -1,9 +1,9 @@
 import { Entity, Inject, Injectable, Transform, World } from '@heliks/tiles-engine';
-import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../../parser';
-import { TmxSpawnerConfig } from '../tmx-spawner-config';
+import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
 import { TmxObjectMetadata } from './tmx-object-metadata';
 import { TmxObjectType } from './tmx-object-type';
 import { TmxObjectTypeDefault } from './tmx-object-type-default';
+import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
 @Injectable()

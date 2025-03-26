@@ -7,7 +7,7 @@ import { DebugDraw } from './debug-draw';
 import { Layers, SortChildren, Stage } from './layer';
 import { Renderer } from './renderer';
 import { Screenshot } from './screenshot';
-import { SpriteAnimation, SpriteAnimationSystem, SpriteRender, SpriteRenderer } from './sprite';
+import { SpriteAnimation, SpriteAnimationSystem, SpriteEventSystem, SpriteRender, SpriteRenderer } from './sprite';
 import { UpdateRenderer } from './update-renderer';
 
 
@@ -145,6 +145,7 @@ export class PixiBundle implements Bundle, OnInit {
       .provide(Renderer)
       .provide(Screenshot)
       .system(SortChildren)
+      .system(SpriteEventSystem)
       .system(SpriteAnimationSystem, RendererSchedule.Update)
       .system(SpriteRenderer, RendererSchedule.Update)
       .system(UpdateRenderer, RendererSchedule.Render);

@@ -41,6 +41,9 @@ importers:
 
   packages/ai:
     devDependencies:
+      '@heliks/tiles-engine':
+        specifier: workspace:^
+        version: link:../engine
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -158,8 +161,8 @@ importers:
   packages/physics-box2d:
     dependencies:
       '@heliks/box2d':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 0.0.3
+        version: 0.0.3
     devDependencies:
       '@heliks/tiles-engine':
         specifier: workspace:^
@@ -484,8 +487,8 @@ packages:
     resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@heliks/box2d@1.0.1':
-    resolution: {integrity: sha512-o0XsgPEHaeu7r441wuWhw99BZoue8G556gDGL8crYAzQ9FMGIR7ZBmDF5d6X+Ki8L9gkkVU0KaELEzyAJdIfaQ==}
+  '@heliks/box2d@0.0.3':
+    resolution: {integrity: sha512-r3u3PFxBww/8zf+GRfBUirjtakg/ReCHEPzh0Eg6ravLABEuvEfFnQ5azmJ3kevwt1gLNu+6dP/jO/OS/Ry/gw==}
 
   '@heliks/ecs-hierarchy@0.3.3-rc1':
     resolution: {integrity: sha512-SZhFu67AHZ5erMvCINPVldeh3qia0UlAC/SkC7B0pNqBz4grjWl5/gIVQwKsU5lvtzBOMert+WQFGkX/xW/ahA==}
@@ -2475,7 +2478,7 @@ snapshots:
 
   '@eslint/js@8.56.0': {}
 
-  '@heliks/box2d@1.0.1':
+  '@heliks/box2d@0.0.3':
     dependencies:
       '@types/systemjs': 6.13.5
 

@@ -11,10 +11,10 @@ import {
   TmxObjectLayer,
   TmxTileObject,
   TmxTileset
-} from '../../parser';
-import { TmxPhysicsFactory, TmxPhysicsOptions } from '../tmx-physics-factory';
-import { SpawnableAsset, SpawnLayerProperties } from '../tmx-spawner';
+} from '../parser';
 import { TmxObjectType } from './tmx-object-type';
+import { TmxPhysicsFactory, TmxPhysicsOptions } from './tmx-physics-factory';
+import { SpawnableAsset, SpawnLayerProperties } from './tmx-spawner';
 
 
 /** @internal */

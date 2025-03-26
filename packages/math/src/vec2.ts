@@ -101,6 +101,16 @@ export class Vec2 implements XY {
     return this.x === point.x && this.y === point.y;
   }
 
+  /** Rotates the vector by the given amount of `radians`. */
+  public rotate(radians: number): this {
+    const rotation = this.radians() + radians;
+
+    this.x = Math.cos(rotation);
+    this.y = Math.sin(rotation);
+
+    return this;
+  }
+
   /**
    * Returns the distance between the vector and `point`. The distance is the length of a
    * straight line connecting them.

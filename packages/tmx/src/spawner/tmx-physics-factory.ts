@@ -1,7 +1,6 @@
 import { Injectable, Pivot, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { TmxGeometry } from '../parser';
-import { TmxBitSet } from './bitset';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 
 
@@ -10,22 +9,6 @@ import { TmxSpawnerConfig } from './tmx-spawner-config';
  * parsed into a {@link Collider}.
  */
 export interface TmxPhysicsOptions {
-
-  /**
-   * If `true`, the collider will be made into a {@link Collider.sensor}.
-   * @deprecated
-   */
-  sensor?: boolean;
-  /**
-   * Bitset for the colliders collision group, if any.
-   * @deprecated
-   */
-  group?: TmxBitSet;
-  /**
-   * Bitset for the colliders collision mask, if any.
-   * @deprecated
-   */
-  mask?: TmxBitSet;
 
   $collider?: {
     /** @see Collider.group */

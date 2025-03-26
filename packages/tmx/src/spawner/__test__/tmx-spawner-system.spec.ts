@@ -1,6 +1,6 @@
 import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
 import { App, runtime, Transform, World } from '@heliks/tiles-engine';
-import { TmxDefaultObjectFactory, TmxObjectSpawner } from '../objects';
+import { TmxObjectSpawner, TmxObjectTypeDefault } from '../objects';
 import { TmxPhysicsFactory } from '../tmx-physics-factory';
 import { TmxSpawnMap, TmxSpawnState } from '../tmx-spawn-map';
 import { TmxSpawner } from '../tmx-spawner';
@@ -21,7 +21,7 @@ describe('TmxSpawnerSystem', () => {
       .bundle(new AssetsBundle())
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(16))
       .provide(TmxPhysicsFactory)
-      .provide(TmxDefaultObjectFactory)
+      .provide(TmxObjectTypeDefault)
       .provide(TmxObjectSpawner)
       .provide(TmxSpawner)
       .system(TmxSpawnerSystem)
