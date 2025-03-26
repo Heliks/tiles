@@ -30,8 +30,8 @@ export class ScriptBundle implements Bundle {
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
     builder
-      .provide(ScriptDB, this.db)
       .component(Script)
+      .provide(ScriptDB, this.db)
       .system(ScriptSystem);
   }
 
