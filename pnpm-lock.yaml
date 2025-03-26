@@ -143,6 +143,21 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  packages/locomotion:
+    devDependencies:
+      '@heliks/tiles-engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@heliks/tiles-physics':
+        specifier: workspace:^
+        version: link:../physics
+      '@heliks/tiles-pixi':
+        specifier: workspace:^
+        version: link:../pixi
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
   packages/math:
     devDependencies:
       typescript:

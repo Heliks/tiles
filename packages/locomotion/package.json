@@ -1,0 +1,29 @@
+{
+  "name": "@heliks/tiles-locomotion",
+  "version": "0.0.2-rc01",
+  "description": "Tiles locomotion utilities",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "test": "jest --config ./jest.config.js",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^"
+  },
+  "peetDependencies": {
+    "typescript": "^5.4.5",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^"
+  }
+}
