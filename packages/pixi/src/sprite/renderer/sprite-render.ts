@@ -39,7 +39,7 @@ function createMaterialFromData(data: MaterialData): ShaderMaterial {
 }
 
 /** Component that renders a sprite on the entity to which it is attached to. */
-@UUID('pixi.SpriteRender')
+@UUID('tiles_renderer_sprite')
 export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeable<SpriteRenderData<I>> {
 
   /** @internal */

@@ -1,5 +1,5 @@
 import { Entity, World } from '@heliks/tiles-engine';
-import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../../parser';
+import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
 
 
 /**

@@ -2,7 +2,8 @@ import { Entity, EventQueue, Injectable, Parent, token, Transform, World } from 
 import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
 import { TmxLayer, TmxLayerKind, TmxMapAsset, TmxObjectLayer, TmxTileLayer } from '../parser';
-import { TmxObjectFactory, TmxObjectSpawner } from './objects';
+import { TmxObjectSpawner } from './tmx-object-spawner';
+import { TmxObjectType } from './tmx-object-type';
 import { TmxSpawnMap } from './tmx-spawn-map';
 
 
@@ -48,7 +49,7 @@ function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: T
   }
 }
 
-export const DEFAULT_OBJECT_FACTORY = token<TmxObjectFactory>();
+export const DEFAULT_OBJECT_FACTORY = token<TmxObjectType>();
 
 
 /** @see TmxMapAsset */

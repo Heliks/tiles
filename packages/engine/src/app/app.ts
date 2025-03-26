@@ -102,10 +102,16 @@ export class App {
     this.state.update();
   }
 
-  /** Starts the app using the given `state`. */
-  public start(state: State<World>): void {
+  /** Boots the app without starting the game loop. */
+  public boot(): this {
     this.dispatcher.boot(this.world);
 
+    return this;
+  }
+
+  /** Boots the app and starts the app's game loop. */
+  public start(state: State<World>): void {
+    this.boot();
     this.ticker.start();
     this.state.start(state);
   }

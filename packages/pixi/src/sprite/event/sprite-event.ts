@@ -1,24 +1,24 @@
-import { EventQueue } from '@heliks/tiles-engine';
-
+export enum SpriteEvents {
+  /** No event currently occurs on the sprite. */
+  None,
+  Down,
+  Up
+}
 
 /**
- * Component that when attached to an entity that has a `SpriteDisplay` component, will
- * start to listen to events concerning that sprite (e.g. mouse up or mouse down) and
- * forward them to one of the appropriate event queues of this component.
+ * Component that tracks browser events (mouse down, mouse up, etc.) on entities that
+ * render a {@link SpriteRender sprite}.
  */
 export class SpriteEvent {
 
-  /**
-   * Event channel that contains mouse down events on desktop devices, and touchstart
-   * events on mobile devices.
-   */
-  public down = new EventQueue();
+  /** The active sprite event. */
+  public active = SpriteEvents.None;
 
   /**
-   * Event channel that contains mouse up events on desktop devices, and touchend
-   * events on mobile devices.
+   * Events that occurred on the sprite that await processing by the event system.
+   * @internal
    */
-  public up = new EventQueue();
+  public readonly _queue: SpriteEvents[] = [];
 
 }
 

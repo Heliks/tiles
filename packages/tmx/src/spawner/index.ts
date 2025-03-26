@@ -1,5 +1,7 @@
-export * from './objects';
-
+export * from './tmx-object-type-default';
+export * from './tmx-object-type';
+export * from './tmx-object-metadata';
+export * from './tmx-object-spawner';
 export * from './tmx-physics-factory';
 export * from './tmx-spawner';
 export * from './tmx-spawn-map';

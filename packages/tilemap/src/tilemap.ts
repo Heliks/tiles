@@ -51,7 +51,7 @@ export interface TilemapData {
  *  });
  * ```
  */
-@UUID('tilemap.Tilemap')
+@UUID('tiles_tilemap')
 export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapData> {
 
   /**
