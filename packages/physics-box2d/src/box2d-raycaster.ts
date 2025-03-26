@@ -1,4 +1,5 @@
-import { B2Fixture, B2ParticleSystem, B2RayCastCallback, B2Vec2, B2World } from '@heliks/box2d';
+// eslint-disable new-cap
+import { B2Fixture, B2RayCastCallback, B2Vec2, B2World } from '@heliks/box2d';
 import { Inject, Injectable, Vec2, XY } from '@heliks/tiles-engine';
 import { Ray } from '@heliks/tiles-physics';
 import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
@@ -26,13 +27,14 @@ export class Box2dRaycaster extends B2RayCastCallback {
     @Inject(B2_RAYCASTS)
     private readonly raycasts: RaycastQueue,
     @Inject(B2_WORLD)
-    private readonly world: B2World,
+    private readonly world: B2World
   ) {
     super();
   }
 
   /** @inheritDoc */
   public ReportFixture(fixture: B2Fixture, point: B2Vec2, normal: B2Vec2, fraction: number): number {
+    // eslint-disable-next-line new-cap
     const data = fixture.GetUserData() as FixtureUserData;
 
     return this.ray.report(
@@ -44,22 +46,21 @@ export class Box2dRaycaster extends B2RayCastCallback {
   }
 
   /** @inheritDoc */
-  public ReportParticle(system: B2ParticleSystem, index: number, point: B2Vec2, normal: B2Vec2, fraction: number): number {
+  public ReportParticle(): number {
     return 0;
   }
 
   /** @inheritDoc */
-  public ShouldQueryParticleSystem(system: B2ParticleSystem): boolean {
+  public ShouldQueryParticleSystem(): boolean {
     return false;
   }
 
   /** Performs a raycast, using the given `ray`. */
   public cast(ray: Ray, from: XY, to: XY): void {
     this.ray = ray;
+
+    // eslint-disable-next-line new-cap
     this.world.RayCast(this, from, to);
-
-
-    this.world.RayCast(from, to, () => 0);
 
     // Since this can run fairly often we only push these events in case there are any
     // subscribers to this queue to prevent the creation of unnecessary garbage that has

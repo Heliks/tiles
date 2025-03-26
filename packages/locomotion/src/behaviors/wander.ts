@@ -1,4 +1,4 @@
-import { getRandomFloat, Transform, UUID, Vec2, World } from '@heliks/tiles-engine';
+import { getRandomFloat, UUID, Vec2, World } from '@heliks/tiles-engine';
 import { Locomotion } from '../locomotion';
 import { SteeringBehavior } from '../steering-behavior';
 
@@ -24,10 +24,10 @@ export class Wander implements SteeringBehavior {
   private minAngleChange = -0.1;
 
   /** @inheritDoc */
-  public update(world: World, movement: Locomotion, transform: Transform): Vec2 {
+  public update(world: World, locomotion: Locomotion): Vec2 {
     // Calculate the "wander circles" center position, which should be in front of the
     // wandering entity.
-    this.circlePos.copy(movement.direction).scale(this.distance);
+    this.circlePos.copy(locomotion.direction).scale(this.distance);
 
     // Calculate displacement force.
     this.displacement.set(0, -1).scale(this.radius);

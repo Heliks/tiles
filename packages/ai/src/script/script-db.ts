@@ -16,6 +16,7 @@ export class ScriptDB extends Map<string, Type<ScriptBehavior>> {
       throw new Error(`Unknown script ${id}`);
     }
 
+    // eslint-disable-next-line new-cap
     return new script();
   }
 

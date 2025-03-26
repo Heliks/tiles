@@ -1,6 +1,7 @@
 import { AssetsBundle } from '@heliks/tiles-assets';
 import { runtime, World } from '@heliks/tiles-engine';
-import { TmxObjectSpawner, TmxObjectTypeDefault } from '../objects';
+import { TmxObjectSpawner } from '../tmx-object-spawner';
+import { TmxObjectTypeDefault } from '../tmx-object-type-default';
 import { TmxPhysicsFactory } from '../tmx-physics-factory';
 import { TmxSpawner } from '../tmx-spawner';
 import { TmxSpawnerConfig } from '../tmx-spawner-config';
