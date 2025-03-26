@@ -1,10 +1,9 @@
 import { App, runtime, World } from '@heliks/tiles-engine';
 import { Script } from '../script';
 import { ScriptSystem } from '../script-system';
+import * as SETUP from '../setup';
 import { start, stop } from '../setup';
 
-
-jest.mock('../setup');
 
 describe('ScriptSystem', () => {
   let app: App;
@@ -23,6 +22,8 @@ describe('ScriptSystem', () => {
 
   describe('onEntityAdded()', () => {
     it('should start the script', () => {
+      jest.spyOn(SETUP, 'start')
+
       const component = new Script({
         update: jest.fn()
       });
@@ -42,6 +43,8 @@ describe('ScriptSystem', () => {
 
   describe('onEntityRemoved()', () => {
     it('should invoke stop() callback on running script', () => {
+      jest.spyOn(SETUP, 'stop')
+
       const component = new Script({
         update: jest.fn()
       });
@@ -60,6 +63,8 @@ describe('ScriptSystem', () => {
 
   describe('update()', () => {
     it('should switch component script', () => {
+      jest.spyOn(SETUP, 'start')
+
       const component = new Script({
         update: jest.fn()
       });

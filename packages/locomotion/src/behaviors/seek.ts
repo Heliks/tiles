@@ -28,7 +28,7 @@ export class Seek implements SteeringBehavior {
   }
 
   /** @inheritDoc */
-  public update(world: World, movement: Locomotion, transform: Transform) {
+  public update(world: World, movement: Locomotion, transform: Transform): Vec2 {
     if (this.arrived()) {
       this.scratch.set(0, 0)
     }
