@@ -1,21 +1,13 @@
 /* eslint-disable new-cap */
-import { b2Body, b2World } from '@heliks/box2d';
+import { B2Body, B2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
-import { Collider, ContactEvents, Physics, RaycastObstacle, RigidBody } from '@heliks/tiles-physics';
+import { ContactEvents, Physics, Ray, RigidBody } from '@heliks/tiles-physics';
 import { syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
-import { B2_RAYCASTS, B2_WORLD, RaycastQueue } from './const';
+import { Box2dRaycaster } from './box2d-raycaster';
+import { B2_WORLD } from './const';
 import { syncBodyFixtures } from './fixtures';
-
-
-/** User data that will be assigned to `b2Fixture` instances. */
-interface FixtureUserData {
-  /** Collider instance from which this fixture was created. */
-  collider: Collider;
-  /** Owner of the rigid body to which the `collider` is attached to. */
-  entity: Entity;
-}
 
 
 @Injectable()
@@ -34,7 +26,7 @@ export class Box2dWorld extends Physics {
   public positionIterations = 6;
 
   /** Contains Box2D bodies mapped to the entity to which they belong.*/
-  private readonly bodies = new Map<Entity, b2Body>();
+  private readonly bodies = new Map<Entity, B2Body>();
 
   /**
    * @param world Box2D world.
@@ -43,9 +35,8 @@ export class Box2dWorld extends Physics {
    */
   constructor(
     @Inject(B2_WORLD)
-    private readonly world: b2World,
-    @Inject(B2_RAYCASTS)
-    private readonly raycasts: RaycastQueue,
+    private readonly world: B2World,
+    private readonly raycasts: Box2dRaycaster,
     private readonly factory: Box2dBodyFactory
   ) {
     super();
@@ -117,24 +108,8 @@ export class Box2dWorld extends Physics {
   }
 
   /** @inheritDoc */
-  public raycast(start: XY, end: XY, obstacles: RaycastObstacle[] = []): RaycastObstacle[] {
-    this.world.RayCast(start, end, fixture => {
-      obstacles.push(fixture.GetUserData() as FixtureUserData);
-
-      return 0;
-    });
-
-    // Since this can run fairly often we only push these events in case there are any
-    // subscribers to this queue to prevent the creation of unnecessary garbage that has
-    // to be collected. This will mostly be used to draw debug information anyway.
-    if (this.raycasts.size() > 0) {
-      this.raycasts.push({
-        start,
-        end
-      });
-    }
-
-    return obstacles;
+  public raycast(ray: Ray, from: XY, to: XY): void {
+    this.raycasts.cast(ray, from, to);
   }
 
 }

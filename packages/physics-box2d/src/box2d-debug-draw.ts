@@ -1,4 +1,4 @@
-import { b2Color, b2Draw, b2DrawFlags, b2Transform, b2Vec2, b2World } from '@heliks/box2d';
+import { B2Color, B2Draw, B2DrawFlags, B2Transform, B2Vec2, B2World } from '@heliks/box2d';
 import { Inject, Injectable, OnInit, PI_2, Subscriber, System } from '@heliks/tiles-engine';
 import { Camera, DebugDraw, Renderer } from '@heliks/tiles-pixi';
 import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
@@ -6,7 +6,7 @@ import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 /* eslint-disable new-cap */
 
 @Injectable()
-export class Box2dDebugDraw extends b2Draw implements OnInit, System {
+export class Box2dDebugDraw extends B2Draw implements OnInit, System {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {
@@ -23,13 +23,13 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
     @Inject(B2_RAYCASTS)
     private readonly raycasts: RaycastQueue,
     @Inject(B2_WORLD)
-    private readonly world: b2World
+    private readonly world: B2World
   ) {
     super();
 
     // Enable all relevant draw flags.
     // eslint-disable-next-line new-cap
-    this.SetFlags(b2DrawFlags.e_jointBit | b2DrawFlags.e_shapeBit);
+    this.SetFlags(B2DrawFlags.e_jointBit | B2DrawFlags.e_shapeBit);
   }
 
   /** @inheritDoc */
@@ -70,7 +70,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   }
 
   /** Box2D callback to translate the drawing canvas. */
-  public PushTransform(transform: b2Transform): void {
+  public PushTransform(transform: B2Transform): void {
     this.ctx.save();
 
     // Apply translate with unit size.
@@ -89,7 +89,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   }
 
   /** Helper method to draw the lines of a polygon. */
-  protected drawPolygonVertices(vertices: b2Vec2[]): void {
+  protected drawPolygonVertices(vertices: B2Vec2[]): void {
     this.ctx.moveTo(
       vertices[0].x * this.camera.unitSize * this.camera.zoom,
       vertices[0].y * this.camera.unitSize * this.camera.zoom
@@ -106,7 +106,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   }
 
   /** Draws the outline of a polygon. */
-  public DrawPolygon(vertices: b2Vec2[], vertexes: number, color: b2Color): void {
+  public DrawPolygon(vertices: B2Vec2[], vertexes: number, color: B2Color): void {
     const ctx = this.ctx;
 
     ctx.beginPath();
@@ -119,7 +119,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   }
 
   /** Draws a solid polygon. */
-  public DrawSolidPolygon(vertices: b2Vec2[], vertexes: number, color: b2Color): void {
+  public DrawSolidPolygon(vertices: B2Vec2[], vertexes: number, color: B2Color): void {
     const ctx = this.ctx;
 
     ctx.beginPath();
@@ -139,7 +139,7 @@ export class Box2dDebugDraw extends b2Draw implements OnInit, System {
   }
 
   /** Box2D callback to draw the inside of a circle. */
-  public DrawSolidCircle(center: b2Vec2, _radius: number, axis: b2Vec2, color: b2Color): void {
+  public DrawSolidCircle(center: B2Vec2, _radius: number, axis: B2Vec2, color: B2Color): void {
     const ctx = this.ctx;
 
     // Apply unit size to radius and position.

@@ -1,11 +1,11 @@
 /* eslint-disable new-cap */
 
-import { b2Body } from '@heliks/box2d';
+import { B2Body } from '@heliks/box2d';
 import { Transform } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 
 
-export function syncBodyVelocity(body: b2Body, component: RigidBody): void {
+export function syncBodyVelocity(body: B2Body, component: RigidBody): void {
   const velocity = body.GetLinearVelocity();
 
 
@@ -17,7 +17,7 @@ export function syncBodyVelocity(body: b2Body, component: RigidBody): void {
   component._velocity.value.y = velocity.y;
 }
 
-export function syncBodyPosition(body: b2Body, component: RigidBody, transform: Transform): void {
+export function syncBodyPosition(body: B2Body, component: RigidBody, transform: Transform): void {
   const position = body.GetPosition();
 
   if (component._position.read()) {
@@ -29,7 +29,7 @@ export function syncBodyPosition(body: b2Body, component: RigidBody, transform: 
   }
 }
 
-export function syncBodyRotation(body: b2Body, component: RigidBody, transform: Transform): void {
+export function syncBodyRotation(body: B2Body, component: RigidBody, transform: Transform): void {
   if (component.rotate) {
     transform.rotation = body.GetAngle();
   }

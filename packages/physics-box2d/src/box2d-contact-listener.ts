@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { b2Contact, b2ContactListener } from '@heliks/box2d';
+import { B2Contact, B2ContactListener } from '@heliks/box2d';
 import { Injectable } from '@heliks/tiles-engine';
 import { Collider, ColliderContact, ContactEvents, ContactEventType, RigidBody } from '@heliks/tiles-physics';
 import { FixtureUserData } from './types';
@@ -7,7 +7,7 @@ import { FixtureUserData } from './types';
 
 /** Handles Box2D contact events and forwards them to the physics system. */
 @Injectable()
-export class Box2dContactListener extends b2ContactListener {
+export class Box2dContactListener extends B2ContactListener {
 
   constructor(protected readonly queue: ContactEvents) {
     super();
@@ -44,7 +44,7 @@ export class Box2dContactListener extends b2ContactListener {
   }
 
   /** @inheritDoc */
-  public BeginContact(contact: b2Contact): void {
+  public BeginContact(contact: B2Contact): void {
     const dataA = contact.GetFixtureA().GetUserData();
     const dataB = contact.GetFixtureB().GetUserData();
 
@@ -61,7 +61,7 @@ export class Box2dContactListener extends b2ContactListener {
   }
 
   /** @inheritDoc */
-  public EndContact(contact: b2Contact): void {
+  public EndContact(contact: B2Contact): void {
     const dataA = contact.GetFixtureA().GetUserData();
     const dataB = contact.GetFixtureB().GetUserData();
 

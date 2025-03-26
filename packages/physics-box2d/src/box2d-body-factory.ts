@@ -1,9 +1,9 @@
 /* eslint-disable new-cap */
-import { b2Body, b2BodyDef, b2FixtureDef, b2World } from '@heliks/box2d';
+import { B2Body, B2BodyDef, B2FixtureDef, B2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { B2_WORLD } from './const';
-import { b2ParseBodyType, b2ParseShape } from './utils';
+import { B2ParseBodyType, B2ParseShape } from './utils';
 
 
 @Injectable()
@@ -11,16 +11,16 @@ export class Box2dBodyFactory {
 
   constructor(
     @Inject(B2_WORLD)
-    private readonly world: b2World
+    private readonly world: B2World
   ) {}
 
   /**
-   * Returns a `b2FixtureDef`, using the given `collider` as blueprint. If a `def` is
+   * Returns a `B2FixtureDef`, using the given `collider` as blueprint. If a `def` is
    * passed, that instance will be populated with the result.
    */
-  public getFixtureDef(collider: Collider, def = new b2FixtureDef()): b2FixtureDef {
+  public getFixtureDef(collider: Collider, def = new B2FixtureDef()): B2FixtureDef {
     // Attach the shape to the fixture.
-    def.shape = b2ParseShape(collider.shape);
+    def.shape = B2ParseShape(collider.shape);
     def.isSensor = collider.sensor;
 
     // Assign material. Hard check here because the number 0 is a valid material id.
@@ -43,18 +43,18 @@ export class Box2dBodyFactory {
   }
 
   /** @inheritDoc */
-  public createBody(entity: Entity, body: RigidBody, transform = new Transform()): b2Body {
-    const def = new b2BodyDef();
+  public createBody(entity: Entity, body: RigidBody, transform = new Transform()): B2Body {
+    const def = new B2BodyDef();
 
     def.fixedRotation = !body.rotate;
-    def.type = b2ParseBodyType(body.type);
+    def.type = B2ParseBodyType(body.type);
 
     // Set position and velocity.
     def.position.Set(transform.world.x, transform.world.y);
     def.linearVelocity.Copy(body.getVelocity());
 
     const bBody = this.world.CreateBody(def);
-    const bFixtureDef = new b2FixtureDef();
+    const bFixtureDef = new B2FixtureDef();
 
     // Add colliders as fixtures.
     for (const collider of body.colliders) {

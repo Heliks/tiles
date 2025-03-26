@@ -28,7 +28,7 @@ export interface ColliderData {
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
  */
-@UUID('physics.Collider')
+@UUID('tiles_physics_collider')
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /** Unique identifier. */

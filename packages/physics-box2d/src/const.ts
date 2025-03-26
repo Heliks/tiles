@@ -1,4 +1,4 @@
-import { b2World } from '@heliks/box2d';
+import { B2World } from '@heliks/box2d';
 import { EventQueue, token, XY } from '@heliks/tiles-engine';
 
 
@@ -14,4 +14,4 @@ export interface RaycastEvent {
 export type RaycastQueue = EventQueue<RaycastEvent>;
 
 export const B2_RAYCASTS = token<RaycastQueue>();
-export const B2_WORLD = token<b2World>();
+export const B2_WORLD = token<B2World>();
