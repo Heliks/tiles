@@ -1,4 +1,4 @@
-import { Transform, UUID, Vec2, World } from '@heliks/tiles-engine';
+import { Transform, TypeId, Vec2, World } from '@heliks/tiles-engine';
 import { Locomotion } from '../locomotion';
 import { SteeringBehavior } from '../steering-behavior';
 
@@ -7,7 +7,7 @@ import { SteeringBehavior } from '../steering-behavior';
  * Seek moves the entity from its current position to a target position in a straight
  * line. When the target position is reached, the entity stops.
  */
-@UUID('tiles_locomotion_seek')
+@TypeId('tiles_locomotion_seek')
 export class Seek implements SteeringBehavior {
 
   /** Last known distance left to target. */

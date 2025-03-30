@@ -6,6 +6,7 @@ export * from './add-schedule';
 export * from './add-service';
 export * from './add-system';
 export * from './add-value';
+export * from './add-type';
 export * from './add-value';
 export * from './registration';
 export * from './task';

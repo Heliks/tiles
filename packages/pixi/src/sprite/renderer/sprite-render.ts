@@ -1,14 +1,14 @@
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
-import { Serializeable, UUID, Vec2, World } from '@heliks/tiles-engine';
+import { Serializeable, TypeId, Vec2, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { Layer, LayerId } from '../../layer';
-import { getMaterialFromId, ShaderMaterial } from '../../material';
+import { ShaderMaterial } from '../../material';
 import { SpriteId, SpriteSheet } from '../sprite-sheet';
 
 
 export interface MaterialData {
   data: unknown;
-  uuid: UUID;
+  uuid: TypeId;
 }
 
 export interface SpriteRenderData<I extends SpriteId> {
@@ -27,7 +27,10 @@ export interface SpriteRenderData<I extends SpriteId> {
 }
 
 /** @internal */
-function createMaterialFromData(data: MaterialData): ShaderMaterial {
+function createMaterialFromData(): ShaderMaterial {
+  throw new Error('Todo')
+
+  /*
   const type = getMaterialFromId(data.uuid);
 
   // eslint-disable-next-line new-cap
@@ -36,10 +39,11 @@ function createMaterialFromData(data: MaterialData): ShaderMaterial {
   t.setData(data.data)
 
   return t;
+   */
 }
 
 /** Component that renders a sprite on the entity to which it is attached to. */
-@UUID('tiles_renderer_sprite')
+@TypeId('tiles_renderer_sprite')
 export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeable<SpriteRenderData<I>> {
 
   /** @internal */
@@ -194,7 +198,8 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
       .flip(data.flipX, data.flipY);
 
     if (data.material) {
-      this.material = createMaterialFromData(data.material);
+      // this.material = createMaterialFromData(data.material);
+      this.material = createMaterialFromData();
     }
   }
 

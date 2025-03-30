@@ -1,9 +1,9 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
+import { TmxObjectMetadata } from './tmx-object-metadata';
 import { TmxObjectSpawner } from './tmx-object-spawner';
 import { TmxObjectType } from './tmx-object-type';
 import { TmxObjectTypeDefault } from './tmx-object-type-default';
 import { TmxPhysicsFactory } from './tmx-physics-factory';
-import { TmxSpawnMap } from './tmx-spawn-map';
 import { TmxSpawner } from './tmx-spawner';
 import { TmxSpawnerConfig } from './tmx-spawner-config';
 import { TmxSpawnerSystem } from './tmx-spawner-system';
@@ -91,7 +91,7 @@ export class TmxSpawnerBundle implements Bundle {
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
     builder
-      .component(TmxSpawnMap)
+      .type(TmxObjectMetadata)
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
       .provide(TmxPhysicsFactory)
       .provide(TmxObjectTypeDefault)

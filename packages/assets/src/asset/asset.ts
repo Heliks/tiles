@@ -1,4 +1,4 @@
-import { uuid, UUID } from '@heliks/tiles-engine';
+import { TypeId, uuid } from '@heliks/tiles-engine';
 import { Handle } from './handle';
 
 
@@ -31,7 +31,7 @@ export class Asset<T = unknown> {
    * @param file Path to the file from which this asset was loaded.
    * @param data If the asset is {@link AssetState.Loaded}, contains the asset data.
    */
-  constructor(public readonly id: UUID, public readonly file: string, public data?: T) {}
+  constructor(public readonly id: TypeId, public readonly file: string, public data?: T) {}
 
   /** Creates a new {@link Asset} from raw `data`. */
   public static from<T>(file: string, data: T): Asset<T> {

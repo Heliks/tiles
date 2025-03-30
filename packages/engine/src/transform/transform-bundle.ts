@@ -15,7 +15,9 @@ export class TransformBundle implements Bundle {
 
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
+    // Manually assign type IDs to serialize-able types that we import from 3rd party libs.
     builder
+      .type(Transform, 'tiles_transform')
       .component(Parent)
       .component(Transform)
       .provide(Hierarchy, new Hierarchy())

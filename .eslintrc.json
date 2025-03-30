@@ -86,7 +86,7 @@
           "Tag",
           "Optional",
           "Input",
-          "UUID",
+          "TypeId",
           "b2*"
         ]
       }

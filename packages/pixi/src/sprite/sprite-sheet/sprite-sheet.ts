@@ -79,8 +79,15 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
   public getAnimation(name: string): SpriteAnimationFrames {
     const animation = this.animations.get(name);
 
-    if (!animation) {
-      throw new Error(`Unknown animation "${name}"`);
+    if (! animation) {
+      const names = Array.from(this.animations.keys())
+        .sort()
+        .map(name => `- ${name}`)
+        .join('\n');
+
+      console.error(`Available animations:\n\n${names}`);
+
+      throw new Error(`Unknown animation ${name}.`);
     }
 
     return animation;
