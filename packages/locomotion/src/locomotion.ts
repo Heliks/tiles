@@ -1,4 +1,4 @@
-import { UUID, Vec2 } from '@heliks/tiles-engine';
+import { TypeId, Vec2 } from '@heliks/tiles-engine';
 import { SteeringBehavior } from './steering-behavior';
 
 
@@ -6,7 +6,7 @@ import { SteeringBehavior } from './steering-behavior';
  * Component that moves the world position of the entity to which it is attached to
  * using a steering force.
  */
-@UUID('tiles_locomotion')
+@TypeId('tiles_locomotion')
 export class Locomotion {
 
   /** Unit vector that points into the direction that the entity is currently facing. */

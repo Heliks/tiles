@@ -1,4 +1,5 @@
 import { AppBuilder, Bundle } from '@heliks/tiles-engine';
+import { Avoidance, Seek, Wander } from './behaviors';
 import { Locomotion } from './locomotion';
 import { LocomotionSystem } from './locomotion-system';
 
@@ -29,7 +30,12 @@ export class LocomotionBundle implements Bundle {
 
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
-    builder.component(Locomotion).system(LocomotionSystem);
+    builder
+      .type(Locomotion)
+      .type(Avoidance)
+      .type(Seek)
+      .type(Wander)
+      .system(LocomotionSystem);
   }
 
 }

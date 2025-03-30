@@ -1,4 +1,4 @@
-import { Entity, Ignore, Transform, UUID, Vec2, World, XY } from '@heliks/tiles-engine';
+import { Entity, Ignore, Transform, TypeId, Vec2, World, XY } from '@heliks/tiles-engine';
 import { Physics } from '@heliks/tiles-physics';
 import { Locomotion } from '../locomotion';
 import { SteeringBehavior } from '../steering-behavior';
@@ -35,7 +35,7 @@ import { AvoidanceRay } from './avoidance-ray';
  *
  * `T`: The steering behavior type to which the avoidance will be applied to.
  */
-@UUID('locomotion_avoidance')
+@TypeId('locomotion_avoidance')
 export class Avoidance<T extends SteeringBehavior> implements SteeringBehavior {
 
   /** Calculated avoidance vector. */

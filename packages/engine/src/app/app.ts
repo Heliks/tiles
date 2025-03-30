@@ -1,4 +1,5 @@
 import { SystemDispatcher } from '@heliks/ecs';
+import { TypeStore } from '@heliks/ecs-serialize';
 import { Container } from '@heliks/tiles-injector';
 import { World } from '../ecs';
 import { State, StateMachine } from './state';
@@ -64,6 +65,9 @@ export class App {
   /** Ticker that executes the game loop. */
   public readonly ticker = new Ticker();
 
+  /** Stores known class types. */
+  public readonly types = new TypeStore();
+
   /** Entity world. */
   public readonly world: World;
 
@@ -87,6 +91,7 @@ export class App {
       .instance(this.dispatcher)
       .instance(this.state)
       .instance(this.ticker)
+      .instance(this.types)
       .instance(this.world);
   }
 

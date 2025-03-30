@@ -1,5 +1,5 @@
 import { AssetLoader } from '@heliks/tiles-assets';
-import { createPackedArray, Grid, Serialize, UUID, World } from '@heliks/tiles-engine';
+import { createPackedArray, Grid, Serialize, TypeId, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { AnimatedSprite, Container } from 'pixi.js';
 import { LocalTileset, LocalTilesetBag, Tileset } from './tileset';
@@ -51,7 +51,7 @@ export interface TilemapData {
  *  });
  * ```
  */
-@UUID('tiles_tilemap')
+@TypeId('tiles_tilemap')
 export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapData> {
 
   /**

@@ -131,6 +131,8 @@ export class PixiBundle implements Bundle, OnInit {
     PIXI.utils.skipHello();
 
     app
+      .type(SpriteAnimation)
+      .type(SpriteRender)
       .component(SpriteAnimation)
       .component(SpriteRender)
       .schedule().after(RendererSchedule.Update, AppSchedule.PostUpdate)

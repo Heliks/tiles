@@ -1,4 +1,4 @@
-import { getRandomFloat, UUID, Vec2, World } from '@heliks/tiles-engine';
+import { getRandomFloat, TypeId, Vec2, World } from '@heliks/tiles-engine';
 import { Locomotion } from '../locomotion';
 import { SteeringBehavior } from '../steering-behavior';
 
@@ -10,7 +10,7 @@ import { SteeringBehavior } from '../steering-behavior';
  * changing direction abruptly. This creates the perception that the wandering is in
  * fact, aimless.
  */
-@UUID('tiles_locomotion_wander')
+@TypeId('tiles_locomotion_wander')
 export class Wander implements SteeringBehavior {
 
   private displacement = new Vec2(0, 0);

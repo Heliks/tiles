@@ -1,4 +1,4 @@
-import { Circle, Rectangle, UUID, uuid } from '@heliks/tiles-engine';
+import { Circle, Rectangle, TypeId, uuid } from '@heliks/tiles-engine';
 import { Material } from './material';
 
 
@@ -28,7 +28,7 @@ export interface ColliderData {
  * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
  * parts) with each other.
  */
-@UUID('tiles_physics_collider')
+@TypeId('tiles_physics_collider')
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
 
   /** Unique identifier. */

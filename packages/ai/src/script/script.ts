@@ -1,4 +1,4 @@
-import { Serializeable, TypeData, TypeSerializer, UUID, World } from '@heliks/tiles-engine';
+import { Serializeable, TypeData, TypeId, TypeSerializer, World } from '@heliks/tiles-engine';
 import { ScriptBehavior } from './script-behavior';
 
 
@@ -10,7 +10,7 @@ import { ScriptBehavior } from './script-behavior';
  *
  * - `S`: Type of script that can be executed by this component.
  */
-@UUID('tiles_script')
+@TypeId('tiles_script')
 export class Script<S extends ScriptBehavior = ScriptBehavior> implements Serializeable<TypeData<S>> {
 
   /**

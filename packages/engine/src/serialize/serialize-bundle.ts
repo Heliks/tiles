@@ -1,5 +1,5 @@
-import { EntitySerializer, TypeSerializer } from '@heliks/ecs-serialize';
 import { AppBuilder, Bundle } from '../app';
+import { EntitySerializer, TypeSerializer } from './serializers';
 
 
 /**
@@ -12,11 +12,9 @@ export class SerializeBundle implements Bundle {
 
   /** @inheritDoc */
   public build(app: AppBuilder): void {
-    const types = new TypeSerializer();
-
     app
-      .provide(TypeSerializer, types)
-      .provide(EntitySerializer, new EntitySerializer(types));
+      .provide(TypeSerializer)
+      .provide(EntitySerializer);
   }
 
 }
