@@ -8,7 +8,7 @@ import { Entity, World } from '@heliks/tiles-engine';
  * or if this particular script is never serialized, this can be skipped.
  *
  * ```ts
- *  @UUID('script_foo')
+ *  @TypeId('script_foo')
  *  class Foo implements ScriptBehavior {
  *
  *    public update(): void {

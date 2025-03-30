@@ -1,22 +1,18 @@
 export {
   Deserialize,
-  EntitySerializer,
   Ignore,
-  UUID,
+  TypeId,
   EntityData,
   SerializationQuery,
   Serializeable,
   Serialize,
   TypeData,
-  TypeSerializer,
-  setTypeId,
-  hasTypeId,
-  getTypeId,
-  getTypeFromId
+  TypeStore
 } from '@heliks/ecs-serialize';
 
 
 export * from './serialize-bundle';
+export * from './serializers';
 
 
 

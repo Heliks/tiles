@@ -1,4 +1,4 @@
-import { UUID } from '@heliks/tiles-engine';
+import { TypeId } from '@heliks/tiles-engine';
 import { Asset } from './asset';
 import { Handle } from './handle';
 
@@ -11,10 +11,10 @@ import { Handle } from './handle';
 export class AssetStorage {
 
   /** @internal */
-  private readonly _assets = new Map<UUID, Asset>();
+  private readonly _assets = new Map<TypeId, Asset>();
 
   /** Returns the {@link Asset asset} that is stored under `id`. */
-  public getAsset<T>(id: UUID): Asset<T> | undefined {
+  public getAsset<T>(id: TypeId): Asset<T> | undefined {
     return this._assets.get(id) as Asset<T>;
   }
 

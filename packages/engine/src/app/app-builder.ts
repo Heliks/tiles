@@ -1,4 +1,5 @@
 import { ScheduleId, System } from '@heliks/ecs';
+import { TypeId } from '@heliks/ecs-serialize';
 import { Container, InjectorToken, ValueFactory } from '@heliks/tiles-injector';
 import { ComponentType, Preset, PresetId, World } from '../ecs';
 import { Type, TypeLike } from '../utils';
@@ -6,7 +7,17 @@ import { App, AppSchedule } from './app';
 import { Builder } from './builder';
 import { Bundle } from './bundle';
 import { ScheduleBuilder } from './schedule-builder';
-import { AddBundle, AddComponent, AddFactory, AddPreset, AddService, AddSystem, AddValue, Task } from './tasks';
+import {
+  AddBundle,
+  AddComponent,
+  AddFactory,
+  AddPreset,
+  AddService,
+  AddSystem,
+  AddType,
+  AddValue,
+  Task
+} from './tasks';
 
 
 /** Callback for {@link AppBuilder.run} tasks. */
@@ -186,6 +197,47 @@ export class AppBuilder implements Builder {
       value === undefined
         ? new AddService(token as Type, false)
         : new AddValue(token, value)
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds a type to the type store.
+   *
+   * The engine indexes objects using a type ID. This is usually assigned by using the
+   * `@TypeId` decorator on a class declaration.
+   *
+   * ```ts
+   *  @TypeId('foo')
+   *  class Foo {}
+   *
+   *  // => Type<Foo>
+   *  const type = runtime()
+   *    .type(Foo)
+   *    .build()
+   *    .world
+   *    .get(TypeStore)
+   *    .get('foo');
+   * ```
+   *
+   * Alternatively, the type ID can be provided as a parameter to this task. This omits
+   * the need for the `@TypeId` decorator.
+   *
+   * Typed objects are mainly used for {@link SerializeBundle serialization} and enable
+   * the engine to serialize objects and fully restore their original typing from that
+   * serialized data. Therefore, a type ID must be static and should never change between
+   * application launches or be dynamic in any other way. Changing existing Type IDs on
+   * live applications or during development will break backwards compatibility with
+   * previously serialized data.
+   *
+   * @param type Type to add to the store.
+   * @param id (optional) Static ID to assign to `type`. If `undefined`, the type ID
+   *  will be resolved from the types' class metadata.
+   */
+  public type(type: Type, id?: TypeId): this {
+    this.tasks.push(
+      new AddType(type, id)
     );
 
     return this;

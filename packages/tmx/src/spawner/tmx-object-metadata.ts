@@ -1,9 +1,9 @@
-import { UUID } from '@heliks/tiles-engine';
+import { TypeId } from '@heliks/tiles-engine';
 import { HasProperties } from '../parser';
 
 
 /** Component that contains metadata for entities that were created from a {@link TmxObject}. */
-@UUID('tiles_tmx_object')
+@TypeId('tiles_tmx_object')
 export class TmxObjectMetadata<P = unknown> implements HasProperties<P> {
 
   /**

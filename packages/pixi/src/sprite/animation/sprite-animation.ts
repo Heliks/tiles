@@ -1,8 +1,8 @@
-import { UUID } from '@heliks/tiles-engine';
+import { TypeId } from '@heliks/tiles-engine';
 
 
 /** Component to animate a `SpriteDisplay` component. */
-@UUID('tiles_renderer_sprite_animation')
+@TypeId('tiles_renderer_sprite_animation')
 export class SpriteAnimation {
 
   /** Elapsed time since the animation has started. */
