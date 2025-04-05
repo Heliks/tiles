@@ -1,15 +1,10 @@
 import { AssetLoader, Handle } from '@heliks/tiles-assets';
-import { Serializeable, TypeId, Vec2, World } from '@heliks/tiles-engine';
+import { Serializeable, TypeData, TypeId, TypeSerializer, Vec2, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
 import { Layer, LayerId } from '../../layer';
 import { ShaderMaterial } from '../../material';
 import { SpriteId, SpriteSheet } from '../sprite-sheet';
 
-
-export interface MaterialData {
-  data: unknown;
-  uuid: TypeId;
-}
 
 export interface SpriteRenderData<I extends SpriteId> {
   anchorX: number;
@@ -22,29 +17,19 @@ export interface SpriteRenderData<I extends SpriteId> {
   scaleX: number;
   scaleY: number;
   visible: boolean;
-  material?: MaterialData;
+  material?: TypeData<ShaderMaterial>;
   layer?: LayerId;
 }
 
-/** @internal */
-function createMaterialFromData(): ShaderMaterial {
-  throw new Error('Todo')
 
-  /*
-  const type = getMaterialFromId(data.uuid);
-
-  // eslint-disable-next-line new-cap
-  const t = new type(data.data);
-
-  t.setData(data.data)
-
-  return t;
-   */
-}
-
-/** Component that renders a sprite on the entity to which it is attached to. */
+/**
+ * Component that renders a sprite on the entity to which it is attached to.
+ *
+ * - `I`: Typing for valid sprite IDs.
+ * - `M`: Typing for valid shader materials.
+ */
 @TypeId('tiles_renderer_sprite')
-export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeable<SpriteRenderData<I>> {
+export class SpriteRender<I extends SpriteId = SpriteId, M extends ShaderMaterial = ShaderMaterial> implements Serializeable<SpriteRenderData<I>> {
 
   /** @internal */
   public readonly _sprite = new Sprite();
@@ -63,7 +48,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
   public flipY = false;
 
   /** A {@link ShaderMaterial material} that should be applied to the sprite. */
-  public material?: ShaderMaterial;
+  public material?: M;
 
   /** Scale factor of the sprite. */
   public scale = new Vec2(1, 1);
@@ -88,7 +73,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
    *
    * @internal
    */
-  public _material?: ShaderMaterial;
+  public _material?: M;
 
   /**
    * Contains the currently applied sprite ID, if any.
@@ -163,8 +148,14 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
   }
 
   /** @inheritDoc */
-  public serialize(): SpriteRenderData<I> {
+  public serialize(world: World): SpriteRenderData<I> {
     const { flipX, flipY, layer, opacity, spriteId, visible } = this;
+
+    let material;
+
+    if (this.material) {
+      material = world.get(TypeSerializer).serialize(world, this.material);
+    }
 
     return {
       anchorX: this.anchor.x,
@@ -172,6 +163,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
       flipX,
       flipY,
       layer,
+      material,
       opacity,
       scaleX: this.scale.x,
       scaleY: this.scale.y,
@@ -198,8 +190,7 @@ export class SpriteRender<I extends SpriteId = SpriteId> implements Serializeabl
       .flip(data.flipX, data.flipY);
 
     if (data.material) {
-      // this.material = createMaterialFromData(data.material);
-      this.material = createMaterialFromData();
+      this.material = world.get(TypeSerializer).deserialize<M>(world, data.material);
     }
   }
 
