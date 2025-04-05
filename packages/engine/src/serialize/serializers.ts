@@ -11,8 +11,6 @@ import { Injectable } from '@heliks/tiles-injector';
 export class TypeSerializer extends BaseTypeSerializer {
 
   constructor(store: TypeStore) {
-    console.log('TYPE STORE', store)
-
     super(store);
   }
 

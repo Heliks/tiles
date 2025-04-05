@@ -84,17 +84,17 @@ importers:
   packages/engine:
     dependencies:
       '@heliks/ecs':
-        specifier: 0.3.4-rc03
-        version: 0.3.4-rc03
+        specifier: 0.3.4-rc05
+        version: 0.3.4-rc05
       '@heliks/ecs-hierarchy':
-        specifier: 0.3.4-rc03
-        version: 0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1)
+        specifier: 0.3.4-rc05
+        version: 0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1)
       '@heliks/ecs-serialize':
-        specifier: 0.3.4-rc03
-        version: 0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(reflect-metadata@0.1.13)
+        specifier: 0.3.4-rc05
+        version: 0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(reflect-metadata@0.1.13)
       '@heliks/ecs-transform':
-        specifier: 0.3.4-rc03
-        version: 0.3.4-rc03(@heliks/ecs-hierarchy@0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1))(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1)
+        specifier: 0.3.4-rc05
+        version: 0.3.4-rc05(@heliks/ecs-hierarchy@0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1))(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1)
       '@heliks/event-queue':
         specifier: 0.3.1
         version: 0.3.1
@@ -505,27 +505,27 @@ packages:
   '@heliks/box2d@0.0.3':
     resolution: {integrity: sha512-r3u3PFxBww/8zf+GRfBUirjtakg/ReCHEPzh0Eg6ravLABEuvEfFnQ5azmJ3kevwt1gLNu+6dP/jO/OS/Ry/gw==}
 
-  '@heliks/ecs-hierarchy@0.3.4-rc03':
-    resolution: {integrity: sha512-m/SVYJv9zdz4YjN1Z3ka6Y4yPQkYzOMDN2b+HQFVinxqJu3/t/KQglZ/SyVw0IQwYIIt0KidAfD0xlw3/NVZMQ==}
+  '@heliks/ecs-hierarchy@0.3.4-rc05':
+    resolution: {integrity: sha512-ulD6PWVXnhGj61+Xt1rPyMyuIJ8SyCMBRYLykG9M2kTzRpHk56rx+ZsyJo1sUxduCJm8aSTKFdWSSmn5xgKXtA==}
     peerDependencies:
-      '@heliks/ecs': ^0.3.4-rc03
+      '@heliks/ecs': ^0.3.4-rc05
       '@heliks/event-queue': ^0.3.0
 
-  '@heliks/ecs-serialize@0.3.4-rc03':
-    resolution: {integrity: sha512-gEpLzw8ryI8Z76uFFUbCsPL/G7zM5chEfkhsPAilJajXNVTVXTApofjnCo0z2b51H/zXkGRHqKMltOyvFdpYzw==}
+  '@heliks/ecs-serialize@0.3.4-rc05':
+    resolution: {integrity: sha512-1ZOp42fc7WX8xVKAAeVvq3Q3AVyDV0P/Z505iH3V8WbkwtM1gZftIEtTLrC2VPa9EgrWERdNDIufDgWRq/CY/Q==}
     peerDependencies:
-      '@heliks/ecs': ^0.3.4-rc03
+      '@heliks/ecs': ^0.3.4-rc05
       reflect-metadata: ^0.1.13
 
-  '@heliks/ecs-transform@0.3.4-rc03':
-    resolution: {integrity: sha512-jRMopI8k5d2wl6QAO0SVKJad+sdemdif8NUYGHKqrP2PVqfyUunOKsXBkk6HWzoToOWjoW4DmMWINRRBvF0a5w==}
+  '@heliks/ecs-transform@0.3.4-rc05':
+    resolution: {integrity: sha512-FxIb+LW2ZPSlw+77zZfilCJWSWe/OYwY1W8xOL5bKneWJvhjOhT8Lx/KQFRC8CDH68t4PFcH8LbBFRFoFVX2ig==}
     peerDependencies:
-      '@heliks/ecs': ^0.3.4-rc03
-      '@heliks/ecs-hierarchy': ^0.3.4-rc03
+      '@heliks/ecs': ^0.3.4-rc05
+      '@heliks/ecs-hierarchy': ^0.3.4-rc05
       '@heliks/event-queue': ^0.3.0
 
-  '@heliks/ecs@0.3.4-rc03':
-    resolution: {integrity: sha512-9uhvns+ym0YqMOZGkC0LhBUGAWyXcZZE5dfbnoe03uRSixKdcNgFbMPVlU/MXpgZ0bL2AZk0fZdXvFCvXxN1ug==}
+  '@heliks/ecs@0.3.4-rc05':
+    resolution: {integrity: sha512-PRhAvB1qk2zTmKoT259aomwABLXgMk2X+rs0NzGRHu/FaF/zcPCVLLuJ+F/VSAswjHRiTDvt8wy8F+/JNgNN2g==}
 
   '@heliks/event-queue@0.3.1':
     resolution: {integrity: sha512-YH9ghFsGX0IjAYBqM49JsZdczusYPuFhxyNlw0K14ALrdLV63kCI3qt9ymlDV0HepTwt7nUJEmhdAOU3SgJxSw==}
@@ -2497,23 +2497,23 @@ snapshots:
     dependencies:
       '@types/systemjs': 6.13.5
 
-  '@heliks/ecs-hierarchy@0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1)':
+  '@heliks/ecs-hierarchy@0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1)':
     dependencies:
-      '@heliks/ecs': 0.3.4-rc03
+      '@heliks/ecs': 0.3.4-rc05
       '@heliks/event-queue': 0.3.1
 
-  '@heliks/ecs-serialize@0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(reflect-metadata@0.1.13)':
+  '@heliks/ecs-serialize@0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(reflect-metadata@0.1.13)':
     dependencies:
-      '@heliks/ecs': 0.3.4-rc03
+      '@heliks/ecs': 0.3.4-rc05
       reflect-metadata: 0.1.13
 
-  '@heliks/ecs-transform@0.3.4-rc03(@heliks/ecs-hierarchy@0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1))(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1)':
+  '@heliks/ecs-transform@0.3.4-rc05(@heliks/ecs-hierarchy@0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1))(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1)':
     dependencies:
-      '@heliks/ecs': 0.3.4-rc03
-      '@heliks/ecs-hierarchy': 0.3.4-rc03(@heliks/ecs@0.3.4-rc03)(@heliks/event-queue@0.3.1)
+      '@heliks/ecs': 0.3.4-rc05
+      '@heliks/ecs-hierarchy': 0.3.4-rc05(@heliks/ecs@0.3.4-rc05)(@heliks/event-queue@0.3.1)
       '@heliks/event-queue': 0.3.1
 
-  '@heliks/ecs@0.3.4-rc03': {}
+  '@heliks/ecs@0.3.4-rc05': {}
 
   '@heliks/event-queue@0.3.1': {}
 

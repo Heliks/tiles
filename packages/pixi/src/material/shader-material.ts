@@ -9,7 +9,7 @@ import { Filter } from 'pixi.js';
  * the individual {@link filters}. Therefore, the data needs to be a valid format for
  * GLSL & serializable via `JSON.stringify()`.
  */
-export interface ShaderMaterial<D = unknown> {
+export interface ShaderMaterial {
 
   /**
    * Returns the PIXI {@link Filter} that will be applied to a {@link Drawable} when it
@@ -17,12 +17,5 @@ export interface ShaderMaterial<D = unknown> {
    */
   filters(): Filter[];
 
-  /** Updates the material data. */
-  setData(data: D): void;
-
-  /** Returns the material data. */
-  getData(): D;
-
 }
 
-export type ShaderMaterialType<D = unknown> = new (data: D) => ShaderMaterial<D>;

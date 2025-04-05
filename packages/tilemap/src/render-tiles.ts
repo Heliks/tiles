@@ -141,7 +141,7 @@ export class RenderTiles extends ReactiveSystem {
     const container = this.containers.get(entity);
 
     if (container) {
-      container.parent.removeChild(container);
+      container.parent?.removeChild(container);
     }
   }
 
