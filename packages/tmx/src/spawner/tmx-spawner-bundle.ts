@@ -29,8 +29,8 @@ import { TmxSpawnerSystem } from './tmx-spawner-system';
  *
  * ### Object types
  *
- * Custom {@link TmxObjectType object types} can be declared to customize the spawning
- * behavior of certain types of map objects, or to modify the default spawning behavior.
+ * Custom object types can be created to customize the spawning behavior of certain
+ * types of map objects, or to modify the default spawning behavior.
  *
  * ```ts
  *  // This object type handles map objects with the type "foo".
@@ -84,7 +84,7 @@ export class TmxSpawnerBundle implements Bundle {
     const spawner = world.get(TmxObjectSpawner);
 
     for (const type of this.types) {
-      spawner.register(world.make(type));
+      spawner.add(world.make(type));
     }
   }
 
