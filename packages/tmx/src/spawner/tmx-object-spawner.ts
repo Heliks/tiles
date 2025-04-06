@@ -10,45 +10,56 @@ import { TmxSpawnerConfig } from './tmx-spawner-config';
 export class TmxObjectSpawner {
 
   /** @internal */
-  private readonly factories = new Map<string, TmxObjectType>();
+  private readonly types = new Map<string, TmxObjectType>();
 
   /**
+   * @param def Default object type. Used when an object specifies no custom TMX type
+   *  or if there is no implementation for its specified type.
    * @param config Spawner config.
-   * @param factory The {@link TmxObjectFactory factory} used to create entities
-   *  from map objects. This factory will only be used if the object that is being
-   *  spawned does not have its own factory defined.
    */
-  constructor(@Inject(TmxObjectTypeDefault) public factory: TmxObjectType, public readonly config: TmxSpawnerConfig) {}
+  constructor(
+    @Inject(TmxObjectTypeDefault)
+    public def: TmxObjectType,
+    public readonly config: TmxSpawnerConfig
+  ) {}
 
   /**
-   * Registers the given `factory` to be used to create entities from objects that
-   * match its `type`. If the factory does not specify a type, it will be used as
-   * the default object factory.
+   * Adds the given object `type`.
+   *
+   * If the type does not specify a custom TMX type to match, it will be used as the new
+   * default for objects that don't specify a type on their own.
    */
-  public register(factory: TmxObjectType): this {
-    if (factory.type) {
-      this.factories.set(factory.type, factory);
+  public add(type: TmxObjectType): this {
+    if (type.type) {
+      this.types.set(type.type, type);
     }
     else {
-      this.factory = factory;
+      this.def = type;
     }
 
     return this;
   }
 
   /**
-   * Returns the appropriate {@link TmxObjectType} for the given object type`. Returns
-   * the default {@link factory} if that type does not have its own.
+   * Returns the appropriate {@link TmxObjectType} that matches the given TMX custom
+   * type. If no TMX type is provided, or if there is no implementation for it, the
+   * default object type will be returned instead.
    */
-  public getFactory(type?: string): TmxObjectType {
+  public get(type?: string): TmxObjectType {
     // Safety: Using an undefined key should always fail to return a factory, therefore
     // we don't need the additional check here.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.factories.get(type!) ?? this.factory;
+    return this.types.get(type!) ?? this.def;
   }
 
-  public async spawn(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity> {
-    const entity = await this.getFactory(obj.type).create(world, map, layer, obj);
+  public async spawn(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity | void> {
+    const type = this.get(obj.type);
+
+    if (type.ignore(map, obj)) {
+      return;
+    }
+
+    const entity = await type.create(world, map, layer, obj);
 
     world.attach(entity, new TmxObjectMetadata(
       obj.id,

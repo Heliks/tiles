@@ -5,11 +5,11 @@ import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
 /**
  * Implementation of a {@link TmxObject} type.
  *
- * Used by all objects that match the {@link type} of this implementation, or as a
- * default type if left `undefined`. There can only be one implementation per type
- * property, including the default implementation.
+ * Used by all TMX objects where its custom type matches the {@link type} of this
+ * implementation. If no TMX type is specified, it will be used as default for
+ * untyped objects and objects where its TMX type matches no object type.
  *
- * - `O`: Type of object that can be transformed.
+ * - `O`: Type of TMX object from which this type can create entities.
  */
 export interface TmxObjectType<O extends TmxObject = TmxObject> {
 
@@ -19,6 +19,12 @@ export interface TmxObjectType<O extends TmxObject = TmxObject> {
    * one implementation per type property, including the default implementation.
    */
   readonly type?: string;
+
+  /**
+   * Callback that is invoked before an object is being created. If this returns `true`,
+   * this object will be ignored.
+   */
+  ignore(map: TmxMapAsset, obj: O): boolean;
 
   /**
    * Creates an entity from the given {@link TmxObject}.

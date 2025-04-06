@@ -37,6 +37,11 @@ export class TmxObjectTypeDefault implements TmxObjectType {
    */
   constructor(private readonly assets: AssetStorage, private readonly physics: TmxPhysicsFactory) {}
 
+  /** @inheritDoc */
+  public ignore(): boolean {
+    return false;
+  }
+
   /** @internal */
   private getSpriteSize(tileset: TmxTileset, spriteIdx: number): Vec2 {
     return this.assets.resolve(tileset.spritesheet).getSpriteSize(spriteIdx);
