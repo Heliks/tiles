@@ -35,7 +35,7 @@ import { AvoidanceRay } from './avoidance-ray';
  *
  * `T`: The steering behavior type to which the avoidance will be applied to.
  */
-@TypeId('locomotion_avoidance')
+@TypeId('tiles_locomotion_avoidance')
 export class Avoidance<T extends SteeringBehavior> implements SteeringBehavior {
 
   /** Calculated avoidance vector. */
