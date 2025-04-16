@@ -88,4 +88,14 @@ describe('Layers', () => {
 
     expect(index).toBe(1);
   });
+
+  it('should remove a layer', () => {
+    const id = 'foo';
+
+    layers.add(id);
+    layers.remove(id);
+
+    expect(() => layers.get(id)).toThrow();
+  });
+
 });

@@ -107,4 +107,20 @@ export class Layers {
     return layer;
   }
 
+  /**
+   * Removes the layer with the given ID.
+   */
+  public remove(id: LayerId): this {
+    const index = this.getIndex(id);
+
+    if (index !== -1) {
+      this.items.splice(index, 1);
+      this.lookup.delete(id);
+    }
+
+    return this;
+  }
+
 }
+
+
