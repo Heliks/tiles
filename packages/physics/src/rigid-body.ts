@@ -226,4 +226,13 @@ export class RigidBody {
     return false;
   }
 
+  /** If the body is asleep, it will be woken up. */
+  public wake(): this {
+    // Fixme: This is not optimal, but works. There is no point implementing this
+    //  properly until the planned merge of physics and physics-box2d package.
+    this.setVelocity(0.00001, 0.00001);
+
+    return this;
+  }
+
 }
