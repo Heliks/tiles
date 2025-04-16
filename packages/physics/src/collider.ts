@@ -34,25 +34,26 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   /** Unique identifier. */
   public readonly id = uuid();
 
+  /** Indicates that the collider requires an update. */
+  public dirty = false;
+
   /**
-   * Collision group bits. If not set the groups will be inherited from the the rigid
-   * body to which the collider was attached to.
+   * Bitmask that contains the bits of collision groups that this collider is a part
+   * of. If not set, this will be inherited when the collider is attached to a rigid
+   * body.
    *
-   * Do not update this directly. Use `setFilterData()` instead.
+   * Don't update this directly. Use {@link setFilterData()} instead.
    *
    * @see RigidBody.group
    */
   public group?: number;
 
-  /** Indicates that the collider requires an update. */
-  public isDirty = false;
-
   /**
-   * Bits of the collision groups that are allowed to collide ith this collider. If not
-   * set the mask will be inherited from the rigid body to which the collider was
-   * attached to.
+   * Bitmask that contains the bits of collision groups that are allowed to collide with
+   * this collider. If not set, this will be inherited when the collider is attached to
+   * a rigid body.
    *
-   * Do not update this directly. Use `setFilterData()` instead.
+   * Don't update this directly. Use {@link setFilterData()} instead.
    *
    * @see group
    * @see RigidBody.mask
@@ -158,7 +159,7 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
     this.group = groups;
     this.mask = mask;
 
-    this.isDirty = true;
+    this.dirty = true;
 
     return this;
   }

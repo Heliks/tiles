@@ -62,9 +62,9 @@ export class Box2dRaycaster extends B2RayCastCallback {
     // eslint-disable-next-line new-cap
     this.world.RayCast(this, from, to);
 
-    // Since this can run fairly often we only push these events in case there are any
-    // subscribers to this queue to prevent the creation of unnecessary garbage that has
-    // to be collected. This will mostly be used to draw debug information anyway.
+    // Since this can run fairly often, we only create the event objects in case there
+    // are any subscribers to this queue. This prevents the creation of unnecessary
+    // garbage that has to be cleaned up by the JS engine.
     if (this.raycasts.size() > 0) {
       this.raycasts.push({
         start: new Vec2().copy(from),

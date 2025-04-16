@@ -6,7 +6,7 @@ import { B2_RAYCASTS, B2_WORLD, RaycastEvent, RaycastQueue } from './const';
 /* eslint-disable new-cap */
 
 @Injectable()
-export class Box2dDebugDraw extends B2Draw implements OnInit, System {
+export class  Box2dDebugDraw extends B2Draw implements OnInit, System {
 
   /** @internal */
   private get ctx(): CanvasRenderingContext2D {
