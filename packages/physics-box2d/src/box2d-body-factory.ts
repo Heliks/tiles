@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { B2Body, B2BodyDef, B2FixtureDef, B2World } from '@heliks/box2d';
+import { B2Body, B2BodyDef, B2Filter, B2Fixture, B2FixtureDef, B2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { B2_WORLD } from './const';
@@ -13,6 +13,32 @@ export class Box2dBodyFactory {
     @Inject(B2_WORLD)
     private readonly world: B2World
   ) {}
+
+  /** Creates a Box2D collision filter from the settings of the given `collider`. */
+  public createFilter(collider: Collider): B2Filter {
+    const filter = new B2Filter();
+
+    Object.assign(filter, {
+      categoryBits: collider.group,
+      maskBits: collider.mask
+    });
+
+    return filter;
+  }
+
+  /** Updates the given `fixture` according to the settings of the given `collider`. */
+  public setFixtureData(collider: Collider, fixture: B2Fixture): void {
+    fixture.SetFilterData(this.createFilter(collider));
+  }
+
+  /** Returns the Box2D fixture of the given `collider` that is attached to `body`.  */
+  public getFixture(body: B2Body, collider: Collider): B2Fixture | undefined {
+    for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
+      if (fixture.GetUserData().collider === collider) {
+        return fixture;
+      }
+    }
+  }
 
   /**
    * Returns a `B2FixtureDef`, using the given `collider` as blueprint. If a `def` is

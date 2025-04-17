@@ -89,6 +89,18 @@ export class Box2dWorld extends Physics {
       body.ApplyForceToCenter(component._force.value, true);
     }
 
+    for (const collider of component.colliders) {
+      if (collider.dirty) {
+        collider.dirty = false;
+
+        const fixture = this.factory.getFixture(body, collider);
+
+        if (fixture) {
+          this.factory.setFixtureData(collider, fixture);
+        }
+      }
+    }
+
     syncBodyVelocity(body, component);
     syncBodyFixtures(body);
   }
