@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-load-entity",
-  "version": "0.0.2-rc02",
+  "version": "0.0.2-rc03",
   "description": "Package that provides a file format to load entities from files.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
