@@ -2,7 +2,7 @@ import { B2World } from '@heliks/box2d';
 import { Rectangle } from '@heliks/tiles-engine';
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { Box2dBodyFactory } from '../box2d-body-factory';
-import { getColliderFixture, syncBodyFixtures } from '../fixtures';
+import { getColliderFixture, syncFixtures } from '../fixtures';
 
 
 describe('synchronize fixtures', () => {
@@ -29,7 +29,7 @@ describe('synchronize fixtures', () => {
 
     collider.setFilterData(group, mask);
 
-    syncBodyFixtures(body);
+    syncFixtures(body);
 
     const filters = getColliderFixture(body, collider)?.GetFilterData();
 

@@ -7,7 +7,7 @@ import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { Box2dRaycaster } from './box2d-raycaster';
 import { B2_WORLD } from './const';
-import { syncBodyFixtures } from './fixtures';
+import { syncFixtures } from './fixtures';
 
 
 @Injectable()
@@ -89,20 +89,8 @@ export class Box2dWorld extends Physics {
       body.ApplyForceToCenter(component._force.value, true);
     }
 
-    for (const collider of component.colliders) {
-      if (collider.dirty) {
-        collider.dirty = false;
-
-        const fixture = this.factory.getFixture(body, collider);
-
-        if (fixture) {
-          this.factory.setFixtureData(collider, fixture);
-        }
-      }
-    }
-
     syncBodyVelocity(body, component);
-    syncBodyFixtures(body);
+    syncFixtures(body);
   }
 
   /** @inheritDoc */

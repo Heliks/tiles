@@ -3,23 +3,27 @@ import { B2Body, B2Fixture } from '@heliks/box2d';
 import { Collider } from '@heliks/tiles-physics';
 
 
-export function syncBodyFixtures(body: B2Body): void {
+/** Creates a Box2D collision filter from the settings of the given `collider`. */
+export function setFilterData(fixture: B2Fixture, collider: Collider): void {
+  const filter = fixture.GetFilterData();
+
+  Object.assign(filter, {
+    categoryBits: collider.group,
+    maskBits: collider.mask
+  });
+}
+
+/**
+ * Synchronizes all fixtures of the given `body` with the colliders on which they are
+ * based on. Some updates may require the collider to be `dirty`.
+ */
+export function syncFixtures(body: B2Body): void {
   for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
-    const collider = fixture.GetUserData().collider;
+    const collider = fixture.GetUserData().collider as Collider;
 
-    if (collider.isDirty) {
-      // Update collision filters.
-      const filter = fixture
-        .GetFilterData()
-        .Clone();
-
-      filter.categoryBits = collider.group;
-      filter.maskBits = collider.mask;
-
-      fixture.SetFilterData(filter);
-
-      // Clear flag.
-      collider.isDirty = false;
+    if (collider.dirty) {
+      setFilterData(fixture, collider);
+      collider.dirty = false;
     }
   }
 }
