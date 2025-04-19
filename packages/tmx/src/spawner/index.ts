@@ -1,3 +1,4 @@
+export * from './tmx-object-composer';
 export * from './tmx-object-type-default';
 export * from './tmx-object-type';
 export * from './tmx-object-metadata';

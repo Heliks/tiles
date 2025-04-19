@@ -3,13 +3,11 @@ import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
 
 
 /**
- * Implementation of a {@link TmxObject} type.
+ * Transforms {@link TmxObject} with a custom type that match the {@link type} of this
+ * implementation into entities. If no type is specified, it will match any TMX object
+ * that either has no custom type, or if its type has no {@link TmxObjectType}.
  *
- * Used by all TMX objects where its custom type matches the {@link type} of this
- * implementation. If no TMX type is specified, it will be used as default for
- * untyped objects and objects where its TMX type matches no object type.
- *
- * - `O`: Type of TMX object from which this type can create entities.
+ * - `O`: Viable TMX object that can be matched by this type.
  */
 export interface TmxObjectType<O extends TmxObject = TmxObject> {
 
