@@ -21,5 +21,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.2-rc03"
+  "version": "0.0.2-rc04"
 }
