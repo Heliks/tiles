@@ -1,5 +1,6 @@
 import { Entity, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
+import { Rectangle } from 'pixi.js';
 import { Data } from './data';
 import { Attributes } from './jsx-node';
 import { kebabToCamel } from './utils';
@@ -78,12 +79,10 @@ export function setContextBinding(element: UiElement, local: string, value: unkn
 
 /**
  * Binds all `attributes` that are {@link AttributeContextBindingParams} to the context
- * of the {@link UiElement} owned by the given `entity`. Attributes that do not bind to
- * the element context will be ignored.
+ * of the given UI `element`. Attributes that do not bind to the element context will be
+ * ignored.
  */
-export function setContextBindingsFromJsxAttributes(world: World, entity: Entity, attributes: Attributes): void {
-  const element = world.storage(UiElement).get(entity);
-
+export function setContextBindingsFromJsxAttributes(element: UiElement, attributes: Attributes): void {
   for (const name in attributes) {
     const params = getAttributeContextBindingParams(name);
 
@@ -122,6 +121,15 @@ export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, a
   }
 
   if (world.storage(UiElement).has(owner)) {
-    setContextBindingsFromJsxAttributes(world, owner, attributes);
+    const element = world.storage(UiElement).get(owner);
+
+    setContextBindingsFromJsxAttributes(element, attributes);
+
+    // Bubbling must be explicitly disabled.
+    if (! attributes.bubble && attributes.bubble !== undefined) {
+      // This may be a very naive way to implement event bubbling. This may cause some
+      // issues in the future. Needs some usage evaluation.
+      element.instance.view.hitArea = Rectangle.EMPTY;
+    }
   }
 }

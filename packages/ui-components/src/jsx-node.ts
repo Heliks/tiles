@@ -29,24 +29,32 @@ import { Ref } from './ref';
  */
 export type JsxTemplateCondition = string | (() => boolean);
 
-/** List of default attributes that can be assigned to any {@link JsxNode}. */
+/** Default attributes that can be assigned to any {@link JsxNode}. */
 export type Attributes = {
 
   /**
-   * When set, assigns a {@link Data} component to the entity of this node, using the
+   * If set, assigns a {@link Data} component to the entity of this node, using the
    * value of this attribute as data.
    */
   readonly data?: unknown;
 
   /**
-   * If set to `true`, this node will be able to capture UI interaction events. All
-   * events bubble.
+   * If set to `true`, the node will be able to capture UI interaction events. Events
+   * are bubbled by default. Event bubbling can be disabled with the {@link bubble}
+   * attribute.
    */
   readonly events?: boolean;
 
   /**
-   * When set, the {@link JsxNode node} will be conditionally displayed or removed from
-   * the document. Conditional nodes are wrapped in a {@link TemplateElement}.
+   * Defines if events should be bubbled from the {@link UiElement} that is rendered
+   * by this node. Event bubbling is enabled by default.
+   */
+  readonly bubble?: boolean;
+
+  /**
+   * When set, the node will be conditionally displayed or removed from the document.
+   *
+   * Conditional nodes are wrapped in a {@link TemplateElement}.
    *
    * - If the condition is a string, it will be treated as the name of a property on the
    *   nodes host context to which the template expression is bound.
@@ -96,7 +104,7 @@ export type Attributes = {
    * Styles to apply to the {@link JsxNode}.
    *
    * ```tsx
-   *  const styled = <div style={[ grow: 1 }}>Hello World</div>;
+   *  const styled = <div style={{ grow: 1 }}>Hello World</div>;
    * ```
    */
   readonly style?: Partial<Style>;
