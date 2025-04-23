@@ -103,7 +103,7 @@ export class LocalTilesetBag<T extends Tileset = Tileset> {
    * Returns the first {@link LocalTileset local tileset} where the tileset matches
    * the given `name`.
    */
-  public getFromName(name: string): LocalTileset | undefined {
+  public getFromName(name: string): LocalTileset<T> | undefined {
     return this.items.find(item => item.tileset.name === name);
   }
 
