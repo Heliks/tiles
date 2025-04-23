@@ -76,6 +76,7 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
 
     const tileset = new TmxTileset(handle, grid.size, file, props);
 
+    tileset.name = data.name;
     tileset.pivot = parsePivot(data);
 
     if (data.tiles) {
