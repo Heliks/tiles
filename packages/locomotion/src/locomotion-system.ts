@@ -32,8 +32,6 @@ export class LocomotionSystem extends ProcessingSystem {
       const transform = transforms.get(entity);
 
       if (locomotion.behavior) {
-        locomotion.direction.copy(body.getVelocity());
-
         const force = locomotion.behavior.update(world, locomotion, transform);
 
         // Apply movement speed.
@@ -44,6 +42,8 @@ export class LocomotionSystem extends ProcessingSystem {
           force.x,
           force.y
         );
+
+        locomotion.direction.copy(force.normalize());
       }
     }
   }
