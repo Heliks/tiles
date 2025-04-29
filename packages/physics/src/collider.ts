@@ -164,6 +164,22 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
     return this;
   }
 
+  /** Updates the collision {@link mask}. Marks the collider as {@link dirty}. */
+  public setMask(mask: number): this {
+    this.dirty = true;
+    this.mask = mask;
+
+    return this;
+  }
+
+  /** Updates the collision {@link group}. Marks the collider as {@link dirty}. */
+  public setGroup(group: number): this {
+    this.dirty = true;
+    this.group = group;
+
+    return this;
+  }
+
 }
 
 
