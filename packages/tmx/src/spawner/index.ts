@@ -1,3 +1,4 @@
+export * from './tmx-map-loader';
 export * from './tmx-object-composer';
 export * from './tmx-object-type-default';
 export * from './tmx-object-type';

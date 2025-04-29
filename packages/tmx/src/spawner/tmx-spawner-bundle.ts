@@ -1,4 +1,5 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
+import { TmxMapLoader } from './tmx-map-loader';
 import { TmxObjectComposer } from './tmx-object-composer';
 import { TmxObjectMetadata } from './tmx-object-metadata';
 import { TmxObjectSpawner } from './tmx-object-spawner';
@@ -100,6 +101,7 @@ export class TmxSpawnerBundle implements Bundle {
       .provide(TmxObjectSpawner)
       .provide(TmxSpawner)
       .system(TmxSpawnerSystem)
+      .system(TmxMapLoader)
       .run(this.setup.bind(this));
   }
 

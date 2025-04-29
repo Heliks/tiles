@@ -76,7 +76,7 @@ export class TmxSpawner<M extends SpawnableAsset = SpawnableAsset> {
     );
   }
 
-  /** @internal */
+  // Todo: Missing Documentation.
   public async spawnLayer(world: World, map: M, layer: TmxLayer, renderLayer?: LayerId): Promise<Entity> {
     const entity = world.create().use(new Transform()).build();
 
