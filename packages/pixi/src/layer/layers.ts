@@ -27,6 +27,10 @@ export class Layers {
   /** Lookup for the index that a layer occupies. */
   private readonly lookup = new Map<LayerId, number>();
 
+  constructor() {
+    this.container.name = 'Layers';
+  }
+
   /**
    * Returns the index of the layer matching `id`. Throws an error if the ID does not
    * match any layers.
@@ -114,6 +118,7 @@ export class Layers {
     const index = this.getIndex(id);
 
     if (index !== -1) {
+      this.container.removeChild(this.items[index].container);
       this.items.splice(index, 1);
       this.lookup.delete(id);
     }
