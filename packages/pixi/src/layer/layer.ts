@@ -54,7 +54,9 @@ export class Layer {
   /**
    * @param id Unique Layer ID.
    */
-  constructor(public readonly id: LayerId) {}
+  constructor(public readonly id: LayerId) {
+    this.container.name = id.toString();
+  }
 
   /** Adds `drawable` to the layer {@link container}. */
   public add(drawable: Drawable): this {
