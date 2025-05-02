@@ -42,6 +42,10 @@ export class ScriptSystem extends ReactiveSystem {
     for (const entity of this.query.entities) {
       const component = store.get(entity);
 
+      if (! component.enabled) {
+        continue;
+      }
+
       // Script behavior has changed.
       if (component.script !== component._running) {
         start(

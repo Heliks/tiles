@@ -13,6 +13,9 @@ import { ScriptBehavior } from './script-behavior';
 @TypeId('tiles_script')
 export class Script<S extends ScriptBehavior = ScriptBehavior> implements Serializeable<TypeData<S>> {
 
+  /** Determines if the script should be executed or not. */
+  public enabled = true;
+
   /**
    * The script that is currently being executed.
    *
@@ -33,6 +36,20 @@ export class Script<S extends ScriptBehavior = ScriptBehavior> implements Serial
   /** @inheritDoc */
   public deserialize(world: World, data: TypeData<S>): void {
     this.script = world.get(TypeSerializer).deserialize(world, data);
+  }
+
+  /** Disables the execution of the script. */
+  public disable(): this {
+    this.enabled = false;
+
+    return this;
+  }
+
+  /** Enables the execution of the script if it was previously disabled. */
+  public enable(): this {
+    this.enabled = false;
+
+    return this;
   }
 
 }
