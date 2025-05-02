@@ -5,9 +5,11 @@ import { SteeringBehavior } from './steering-behavior';
 /**
  * Component that moves the world position of the entity to which it is attached to
  * using a steering force.
+ *
+ * - `T`: Type of steering behavior used by this component.
  */
 @TypeId('tiles_locomotion')
-export class Locomotion {
+export class Locomotion<T extends SteeringBehavior = SteeringBehavior> {
 
   /** Unit vector that points into the direction that the entity is currently facing. */
   public direction = new Vec2(0, 0);
@@ -22,7 +24,7 @@ export class Locomotion {
    * @param behavior Steering behavior used for locomotion.
    * @param speed Speed multiplier for locomation forces.
    */
-  constructor(public behavior?: SteeringBehavior, public speed = 1) {}
+  constructor(public behavior?: T, public speed = 1) {}
 
   /** Clears any current locomotion behaviors. */
   public clear(): this {
