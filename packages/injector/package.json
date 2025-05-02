@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-injector",
-  "version": "0.0.2-rc04",
+  "version": "0.0.2",
   "description": "Simple dependency injector.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
