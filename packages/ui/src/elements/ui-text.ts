@@ -65,7 +65,6 @@ export class UiText implements Element, OnInit {
   /** @inheritDoc */
   public update(world: World, entity: Entity, layout: Node<Style>): void {
     this.view.text = this.text;
-
     this.size.width.value = this.view.width;
     this.size.height.value = this.view.height;
 
