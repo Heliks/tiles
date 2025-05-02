@@ -28,17 +28,16 @@ export class Seek implements SteeringBehavior {
   }
 
   /** @inheritDoc */
-  public update(world: World, movement: Locomotion, transform: Transform): Vec2 {
-    if (this.arrived()) {
-      this.scratch.set(0, 0)
-    }
-    else {
-      this.scratch.copy(this).sub(transform.world);
-    }
+  public update(world: World, locomotion: Locomotion, transform: Transform): Vec2 {
+    this.scratch
+      .copy(this)
+      .sub(transform.world);
 
     this.distance = this.scratch.magnitude();
 
-    return this.scratch.normalize();
+    return this.arrived()
+      ? this.scratch.set(0, 0)
+      : this.scratch.normalize();
   }
 
 }
