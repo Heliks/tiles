@@ -1,4 +1,4 @@
-import { ChangeAwareValue, Entity, EventQueue, Ignore, TypeId, Vec2 } from '@heliks/tiles-engine';
+import { Entity, EventQueue, Ignore, TrackedValue, TypeId, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -96,15 +96,15 @@ export class RigidBody {
 
   /** @internal */
   @Ignore()
-  public readonly _force = new ChangeAwareValue(new Vec2());
+  public readonly _force = new TrackedValue(new Vec2());
 
   /** @internal */
   @Ignore()
-  public readonly _position = new ChangeAwareValue(new Vec2(0, 0));
+  public readonly _position = new TrackedValue(new Vec2(0, 0));
 
   /** @internal */
   @Ignore()
-  public readonly _velocity = new ChangeAwareValue(new Vec2(0, 0));
+  public readonly _velocity = new TrackedValue(new Vec2(0, 0));
 
   /**
    * @param type The type of the rigid body (e.g. static, kinematic etc.).

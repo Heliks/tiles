@@ -23,7 +23,6 @@ export {
   SystemDispatcher
 } from '@heliks/ecs';
 
-export * from './change-aware-value';
 export * from './entity-builder';
 export * from './entity-ref';
 export * from './lifecycle';
