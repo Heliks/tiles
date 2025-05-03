@@ -4,13 +4,15 @@ import { Collider } from '@heliks/tiles-physics';
 
 
 /** Creates a Box2D collision filter from the settings of the given `collider`. */
-export function setFilterData(fixture: B2Fixture, collider: Collider): void {
-  const filter = fixture.GetFilterData();
+export function parseFilterData(fixture: B2Fixture, collider: Collider): void {
+  const filter = fixture.GetFilterData().Clone();
 
   Object.assign(filter, {
     categoryBits: collider.group,
     maskBits: collider.mask
   });
+
+  fixture.SetFilterData(filter);
 }
 
 /**
@@ -22,7 +24,8 @@ export function syncFixtures(body: B2Body): void {
     const collider = fixture.GetUserData().collider as Collider;
 
     if (collider.dirty) {
-      setFilterData(fixture, collider);
+      parseFilterData(fixture, collider);
+
       collider.dirty = false;
     }
   }
