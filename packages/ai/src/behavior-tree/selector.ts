@@ -3,12 +3,12 @@ import { Composite } from './composite';
 
 
 /**
- * The sequence {@link Composite} visits each of its children from left to right. If a
- * child returns a success state, it will move on to the next child. If a child fails,
- * the entire sequence will fail and stops. The sequence succeeds when all children
- * have returned a success state and fails when any of them fail.
+ * The selector {@link Composite} visits each of its children from left to right. If a
+ * child returns a success state, the selector will also return a success. If a child
+ * fails, the selector will move onto the next child. In case all children fail, the
+ * selector fails as well.
  */
-export class Sequence<D> extends Composite<D> {
+export class Selector<D> extends Composite<D> {
 
   /**
    * Index of the last child that returned a {@link NodeState.Running}. This node is
@@ -27,17 +27,17 @@ export class Sequence<D> extends Composite<D> {
       const result = visit(this.children[i], data);
 
       if (result === NodeState.Success) {
-        continue;
+        return result;
       }
 
       if (result === NodeState.Running) {
         this.running = i;
-      }
 
-      return result;
+        return result;
+      }
     }
 
-    return NodeState.Success;
+    return NodeState.Failure;
   }
 
   /** @inheritDoc */
