@@ -47,9 +47,8 @@ export class DrawUi implements OnInit, System {
   /** @internal */
   private updateNodePosition(entity: Entity, node: UiNode): void {
     if (node.style.context === DisplayContext.World) {
-      // Todo
-      // node.container.x = node.layout.pos.x * this.camera.unitSize;
-      // node.container.y = node.layout.pos.y * this.camera.unitSize;
+      node.container.x = node.layout.pos.x * this.camera.unitSize;
+      node.container.y = node.layout.pos.y * this.camera.unitSize;
 
       return;
     }

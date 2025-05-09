@@ -38,6 +38,13 @@ export interface TextStyle {
   fontFamily?: string;
 
   /**
+   * Device pixel ratio of the canvas where the text is being rendered. This is set
+   * automatically to match the renderer resolution by default, but can be overwritten
+   * by setting it manually. The default resolution is `1`.
+   */
+  resolution?: number;
+
+  /**
    * If enabled, the text will wrap when it takes more space than available.
    *
    * This does not take the size into account that adjacent child nodes to the text might

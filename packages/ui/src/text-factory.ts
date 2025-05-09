@@ -27,7 +27,13 @@ export class TextFactory {
 
   /** Creates a {@link Text} with the given `style`. */
   public create(value: string, style: TextStyle): Text {
-    return new Text(value, this.parse(style));
+    const text = new Text(value, this.parse(style));
+
+    if (style.resolution) {
+      text.resolution = style.resolution;
+    }
+
+    return text;
   }
 
 }
