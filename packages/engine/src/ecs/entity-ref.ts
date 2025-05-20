@@ -1,4 +1,5 @@
 import { ComponentType, Entity, ENTITY_BITS, ENTITY_MASK, World } from '@heliks/ecs';
+import { getType } from '../utils';
 
 
 /**
@@ -32,6 +33,13 @@ export class EntityRef<C = unknown> {
   /** Returns the component of type `T` of which {@link entity} is the owner. */
   public get<T extends C>(type: ComponentType<T>): T {
     return this.world.storage(type).get(this.entity);
+  }
+
+  /** Attaches the given `component` to the entity. */
+  public attach(component: object): this {
+    this.world.storage(getType(component)).set(this.entity, component);
+
+    return this;
   }
 
   /** Destroys the referenced entity. */

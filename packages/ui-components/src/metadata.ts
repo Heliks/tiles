@@ -1,4 +1,5 @@
 import { getTypeName, Injectable, Type } from '@heliks/tiles-engine';
+import { Style } from '@heliks/tiles-ui';
 
 
 export enum TagType {
@@ -8,9 +9,23 @@ export enum TagType {
   Node
 }
 
-interface TagMetadata {
+export interface TagOptions {
+
+  /**
+   * A default style that if defined, will be applied to the tags' node when it is
+   * created. User defined styles are applied after.
+   *
+   * Note: When a custom {@link UiNodeRenderer} is used, this functionality must be
+   * implemented manually to have any effect.
+   */
+  style?: Partial<Style>;
+
+}
+
+export interface TagMetadata {
   tag: string;
   type: TagType;
+  options: TagOptions;
 }
 
 const TAG_METADATA_KEY = Symbol();
@@ -33,6 +48,8 @@ export function getTagMetadata(target: Type): TagMetadata {
   return data;
 }
 
+
+
 /**
  * Adds tag metadata to a {@link UiNodeRenderer}.
  *
@@ -40,9 +57,13 @@ export function getTagMetadata(target: Type): TagMetadata {
  *
  * @see UiNodeRenderer
  */
-export function Tag(tag: string): Function {
+export function Tag(tag: string, options: TagOptions = {}): Function {
   return function tagDecorator(target: Type): void {
-    setTagMetadata(target, { tag, type: TagType.Node });
+    setTagMetadata(target, {
+      options,
+      tag,
+      type: TagType.Node
+    });
   }
 }
 
@@ -53,9 +74,13 @@ export function Tag(tag: string): Function {
  *
  * @see UiComponent
  */
-export function Component(tag: string): Function {
+export function Component(tag: string, options: TagOptions = {}): Function {
   return function componentDecorator(target: Type): void {
-    setTagMetadata(target, { tag, type: TagType.Component });
+    setTagMetadata(target, {
+      options,
+      tag,
+      type: TagType.Component
+    });
   }
 }
 

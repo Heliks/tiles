@@ -4,17 +4,15 @@ import { Attributes } from './jsx-node';
 
 
 /**
- * Renders a JSX node by transforming it into an entity.
+ * Creates a {@link UiNode} and spawns it into the world.
  *
- * Additional tag metadata must be provided by adding the {@link Node} decorator to the
- * implementation of this renderer.
+ * Additional metadata must be provided by adding the {@link Tag} decorator to the
+ * renderer implementation.
  *
  * ```ts
- *  // This implementation renders the tag `<foo>` when registered.
+ *  // This implementation renders `<foo>` tag when registered.
  *  @Tag('foo')
- *  class FooRenderer implements TagRenderer {
- *    // ... Implementation,
- *  }
+ *  class FooRenderer implements UiNodeRenderer {}
  * ```
  *
  * Tags are registered by adding them to the {@link TagRegistry}. This can be done either
@@ -25,7 +23,7 @@ import { Attributes } from './jsx-node';
  *    // ...
  *    .bundle(
  *      new UiComponentsBundle({
- *        tags: [
+ *        nodes: [
  *          FooRenderer
  *        ]
  *      })
@@ -35,9 +33,7 @@ import { Attributes } from './jsx-node';
 export interface UiNodeRenderer<A extends Attributes = Attributes> {
 
   /**
-   * Transforms a JSX node into an entity.
-   *
-   * The entity **must** have a {@link UiNode} component attached to it.
+   * Creates an entity that is a {@link UiNode}.
    *
    * @param world Entity world
    * @param attributes Attributes.
