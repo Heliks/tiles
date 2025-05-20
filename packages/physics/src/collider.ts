@@ -158,7 +158,6 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   public setFilterData(groups: number, mask: number): this {
     this.group = groups;
     this.mask = mask;
-
     this.dirty = true;
 
     return this;

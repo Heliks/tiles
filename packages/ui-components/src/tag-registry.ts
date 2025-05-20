@@ -1,14 +1,14 @@
 import { Type } from '@heliks/tiles-engine';
-import { TagType } from './metadata';
+import { TagOptions, TagType } from './metadata';
 import { UiComponent } from './ui-component';
 import { UiNodeRenderer } from './ui-node-renderer';
 
 
 /** Registry entry for a tag that renders a {@link UiNode}. */
-export type TagRegistryNodeEntry = { factory: UiNodeRenderer, type: TagType.Node };
+export type TagRegistryNodeEntry = { options: TagOptions; renderer: UiNodeRenderer, type: TagType.Node  };
 
 /** Registry entry for a tag that renders a {@link UiComponent}. */
-export type TagRegistryComponentEntry = { component: Type<UiComponent>, type: TagType.Component };
+export type TagRegistryComponentEntry = { options: TagOptions; component: Type<UiComponent>, type: TagType.Component };
 
 /** An entry for the {@link TagRegistry}. */
 export type TagRegistryEntry = TagRegistryNodeEntry | TagRegistryComponentEntry;
@@ -29,12 +29,13 @@ export class TagRegistry {
   }
 
   /**
-   * Registers a `tag` as an element, using `factory` to render it when it is used in
-   * a JSX context. Throws an error if the given tag name is already in use.
+   * Registers a `tag` that is rendered by `renderer`. Throws an error if the given tag
+   * name is already in use.
    */
-  public element(tag: string, factory: UiNodeRenderer): this {
+  public node(tag: string, renderer: UiNodeRenderer, options: TagOptions = {}): this {
     this.set(tag, {
-      factory,
+      options,
+      renderer,
       type: TagType.Node
     });
 
@@ -42,12 +43,13 @@ export class TagRegistry {
   }
 
   /**
-   * Registers a `tag` to render the given UI `component`. Throws an error if the given
-   * tag name is already in use.
+   * Registers a `tag` that renders a UI `component`. Throws an error if the given tag
+   * name is already in use.
    */
-  public component(tag: string, component: Type<UiComponent>): this {
+  public component(tag: string, component: Type<UiComponent>, options: TagOptions = {}): this {
     this.set(tag, {
       component,
+      options,
       type: TagType.Component
     });
 

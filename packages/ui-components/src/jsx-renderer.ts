@@ -63,19 +63,21 @@ function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): En
   const entry = world.get(TagRegistry).entry(node.tag);
 
   if (entry.type === TagType.Node) {
-    return entry.factory.render(world, node.attributes, textStyle);
+    return entry.renderer.render(world, node.attributes, textStyle);
   }
 
   return world.insert(
     new UiElement(new JsxRenderer(entry.component)),
-    // Make sure to spawn the UiNode as a block element by default. This can later be
-    // overwritten with the `style` attribute.
-    new UiNode({
-      size: new Rect<Size>(
-        Size.percent(1),
-        Size.auto()
-      )
-    })
+    new UiNode(
+      // This is the default style we're applying. User defined styles via the "style"
+      // attribute are applied in a later step.
+      entry.options.style ?? {
+        size: new Rect<Size>(
+          Size.percent(1),
+          Size.auto()
+        )
+      }
+    )
   );
 }
 

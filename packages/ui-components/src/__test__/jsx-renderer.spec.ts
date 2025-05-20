@@ -39,7 +39,7 @@ describe('JsxRenderer', () => {
 
     registry = world
       .get(TagRegistry)
-      .element('noop', new NoopFactory());
+      .node('noop', new NoopFactory());
   });
 
   afterEach(() => {
