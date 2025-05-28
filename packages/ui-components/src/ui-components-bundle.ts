@@ -55,7 +55,9 @@ export class UiComponentsBundle implements Bundle {
     const store = world.get(TagRegistry);
 
     for (const type of declarations.components) {
-      store.component(getTagMetadata(type).tag, type);
+      const meta = getTagMetadata(type);
+      
+      store.component(meta.tag, type, meta.options);
     }
 
     for (const type of declarations.elements) {
