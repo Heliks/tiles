@@ -5,9 +5,8 @@
  * moved or renamed, as it assumes a module name "jsx-runtime" contained in the root
  * directory of the library.
  */
-import { Type } from '@heliks/tiles-engine';
 import { Style } from '@heliks/tiles-ui';
-import { Attributes, JSX_NODE_MARKER, JsxNode } from './jsx-node';
+import { Attributes, JSX_NODE_MARKER, JsxNode, JsxTag } from './jsx-node';
 import { UiComponent } from './ui-component';
 
 
@@ -80,9 +79,9 @@ export function getChildren(params: NodeParams): readonly JsxNode[] {
  * Implementation of the JSX factory.
  * @see https://www.typescriptlang.org/docs/handbook/jsx.html
  */
-export function jsx(tag: string | Type<UiComponent>, params: NodeParams): JsxNode {
+export function jsx(tag: JsxTag, params: NodeParams): JsxNode {
   if (typeof tag !== 'string') {
-    throw new Error('Class or function components are not supported.');
+    // throw new Error('Class or function components are not supported.');
   }
 
   return {

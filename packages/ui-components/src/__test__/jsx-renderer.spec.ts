@@ -1,7 +1,17 @@
 import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks/tiles-engine';
-import { Element, PassByReference, PassByValue, TemplateElement, UiElement, UiNode, UiText } from '@heliks/tiles-ui';
+import {
+  ContextRef,
+  Element,
+  PassByReference,
+  PassByValue,
+  TemplateElement,
+  UiElement,
+  UiNode,
+  UiText
+} from '@heliks/tiles-ui';
+import { bind } from '../bind';
 import { createJsxNode, JsxNode } from '../jsx-node';
-import { createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
+import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
 import { TagRegistry } from '../tag-registry';
 import { UiComponent } from '../ui-component';
 import { UiNodeRenderer } from '../ui-node-renderer';
@@ -16,6 +26,60 @@ class NoopFactory implements UiNodeRenderer {
 
 }
 
+describe('bindAttrs()', () => {
+  let element: UiElement;
+
+  beforeEach(() => {
+    element = new UiElement({
+      update: jest.fn(),
+      getContext: jest.fn()
+    });
+
+    element.context = ContextRef.from(element);
+
+    element.bind = jest.fn();
+    element.value = jest.fn();
+
+  });
+
+  it('should bind attributes as value to element context', () => {
+    bindAttrs(element, {
+      foo: 'bar'
+    });
+
+    expect(element.value).toHaveBeenCalledWith('foo', 'bar');
+  });
+
+  it('should bind attributes as function to element context', () => {
+    const getter = () => 'bar';
+
+    bindAttrs(element, {
+      foo: bind(getter)
+    });
+
+    expect(element.bind).toHaveBeenCalledWith('foo', getter);
+  });
+
+  it('should add attribute name as input to element context', () => {
+    bindAttrs(element, {
+      foo: 'bar'
+    });
+
+    const result = element.context.inputs.has('foo');
+
+    expect(result).toBeTruthy();
+  });
+
+  it('should not bind default attributes', () => {
+    bindAttrs(element, {
+      foo: 'bar',
+      style: {}
+    });
+
+    expect(element.value).toHaveBeenCalledTimes(1);
+    expect(element.value).toHaveBeenCalledWith('foo', 'bar');
+  });
+});
 
 describe('JsxRenderer', () => {
   let app: App;

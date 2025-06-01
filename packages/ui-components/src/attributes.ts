@@ -127,8 +127,8 @@ export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, a
 
     // Bubbling must be explicitly disabled.
     if (! attributes.bubble && attributes.bubble !== undefined) {
-      // This may be a very naive way to implement event bubbling. This may cause some
-      // issues in the future. Needs some usage evaluation.
+      // This appears to be a very naive way to implement event bubbling and may cause
+      // unknown issues in the future. Needs some usage evaluation.
       element.instance.view.hitArea = Rectangle.EMPTY;
     }
   }

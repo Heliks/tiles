@@ -7,18 +7,18 @@ import { ValueChanges } from '../lifecycle';
  *
  * - `C`: The referenced context.
  */
-export class ContextRef<C extends object = object> {
+export class ContextRef<C extends object = object, V extends object = object> {
 
   /**
    * Indicates if one of the data-bound properties on the referenced context had their
-   * value changed since the last invocation of the {@link OnInit} lifecycle.
+   * value changed since the last invocation of the {@link OnChanges} lifecycle.
    */
   public changed = false;
 
   /**
    * Tracks changes to data-bound properties on the referenced context since its last
-   * invocation of the {@link OnInit} lifecycle. {@link track Tracking} must be enabled
-   * on this reference.
+   * invocation of the {@link OnChanges} lifecycle. {@link track Tracking} must be
+   * enabled on this reference.
    */
   public changes: ValueChanges<C> = {};
 
@@ -30,19 +30,21 @@ export class ContextRef<C extends object = object> {
 
   /**
    * If set to `true`, changes to data-bound properties (e.g. inputs) on the referenced
-   * context will be tracked at {@link changes} and passed into its {@link OnInit}
-   * lifecycle.
+   * context will be tracked at {@link changes} and passed into the {@link OnChanges}
+   * lifecycle of the referenced {@link view}.
    */
   public track = false;
 
   /**
-   * @param context Referenced context.
+   * @param context Object where {@link inputs} will receive data from the host context.
+   * @param view Object where the context will receive lifecycle events. This can be the
+   *  referenced context itself.
    */
-  constructor(public readonly context: C) {}
+  constructor(public readonly context: C, public readonly view: V) {}
 
   /** Returns a new reference to the given `context`. */
-  public static from<C extends object>(context: C): ContextRef<C> {
-    const ref = new ContextRef(context);
+  public static from<C extends object>(context: C): ContextRef<C, C> {
+    const ref = new ContextRef(context, context);
 
     ref.setInputs(...getInputs(context));
 

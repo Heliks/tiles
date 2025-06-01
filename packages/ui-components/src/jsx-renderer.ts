@@ -2,9 +2,9 @@ import { Entity, Hierarchy, Parent, Type, World } from '@heliks/tiles-engine';
 import {
   canDestroy,
   canInit,
+  ContextRef,
   Element,
   Host,
-  OnBeforeInit,
   OnDestroy,
   OnInit,
   Rect,
@@ -18,8 +18,9 @@ import {
   UiText
 } from '@heliks/tiles-ui';
 import { assignJsxAttributes } from './attributes';
-import { isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
-import { TagType } from './metadata';
+import { isBinding } from './bind';
+import { Attributes, isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
+import { getResourceMetadata, ResourceType } from './metadata';
 import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
 
@@ -57,17 +58,35 @@ export class JsxTemplate implements TemplateRenderer {
 }
 
 /**
- *
+ * Contains the keys of all default {@link Attributes}.
+ */
+const DEFAULT_ATTRIBUTE_NAMES: Set<keyof Attributes> = new Set([
+  'data',
+  'events',
+  'bubble',
+  'if',
+  'ref',
+  'style'
+]);
+
+/**
+ * @deprecated This function should be moved into {@link createJsxElement} and is only
+ * here as long as @Input bindings are still supported.
  */
 function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): Entity {
-  const entry = world.get(TagRegistry).entry(node.tag);
+  const name = node.tag as string;
+  const entry = world.get(TagRegistry).entry(name);
 
-  if (entry.type === TagType.Node) {
+  if (entry.type === ResourceType.Node) {
     return entry.renderer.render(world, node.attributes, textStyle);
   }
 
   return world.insert(
-    new UiElement(new JsxRenderer(entry.component)),
+    new UiElement(
+      new JsxRenderer(
+        world.make(entry.component)
+      )
+    ),
     new UiNode(
       // This is the default style we're applying. User defined styles via the "style"
       // attribute are applied in a later step.
@@ -79,6 +98,80 @@ function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): En
       }
     )
   );
+}
+
+/**
+ * Binds the given `attributes` to the context of `element`. Default attributes will be
+ * ignored. Values that contain a {@link OneWayBinding} will be passed into the element
+ * with {@link PassByFunction}. Each attribute that is bound will be added as an input
+ * to the elements' context.
+ */
+export function bindAttrs(element: UiElement, attributes: Attributes): void {
+  for (const name in attributes) {
+    // Default attributes are processed directly and therefore don't need to be bound
+    // to the elements' context.
+    if (DEFAULT_ATTRIBUTE_NAMES.has(name)) {
+      continue;
+    }
+
+    // Set any value that remains here as an input. Otherwise, changes from the host
+    // context can not be inherited properly.
+    element.context.inputs.add(name);
+
+    const value = attributes[name];
+
+    if (isBinding(value)) {
+      element.bind(name, value.$$get);
+    }
+    else {
+      element.value(name, value);
+    }
+  }
+}
+
+/**
+ * Spawns the given UI `component` into the world.
+ *
+ * @param world Entity world where UI is spawned.
+ * @param component The UI component to spawn.
+ * @param attributes Attributes to apply to the UI component.
+ */
+export function createUi(world: World, component: Type<UiComponent>, attributes: Attributes = {}): Entity {
+  const meta = getResourceMetadata(component);
+
+  if (meta.type !== ResourceType.Component && meta.type !== ResourceType.ComponentStandalone) {
+    throw new Error('Invalid resource metadata. Component expected.');
+  }
+
+  const context = world.make(component);
+  const element = new UiElement(new JsxRenderer(context));
+
+  // Make sure this really exists, as we don't want to force components to always set
+  // a default type for their props object.
+  if (! context.props) {
+    context.props = {};
+  }
+
+  // Observed view is the element. The referenced context are component props.
+  element.context = new ContextRef(context.props, context);
+
+  bindAttrs(element, attributes);
+
+  return world.insert(
+    element,
+    new UiNode(meta.options.style ?? {
+      size: new Rect<Size>(
+        Size.percent(1),
+        Size.auto()
+      )
+    })
+  );
+}
+
+function createJsxElement(world: World, node: JsxNode, text?: TextStyle): Entity {
+  return typeof node.tag === 'function'
+    ? createUi(world, node.tag, node.attributes)
+    : createJsxEntity(world, node, text);
 }
 
 /**
@@ -130,8 +223,6 @@ export function stringifyUnknownJsxChild(child: unknown): string {
   return child!.toString();
 }
 
-
-
 /**
  * A {@link UiElement} that renders a {@link UiComponent} on the entity to which this
  * component is attached to.
@@ -141,18 +232,12 @@ export function stringifyUnknownJsxChild(child: unknown): string {
  * component and the entities that it spawned, will be destroyed as well.
  *
  * Components are block elements by default (width: `100%` and height: `auto`). This can
- * be changed by overwriting the components' stylesheet.
+ * be changed by overwriting the components' stylesheet or by setting a default style
+ * via the component options.
  *
  * - `T`: The UI Component type that is rendered by this element.
  */
-export class JsxRenderer<T extends UiComponent = UiComponent> implements Element<T>, OnInit, OnBeforeInit, OnDestroy {
-
-  /**
-   * The instance of the UI {@link component} that will be created after the owner of
-   * this element was spawned into the world. When the owner is destroyed, the instance
-   * will be destroyed as well.
-   */
-  public instance!: T;
+export class JsxRenderer<T extends UiComponent = UiComponent> implements Element, OnInit, OnDestroy {
 
   /**
    * Invalidating the component will destroy the entity hierarchy and rebuilds them
@@ -167,11 +252,11 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   public root?: Entity;
 
   /**
-   * @param component UI Component type that should be rendered by this element. Will be
-   *  instantiated using the service container after the {@link UiNode} of this element
-   *  is attached to an entity.
+   * @param instance Instance of the {@link UiComponent} that is to be rendered when the
+   * owner of this component is spawned into the world. When that owner is destroyed,
+   *  the component instance will be destroyed as well.
    */
-  constructor(public readonly component: Type<T>) {}
+  constructor(public readonly instance: T) {}
 
   /**
    * Renders the given JSX `node` and returns its entity.
@@ -198,7 +283,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       textStyle = node.attributes.style.text;
     }
 
-    const entity = createJsxEntity(world, node, textStyle);
+    const entity = createJsxElement(world, node as any, textStyle);
     const uiNode = world.storage<UiNode>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
@@ -245,13 +330,8 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
   }
 
   /** @inheritDoc */
-  public getContext(): T {
+  public getContext(): object {
     return this.instance;
-  }
-
-  /** @inheritDoc */
-  public onBeforeInit(world: World): void {
-    this.instance = world.make(this.component);
   }
 
   public render(world: World, parent: Entity): void {
@@ -259,7 +339,14 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       throw new Error('Component is already rendered and must be destroyed first.')
     }
 
-    const entity = JsxRenderer.render(world, this.instance.render(world, parent));
+    const node = this.instance.render(world, parent);
+    const entity = JsxRenderer.render(world, node);
+
+
+
+    // console.log('rendered', node)
+
+
 
     world.attach(entity, new Parent(parent));
 

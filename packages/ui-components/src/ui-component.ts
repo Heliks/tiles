@@ -5,34 +5,109 @@ import { JsxNode } from './jsx-node';
 /**
  * Implementation of a UI component.
  *
- * UI components next to {@link ElementFactory elements}, are the fundamental building
- * block for UI composition and provide a more traditional event-based API on top of
- * the UI node graph.
+ * UI components are a high-level building block for UI composition and provide a more
+ * traditional web API on top of the {@link UiNode} system.
  *
- * Each component must be decorated with the {@link Component} decorator and registered
- * on the {@link UiComponentsBundle} before it can be used.
+ * Components come in two different types. Standalone components and selector based
+ * components. Both types must be decorated with the {@link Component} decorator. The
+ * recommended approach in most scenarios are standalone components.
+ *
+ * ## Selector based components
+ *
+ * Selector based components are declared by using the components' selector as the tag of
+ * the JSX element Selector based components must be added to the {@link TagRegistry}
+ * before they can be used. Otherwise, the renderer will give an error.
  *
  * ```tsx
- *  // Declare the component.
  *  @Component('foo')
- *  class MyComponent implements UiComponent {
+ *  class Foo implements UiComponent {
  *    render() {
  *      return <div>Hello World</div>;
  *    }
  *  }
  *
- *  // Add it to the UiComponentsBundle when creating the game runtime.
- *  runtime()
- *    // ...
- *    .bundle(
- *      new UiComponentsBundle()
- *        .add(MyComponent)
- *    );
+ *  @Component('bar')
+ *  class Bar implements UiComponent {
+ *    render() {
+ *      // The Foo component is declared by using the selector as tag.
+ *      return '<foo />';
+ *    }
+ *  }
+ *
+ *  // Add the components the UiComponentsBundle
+ *  runtime().bundle(
+ *    new UiComponentsBundle({
+ *      components: [
+ *        Foo,
+ *        Bar
+ *      ]
+ *    })
+ *  );
  * ```
  *
- * UI components can control their behavior by implementing UI lifecycle events.
+ * ## Standalone Components
+ *
+ * Standalone components act like regular selector based components, with the difference
+ * that they do not have a selector and therefore can be used without being added to the
+ * {@link TagRegistry}. They are declared by using the components' type as tag of the
+ * JSX element itself.
+ *
+ * ```tsx
+ *  @Component()
+ *  class Foo implements UiComponent {}
+ *
+ *  // Standalone components are declared with value based JSX elements.
+ *  const content = <Foo />;
+ * ```
+ *
+ * ## Inputs
+ *
+ * Values can be passed into components via attributes. They can either be bound to the
+ * components {@link props} as value or as a reference with a getter. Normal values are
+ * passed into the component once and don't change. Referenced values are updated live.
+ *
+ * ```tsx
+ *  class Foo implements UiComponent {
+ *    props!: {
+ *      bar: number;
+ *    };
+ *  }
+ *
+ *  // Pass the bar attribute into the component as a value
+ *  <Foo bar={Math.random()} />
+ * ```
+ *
+ * The JSX renderer will treat the `props` object of a component as context for its
+ * underlying {@link UiElement}. Non-standard attributes that are passed into the JSX
+ * element are treated as inputs. Consequently, when the `props` object receives an
+ * input, the {@link OnChanges} lifecycle will be triggered on the UI component.
+ *
+ * ```tsx
+ *  class Foo implements UiComponent, OnChanges {
+ *    props!: {
+ *      bar: number;
+ *    };
+ *
+ *    onChanges() {
+ *      // Every time the input of "bar" changes, this OnChanges lifecycle will be
+ *      // triggered as well.
+ *      console.log(this.props.bar);
+ *    }
+ *  }
+ *
+ *  <Foo bar={bind(() => Math.random())} />
+ * ```
+ *
+ * Todo: Lifecycle
  */
-export interface UiComponent {
+export interface UiComponent<P extends object = object> {
+
+  /**
+   * Properties that are expected to be passed into this component as attributes. The
+   * type of this object determines type safety when this component is used as a JSX
+   * element.
+   */
+  props?: P;
 
   /**
    * Returns the node tree that is rendered by this component.

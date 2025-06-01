@@ -1,5 +1,7 @@
+import { Type } from '@heliks/tiles-engine';
 import { Style } from '@heliks/tiles-ui';
 import { Ref } from './ref';
+import { UiComponent } from './ui-component';
 
 
 /**
@@ -114,11 +116,40 @@ export type Attributes = {
 
 }
 
+/**
+ * Valid JSX tags.
+ *
+ * JSX elements that use a selector are created from {@link TagRegistry} entries and
+ * must therefore be registered before they can be used.
+ *
+ * ```tsx
+ * // A tag named "foo" must be known to the TypeRegistry. Otherwise, the JSX renderer
+ * // will throw an error.
+ * const content = <foo></foo>;
+ * ```
+ *
+ * Value based JSX elements can use a {@link UiComponent}. Both standalone and non -
+ * standalone components can be used with this syntax.
+ *
+ * ```tsx
+ *  @Component()
+ *  class Foo implements UiComponent {}
+ *
+ *  @Component('bar')
+ *  class Bar implements UiComponent {}
+ *
+ *  // Both components can be used with the value based syntax.
+ *  const content1 = <Foo />;
+ *  const content2 = <Bar />;
+ * ```
+ */
+export type JsxTag = string | Type<UiComponent>;
+
 /** @internal */
 export const JSX_NODE_MARKER = Symbol();
 
 /** Data representation of a JSX element, a.E.: `<div foo="bar"></div>` */
-export interface JsxNode<A extends Attributes = Attributes> {
+export interface JsxNode<A extends Attributes = Attributes, T extends JsxTag = JsxTag> {
 
   /** @internal */
   $$node: symbol;
@@ -159,8 +190,8 @@ export interface JsxNode<A extends Attributes = Attributes> {
    */
   readonly children: readonly unknown[];
 
-  /** Tag name used for this node. */
-  readonly tag: string;
+  /** Tag used to create this node. */
+  readonly tag: T;
 
 }
 

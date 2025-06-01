@@ -83,8 +83,8 @@ export class ElementManager extends ReactiveSystem {
     if (element.context.track && element.context.changed) {
       element.context.changed = false;
 
-      if (canListenToChanges(element.context.context)) {
-        element.context.context.onChanges(world, entity, element.context.changes);
+      if (canListenToChanges(element.context.view)) {
+        element.context.view.onChanges(world, entity, element.context.changes);
 
         // Reset consumed changes.
         element.context.changes = {}
@@ -134,8 +134,11 @@ export class ElementManager extends ReactiveSystem {
       node.container.addChildAt(element.instance.view, 0);
     }
 
-    element.context = ContextRef.from(element.getContext());
-    element.context.track = canListenToChanges(element.context.context);
+    if (! element.context) {
+      element.context = ContextRef.from(element.getContext());
+    }
+
+    element.context.track = canListenToChanges(element.context.view);
 
     setupHostContext(world, entity);
 
