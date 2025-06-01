@@ -101,10 +101,10 @@ function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): En
 }
 
 /**
- * Binds the given `attributes` to the context of `element`. Default attributes will be
- * ignored. Values that contain a {@link OneWayBinding} will be passed into the element
- * with {@link PassByFunction}. Each attribute that is bound will be added as an input
- * to the elements' context.
+ * Binds the given `attributes` to `element`. Default attributes will be ignored. Values
+ * that contain a {@link OneWayBinding} will be bound with {@link PassByFunction}. Other
+ * values with {@link PassByValue}. Attributes that are bound will be set as input on the
+ * elements' context.
  */
 export function bindAttrs(element: UiElement, attributes: Attributes): void {
   for (const name in attributes) {
@@ -114,9 +114,10 @@ export function bindAttrs(element: UiElement, attributes: Attributes): void {
       continue;
     }
 
-    // Set any value that remains here as an input. Otherwise, changes from the host
-    // context can not be inherited properly.
-    element.context.inputs.add(name);
+    // Context might not be initialized yet when the element is not a UI component. This
+    // can be safely skipped, as other types of UI resource will control their inputs
+    // via `@Input()` decorator.
+    element.context?.inputs.add(name);
 
     const value = attributes[name];
 
@@ -169,9 +170,25 @@ export function createUi(world: World, component: Type<UiComponent>, attributes:
 }
 
 function createJsxElement(world: World, node: JsxNode, text?: TextStyle): Entity {
-  return typeof node.tag === 'function'
-    ? createUi(world, node.tag, node.attributes)
-    : createJsxEntity(world, node, text);
+  if (typeof node.tag === 'function') {
+    return createUi(world, node.tag, node.attributes);
+  }
+
+  const entry = world.get(TagRegistry).entry(node.tag);
+
+  if (entry.type !== ResourceType.Node) {
+    return createUi(world, entry.component, node.attributes);
+  }
+
+  const entity = entry.renderer.render(world, node.attributes, text);
+  const store = world.storage(UiElement);
+
+  // This binds attributes
+  if (store.has(entity)) {
+    bindAttrs(store.get(entity), node.attributes);
+  }
+
+  return entity;
 }
 
 /**

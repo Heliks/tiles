@@ -103,9 +103,12 @@ import { JsxNode } from './jsx-node';
 export interface UiComponent<P extends object = object> {
 
   /**
-   * Properties that are expected to be passed into this component as attributes. The
-   * type of this object determines type safety when this component is used as a JSX
-   * element.
+   * Data-bound properties that are expected to be passed into this component via
+   * attributes. The type of this object determines type safety when this component
+   * is used as a JSX element.
+   *
+   * This object is treated as the {@link ContextRef context} of the element that
+   * renders this component.
    */
   props?: P;
 
