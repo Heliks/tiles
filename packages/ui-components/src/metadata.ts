@@ -98,6 +98,7 @@ export function Component(selector: string, options?: ResourceOptions): Function
 export function Component(options?: ResourceOptions): Function;
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Component(...attributes: any[]): Function {
   return function componentDecorator(target: Type): void {
     let selector;
