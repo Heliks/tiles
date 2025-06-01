@@ -70,37 +70,6 @@ const DEFAULT_ATTRIBUTE_NAMES: Set<keyof Attributes> = new Set([
 ]);
 
 /**
- * @deprecated This function should be moved into {@link createJsxElement} and is only
- * here as long as @Input bindings are still supported.
- */
-function createJsxEntity(world: World, node: JsxNode, textStyle?: TextStyle): Entity {
-  const name = node.tag as string;
-  const entry = world.get(TagRegistry).entry(name);
-
-  if (entry.type === ResourceType.Node) {
-    return entry.renderer.render(world, node.attributes, textStyle);
-  }
-
-  return world.insert(
-    new UiElement(
-      new JsxRenderer(
-        world.make(entry.component)
-      )
-    ),
-    new UiNode(
-      // This is the default style we're applying. User defined styles via the "style"
-      // attribute are applied in a later step.
-      entry.options.style ?? {
-        size: new Rect<Size>(
-          Size.percent(1),
-          Size.auto()
-        )
-      }
-    )
-  );
-}
-
-/**
  * Binds the given `attributes` to `element`. Default attributes will be ignored. Values
  * that contain a {@link OneWayBinding} will be bound with {@link PassByFunction}. Other
  * values with {@link PassByValue}. Attributes that are bound will be set as input on the
@@ -300,7 +269,7 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       textStyle = node.attributes.style.text;
     }
 
-    const entity = createJsxElement(world, node as any, textStyle);
+    const entity = createJsxElement(world, node, textStyle);
     const uiNode = world.storage<UiNode>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
