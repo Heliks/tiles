@@ -1,6 +1,6 @@
-import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
+import { AppBuilder, Bundle, getTypeName, Type, World } from '@heliks/tiles-engine';
 import { Element } from '@heliks/tiles-ui';
-import { getTagMetadata } from './metadata';
+import { getResourceMetadata, ResourceType } from './metadata';
 import { Div, Fill, SlicePlane, Span, Sprite, Text, Texture } from './nodes';
 import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
@@ -49,27 +49,41 @@ export class UiComponentsBundle implements Bundle {
     };
   }
 
+
+
   /** @internal */
   private registerDeclarations(world: World): void {
     const declarations = this.getDeclarations();
     const store = world.get(TagRegistry);
 
     for (const type of declarations.components) {
-      const meta = getTagMetadata(type);
-      
-      store.component(meta.tag, type, meta.options);
+      const meta = getResourceMetadata(type);
+
+      if (meta.type !== ResourceType.Component) {
+        throw new Error('Invalid metadata type for component: ' + getTypeName(type))
+      }
+
+      store.component(meta.selector, type, meta.options);
     }
 
     for (const type of declarations.elements) {
-      const meta = getTagMetadata(type);
+      const meta = getResourceMetadata(type);
 
-      store.node(meta.tag, new UiElementRenderer(type, meta), meta.options);
+      if (meta.type !== ResourceType.Node) {
+        throw new Error('Invalid metadata type for element: ' + getTypeName(type))
+      }
+
+      store.node(meta.selector, new UiElementRenderer(type, meta), meta.options);
     }
 
     for (const type of declarations.nodes) {
-      const meta = getTagMetadata(type);
+      const meta = getResourceMetadata(type);
 
-      store.node(meta.tag, world.make(type), meta.options);
+      if (meta.type !== ResourceType.Node) {
+        throw new Error('Invalid metadata type for node: ' + getTypeName(type))
+      }
+
+      store.node(meta.selector, world.make(type), meta.options);
     }
   }
 

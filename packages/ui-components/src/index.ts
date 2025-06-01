@@ -4,6 +4,7 @@ import { JsxNode } from './jsx-node';
 export * from './nodes';
 
 export * from './attributes';
+export * from './bind';
 export * from './data';
 export * from './helpers';
 export * from './jsx-node';
