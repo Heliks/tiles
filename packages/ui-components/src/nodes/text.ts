@@ -21,10 +21,15 @@ export class Text implements UiNodeRenderer {
 
   /** @inheritDoc */
   public render(world: World, attributes: Attributes, style?: TextStyle): Entity {
-    // The actual text will be set via inputs.
-    const text = new UiText('');
-
-    return world.insert(new UiNode({ text: style }), new UiElement(text));
+    return world.insert(
+      new UiNode({
+        text: style
+      }),
+      new UiElement(
+        // The actual text will be set via inputs.
+        new UiText('')
+      )
+    );
   }
 
 }
