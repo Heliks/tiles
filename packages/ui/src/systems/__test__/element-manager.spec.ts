@@ -128,17 +128,14 @@ describe('ElementManager', () => {
 
   describe('onEntityAdded()', () => {
     it('should initialize the elements context reference', () => {
-      // Test context.
-      const context = {};
       const element = new UiElement({
-        update: () => null,
-        getContext: () => context
+        update: () => null
       });
 
       // Add an entity with the created element to the system.
       system.onEntityAdded(world, world.insert(new UiNode(), element));
 
-      expect(element.context.context).toBe(context);
+      expect(element.context).toMatchObject(ContextRef.from(element.instance));
     });
 
     it('should enable change tracking when context reference has OnChanges lifecycle', () => {

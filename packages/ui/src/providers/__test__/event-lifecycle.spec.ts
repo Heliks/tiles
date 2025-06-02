@@ -1,5 +1,6 @@
 import { App, runtime, Subscriber, World } from '@heliks/tiles-engine';
 import { NoopElement } from '../../__test__/utils/noop-element';
+import { ContextRef } from '../../context';
 import { OnEvent } from '../../lifecycle';
 import { UiElement } from '../../ui-element';
 import { UiEvent } from '../../ui-event';
@@ -25,12 +26,16 @@ describe('EventLifecycle', () => {
         onEvent = jest.fn();
       }
 
-      const element = new UiElement(new Foo());
+      const elem = new UiElement(new Foo());
       const node = new UiNode();
 
+      // Context is required to trigger event lifecycle.
+      elem.context = ContextRef.from(elem.instance);
+
+      // Node must be interactive to allow the element to receive events.
       node.interactive = true;
 
-      const owner = world.insert(node, element);
+      const owner = world.insert(node, elem);
 
       // The system can only receive UiEvents that occur after it has initialized the
       // subscription for the interaction event queue.
@@ -41,9 +46,9 @@ describe('EventLifecycle', () => {
       node.onInteract.push(event);
 
       // Execute the lifecycle event.
-      service.trigger(world, owner, node, element.instance);
+      service.trigger(world, owner, node, elem);
 
-      expect(element.instance.onEvent).toHaveBeenCalledWith(world, event, owner);
+      expect(elem.instance.onEvent).toHaveBeenCalledWith(world, event, owner);
     });
   });
 

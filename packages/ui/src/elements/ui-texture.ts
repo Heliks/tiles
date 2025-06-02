@@ -25,11 +25,6 @@ export class UiTexture implements Element {
    */
   constructor(private texture: Texture | Handle<Texture>) {}
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
   /** @internal */
   private resolveTextureUpdate(world: World): Texture | undefined {
     return this.texture instanceof Handle ? world.get(AssetStorage).get(this.texture) : this.texture;

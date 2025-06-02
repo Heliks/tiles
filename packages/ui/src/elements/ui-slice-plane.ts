@@ -27,11 +27,6 @@ export class UiSlicePlane<I extends SpriteId = SpriteId> implements Element, Pos
     this.view.visible = false;
   }
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
   /** @internal */
   private createPlaneTexture(world: World): Texture | undefined {
     const spritesheet = world.get(AssetStorage).get(this.spritesheet);

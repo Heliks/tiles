@@ -19,9 +19,4 @@ export class SpawnOnUpdate implements Element {
     }
   }
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
 }

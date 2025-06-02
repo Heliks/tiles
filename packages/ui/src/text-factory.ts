@@ -8,14 +8,12 @@ export class TextFactory {
   public parse(style: TextStyle, target: Partial<PixiText> = {}): Partial<PixiText> {
     target.fill = style.color;
     target.fillGradientStops = style.colorStops;
+    target.fontSize = style.fontSize;
 
     if (style.fontFamily) {
       target.fontFamily = style.fontFamily;
     }
-
-    target.fontSize = style.fontSize;
-    target.wordWrap = style.wrap;
-
+    
     if (style.borderWidth !== undefined && style.borderColor !== undefined) {
       target.stroke = style.borderColor;
       target.strokeThickness = style.borderWidth;

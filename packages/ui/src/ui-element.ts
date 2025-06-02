@@ -47,8 +47,8 @@ export class UiElement<C extends object = object, E extends Element<C> = Element
   constructor(public readonly instance: E) {}
 
   /** @see Element.getContext */
-  public getContext(): C {
-    return this.instance.getContext();
+  public getContext(): object {
+    return this.instance.getContext ? this.instance.getContext() : this.instance;
   }
 
   /**

@@ -17,9 +17,4 @@ export class SpawnOnInit implements Element, OnInit {
   /** @inheritDoc */
   public update(world: World, entity: Entity): void {}
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
 }

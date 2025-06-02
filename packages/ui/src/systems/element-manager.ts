@@ -110,7 +110,7 @@ export class ElementManager extends ReactiveSystem {
       return;
     }
 
-    this.eventLifecycle.trigger(world, entity, node, element.instance);
+    this.eventLifecycle.trigger(world, entity, node, element);
 
     element.instance.update(world, entity, node.layout);
 
