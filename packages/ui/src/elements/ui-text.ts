@@ -8,12 +8,6 @@ import { Style } from '../style';
 import { TextFactory } from '../text-factory';
 
 
-export enum TextBorderStyle {
-  Miter,
-  Round,
-  Bevel
-}
-
 /** Displays text. */
 export class UiText implements Element, OnInit {
 
@@ -53,68 +47,32 @@ export class UiText implements Element, OnInit {
   }
 
   /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
-  /** @inheritDoc */
   public onInit(world: World): void {
     this._parser = world.get(TextFactory);
   }
 
   /** @inheritDoc */
   public update(world: World, entity: Entity, layout: Node<Style>): void {
-    this.view.text = this.text;
-    this.size.width.value = this.view.width;
-    this.size.height.value = this.view.height;
-
     if (layout.style.text) {
       this._parser.parse(layout.style.text, this.view.style);
-
-      if (layout.style.text.wrap && layout.parent) {
-        this.view.style.wordWrapWidth = layout.parent.size.width;
-      }
     }
-  }
-  
-  /**
-   * Applies a border to the text.
-   *
-   * @param width Stroke width in px.
-   * @param color Border color.
-   * @param style Border style.
-   */
-  public stroke(width = 1, color = 0x000000, style = TextBorderStyle.Round): this {
-    this.view.style.lineJoin = style;
-    this.view.style.stroke = color;
-    this.view.style.strokeThickness = width;
 
-    return this;
+    this.view.text = this.text;
+    this.size.width.value  = this.view.width;
+    this.size.height.value = this.view.height;
   }
 
-  /** Changes the font family of the text. */
-  public font(family: string, size: number, color: number): this {
-    this.view.style.fontFamily = family;
-    this.view.style.fontSize = size;
-    this.view.style.fill = color;
-
-    return this;
-  }
-
-  /**
-   * Applies a drop shadow to the text.
-   *
-   * @param blur Blur distance in px.
-   * @param distance Distance from the text in px.
-   * @param angle Angle in radians.
-   */
-  public shadow(blur: number, distance = 0, angle = 0): this {
-    this.view.style.dropShadow = true;
-    this.view.style.dropShadowBlur = blur;
-    this.view.style.dropShadowDistance = distance;
-    this.view.style.dropShadowAngle = angle;
-
-    return this;
+  /** @inheritDoc */
+  public postprocess(world: World, entity: Entity, layout: Node<Style>): void {
+    // Todo: This is a chicken and egg problem. We can only wrap in post-process because
+    //  the layout must be fully calculated to determine how much space we have available
+    //  to wrap into, but breaking text into multiple lines can also affect the layout
+    //  if the node that contains it has a dynamic height (auto, percentage). Therefore,
+    //  this code causes the wrapping to take effect one frame too late.
+    if (layout.style.text?.wrap && layout.parent) {
+      this.view.style.wordWrap = true;
+      this.view.style.wordWrapWidth = layout.parent.size.width;
+    }
   }
 
 }

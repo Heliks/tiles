@@ -49,8 +49,6 @@ export class UiComponentsBundle implements Bundle {
     };
   }
 
-
-
   /** @internal */
   private registerDeclarations(world: World): void {
     const declarations = this.getDeclarations();
@@ -63,7 +61,7 @@ export class UiComponentsBundle implements Bundle {
         throw new Error('Invalid metadata type for component: ' + getTypeName(type))
       }
 
-      store.component(meta.selector, type, meta.options);
+      store.component(meta.selector, type);
     }
 
     for (const type of declarations.elements) {
@@ -73,7 +71,7 @@ export class UiComponentsBundle implements Bundle {
         throw new Error('Invalid metadata type for element: ' + getTypeName(type))
       }
 
-      store.node(meta.selector, new UiElementRenderer(type, meta), meta.options);
+      store.node(meta.selector, new UiElementRenderer(type, meta));
     }
 
     for (const type of declarations.nodes) {
@@ -83,7 +81,7 @@ export class UiComponentsBundle implements Bundle {
         throw new Error('Invalid metadata type for node: ' + getTypeName(type))
       }
 
-      store.node(meta.selector, world.make(type), meta.options);
+      store.node(meta.selector, world.make(type));
     }
   }
 

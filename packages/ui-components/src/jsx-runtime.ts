@@ -80,10 +80,6 @@ export function getChildren(params: NodeParams): readonly JsxNode[] {
  * @see https://www.typescriptlang.org/docs/handbook/jsx.html
  */
 export function jsx(tag: JsxTag, params: NodeParams): JsxNode {
-  if (typeof tag !== 'string') {
-    // throw new Error('Class or function components are not supported.');
-  }
-
   return {
     $$node: JSX_NODE_MARKER,
     attributes: params ?? EMPTY_ATTRIBUTES,

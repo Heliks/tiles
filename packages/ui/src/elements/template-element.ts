@@ -43,11 +43,6 @@ export class TemplateElement<R extends TemplateRenderer = TemplateRenderer> impl
 
   constructor(public readonly renderer: R) {}
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
   /** Renders the template if it isn't already rendered. */
   public render(world: World, entity: Entity): void {
     if (this.root !== undefined) {

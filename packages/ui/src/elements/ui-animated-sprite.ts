@@ -64,11 +64,6 @@ export class UiAnimatedSprite implements Element {
   }
 
   /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
-  /** @inheritDoc */
   public update(world: World): void {
     const asset = world.get(AssetStorage).get(this.spritesheet);
 

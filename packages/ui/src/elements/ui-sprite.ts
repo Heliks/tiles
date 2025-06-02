@@ -34,11 +34,6 @@ export class UiSprite<I extends SpriteId = SpriteId> implements Element {
     this.view.visible = false;
   }
 
-  /** @inheritDoc */
-  public getContext(): object {
-    return this;
-  }
-
   /** Updates the displayed sprite. */
   public set(spritesheet: Handle<SpriteSheet>, spriteIndex: I): this {
     this.spritesheet = spritesheet;

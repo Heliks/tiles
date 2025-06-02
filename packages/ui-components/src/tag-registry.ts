@@ -1,14 +1,14 @@
 import { Type } from '@heliks/tiles-engine';
-import { ResourceOptions, ResourceType } from './metadata';
+import { ResourceType } from './metadata';
 import { UiComponent } from './ui-component';
 import { UiNodeRenderer } from './ui-node-renderer';
 
 
 /** Registry entry for a tag that renders a {@link UiNode}. */
-export type TagRegistryNodeEntry = { options: ResourceOptions; renderer: UiNodeRenderer, type: ResourceType.Node  };
+export type TagRegistryNodeEntry = { renderer: UiNodeRenderer, type: ResourceType.Node  };
 
 /** Registry entry for a tag that renders a {@link UiComponent}. */
-export type TagRegistryComponentEntry = { options: ResourceOptions; component: Type<UiComponent>, type: ResourceType.Component };
+export type TagRegistryComponentEntry = { component: Type<UiComponent>, type: ResourceType.Component };
 
 /** An entry for the {@link TagRegistry}. */
 export type TagRegistryEntry = TagRegistryNodeEntry | TagRegistryComponentEntry;
@@ -32,9 +32,8 @@ export class TagRegistry {
    * Registers a `tag` that is rendered by `renderer`. Throws an error if the given tag
    * name is already in use.
    */
-  public node(tag: string, renderer: UiNodeRenderer, options: ResourceOptions = {}): this {
+  public node(tag: string, renderer: UiNodeRenderer): this {
     this.set(tag, {
-      options,
       renderer,
       type: ResourceType.Node
     });
@@ -46,10 +45,9 @@ export class TagRegistry {
    * Registers a `tag` that renders a UI `component`. Throws an error if the given tag
    * name is already in use.
    */
-  public component(tag: string, component: Type<UiComponent>, options: ResourceOptions = {}): this {
+  public component(tag: string, component: Type<UiComponent>): this {
     this.set(tag, {
       component,
-      options,
       type: ResourceType.Component
     });
 

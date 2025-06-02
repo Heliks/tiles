@@ -50,9 +50,9 @@ export interface Element<V extends object = object> {
   update(world: World, entity: Entity, layout: LayoutNode): void;
 
   /**
-   * Returns the context used for the elements' {@link ContextRef} when it is spawned
-   * into the world. In most cases, this is the element itself.
+   * If defined, returns the context used for the elements' {@link ContextRef} when it
+   * is spawned into the world. By default, the element itself is used as context.
    */
-  getContext(): V;
+  getContext?(): V;
 
 }
