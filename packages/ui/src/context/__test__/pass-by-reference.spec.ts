@@ -4,11 +4,11 @@ import { PassByReference } from '../pass-by-reference';
 
 describe('PassByReference', () => {
   it('should assign input values to the local context', () => {
-    const host = new ContextRef({
+    const host = ContextRef.from({
       foo: 'bar'
     });
 
-    const local = new ContextRef({
+    const local = ContextRef.from({
       bar: 'foo'
     });
 
@@ -21,11 +21,11 @@ describe('PassByReference', () => {
   });
 
   it('should assign input values to the local context', () => {
-    const local = new ContextRef({
+    const local = ContextRef.from({
       local0: false
     });
 
-    const host = new ContextRef({
+    const host = ContextRef.from({
       host0: {
         host1: 'foobar'
       }
