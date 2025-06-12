@@ -16,12 +16,15 @@ export class LoadTexture implements Format<Blob, Texture> {
   public readonly type = LoadType.Blob;
 
   /** @inheritDoc */
-  public process(data: Blob): Texture {
-    const image = new Image();
+  public process(data: Blob): Promise<Texture> {
+    return new Promise(resolve => {
+      const image = new Image();
 
-    image.src = URL.createObjectURL(data);
-
-    return Texture.from(image);
+      image.src = URL.createObjectURL(data);
+      image.onload = () => {
+        resolve(Texture.from(image));
+      };
+    });
   }
 
 }
