@@ -26,10 +26,10 @@ export class Grid {
    * @param cellHeight Height of each individual cell in the grid.
    */
   constructor(
-    public readonly cols: number,
-    public readonly rows: number,
-    public readonly cellWidth = 1,
-    public readonly cellHeight = 1
+    public cols: number,
+    public rows: number,
+    public cellWidth = 1,
+    public cellHeight = 1
   ) {}
 
   /**
