@@ -41,7 +41,7 @@ interface SpriteSlicesData extends BaseSpriteSheetData {
 type SpriteSheetData = SpriteSlicesData | SpriteGridData;
 
 /** @internal */
-function _grid(texture: Texture, data: SpriteGridData): SpriteGrid {
+function _grid(texture: Texture, texturePath: string, data: SpriteGridData): SpriteGrid {
   const grid = new Grid(
     Math.floor(data.imageWidth / data.spriteWidth),
     Math.floor(data.imageHeight / data.spriteHeight),
@@ -49,12 +49,12 @@ function _grid(texture: Texture, data: SpriteGridData): SpriteGrid {
     data.spriteHeight
   );
 
-  return new SpriteGrid(grid, texture);
+  return new SpriteGrid(grid, texture, texturePath);
 }
 
 /** @internal */
-function _slices(texture: Texture, data: SpriteSlicesData): SpriteSlices {
-  const spritesheet = new SpriteSlices(texture);
+function _slices(texture: Texture, texturePath: string, data: SpriteSlicesData): SpriteSlices {
+  const spritesheet = new SpriteSlices(texture, texturePath);
 
   for (const id in data.slices) {
     const slice = data.slices[id];
@@ -70,16 +70,6 @@ function _slices(texture: Texture, data: SpriteSlicesData): SpriteSlices {
   return spritesheet;
 }
 
-/** @internal */
-function parse(texture: Texture, data: SpriteSheetData): SpriteSheet {
-  switch (data.type) {
-    default:
-    case 'grid':
-      return _grid(texture, data);
-    case 'slices':
-      return _slices(texture, data);
-  }
-}
 
 /**
  * Loads {@link Spritesheet spritesheets} from `.spritesheet` & `.spritesheet.json` files.
@@ -132,8 +122,12 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
   public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
-    const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const spritesheet = parse(texture, data);
+    const texturePath = getDirectory(file, data.image);
+    const texture = await loader.fetch<Texture>(texturePath);
+
+    const spritesheet = data.type === 'slices'
+      ? _slices(texture, texturePath, data)
+      : _grid(texture, texturePath, data);
 
     if (data.animations) {
       for (const name in data.animations) {
