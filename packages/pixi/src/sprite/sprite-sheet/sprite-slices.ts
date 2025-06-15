@@ -31,8 +31,10 @@ export class SpriteSlices extends SpriteSheet<SliceId> {
 
   /**
    * @param source Source texture from which sprite textures will be created.
+   * @param sourcePath File path from which the {@link source} texture has been loaded,
+   *  or `undefined` if the source was created dynamically.
    */
-  constructor(public readonly source: Texture) {
+  constructor(public readonly source: Texture, public readonly sourcePath?: string) {
     super();
   }
 
