@@ -74,14 +74,19 @@ export class Grid {
     );
   }
 
-  /** Returns `true` if a `cell` index is within the bounds of this grid. */
+  /** Returns `true` if the given `cell` index is inside the bounds of the grid. */
   public isIndexInBounds(cell: number): boolean {
     return cell >= 0 && cell < this.size;
   }
 
-  /** Returns `true` if `col` and `row` are within the bounds of this grid. */
+  /** Returns `true` if the given `col` and `row` are inside the bounds of the grid. */
   public isLocationInBounds(col: number, row: number): boolean {
     return col < this.cols && col >= 0 && row < this.rows && row >= 0;
+  }
+
+  /** Returns `true` if the given position is inside the bounds of the grid. */
+  public isPositionInBounds(x: number, y: number) {
+    return x >= 0 && y >= 0 && x <= this.width && y <= this.height;
   }
 
   /** Returns a new {@link Grid} that is identical to this one. */

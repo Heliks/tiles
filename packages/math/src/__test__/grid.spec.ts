@@ -1,4 +1,6 @@
 import { Grid } from '../grid';
+import { Vec2 } from '../vec2';
+
 
 describe('Grid', () => {
   it.each([
@@ -55,6 +57,40 @@ describe('Grid', () => {
     [100, false]
   ])('should check if cell index %i is in bounds of a 10x10 grid', (cell, expected) => {
     expect(new Grid(10, 10, 16, 16).isIndexInBounds(cell)).toBe(expected);
+  });
+
+  it.each([
+    {
+      position: new Vec2(0, 0),
+      expected: true
+    },
+    {
+      position: new Vec2(-1, 0),
+      expected: false
+    },
+    {
+      position: new Vec2(0, -1),
+      expected: false
+    },
+    {
+      position: new Vec2(10, 10),
+      expected: true
+    },
+    {
+      position: new Vec2(50, 51),
+      expected: false
+    },
+    {
+      position: new Vec2(51, 50),
+      expected: false
+    },
+  ])('should check if position x: $position.x y: $position.y is in bounds', data => {
+    const result = new Grid(10, 10, 5, 5).isPositionInBounds(
+      data.position.x,
+      data.position.y
+    );
+
+    expect(result).toBe(data.expected);
   });
 
   it('should have a size equal to its amount of total cells', () => {
