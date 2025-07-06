@@ -74,6 +74,11 @@ export class Tileset<C extends CustomTile = CustomTile> {
     return terrain;
   }
 
+  /** Returns an array that contains all {@link Terrain terrains} of this tileset. */
+  public getTerrains(): Terrain[] {
+    return Array.from(this.terrains.values());
+  }
+
   /**
    * Returns the name of the {@link spritesheet} animation that should be played when
    * a tile index is added to a {@link Tilemap}.
