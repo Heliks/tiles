@@ -77,7 +77,7 @@ export class Grid {
   /** Returns `true` if the given `cell` index is inside the bounds of the grid. */
   public isIndexInBounds(cell: number): boolean {
     return cell >= 0 && cell < this.size;
-  }
+  } 
 
   /** Returns `true` if the given `col` and `row` are inside the bounds of the grid. */
   public isLocationInBounds(col: number, row: number): boolean {

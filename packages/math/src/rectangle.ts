@@ -21,6 +21,20 @@ export class Rectangle implements Shape, RectangleBounds {
    */
   constructor(public width: number, public height: number, public x = 0, public y = 0) {}
 
+  /**
+   * Checks if `x` and `y` are inside a rectangle boundary.
+   *
+   * @param x Position along x-axis to check.
+   * @param y Position along y-axis to check.
+   * @param bx Rectangle boundary position along x-axis.
+   * @param by Rectangle boundary position along y-axis.
+   * @param bw Rectangle boundary width.
+   * @param bh Rectangle boundary height.
+   */
+  public static contains(x: number, y: number, bx: number, by: number, bw: number, bh: number): boolean {
+    return Boolean(x <= (x + bw) && y <= (y + bh) && x <= x && y <= y);
+  }
+
   /** @inheritDoc */
   public copy(): Rectangle {
     return new Rectangle(this.width, this.height, this.x, this.y);
@@ -40,15 +54,9 @@ export class Rectangle implements Shape, RectangleBounds {
     return this;
   }
 
-  /** Returns `true` if coordinates `x` and `a` are inside of a `box`. */
-  public static contains(box: RectangleBounds, x: number, y: number): boolean {
-    return box.x <= x && x <= (box.x + box.width)
-      && box.y <= y && y <= (box.y + box.height);
-  }
-
-  /** Returns `true` if coordinates `x` and `a` are inside of a this rectangle. */
+  /** Checks if `x` and `y` are inside the boundaries of this rectangle. */
   public contains(x: number, y: number): boolean {
-    return Rectangle.contains(this, x, y);
+    return Rectangle.contains(x, y, this.x, this.y, this.width, this.height);
   }
 
 }
