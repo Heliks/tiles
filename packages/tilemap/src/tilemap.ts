@@ -1,5 +1,5 @@
 import { AssetLoader } from '@heliks/tiles-assets';
-import { createPackedArray, Grid, Serialize, TypeId, World } from '@heliks/tiles-engine';
+import { createPackedArray, Grid, Serialize, TypeId, Vec2, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { AnimatedSprite, Container } from 'pixi.js';
 import { LocalTileset, LocalTilesetBag, Tileset } from './tileset';
@@ -29,7 +29,7 @@ export interface TilemapData {
  *
  * Tilemaps fully support automatic serialization. However, since tilemaps don't accept
  * asset handles & require their tilesets to be fully loaded at the time they are created,
- * they must be deserialized manually.
+ * they must be deserialized async and therefore, manually.
  *
  * Invoke `Tilemap.restore()` to manually restore a tilemap from serialized data:
  *
@@ -53,6 +53,16 @@ export interface TilemapData {
  */
 @TypeId('tiles_tilemap')
 export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapData> {
+
+  /**
+   * Defines the tilemaps pivot point as a percentage of its size.
+   *
+   * For example:
+   *
+   * - `(0.5, 0.5)` Pivot is at the tilemaps center.
+   * - `(0.0, 0.0)` Pivot is at the tilemaps top left corner.
+   */
+  public readonly pivot = new Vec2(0, 0);
 
   /**
    * Grid data. Each index represents a grid cell and each value a tile ID. If a cell
