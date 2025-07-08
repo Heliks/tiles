@@ -89,6 +89,10 @@ export class RenderTiles extends ReactiveSystem {
     tilemap.view.removeChildren();
     tilemap._animations.length = 0;
 
+    // Update pivot position.
+    tilemap.view.pivot.x = tilemap.grid.width * tilemap.pivot.x;
+    tilemap.view.pivot.y = tilemap.grid.height * tilemap.pivot.y;
+
     for (let i = 0, l = tilemap.data.length; i < l; i++) {
       const gId = tilemap.data[i];
 

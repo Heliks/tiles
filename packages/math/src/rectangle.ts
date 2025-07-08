@@ -32,7 +32,7 @@ export class Rectangle implements Shape, RectangleBounds {
    * @param bh Rectangle boundary height.
    */
   public static contains(x: number, y: number, bx: number, by: number, bw: number, bh: number): boolean {
-    return Boolean(x <= (x + bw) && y <= (y + bh) && x <= x && y <= y);
+    return Boolean(x <= (bx + bw) && y <= (by + bh) && x >= bx && y >= by);
   }
 
   /** @inheritDoc */
