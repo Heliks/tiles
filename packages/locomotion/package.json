@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-locomotion",
-  "version": "0.0.3-rc1",
+  "version": "0.0.3-rc2",
   "description": "Tiles locomotion utilities",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
