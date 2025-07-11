@@ -96,7 +96,7 @@ export class Vec2 implements XY {
     return this;
   }
 
-  /** Returns `true` if `point` is equal to this vector. */
+  /** Compares the given `point` with the components of this vector. */
   public equals(point: XY): boolean {
     return this.x === point.x && this.y === point.y;
   }

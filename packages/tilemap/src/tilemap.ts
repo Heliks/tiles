@@ -219,6 +219,8 @@ export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapDa
       this.data[i] = 0;
     }
 
+    this.dirty = true;
+
     return this;
   }
 

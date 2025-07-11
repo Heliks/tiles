@@ -1,7 +1,7 @@
 export interface Shape {
 
   /** Creates a new shape with the exact same properties as this one. */
-  copy(): Shape;
+  clone(): Shape;
 
   /**
    * Scales the shape along the `x` and `y` axis.
@@ -11,6 +11,5 @@ export interface Shape {
    * two axis's.
    */
   scale(x: number, y?: number): this;
-
 
 }

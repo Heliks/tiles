@@ -32,7 +32,7 @@ export class TmxPhysicsFactory {
 
   /** @internal */
   private collider(geometry: TmxGeometry<TmxPhysicsOptions>, scale: XY): Collider {
-    const shape = geometry.shape.copy();
+    const shape = geometry.shape.clone();
 
     // When the parser converts ellipsis into circles it chooses the larger of the two
     // sides. Do the same for the circle shape.
