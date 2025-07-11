@@ -211,5 +211,29 @@ export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapDa
     return this.grid.isIndexInBounds(cell) ? this.data[ cell ] : 0;
   }
 
+  /** Resets all tile IDs to `0`. */
+  public clear(): this {
+    let i = this.data.length;
+
+    while (i--) {
+      this.data[i] = 0;
+    }
+
+    return this;
+  }
+
+  /** Returns a clone of this tilemap. */
+  public clone(): Tilemap {
+    const tilemap = new Tilemap(this.grid, this.layer);
+
+    tilemap.pivot.copy(this.pivot);
+    tilemap.tilesets.copy(this.tilesets);
+
+    tilemap.data.length = 0;
+    tilemap.data.push(...this.data);
+
+    return tilemap;
+  }
+
 }
 
