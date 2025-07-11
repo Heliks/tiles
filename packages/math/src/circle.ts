@@ -12,7 +12,7 @@ export class Circle implements Shape {
   constructor(public radius: number, public x = 0, public y = 0) {}
 
   /** @inheritDoc */
-  public copy(): Circle {
+  public clone(): Circle {
     return new Circle(this.radius, this.x, this.y);
   }
 

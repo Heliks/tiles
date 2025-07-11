@@ -2,16 +2,17 @@ import { Shape } from './shape';
 import { XY } from './vec2';
 
 
-/** Boundaries of a rectangle. */
-export interface RectangleBounds {
+/** Dimensions of a rectangular box. */
+export interface Box {
   width: number;
   height: number;
   x: number;
   y: number;
 }
 
+
 /** A rectangle shape. */
-export class Rectangle implements Shape, RectangleBounds {
+export class Rectangle implements Shape, Box {
 
   /**
    * @param width The rectangles width.
@@ -36,8 +37,37 @@ export class Rectangle implements Shape, RectangleBounds {
   }
 
   /** @inheritDoc */
-  public copy(): Rectangle {
+  public clone(): Rectangle {
     return new Rectangle(this.width, this.height, this.x, this.y);
+  }
+
+  /** Copies the values of the given `box` to this rectangle. */
+  public copy(box: Box): this {
+    this.width = box.width;
+    this.height = box.height;
+
+    this.x = box.x;
+    this.y = box.y;
+
+    return this;
+  }
+
+  /**
+   * Updates the rectangle boundaries
+   *
+   * @param width New width.
+   * @param height New height.
+   * @param x New position along x-axis. Defaults to `0` if not defined.
+   * @param y New position along y-axis. Defaults to `0` if not defined.
+   */
+  public set(width: number, height: number, x = 0, y = 0): this {
+    this.width = width;
+    this.height = height;
+
+    this.x = x;
+    this.y = y;
+
+    return this;
   }
 
   /** @inheritDoc */

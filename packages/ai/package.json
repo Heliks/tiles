@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-ai",
-  "version": "0.0.3-rc5",
+  "version": "0.0.3-rc6",
   "description": "Tiles utilities for common AI tasks",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
