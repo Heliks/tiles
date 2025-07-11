@@ -4,7 +4,7 @@ export interface Shape {
   copy(): Shape;
 
   /**
-   * Scales the shape along the `x` and `y` axis. If the `y` axis.
+   * Scales the shape along the `x` and `y` axis.
    *
    * Note: Not all shapes necessarily can be scaled on both x and y. How this is treated
    * depends on the shape. For example, circles will be scaled along the larger of the
