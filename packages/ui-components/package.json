@@ -1,6 +1,6 @@
 {
   "name": "@heliks/tiles-ui-components",
-  "version": "0.0.3-rc6",
+  "version": "0.0.3",
   "description": "UI Component framework",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
