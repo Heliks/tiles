@@ -4,12 +4,35 @@ import { ProcessingSystem } from './processing-system';
 
 
 /**
- * A system that pools entities and reacts to changes in that pool.
+ * System that tracks the addition or removal of entities that share a common set
+ * of components.
  *
- * If you need to implement logic into a reactive system, you must call the parents
- * update via `super.update(world)` or else changes in the entity pool will not be
- * processed properly. This can also cause memory leaks, as the event queue that
- * contains the updates will never be consumed.
+ * @example
+ *
+ * ```ts
+ * class LobbySystem extends ReactiveSystem {
+ *   // Defines which entities are tracked by this system.
+ *   public build(builder: QueryBuilder): Query {
+ *     return builder.contains(Player).contains(Transform).build();
+ *   }
+ *
+ *   // Handle players being added to the world.
+ *   public onEntityAdded(world: World, entity: Entity): void {
+ *     console.log(`Player ${entity} has entered.`);
+ *   }
+ *
+ *   // Handle players being removed from the world.
+ *   public onEntityRemoved(world: World, entity: Entity): void {
+ *     console.log(`Player ${entity} has left.`);
+ *   }
+ * }
+ * ```
+ *
+ * @remarks
+ *
+ * When implementing `update()`, `super.update(world)` must be called, otherwise no
+ * changes in the entity pool are processed. Additionally, it may lead to memory leaks
+ * as the internal event-queue is never consumed.
  */
 export abstract class ReactiveSystem extends ProcessingSystem {
 

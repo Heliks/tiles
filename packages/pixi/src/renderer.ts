@@ -67,6 +67,11 @@ export class Renderer {
     );
   }
 
+  /** Returns the native DOM element on which the game is rendered. */
+  public element(): HTMLCanvasElement {
+    return this.renderer.view;
+  }
+
   /**
    * Sets the renderers background color to the hex value of `color`. It takes until
    * the next renderer update until the new background color is applied.

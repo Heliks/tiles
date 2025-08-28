@@ -115,10 +115,13 @@ export class App {
   }
 
   /** Boots the app and starts the app's game loop. */
-  public start(state: State<World>): void {
+  public start(state: State<World>): this {
     this.boot();
+
     this.ticker.start();
     this.state.start(state);
+
+    return this;
   }
 
   /** Stops the app. */
