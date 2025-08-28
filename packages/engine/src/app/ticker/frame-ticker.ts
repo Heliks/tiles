@@ -1,31 +1,20 @@
-/** @internal */
-type ListenerFn = (delta: number) => void;
+import { Ticker } from './ticker';
 
-/** The ticker used to run the games update loop. */
-export class Ticker {
+
+/**
+ * Implementation of a {@link Ticker} that executes its callbacks using the web browser
+ * animation frame.
+ */
+export class FrameTicker extends Ticker {
 
   /** @internal */
   private started = false;
 
-  /** @internal */
-  private listeners: ListenerFn[] = [];
-
   /** Id of the animation frame request if there is one. */
   private requestId?: number;
 
-  /** Contains the delta time in MS. */
-  public delta = -1;
-
-  /**
-   * Timestamp of the last frame the ticker ran. A value of `-1` means the ticker has not
-   * been started yet.
-   */
+  /** Timestamp of the last frame the ticker ran. */
   private lastTick = -1;
-
-  /** Returns the delta time converted to seconds. */
-  public getDeltaSeconds(): number {
-    return this.delta / 1000;
-  }
 
   /** Returns `true` if a new animation frame can be requested. */
   public canRequestFrame(): boolean {
@@ -45,10 +34,12 @@ export class Ticker {
   }
 
   /**
-   * The `requestAnimationFrame()` callback.
+   * The `requestAnimationFrame() callback.
    *
-   * Note: This is declared as a closure because in high performance scenarios they are
-   *  significantly faster than a method that is wrapped with `.bind()`.
+   * This is defined as an anonymous function because it's faster to call this directly
+   * rather than to `bind()` the function.
+   *
+   * @internal
    */
   private tick = (currentTime: number): void => {
     this.requestId = undefined;
@@ -63,7 +54,7 @@ export class Ticker {
     }
   };
 
-  /** Starts the ticker. */
+  /** @inheritDoc */
   public start(): void {
     // Only start the ticker if it isn't already running.
     if (!this.started) {
@@ -72,7 +63,7 @@ export class Ticker {
     }
   }
 
-  /** Stops the ticker. */
+  /** @inheritDoc */
   public stop(): void {
     if (this.started) {
       this.started = false;
@@ -83,11 +74,6 @@ export class Ticker {
         this.requestId = undefined;
       }
     }
-  }
-
-  /** Adds the given `fn` to be called on each frame if the ticker is started. */
-  public add(fn: ListenerFn): void {
-    this.listeners.push(fn);
   }
 
 }
