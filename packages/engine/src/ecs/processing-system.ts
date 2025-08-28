@@ -2,21 +2,22 @@ import { Query, QueryBuilder, System, World } from '@heliks/ecs';
 
 
 /**
+ * System that iterates over entities that share a set of common components.
+ *
+ * Processes entities based on their component composition.
+ *
  * Pools entities based on their composition for further processing. This is useful if we
  * want to iterate over entities that all match a certain set of components.
  *
- * For example, a simple movement system might want to iterate over all entities that
- * have both a `Transform` and a `Velocity` component. An implementation of that would
- * look like this:
+ * @example
+ *
+ * A movement system might want to iterate over all entities that have both a `Transform`
+ * and a `Velocity` component. An example implementation of that could look like this:
  *
  * ```ts
  *  class MoveEntities extends ProcessingSystem {
- *
- *    public query(builder: QueryBuilder): Query {
- *      return builder
- *        .contains(Transform)
- *        .contains(Velocity)
- *        .build();
+ *    public query(query: QueryBuilder): Query {
+ *      return query.contains(Transform).contains(Velocity).build();
  *    }
  *
  *    public update(world: World): void {
@@ -28,23 +29,23 @@ import { Query, QueryBuilder, System, World } from '@heliks/ecs';
  *        transform.y += velocity.y;
  *      }
  *    }
- *
  * }
  * ```
  */
 export abstract class ProcessingSystem implements System {
 
   /**
-   * Contains the query that is created when {@link build} is called. The query and its
-   * result are only available after the system has been successfully booted.
+   * Query that matches the entities for this system.
+   *
+   * @remarks
+   *
+   * The query is only available after the system has been booted. Attempting to access
+    * it before boot will result in undefined behavior.
    */
   protected query!: Query;
 
-  /**
-   * Returns the query that is used to match entities to process. This is called during
-   * the boot process of the system.
-   */
-  public abstract build(builder: QueryBuilder): Query;
+  /** Builds and returns the {@link query} configuration for this system. */
+  public abstract build(query: QueryBuilder): Query;
 
   /** @inheritDoc */
   public abstract update(world: World): unknown;
