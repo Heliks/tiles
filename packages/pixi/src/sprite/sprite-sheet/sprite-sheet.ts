@@ -1,5 +1,5 @@
-import { Vec2 } from '@heliks/tiles-engine';
-import { Sprite, Texture } from 'pixi.js';
+import { Rectangle, Vec2 } from '@heliks/tiles-engine';
+import * as PIXI from 'pixi.js';
 import { SpriteAnimation } from '../animation';
 
 
@@ -13,32 +13,57 @@ export interface SpriteAnimationFrames {
 /** Valid types for a sprite ID. */
 export type SpriteId = number | string;
 
-/** A collection of sprites. */
+/** Unique ID of a sprite slice. */
+export type SliceId = number | string;
+
+/**
+ * Base class for managing spritesheets.
+ *
+ * ## Slices
+ *
+ * Slices are rectangular regions that are cut from the spritesheets' source texture
+ * as individual textures.
+ *
+ * @example
+ * ```ts
+ *  // Define a 25x25px slice.
+ *  spritesheet.setSliceRegion('foo', new Rectangle(0, 0, 25, 25));
+ *
+ *  // Create the texture for the "foo" slice.
+ *  const texture = spritesheet.slice('foo');
+ * ```
+ */
 export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
 
-  /** Contains all known animations, mapped to their name. */
+  /** Contains the spritesheet source texture. */
+  public abstract readonly source: PIXI.Texture;
+
+  /** Contains the spritesheet animation frames. */
   public readonly animations = new Map<string, SpriteAnimationFrames>();
 
-  /** @internal */
-  private readonly cache = new Map<I, Texture>();
+  /** Contains the spritesheets slices. */
+  private readonly slices = new Map<SliceId, Rectangle>();
 
-  /** Returns the total amount of sprites in this spritesheet. */
+  /** @internal */
+  private readonly cache = new Map<I, PIXI.Texture>();
+
+  /** Returns the total number of sprites. */
   public abstract size(): number;
 
   /**
-   * Returns the size of the sprite matching `id` in px. Depending on the sprite-sheet,
-   * this can throw an error if no sprite matches that id.
+   * Returns the size of the sprite matching `id`. Throws an error if `id` does not
+   * match any sprites.
    */
   public abstract getSpriteSize(id: I): Vec2;
 
   /** Internal implementation of the spritesheet {@link Texture} factory. */
-  protected abstract _texture(id: I): Texture;
+  protected abstract _texture(id: I): PIXI.Texture;
 
   /**
    * Creates a {@link Texture} from the sprite matching `id`. Depending on the sprite -
    * sheet, this can throw an error if no sprite matches that id.
    */
-  public texture(id: I): Texture {
+  public texture(id: I): PIXI.Texture {
     let texture = this.cache.get(id);
 
     if (! texture) {
@@ -53,8 +78,8 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
    * Creates the {@link Sprite} matching `id`. Depending on the sprite-sheet, this can
    * throw an error if no sprite matches that id.
    */
-  public sprite(id: I): Sprite {
-    return new Sprite(this.texture(id));
+  public sprite(id: I): PIXI.Sprite {
+    return new PIXI.Sprite(this.texture(id));
   }
 
   /**
@@ -116,6 +141,38 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
     return anim;
   }
 
+  /** Adds a new slice region. Throws if a slice with that ID already exists. */
+  public setSliceRegion(id: SliceId, region: Rectangle): this {
+    if (this.slices.has(id)) {
+      throw new Error(`Slice ${id} already exists.`);
+    }
+
+    this.slices.set(id, region);
+
+    return this;
+  }
+
+  /** Returns a slice region. Throws if a slice with that ID already exists. */
+  public getSliceRegion(id: SliceId): Rectangle {
+    const slice = this.slices.get(id);
+
+    if (! slice) {
+      throw new Error(`Invalid slice ${id}`);
+    }
+
+    return slice;
+  }
+
+  /** Creates the slice matching `id`. */
+  public slice(id: SliceId): PIXI.Texture {
+    const slice = this.getSliceRegion(id);
+
+    return new PIXI.Texture(this.source.baseTexture, new PIXI.Rectangle(
+      slice.x,
+      slice.y,
+      slice.width,
+      slice.height
+    ));
+  }
+
 }
-
-
