@@ -41,46 +41,38 @@ export class SpriteRender<I extends SpriteId = SpriteId, M extends ShaderMateria
    */
   public anchor = new Vec2(0, 0);
 
-  /** If set to `true` the sprite will be flipped on the x axis. */
+  /** Flips the sprite along the x-axis. */
   public flipX = false;
 
-  /** If set to `true` the sprite will be flipped on the y axis. */
+  /** Flips the sprite along the y-axis. */
   public flipY = false;
 
-  /** A {@link ShaderMaterial material} that should be applied to the sprite. */
+  /**
+   * Optional {@link ShaderMaterial} applied to the sprite. Used for custom rendering
+   * effects like color tinting or post-processing.
+   */
   public material?: M;
 
   /** Scale factor of the sprite. */
   public scale = new Vec2(1, 1);
 
   /**
-   * After the component has been added to the world, this will contain the layer on
-   * which the sprite is currently being rendered.
-   *
+   * Layer on which the sprite is currently rendered.
    * @internal
    */
   public _layer!: Layer;
 
   /**
-   * Contains the layer ID that is currently being used to determine {@link _layer}
-   *
-   * @internal
-   */
-  public _layerId?: LayerId;
-
-  /**
-   * Contains the material that is currently being applied to the sprite.
-   *
+   * Material that is currently applied to the sprite.
    * @internal
    */
   public _material?: M;
 
   /**
-   * Contains the currently applied sprite ID, if any.
-   *
+   * ID of the sprite that is currently rendered.
    * @internal
    */
-  public _spriteId?: SpriteId;
+  public _spriteId?: I;
 
   /** The opacity of the sprite. Value from 0-1. */
   public set opacity(opacity: number) {

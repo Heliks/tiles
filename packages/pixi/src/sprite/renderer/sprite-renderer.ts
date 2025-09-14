@@ -42,12 +42,10 @@ export class SpriteRenderer extends ReactiveSystem {
   /** @internal */
   private insert(sprite: SpriteRender): void {
     sprite._layer = this.stage.add(sprite._sprite, sprite.layer);
-    sprite._layerId = sprite.layer;
   }
 
   /** @internal */
   private updateLayer(sprite: SpriteRender): void {
-    // Remove from current container.
     sprite._sprite.parent.removeChild(sprite._sprite);
 
     this.insert(sprite);
@@ -57,7 +55,6 @@ export class SpriteRenderer extends ReactiveSystem {
   public onEntityAdded(world: World, entity: Entity): void {
     const render = world.storage(SpriteRender).get(entity);
 
-    // Add to render group if necessary.
     this.insert(render);
     this.sprites.set(entity, render._sprite);
   }
@@ -103,7 +100,7 @@ export class SpriteRenderer extends ReactiveSystem {
       const spritesheet = this.storage.get(render.spritesheet);
 
       // Switch render group.
-      if (render.layer !== render._layerId) {
+      if (render.layer !== render._layer.id) {
         this.updateLayer(render);
       }
 
