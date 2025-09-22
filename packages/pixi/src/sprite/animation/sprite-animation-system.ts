@@ -74,33 +74,11 @@ export class SpriteAnimationSystem extends ProcessingSystem {
         animation.transform = undefined;
       }
 
-      // Cancel if the animation is complete and does not loop.
-      if (animation.paused || (! animation.loop && animation.isComplete())) {
-        continue;
-      }
+      display.flipX = animation.flipX;
+      display.flipY = animation.flipY;
 
-      animation.elapsedTime += this.ticker.delta;
-
-      if (animation.frames.length === 0) {
-        continue;
-      }
-
-      // Calculate the next frame index based on the effective frame duration.
-      const nextFrame = (animation.elapsedTime / (animation.frameDuration / animation.speed))
-        % animation.frames.length | 0;
-
-      // Update the sprite renderer with the next frame if necessary.
-      if (nextFrame != animation.frame) {
-        animation.frame = nextFrame;
-
-        display.flipX = animation.flipX;
-        display.flipY = animation.flipY;
-
-        display.spriteId = animation.frames[nextFrame];
-
-        if (nextFrame === 0) {
-          animation.loops++;
-        }
+      if (animation.step(this.ticker.delta)) {
+        display.spriteId = animation.frames[animation.frame];
       }
     }
   }

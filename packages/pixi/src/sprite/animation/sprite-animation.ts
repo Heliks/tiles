@@ -8,60 +8,49 @@ export class SpriteAnimation {
   /** Elapsed time since the animation has started. */
   public elapsedTime = -1;
 
-  /** If set to `true` all frames in the animation will be flipped on the x axis. */
+  /** Flips all animation frames along the x-axis. */
   public flipX = false;
 
-  /** If set to `true` all frames in the animation will be flipped on the y axis. */
+  /** Flips all animation frames along the y-axis. */
   public flipY = false;
 
   /**
-   * Index of the frame that is currently displayed by the animation. A value of `-1`
-   * means that the animation hasn't yet rendered a frame to the sprite renderer.
+   * Index of the active animation frame. A value of `-1` means that no animation has
+   * been played yet.
    */
   public frame = -1;
 
-  /** If set to `true` the animation will start from scratch after it has completed. */
+  /** If enabled, the animation will restart after it completes. */
   public loop = true;
 
   /**
-   * Amount of times that the animation has looped. If the animation does not loop,
-   * this will have no effect.
-   *
-   * Will be reset when a different animation starts to be played.
-   *
-   * @see loop
+   * Number of times the animation has been restarted. Will be reset when a different
+   * animation is {@link play played}. The counter remains at `0` if {@link loop} is
+   * disabled.
    */
   public loops = 0;
 
-  /** While set to `true`, the animation will not progress. */
+  /** Pauses the animation. */
   public paused = false;
 
-  /** The name of the animation that is currently playing. */
+  /** Name of the animation that is currently playing, if any. */
   public playing?: string;
 
   /**
-   * The speed at which the animation is played. If the animation has a frame duration
-   * of `100ms` and a speed of `0.5` the real frame duration will be `50ms`.
-   */
-  public speed = 1;
-
-  /**
-   * Name of the animation that should be played next.
+   * Name of the animation that should be played next. Don't modify this directly and
+   * use {@link play()} to properly switch to a different animation.
    *
-   * The animation data is resolved from the adjacent {@link SpriteRender} component of
-   * the owner of this animation. This doesn't wait for the current animation to complete.
-   *
-   * Don't modify this directly. Use {@link play()} to properly switch the animation.
-   *
-   * @see play()
+   * @internal
    */
   public transform?: string;
 
   /**
-   * @param frames Contains the indexes of all sprites of which the animation consists.
+   * @param frames Contains the sprite IDs of each animation frame.
    * @param frameDuration Duration in ms of how long each frame is displayed.
+   * @param speed Animation speed. For example, an animation with a frame duration of
+   * 100 ms and a speed of 0.5 will have a real frame duration of 200 ms.
    */
-  constructor(public frames: number[] = [], public frameDuration = 100) {}
+  constructor(public frames: number[] = [], public frameDuration = 100, public speed = 1) {}
 
   /** Resets the animation back to the beginning. */
   public reset(): this {
@@ -76,33 +65,42 @@ export class SpriteAnimation {
     return this;
   }
 
-  /**
-   * Updates the speed in which the animation is played. Closer to `0` is slower (while
-   * `0` itself pauses the animation completely) and `1` is the default speed.
-   */
+  /** Sets the animation {@link speed}. */
   public setSpeed(speed: number): this {
     this.speed = speed;
 
     return this;
   }
 
-  /** Sets the [[frames]] that are used to create the animation. */
+  /** Sets the animation {@link frames}. */
   public setFrames(frames: number[]): this {
     this.frames = frames;
 
     // Make sure the animation gets updated by the animation system.
     this.frame = -1;
-
-    // If we manually set the frames we know that there is no named
-    // animation playing right anymore.
     this.playing = undefined;
 
     return this;
   }
 
   /**
+   * Flips all animation frames.
+   *
+   * Flips all frames in the animation.
+   *
+   * @param x If `true`, frames are flipped along the x-axis.
+   * @param y If `true`, frames are flipped along the y-axis.
+   */
+  public flip(x = false, y = false): this {
+    this.flipX = x;
+    this.flipY = y;
+
+    return this;
+  }
+
+  /**
    * Plays the animation with the given `name`. The animation data is derived from
-   * the `SpriteDisplay` of this entity.
+   * the {@link SpriteRender} attached to the owner of this animation.
    *
    * @param name Name of the animation that should be played.
    * @param loop (optional) If set to `true` the animation will start playing
@@ -112,16 +110,14 @@ export class SpriteAnimation {
     // Only start playing the animation if we aren't playing it already.
     if (this.playing !== name) {
       this.loop = loop;
-
       this.transform = name;
-
       this.flipX = false;
       this.flipY = false;
     }
     else if (this.transform && this.transform !== name) {
-      // If requested animation is already playing but flagged for transform we can abort
-      // the transform, since this play() call would transform it a second time back to
-      // the animation that is playing now.
+      // The user has most likely called play() a second time before the transform was
+      // applied. If we don't reset this here, this would "change" the animation to the
+      // one that is actually playing right now.
       this.transform = undefined;
     }
 
@@ -152,16 +148,51 @@ export class SpriteAnimation {
   }
 
   /**
-   * Flips all frames in the animation.
-   *
-   * @param x If set to `true` all frames will be flipped on the x axis.
-   * @param y If set to `true` all frames will be flipped on the y axis.
+   * Calculates the index of the next animation frame based on the animation duration
+   * and {@link elapsed time}.
    */
-  public flip(x = false, y = false): this {
-    this.flipX = x;
-    this.flipY = y;
+  public getNextFrame(): number {
+    return (this.elapsedTime / (this.frameDuration / this.speed)) % this.frames.length | 0;
+  }
 
-    return this;
+  /**
+   * Performs the animation step. Returns `true` if the animation {@link frame} has been
+   * changed in the process.
+   *
+   * @example
+   * ```ts
+   *  if (animation.step(delta)) {
+   *    // Frame has been changed.
+   *    sprite.spriteId = animation.frames[frame];
+   *  }
+   * ```
+   *
+   * @param delta Elapsed time since the last animation step.
+   */
+  public step(delta: number): boolean {
+    if (this.paused || (! this.loop && this.isComplete())) {
+      return false;
+    }
+
+    this.elapsedTime += delta;
+
+    if (this.frames.length === 0) {
+      return false;
+    }
+
+    const next = this.getNextFrame();
+
+    if (next === this.frame) {
+      return false;
+    }
+
+    this.frame = next;
+
+    if (next === 0) {
+      this.loops++;
+    }
+
+    return true;
   }
 
 }

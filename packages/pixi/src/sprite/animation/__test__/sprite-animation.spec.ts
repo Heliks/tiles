@@ -1,13 +1,129 @@
 import { SpriteAnimation } from '../sprite-animation';
 
+
 describe('SpriteAnimation', () => {
-  it('should check if an animation is complete', () => {
-    // Random frame indexes. The values here don't matter.
-    const animation = new SpriteAnimation([5, 4, 1, 8, 7]);
+  describe('isComplete()', () => {
+    let animation: SpriteAnimation;
 
-    // Set the animation to its last frame.
-    animation.frame = 4;
+    beforeEach(() => {
+      animation = new SpriteAnimation([1, 2, 3, 4])
+    });
 
-    expect(animation.isComplete()).toBeTruthy();
+    it('should return true when animation is on its last frame', () => {
+      animation.frame = 3;
+
+      expect(animation.isComplete()).toBeTruthy();
+    });
+
+    it('should return false when animation is transformed', () => {
+      const animation = new SpriteAnimation([5, 4, 1, 8, 7]);
+
+      animation.frame = 3;
+      animation.transform = 'foo';
+
+      expect(animation.isComplete()).toBeFalsy();
+    });
+  });
+
+  describe('getNextFrame()', () => {
+    let animation: SpriteAnimation;
+
+    beforeEach(() => {
+      animation = new SpriteAnimation();
+    });
+
+    it('should return 0 if animation has no frames', () => {
+      expect(animation.getNextFrame()).toBe(0);
+    });
+
+    it('should calculate frame for single-frame animations', () => {
+      animation.setFrames([1]);
+      animation.elapsedTime = 500;
+
+      expect(animation.getNextFrame()).toBe(0);
+    });
+
+    it('should calculate frame for multi-frame animations.', () => {
+      animation.setFrames([1, 2, 3, 4]);
+      animation.elapsedTime = 250;
+
+      expect(animation.getNextFrame()).toBe(2);
+    });
+
+    it('should account for animation speed', () => {
+      animation.setFrames([1, 2, 3, 4]);
+      animation.speed = 0.5;
+      animation.elapsedTime = 300;
+
+      expect(animation.getNextFrame()).toBe(1);
+    });
+
+    it('should wrap frame index', () => {
+      animation.setFrames([1, 2, 3, 4]);
+      animation.elapsedTime = 1050;
+
+      expect(animation.getNextFrame()).toBe(2);
+    });
+  });
+
+  describe('step()', () => {
+    let animation: SpriteAnimation;
+
+    beforeEach(() => {
+      animation = new SpriteAnimation([1, 2, 3, 4]);
+    });
+
+    it('should not change the frame if the animation is paused', () => {
+      animation.paused = true;
+      animation.step(100);
+
+      expect(animation.frame).toBe(-1);
+    });
+
+    it('should not update if there are no frames', () => {
+      animation.setFrames([]);
+      const result = animation.step(100);
+
+      expect(result).toBeFalsy();
+      expect(animation.frame).toBe(-1);
+    });
+
+    it('should not change the frame if the animation is complete and looping is disabled', () => {
+      animation.loop = false;
+      animation.frame = 3; // last frame
+
+      animation.step(100);
+
+      expect(animation.frame).toBe(3);
+    });
+
+    it('should update the frame based on the elapsed time', () => {
+      animation.step(250);
+
+      expect(animation.frame).toBe(2);
+    });
+
+    it('should correctly handle loops and update loop count', () => {
+      animation.elapsedTime = 950; // near end of cycle
+      animation.step(200); // moves into new cycle
+
+      expect(animation.frame).toBe(1);
+      expect(animation.loops).toBe(1);
+    });
+
+    it('should return true if the frame is updated', () => {
+      const result = animation.step(250);
+
+      expect(result).toBeTruthy();
+      expect(animation.frame).toBe(2);
+    });
+
+    it('should return false if the frame is not updated', () => {
+      animation.frame = 2;
+      const result = animation.step(50); // not enough time for a frame change
+
+      expect(result).toBeFalsy();
+      expect(animation.frame).toBe(2);
+    });
   });
 });

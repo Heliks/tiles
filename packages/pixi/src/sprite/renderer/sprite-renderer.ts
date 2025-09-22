@@ -84,6 +84,26 @@ export class SpriteRenderer extends ReactiveSystem {
     render._sprite.y = transform.world.y * render._layer.cameraTransformMultiplier * this.config.unitSize;
   }
 
+  /**
+   * Renders the given `sprite`.
+   *
+   * Returns a boolean that indicates if the sprite was updated in the process.
+   */
+  public render(sprite: SpriteRender): boolean {
+    if (sprite.isDirty()) {
+      const spritesheet = this.storage.get(sprite.spritesheet);
+
+      if (spritesheet) {
+        sprite._sprite.texture = spritesheet.texture(sprite.spriteId);
+        sprite._spriteId = sprite.spriteId;
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /** @inheritDoc */
   public update(world: World): void {
     // Update events from reactive system.
@@ -95,20 +115,12 @@ export class SpriteRenderer extends ReactiveSystem {
     // Update sprites.
     for (const entity of this.query.entities) {
       const render = displays.get(entity);
-      const sprite = render._sprite;
 
-      const spritesheet = this.storage.get(render.spritesheet);
-
-      // Switch render group.
       if (render.layer !== render._layer.id) {
         this.updateLayer(render);
       }
 
-      // Update sprite texture.
-      if (spritesheet && render.spriteId !== render._spriteId) {
-        sprite.texture = spritesheet.texture(render.spriteId);
-        render._spriteId = render.spriteId;
-      }
+      this.render(render);
 
       render._sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
       render._sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;

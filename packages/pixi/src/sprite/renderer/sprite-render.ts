@@ -139,6 +139,11 @@ export class SpriteRender<I extends SpriteId = SpriteId, M extends ShaderMateria
     return this;
   }
 
+  /** Returns `true` if {@link spriteId} doesn't match the currently rendered sprite. */
+  public isDirty(): boolean {
+    return this._spriteId !== this.spriteId;
+  }
+
   /** @inheritDoc */
   public serialize(world: World): SpriteRenderData<I> {
     const { flipX, flipY, layer, opacity, spriteId, visible } = this;
