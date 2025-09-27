@@ -1,9 +1,9 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
-import { SpriteRender } from '.';
 import { RendererConfig } from '../../config';
 import { Stage } from '../../layer';
+import { SpriteRender } from './sprite-render';
 
 
 @Injectable()
@@ -71,7 +71,6 @@ export class SpriteRenderer extends ReactiveSystem {
   /** @internal */
   private updateMaterial(render: SpriteRender): void {
     if (render.material !== render._material) {
-      // If no material is applied, reset the sprite filters.
       render._sprite.filters = render.material ? render.material.filters() : [];
       render._material = render.material;
     }
@@ -106,7 +105,6 @@ export class SpriteRenderer extends ReactiveSystem {
 
   /** @inheritDoc */
   public update(world: World): void {
-    // Update events from reactive system.
     super.update(world);
 
     const displays = world.storage(SpriteRender);

@@ -13,4 +13,4 @@ export * from './renderer';
 export * from './update-renderer';
 export * from './screenshot';
 
-export { rgb2hex } from './utils';
+export * from './utils';
