@@ -1,4 +1,4 @@
-import { Entity, EventQueue, Ignore, TrackedValue, TypeId, Vec2 } from '@heliks/tiles-engine';
+import { Circle, Entity, EventQueue, Ignore, Rectangle, TrackedValue, TypeId, Vec2 } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -13,14 +13,14 @@ export enum RigidBodyType {
    */
   Static,
   /**
-   * Dynamic bodies react to external forces (e.g. impulses, collisions etc.) and can
-   * be moved by applying velocity. They collide with all other body types.
+   * Dynamic bodies react to external forces (impulses, collisions, etc.) and can be
+   * moved by applying velocity. They collide with all other body types.
    */
   Dynamic,
   /**
-   * Kinematic bodies do not react to external forces like impulses but unlike static
-   * bodies they can be moved with velocity. Kinematic bodies only collide with static or
-   * other kinematic bodies.
+   * Kinematic bodies don't react to external forces like impulses. Unlike static bodies,
+   * they can be moved with velocity. Kinematic bodies only collide with static or other
+   * kinematic bodies.
    */
   Kinematic
 }
@@ -33,19 +33,23 @@ export class RigidBody {
   public colliders: Collider[] = [];
 
   /**
-   * Contains `ColliderContact` for each physical contact a collider attached to this
-   * rigid body. The `entityA` (`colliderA`...) properties is guaranteed to contain the
-   * information to this body.
+   * Contains the current physical contacts with other rigid bodies and their colliders.
+   *
+   * For each contact:
+   * - `entityA` and `colliderA` refer to this rigid body and its collider.
+   * - `entityB` and `colliderB` refer to the other body and collider.
    */
   @Ignore()
   public readonly contacts: ColliderContact[] = [];
 
   /**
-   * Linear damping. Determines how much the velocity of the body decays over time in
-   * relation to the world gravity.
+   * Linear damping (drag in fluid dynamics) is a force that acts opposite to the
+   * direction of motion of the rigid body. Essentially, it increases the natural
+   * decay of velocity over time. Higher values mean faster decay.
    *
-   * In zero-gravity worlds (a.E. top-down games) this needs to be set manually for
-   * velocity to decay at all.
+   * For games with zero-gravity environments (aE. orthogonal games) where velocity
+   * does not decrease naturally, bodies must be damped manually to prevent them from
+   * moving forever.
    */
   public damping = 0;
 
@@ -162,6 +166,29 @@ export class RigidBody {
     return this;
   }
 
+  /**
+   * Attaches a rectangular collider to the rigid body.
+   *
+   * @param width Rectangle width in meters.
+   * @param height Rectangle height in meters.
+   * @param x Position along x-axis in meters.
+   * @param y Position along y-axis in meters.
+   */
+  public rect(width: number, height: number, x?: number, y?: number): this {
+    return this.attach(new Collider(new Rectangle(width, height, x, y)));
+  }
+
+  /**
+   * Attaches a circular collider to the rigid body.
+   *
+   * @param radius Circle radius in meters.
+   * @param x Position along x-axis in meters.
+   * @param y Position along y-axis in meters.
+   */
+  public circle(radius: number, x?: number, y?: number): this {
+    return this.attach(new Collider(new Circle(radius, x, y)));
+  }
+
   /** Sets the bodies linear velocity. */
   public setVelocity(x: number, y: number): this {
     this._velocity.value.x = x;
@@ -176,7 +203,7 @@ export class RigidBody {
     return this._velocity.value;
   }
 
-  /** Sets the bodies world position.. */
+  /** Sets the bodies world position. */
   public setPosition(x: number, y: number): this {
     this._position.value.x = x;
     this._position.value.y = y;
@@ -199,11 +226,7 @@ export class RigidBody {
     return this;
   }
 
-  /**
-   * Updates the linear damping. This flags the body as dirty.
-   * @see damping
-   * @see dirty
-   */
+  /** Updates the bodies' linear {@link damping}. */
   public dampen(value: number): this {
     this.damping = value;
     this.dirty = true;
@@ -212,9 +235,8 @@ export class RigidBody {
   }
 
   /**
-   * Returns `true` if any {@link colliders collider} collides with a collider that
-   * belongs to the given `entity`. This does not work if this body has no colliders
-   * that can physically collide with the rigid body of that entity.
+   * Checks if any {@link colliders collider} of this body has contact with any collider
+   * that belongs to the given `entity`.
    */
   public hasContactWith(entity: Entity): boolean {
     for (const contact of this.contacts) {
