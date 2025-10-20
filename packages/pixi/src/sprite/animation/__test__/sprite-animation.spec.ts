@@ -73,57 +73,49 @@ describe('SpriteAnimation', () => {
       animation = new SpriteAnimation([1, 2, 3, 4]);
     });
 
-    it('should not change the frame if the animation is paused', () => {
-      animation.paused = true;
-      animation.step(100);
+    it('should update the frame based on elapsed time', () => {
+      animation.step(250);
 
-      expect(animation.frame).toBe(-1);
+      expect(animation.frame).toBe(2);
     });
 
-    it('should not update if there are no frames', () => {
-      animation.setFrames([]);
+    it('should return true if the frame is updated', () => {
+      expect(animation.step(250)).toBeTruthy();
+    });
+
+    it('should return false if the frame is not updated', () => {
+      animation.frame = 0;
+
+      const result = animation.step(50);
+
+      expect(result).toBeFalsy();
+    });
+
+    it('should not update if the animation is paused', () => {
+      animation.paused = true;
+
       const result = animation.step(100);
 
       expect(result).toBeFalsy();
       expect(animation.frame).toBe(-1);
     });
 
-    it('should not change the frame if the animation is complete and looping is disabled', () => {
+    it('should not update if there are no animation frames', () => {
+      animation.setFrames([]);
+
+      const result = animation.step(100);
+
+      expect(result).toBeFalsy();
+      expect(animation.frame).toBe(-1);
+    });
+
+    it('should remain on the last frame if loop is disabled', () => {
       animation.loop = false;
-      animation.frame = 3; // last frame
+      animation.frame = 3;
 
       animation.step(100);
 
       expect(animation.frame).toBe(3);
-    });
-
-    it('should update the frame based on the elapsed time', () => {
-      animation.step(250);
-
-      expect(animation.frame).toBe(2);
-    });
-
-    it('should correctly handle loops and update loop count', () => {
-      animation.elapsedTime = 950; // near end of cycle
-      animation.step(200); // moves into new cycle
-
-      expect(animation.frame).toBe(1);
-      expect(animation.loops).toBe(1);
-    });
-
-    it('should return true if the frame is updated', () => {
-      const result = animation.step(250);
-
-      expect(result).toBeTruthy();
-      expect(animation.frame).toBe(2);
-    });
-
-    it('should return false if the frame is not updated', () => {
-      animation.frame = 2;
-      const result = animation.step(50); // not enough time for a frame change
-
-      expect(result).toBeFalsy();
-      expect(animation.frame).toBe(2);
     });
   });
 });

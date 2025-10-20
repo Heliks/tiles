@@ -84,9 +84,7 @@ export class SpriteAnimation {
   }
 
   /**
-   * Flips all animation frames.
-   *
-   * Flips all frames in the animation.
+   * Flips the animation frames.
    *
    * @param x If `true`, frames are flipped along the x-axis.
    * @param y If `true`, frames are flipped along the y-axis.
@@ -100,11 +98,13 @@ export class SpriteAnimation {
 
   /**
    * Plays the animation with the given `name`. The animation data is derived from
-   * the {@link SpriteRender} attached to the owner of this animation.
+   * the {@link SpriteRender} component attached to the owner of this animation.
    *
-   * @param name Name of the animation that should be played.
-   * @param loop (optional) If set to `true` the animation will start playing
-   *  from the beginning again after it completes.
+   * @param name Name of the animation that should be played. This should correspond
+   *  to a valid animation defined in the {@link SpriteRender} spritesheet that is
+   *  attached to the owner of this component.
+   * @param loop (optional) If enabled, the animation will play in a continuous loop. If
+   *  disabled, the animation will play once and then remain on its last frame.
    */
   public play(name: string, loop = true): this {
     // Only start playing the animation if we aren't playing it already.
@@ -125,11 +125,8 @@ export class SpriteAnimation {
   }
 
   /**
-   * Returns `true` if the animation with the given `name` is played right now or if the
-   * it is about to be transformed into that animation.
-   *
-   * @see playing
-   * @see transform
+   * Checks if the given animation `name` is currently {@link playing} or about to be
+   * played on the next game tick.
    */
   public isPlaying(name: string): boolean {
     return this.playing === name || this.transform === name;
@@ -148,8 +145,8 @@ export class SpriteAnimation {
   }
 
   /**
-   * Calculates the index of the next animation frame based on the animation duration
-   * and {@link elapsed time}.
+   * Calculates the index of the active animation frame based on the animation
+   * duration and the {@link elapsedTime elapsed time}.
    */
   public getNextFrame(): number {
     return (this.elapsedTime / (this.frameDuration / this.speed)) % this.frames.length | 0;

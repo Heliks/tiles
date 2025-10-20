@@ -2,17 +2,21 @@ import { Ticker } from './ticker';
 
 
 /**
- * Ticker that executes its callbacks at a set interval.
+ * Ticker that executes the game loop at a fixed time interval.
  *
- * This ticker is most suited for servers and other node applications. For game clients
- * the {@link FrameTicker}, or other frame-based tickers should be others.
+ * This ticker is most suited for server-side and node apps where frame-based timing is
+ * not available or necessary. It uses `setTimeout` to maintain a consistent execution
+ * interval.
+ *
+ * For game frontends, the {@link FrameTicker} or a different frame-based ticker
+ * is recommended instead.
  */
 export class IntervalTicker extends Ticker {
 
-  /** Contains the last known timestamp. */
+  /** Contains the last known timestamp in ms. */
   private timestamp = -1;
 
-  /** Contains the ID of the {@link setTimeout} for the next tick. */
+  /** Contains the ID of the current `setTimeout`. */
   private timeoutId?: number;
 
   /**
@@ -27,8 +31,6 @@ export class IntervalTicker extends Ticker {
    *
    * This is defined as an anonymous function because it's faster to call this directly
    * rather than to `bind()` the function.
-   *
-   * @internal
    */
   private tick = () => {
     const now = Date.now();
