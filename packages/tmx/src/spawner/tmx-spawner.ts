@@ -1,7 +1,7 @@
 import { Entity, EventQueue, Injectable, Parent, token, Transform, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { TmxLayer, TmxLayerKind, TmxMapAsset, TmxObjectLayer, TmxTileLayer } from '../parser';
+import { MapAsset, TmxLayer, TmxLayerKind, TmxObjectLayer, TmxTileLayer } from '../parser';
 import { TmxObjectSpawner } from './tmx-object-spawner';
 import { TmxObjectType } from './tmx-object-type';
 import { TmxSpawnMap } from './tmx-spawn-map';
@@ -33,7 +33,7 @@ export interface SpawnLayerProperties {
 }
 
 /** @internal */
-function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: TmxTileLayer, renderLayer?: LayerId): void {
+function spawnTileLayer(world: World, entity: Entity, map: MapAsset, layer: TmxTileLayer, renderLayer?: LayerId): void {
   for (const chunk of layer.data) {
     const tilemap = new Tilemap(chunk.grid, renderLayer);
 
@@ -52,8 +52,8 @@ function spawnTileLayer(world: World, entity: Entity, map: TmxMapAsset, layer: T
 export const DEFAULT_OBJECT_FACTORY = token<TmxObjectType>();
 
 
-/** @see TmxMapAsset */
-export type SpawnableAsset<P = unknown> = TmxMapAsset<P, TmxLayer<SpawnLayerProperties>>;
+/** @see MapAsset */
+export type SpawnableAsset<P = unknown> = MapAsset<P, TmxLayer<SpawnLayerProperties>>;
 
 /**
  * Service that spawns {@link TmxMapAsset maps}.

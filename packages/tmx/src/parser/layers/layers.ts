@@ -1,7 +1,16 @@
 import { Grid } from '@heliks/tiles-engine';
-import { TmxLayerData, TmxLayerTypeData, TmxMapData, TmxObjectLayerData, TmxTileLayerData } from '../../tmx';
+import { MapAssetChunkLayer, MapAssetChunkLayerType } from '../../level';
+import {
+  TmxInfiniteMap,
+  TmxInfiniteTileLayerData,
+  TmxLayerData,
+  TmxLayerTypeData,
+  TmxMapData,
+  TmxObjectLayerData,
+  TmxTileLayerData
+} from '../../tmx';
+import { getCustomProps, HasProperties } from '../props';
 import { parseObjectData, TmxObject } from '../tmx-object';
-import { HasProperties, parseCustomProperties } from '../tmx-properties';
 import { TileChunk } from './tile-chunk';
 
 
@@ -76,10 +85,58 @@ export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
     name: layer.name,
     data: objects,
     isVisible: layer.visible,
-    properties: parseCustomProperties(layer),
+    properties: getCustomProps(layer),
     type: layer.class,
     kind: TmxLayerKind.Objects
   };
+}
+
+/**
+ * Creates a {@link MapChunkTileLayer} for the chunk at the given location. This can
+ * return `undefined` if the given `layer` data does not contain any tiles for that
+ * particular chunk.
+ *
+ * @param layer TMX Layer data from which tiles will be extracted.
+ * @param layout The layout of a map chunk.
+ * @param x Location of the chunk on the map grid along x-axis.
+ * @param y Location of the chunk on the map grid along y-axis.
+ */
+export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, x: number, y: number): MapAssetChunkLayer | undefined {
+  // Find the equivalent chunk in the tile layer. Tiled stores the chunk position as
+  // a pixel position rather than a grid location, so we need to convert it first.
+  const chunk = layer.chunks.find(chunk =>
+    chunk.x / layout.cols === x &&
+    chunk.y / layout.rows === y
+  );
+
+  if (chunk) {
+    return {
+      type: MapAssetChunkLayerType.Tiles,
+      data: chunk.data,
+      props: getCustomProps(layer),
+    };
+  }
+}
+
+export function parseLayers2(map: TmxInfiniteMap, layout: Grid, x: number, y: number): MapAssetChunkLayer[] {
+  const layers = [];
+
+  for (const data of map.layers) {
+    switch (data.type) {
+      case TmxLayerTypeData.Tiles:
+        const layer = createChunkTiles(data, layout, x, y);
+
+        // Important: Extracting a tile layer can fail if the layer data did not have
+        // any tiles for our particular chunk.
+        if (layer) {
+          layers.push(layer);
+        }
+
+        break;
+    }
+  }
+
+  return layers;
 }
 
 /**
@@ -90,7 +147,7 @@ export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
  *  Required to parse tile layers.
  * @see TmxTileLayer
  */
-export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): TmxTileLayer {
+export function parseTileLayerOld(layer: TmxTileLayerData, chunkTileGrid: Grid): TmxTileLayer {
   const chunks = [];
 
   if (layer.chunks) {
@@ -111,7 +168,7 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Tm
     name: layer.name,
     data: chunks,
     isVisible: layer.visible,
-    properties: parseCustomProperties(layer),
+    properties: getCustomProps(layer),
     type: layer.class,
     kind: TmxLayerKind.Tiles
   };
@@ -128,7 +185,7 @@ export function parseTileLayer(layer: TmxTileLayerData, chunkTileGrid: Grid): Tm
 export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: Grid): TmxLayer {
   switch (layer.type) {
     case TmxLayerTypeData.Tiles:
-      return parseTileLayer(layer, chunkTileGrid);
+      return parseTileLayerOld(layer, chunkTileGrid);
     case TmxLayerTypeData.Objects:
       return parseObjectLayer(layer);
     case TmxLayerTypeData.Group:
@@ -142,7 +199,7 @@ export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: 
         name: layer.name,
         data: layers,
         isVisible: layer.visible,
-        properties: parseCustomProperties(layer),
+        properties: getCustomProps(layer),
         type: layer.class,
         kind: TmxLayerKind.Group
       };

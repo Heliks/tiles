@@ -1,8 +1,8 @@
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
 import { CustomTile } from '@heliks/tiles-tilemap';
 import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
+import { getCustomProps } from './props';
 import { parseGeometryData, TmxGeometry } from './tmx-geometry';
-import { parseCustomProperties } from './tmx-properties';
 import { TmxTileset } from './tmx-tileset';
 
 
@@ -48,7 +48,7 @@ function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrame
 
 /** Parses {@link TmxTileData}. */
 export function parseTileData(tileset: TmxTileset, data: TmxTileData): TmxCustomTile {
-  const tile = new TmxCustomTile(data.id, parseCustomProperties(data));
+  const tile = new TmxCustomTile(data.id, getCustomProps(data));
 
   // Parse animation, if any.
   if (data.animation) {

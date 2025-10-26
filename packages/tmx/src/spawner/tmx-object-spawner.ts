@@ -1,5 +1,5 @@
 import { Entity, Inject, Injectable, Transform, World } from '@heliks/tiles-engine';
-import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
+import { MapAsset, TmxObject, TmxObjectLayer } from '../parser';
 import { TmxObjectMetadata } from './tmx-object-metadata';
 import { TmxObjectType } from './tmx-object-type';
 import { TmxObjectTypeDefault } from './tmx-object-type-default';
@@ -52,7 +52,7 @@ export class TmxObjectSpawner {
     return this.types.get(type!) ?? this.def;
   }
 
-  public async spawn(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity | void> {
+  public async spawn(world: World, map: MapAsset, layer: TmxObjectLayer, obj: TmxObject): Promise<Entity | void> {
     const type = this.get(obj.type);
 
     if (type.ignore(map, obj)) {

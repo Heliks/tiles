@@ -2,7 +2,7 @@ import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
 import { TmxGeometryData } from '../tmx';
 import { HasCustomType, parseCustomType } from './custom-type';
-import { HasProperties, parseCustomProperties } from './tmx-properties';
+import { getCustomProps, HasProperties } from './props';
 
 
 /**
@@ -54,7 +54,7 @@ export function parseGeometryData(data: TmxGeometryData): TmxGeometry {
   return {
     id: data.id,
     name: data.name,
-    properties: parseCustomProperties(data),
+    properties: getCustomProps(data),
     shape: createShape(data),
     type: parseCustomType(data)
   };

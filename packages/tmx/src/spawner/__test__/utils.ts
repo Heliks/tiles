@@ -3,10 +3,10 @@ import { World } from '@heliks/tiles-engine';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { TmxLoadTilemap } from '../../formats';
-import { TmxMapAsset } from '../../parser';
+import { MapAsset } from '../../parser';
 
 
-export function load(world: World, file: string): Promise<TmxMapAsset> {
+export function load(world: World, file: string): Promise<MapAsset> {
   const path = join(__dirname, file);
   const data = JSON.parse(
     readFileSync(path).toString()

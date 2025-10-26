@@ -2,7 +2,7 @@ import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { parseCustomProperties, parseTileData, TmxTileset, TmxTilesetProps } from '../parser';
+import { getCustomProps, parseTileData, TmxTileset, TmxTilesetProps } from '../parser';
 import { TmxTilesetData } from '../tmx';
 
 
@@ -70,7 +70,7 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     );
 
     const texture = await loader.fetch<Texture>(getDirectory(file, data.image));
-    const props = parseCustomProperties<TmxTilesetProps>(data);
+    const props = getCustomProps<TmxTilesetProps>(data);
     const spritesheet = createSpriteGrid(grid, texture, props)
     const handle = loader.insert('/tmx/' + file, spritesheet).handle();
 

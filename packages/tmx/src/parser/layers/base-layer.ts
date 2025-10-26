@@ -1,5 +1,5 @@
+import { HasProperties } from '../props';
 import { TmxObject } from '../tmx-object';
-import { HasProperties } from '../tmx-properties';
 import { TileChunk } from './tile-chunk';
 
 

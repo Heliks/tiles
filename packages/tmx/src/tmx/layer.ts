@@ -30,13 +30,13 @@ interface TmxChunkData {
   y: number;
 }
 
-interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
+export interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
   chunks: TmxChunkData[];
   data: undefined;
   type: TmxLayerTypeData.Tiles;
 }
 
-interface TmxFiniteTileLayerData extends TmxBaseLayerData {
+export interface TmxFiniteTileLayerData extends TmxBaseLayerData {
   chunks: undefined;
   data: number[];
   type: TmxLayerTypeData.Tiles;

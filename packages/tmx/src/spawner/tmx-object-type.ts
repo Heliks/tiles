@@ -1,5 +1,5 @@
 import { Entity, World } from '@heliks/tiles-engine';
-import { TmxMapAsset, TmxObject, TmxObjectLayer } from '../parser';
+import { MapAsset, TmxObject, TmxObjectLayer } from '../parser';
 
 
 /**
@@ -22,7 +22,7 @@ export interface TmxObjectType<O extends TmxObject = TmxObject> {
    * Callback that is invoked before an object is being created. If this returns `true`,
    * this object will be ignored.
    */
-  ignore(map: TmxMapAsset, obj: O): boolean;
+  ignore(map: MapAsset, obj: O): boolean;
 
   /**
    * Creates an entity from the given {@link TmxObject}.
@@ -32,6 +32,6 @@ export interface TmxObjectType<O extends TmxObject = TmxObject> {
    * @param layer Map layer on which the object is created.
    * @param obj Object that should be created.
    */
-  create(world: World, map: TmxMapAsset, layer: TmxObjectLayer, obj: O): Entity | Promise<Entity>;
+  create(world: World, map: MapAsset, layer: TmxObjectLayer, obj: O): Entity | Promise<Entity>;
 
 }

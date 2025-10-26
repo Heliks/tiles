@@ -14,7 +14,7 @@ describe('getDirectory()', () => {
     [
       'a\\b\\c.json',
       'a\\b'
-    ],
+    ]
   ])('should get directory from path %s', (path, dir) => {
     expect(getDirectory(path)).toBe(dir);
   });

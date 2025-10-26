@@ -1,4 +1,6 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
+import { LevelConfig } from '../level/level-config';
+import { LevelSystem } from '../level/level-system';
 import { TmxMapLoader } from './tmx-map-loader';
 import { TmxObjectComposer } from './tmx-object-composer';
 import { TmxObjectMetadata } from './tmx-object-metadata';
@@ -93,6 +95,9 @@ export class TmxSpawnerBundle implements Bundle {
   /** @inheritDoc */
   public build(builder: AppBuilder): void {
     builder
+      .provide(LevelConfig)
+      .system(LevelSystem)
+
       .type(TmxObjectMetadata)
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
       .provide(TmxPhysicsFactory)

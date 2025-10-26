@@ -2,7 +2,7 @@ import { AssetStorage } from '@heliks/tiles-assets';
 import { EntityBuilder, Injectable, Rectangle, Vec2, World } from '@heliks/tiles-engine';
 import { LayerId, SpriteId, SpriteRender } from '@heliks/tiles-pixi';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { isTile, TmxCustomTile, TmxGeometry, TmxMapAsset, TmxObject, TmxTileObject, TmxTileset } from '../parser';
+import { isTile, MapAsset, TmxCustomTile, TmxGeometry, TmxObject, TmxTileObject, TmxTileset } from '../parser';
 import { TmxPhysicsFactory, TmxPhysicsOptions } from './tmx-physics-factory';
 
 
@@ -64,7 +64,7 @@ export class TmxObjectComposer {
    * @param tile The tile from which the entity is composed.
    * @param layer Renderer layer where the tile sprite will be rendered.
    */
-  public tile(world: World, map: TmxMapAsset, tile: TmxTileObject, layer?: LayerId): EntityBuilder {
+  public tile(world: World, map: MapAsset, tile: TmxTileObject, layer?: LayerId): EntityBuilder {
     const local = map.tilesets.getFromGlobalId(tile.tileId);
     const tileIdx = local.getLocalIndex(tile.tileId);
     const size = this.getSpriteSize(local.tileset, tileIdx);
@@ -97,7 +97,7 @@ export class TmxObjectComposer {
    * @param layer In case this object is a tile and a sprite is required for this object,
    *  this defines the renderer layer where it will be rendered.
    */
-  public compose(world: World, map: TmxMapAsset, obj: TmxObject, layer?: LayerId): EntityBuilder {
+  public compose(world: World, map: MapAsset, obj: TmxObject, layer?: LayerId): EntityBuilder {
     if (isTile(obj)) {
       return this.tile(world, map, obj, layer);
     }

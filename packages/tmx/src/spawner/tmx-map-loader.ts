@@ -1,11 +1,11 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Entity, System, Transform, World } from '@heliks/tiles-engine';
-import { TmxMapAsset } from '../parser';
+import { MapAsset } from '../parser';
 import { TmxSpawnMap } from './tmx-spawn-map';
 
 
 /** Utility that allows the user to asynchronously load a map. */
-export class TmxMapLoader<T extends TmxMapAsset = TmxMapAsset> implements System {
+export class TmxMapLoader<T extends MapAsset = MapAsset> implements System {
 
   /** @internal */
   private loading?: {

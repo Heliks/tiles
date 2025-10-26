@@ -3,8 +3,8 @@ import { ColliderShape } from '@heliks/tiles-physics';
 import { TmxObjectData } from '../tmx';
 import { parseCustomType } from './custom-type';
 import { hasFlag, parseGID, TmxGIDFlag } from './gid';
+import { getCustomProps } from './props';
 import { parseGeometryData, TmxGeometry } from './tmx-geometry';
-import { parseCustomProperties } from './tmx-properties';
 
 
 /**
@@ -82,7 +82,7 @@ export function parseObjectData(data: TmxObjectData): TmxObject {
   return {
     id: data.id,
     name: data.name,
-    properties: parseCustomProperties(data),
+    properties: getCustomProps(data),
     type: parseCustomType(data),
     flipX,
     flipY,

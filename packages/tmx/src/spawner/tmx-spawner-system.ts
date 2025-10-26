@@ -1,6 +1,6 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, ProcessingSystem, Query, QueryBuilder, Transform, World } from '@heliks/tiles-engine';
-import { TmxMapAsset } from '../parser';
+import { MapAsset } from '../parser';
 import { TmxSpawnMap, TmxSpawnState } from './tmx-spawn-map';
 import { TmxSpawner } from './tmx-spawner';
 
@@ -35,7 +35,7 @@ export class TmxSpawnerSystem extends ProcessingSystem {
   }
 
   /** @see TmxSpawner.spawn */
-  private async spawn(world: World, asset: TmxMapAsset, entity: Entity): Promise<void> {
+  private async spawn(world: World, asset: MapAsset, entity: Entity): Promise<void> {
     await this.spawner.spawn(world, asset, entity);
 
     // The above async call will most likely happen in-between frames. The map state will
@@ -44,7 +44,7 @@ export class TmxSpawnerSystem extends ProcessingSystem {
   }
 
   /** @internal */
-  private processMapSpawn(world: World, asset: TmxMapAsset, spawner: TmxSpawnMap, entity: Entity): void {
+  private processMapSpawn(world: World, asset: MapAsset, spawner: TmxSpawnMap, entity: Entity): void {
     // Map has not been spawned.
     if (spawner.state === TmxSpawnState.None) {
       spawner.state = TmxSpawnState.Spawning;

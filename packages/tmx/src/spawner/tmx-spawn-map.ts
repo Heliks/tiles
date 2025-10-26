@@ -1,10 +1,10 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Entity } from '@heliks/tiles-engine';
-import { TmxMapAsset } from '../parser';
+import { MapAsset } from '../parser';
 
 
 /**
- * The current state of a {@link TmxMapAsset} that is spawned with a {@link TmxSpawnMap}
+ * The current state of a {@link MapAsset} that is spawned with a {@link TmxSpawnMap}
  * component attached to an entity.
  */
 export enum TmxSpawnState {
@@ -21,7 +21,7 @@ export enum TmxSpawnState {
 }
 
 /**
- * Component that can be attached to an entity to render a {@link TmxMapAsset}. All
+ * Component that can be attached to an entity to render a {@link MapAsset}. All
  * entities that are created in the process to do so, will be attached to the owner
  * of this component as children. If the owner is destroyed, the entire map will be
  * un-loaded automatically.
@@ -37,9 +37,9 @@ export class TmxSpawnMap {
   public state = TmxSpawnState.None;
 
   /**
-   * @param handle Asset handle of the {@link TmxMapAsset} asset.
+   * @param handle Asset handle of the {@link MapAsset} asset.
    */
-  constructor(public handle?: Handle<TmxMapAsset>) {}
+  constructor(public handle?: Handle<MapAsset>) {}
 
   /** Returns `true` if the map has been fully spawned into the world. */
   public isSpawned(): boolean {

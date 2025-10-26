@@ -1,4 +1,4 @@
-import { TmxLayerData } from './layer';
+import { TmxFiniteTileLayerData, TmxGroupLayerData, TmxInfiniteTileLayerData, TmxObjectLayerData } from './layer';
 import { TmxTilesetData } from './tileset';
 import { TmxHasPropertyData } from './utils';
 
@@ -23,24 +23,42 @@ export interface TmxEditorSettingsData {
   }
 }
 
-export interface TmxMapData extends TmxHasPropertyData {
-  backgroundcolor: string;
+/** Available map layers on finite maps. */
+export type TmxFiniteMapDataLayers =
+  TmxFiniteTileLayerData |
+  TmxObjectLayerData |
+  TmxGroupLayerData<TmxFiniteMapDataLayers>;
+
+/** Available map layers on infinite maps. */
+export type TmxInfiniteMapDataLayers =
+  TmxInfiniteTileLayerData |
+  TmxObjectLayerData |
+  TmxGroupLayerData<TmxInfiniteMapDataLayers>;
+
+/** @internal */
+interface TmxBaseMap extends TmxHasPropertyData {
   editorsettings?: TmxEditorSettingsData;
   height: number;
-  hexsidelength: number;
-  infinite: boolean;
-  layers: TmxLayerData[];
-  nextlayerid: number;
-  nextobjectid: number;
-  orientation: 'orthogonal' | 'isometric' | 'staggered' | 'hexagonal';
-  tiledversion: string;
   tileheight: number;
   tilesets: TmxLocalTilesetData[];
   tilewidth: number;
-  type: 'map';
   width: number;
 }
 
+/** Data for tilemaps with a fixed (finite) size. */
+export interface TmxFiniteMap extends TmxBaseMap {
+  infinite: false;
+  layers: TmxFiniteMapDataLayers[];
+}
+
+/** Data for tilemaps that are infinite. */
+export interface TmxInfiniteMap extends TmxBaseMap {
+  infinite: true;
+  layers: TmxInfiniteMapDataLayers[];
+}
+
+/** Data for tilemaps. */
+export type TmxMapData = TmxFiniteMap | TmxInfiniteMap;
 
 /** @internal */
 export function isLocalTilesetExternal(data: TmxLocalTilesetData): data is TmxExternalLocalTilesetData {

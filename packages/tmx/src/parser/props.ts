@@ -8,12 +8,18 @@ export interface HasProperties<P = unknown> {
   readonly properties: P;
 }
 
+/** Types that implement this interface carry custom properties. */
+export interface HasCustomProps<P = {}> {
+  /** Custom properties. */
+  readonly props: P;
+}
+
 /**
  * Parses custom properties of `data`.
  *
  * - `P`: Expected custom properties.
  */
-export function parseCustomProperties<P = unknown>(data: TmxHasPropertyData): P {
+export function getCustomProps<P = unknown>(data: TmxHasPropertyData): P {
   const props: Struct = {};
 
   if (data.properties) {

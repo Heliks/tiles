@@ -1,7 +1,8 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { parseCustomProperties, parseLayers, TmxMapAsset, TmxTileset } from '../parser';
+import { ChunkState, Level } from '../level';
+import { getCustomProps, MapAsset, parseLayers2, TmxTileset } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
 
@@ -56,7 +57,7 @@ function getMapSize(data: TmxMapData): Vec2 {
  *
  * @internal
  */
-function parseChunkLayout(data: TmxMapData): Grid {
+function getChunkLayout(data: TmxMapData): Grid {
   const size = getMapSize(data);
 
   if (! data.infinite) {
@@ -80,16 +81,16 @@ function parseChunkLayout(data: TmxMapData): Grid {
 }
 
 /**
- * Creates a {@link Grid grid} that defines the layout of an individual chunk on a
- * tilemap. Columns and rows define the number of tiles in each direction, while cell
- * size represents the tile size.
+ * Creates a {@link Grid} that defines the layout of a chunk on a tilemap. Columns and
+ * rows define the number of tiles in each direction. The cell size determines the size
+ * of each tile.
  *
- * Maps with a fixed size (e.g. maps that don't have the "infinite" option enabled) will
- * always have a single chunk that covers the whole area of the map.
+ * If the map is finite and therefore doesn't have chunks, the grid returned will cover
+ * the entire size of the map.
  *
  * @internal
  */
-function getChunkTileLayout(data: TmxMapData): Grid {
+function getChunkGrid(data: TmxMapData): Grid {
   let tilesX = TMX_DEFAULT_CHUNK_SIZE;
   let tilesY = TMX_DEFAULT_CHUNK_SIZE;
 
@@ -138,8 +139,8 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData)
 }
 
 /** @internal */
-function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<P> {
-  return new TmxMapAsset<P>(
+function parseTilemap<P = unknown>(file: string, data: TmxMapData): MapAsset<P> {
+  return new MapAsset<P>(
     file,
     new Grid(
       data.width,
@@ -147,8 +148,8 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<
       data.tilewidth,
       data.tileheight
     ),
-    parseChunkLayout(data),
-    parseCustomProperties<P>(data)
+    getChunkLayout(data),
+    getCustomProps<P>(data)
   );
 }
 
@@ -182,9 +183,9 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<
  *
  * ## Shapes
  *
- * The position of shapes (a.E. Tiled Collision Editor shapes, Shape objects, etc.) will
- * be converted to be center aligned. This makes it easier to re-use these shapes for the
- * physics engine.
+ * The position of shapes (Tiled Collision Editor shapes, Shape objects, etc.) will be
+ * converted to have their pivot point at their center. This makes it easier to re-use
+ * these shapes for the physics engine.
  *
  * ### Ellipses
  *
@@ -194,26 +195,51 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): TmxMapAsset<
  *
  * - `P`: Expected custom properties.
  */
-export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, TmxMapAsset<P>> {
+export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>> {
 
   /** @inheritDoc */
   public readonly extensions = ['tmj'];
 
   /** @inheritDoc */
-  public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<TmxMapAsset<P>> {
-    const tilemap = parseTilemap<P>(file, data);
-    const tilesets = await parseLocalTilesets(loader, file, data);
-    
-    for (const tileset of tilesets) {
-      tilemap.tilesets.set(tileset);
+  public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<Level<P>> {
+    if (! data.infinite) {
+      throw new Error('Todo');
     }
 
     // Create the layout of each individual chunk. We need this to parse tile layers.
-    const chunkTileGrid = getChunkTileLayout(data);
+    const chunkTileGrid = getChunkGrid(data);
 
-    tilemap.layers.push(...parseLayers(data, chunkTileGrid));
+    const grid = new Grid(
+      data.width,
+      data.height,
+      data.tilewidth,
+      data.tileheight
+    );
 
-    return tilemap;
+    const layout = getChunkLayout(data);
+    const props = getCustomProps<P>(data);
+
+    const level = new Level(grid, layout, props);
+
+    for (let x = 0; x < level.layout.cols; x++) {
+      for (let y = 0; y < level.layout.rows; y++) {
+        level.chunks.push({
+          index: layout.getIndex(x, y),
+          layers: parseLayers2(data, chunkTileGrid, x, y),
+          state: ChunkState.Pending,
+          x,
+          y,
+        });
+      }
+    }
+
+    const tilesets = await parseLocalTilesets(loader, file, data);
+
+    for (const tileset of tilesets) {
+      level.tilesets.set(tileset);
+    }
+
+    return level;
   }
 
 }
