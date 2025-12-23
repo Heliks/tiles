@@ -45,12 +45,12 @@ export class TmxPhysicsFactory {
 
     const collider = new Collider(shape);
 
-    if (geometry.properties.$collider) {
+    if (geometry.props.$collider) {
       const {
         group,
         mask,
         sensor
-      } = geometry.properties.$collider;
+      } = geometry.props.$collider;
 
       collider.sensor = Boolean(sensor);
       collider.group = group && group > -1 ? group : undefined;

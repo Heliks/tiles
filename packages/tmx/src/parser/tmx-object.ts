@@ -74,7 +74,6 @@ export function parseObjectData(data: TmxObjectData): TmxObject {
 
   if (data.gid) {
     tileId = parseGID(data.gid);
-
     flipX = hasFlag(data.gid, TmxGIDFlag.FlipX);
     flipY = hasFlag(data.gid, TmxGIDFlag.FlipY);
   }
@@ -82,7 +81,7 @@ export function parseObjectData(data: TmxObjectData): TmxObject {
   return {
     id: data.id,
     name: data.name,
-    properties: getCustomProps(data),
+    props: getCustomProps(data),
     type: parseCustomType(data),
     flipX,
     flipY,

@@ -63,7 +63,7 @@ export class TmxObjectSpawner {
 
     world.attach(entity, new TmxObjectMetadata(
       obj.id,
-      obj.properties,
+      obj.props,
       obj.name
     ));
 

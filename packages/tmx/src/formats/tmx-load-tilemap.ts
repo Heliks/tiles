@@ -1,7 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Vec2 } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { ChunkState, Level } from '../level';
+import { ChunkLayer, ChunkMetaLayers, ChunkState, Level } from '../level';
 import { getCustomProps, MapAsset, parseLayers2, TmxTileset } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
@@ -154,6 +154,37 @@ function parseTilemap<P = unknown>(file: string, data: TmxMapData): MapAsset<P> 
 }
 
 /**
+ * Extracts meta-layers from an array of chunk layers.
+ *
+ * Each meta-layer is stored using its own `name`. Subsequently, every name must be
+ * unique or this function will throw an error.
+ *
+ * @remarks
+ * This modifies the original `layers` input by removing the extracted meta-layers.
+ */
+export function extractMetaLayers(layers: ChunkLayer[]): ChunkMetaLayers {
+  const meta: ChunkMetaLayers = {};
+
+  for (let i = layers.length - 1; i >= 0; i--) {
+    const layer = layers[i];
+
+    if (layer.props.$meta) {
+      if (meta[layer.name]) {
+        throw new Error(`Name for meta layers must be unique: ${layer.name}`);
+      }
+
+      meta[ layer.name ] = layer;
+
+      // Remove from the map array.
+      layers.splice(i, 1);
+    }
+  }
+
+  return meta;
+}
+
+
+/**
  * Asset loader format to parse Tiled `.tmj` files.
  *
  * ## Usage
@@ -218,14 +249,19 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
 
     const layout = getChunkLayout(data);
     const props = getCustomProps<P>(data);
-
     const level = new Level(grid, layout, props);
+
+    console.log('Chunk layout', layout)
 
     for (let x = 0; x < level.layout.cols; x++) {
       for (let y = 0; y < level.layout.rows; y++) {
+        const layers = parseLayers2(data, chunkTileGrid, x, y);
+
         level.chunks.push({
+          grid: chunkTileGrid,
           index: layout.getIndex(x, y),
-          layers: parseLayers2(data, chunkTileGrid, x, y),
+          meta: extractMetaLayers(layers),
+          layers,
           state: ChunkState.Pending,
           x,
           y,

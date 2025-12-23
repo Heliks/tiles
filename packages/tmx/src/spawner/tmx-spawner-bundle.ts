@@ -1,16 +1,8 @@
 import { AppBuilder, Bundle, Type, World } from '@heliks/tiles-engine';
 import { LevelConfig } from '../level/level-config';
 import { LevelSystem } from '../level/level-system';
-import { TmxMapLoader } from './tmx-map-loader';
-import { TmxObjectComposer } from './tmx-object-composer';
-import { TmxObjectMetadata } from './tmx-object-metadata';
 import { TmxObjectSpawner } from './tmx-object-spawner';
 import { TmxObjectType } from './tmx-object-type';
-import { TmxObjectTypeDefault } from './tmx-object-type-default';
-import { TmxPhysicsFactory } from './tmx-physics-factory';
-import { TmxSpawner } from './tmx-spawner';
-import { TmxSpawnerConfig } from './tmx-spawner-config';
-import { TmxSpawnerSystem } from './tmx-spawner-system';
 
 
 /**
@@ -66,6 +58,8 @@ import { TmxSpawnerSystem } from './tmx-spawner-system';
  *        .type(MyCustomType)
  *    )
  * ```
+ *
+ *
  */
 export class TmxSpawnerBundle implements Bundle {
 
@@ -98,6 +92,7 @@ export class TmxSpawnerBundle implements Bundle {
       .provide(LevelConfig)
       .system(LevelSystem)
 
+      /*
       .type(TmxObjectMetadata)
       .provide(TmxSpawnerConfig, new TmxSpawnerConfig(this.unitSize))
       .provide(TmxPhysicsFactory)
@@ -108,6 +103,7 @@ export class TmxSpawnerBundle implements Bundle {
       .system(TmxSpawnerSystem)
       .system(TmxMapLoader)
       .run(this.setup.bind(this));
+       */
   }
 
   /**

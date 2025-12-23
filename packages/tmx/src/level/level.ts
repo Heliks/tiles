@@ -1,20 +1,62 @@
-import { Grid } from '@heliks/tiles-engine';
+import { Entity, Grid } from '@heliks/tiles-engine';
+import { LayerId } from '@heliks/tiles-pixi';
 import { LocalTilesetBag, Tileset } from '@heliks/tiles-tilemap';
+import { TmxObject } from '../parser';
 
 
 /** Available types of chunk layers. */
-export enum MapAssetChunkLayerType {
+export enum ChunkLayerType {
   Tiles,
   Entities
 }
 
-export interface ChunkTileLayer<P = unknown> {
-  data: number[];
-  type: MapAssetChunkLayerType
-  props: P;
+/** Default properties for chunk layers that are used by the level system. */
+export interface ChunkLayerProps {
+  /** Defines the renderer layer where this Tiled layer should be rendered. */
+  $layer?: LayerId;
+  /** If enabled, this layer will be treated as a meta-layer. */
+  $meta?: boolean;
 }
 
-export type MapAssetChunkLayer = ChunkTileLayer;
+interface BaseLayer<P extends ChunkLayerProps = ChunkLayerProps> {
+  /** ID of the renderer layer on which this layer should be rendered. */
+  layerId?: LayerId;
+  /** Custom properties. */
+  props: P;
+  name: string;
+}
+
+/**
+ * This layer type stores an array of tile IDs that define which tiles are placed
+ * in the chunk's grid. Each number in the `data` array corresponds to a specific
+ * tile in one of the tileset present on the tilemap.
+ *
+ * @template `P`: Custom properties.
+ */
+export interface ChunkTileLayer<P extends ChunkLayerProps = ChunkLayerProps> extends BaseLayer<P> {
+  data: number[];
+  type: ChunkLayerType.Tiles;
+}
+
+/**
+ * This layer type contains objects (such as shapes, entities) that are spawned
+ * with this chunk. 
+ *
+ * During gameplay, entities may leave the boundaries of this chunk, and therefore,
+ * the entities that are spawned and de-spawned when the chunk is unloaded may be
+ * different.
+ *
+ * @template `P`: Custom properties.
+ */
+export interface ChunkEntityLayer<P extends ChunkLayerProps = ChunkLayerProps> extends BaseLayer<P> {
+  data: TmxObject[];
+  type: ChunkLayerType.Entities;
+}
+
+/**
+ * @template `P`: Custom properties.
+ */
+export type ChunkLayer<P extends ChunkLayerProps = ChunkLayerProps> = ChunkTileLayer<P> | ChunkEntityLayer<P>;
 
 export enum ChunkState {
   /** Chunk is waiting to be loaded. */
@@ -25,12 +67,26 @@ export enum ChunkState {
   Loaded
 }
 
+export interface ChunkMetaLayers<L = ChunkLayer> {
+  [name: string]: L;
+}
+
 /**
  * @template L - The type of layer associated with the chunk.
  */
-export interface Chunk<L = MapAssetChunkLayer> {
+export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
+  /** When the chunk is loaded, this will contain the root entity. */
+  entity?: Entity;
+  /** Contains the chunks' tile grid. */
+  grid: Grid;
   /** Grid index of this chunk. */
   index: number;
+  /**
+   * Meta-layers are special layers that typically contain game-specific information
+   * like collision data, terrain types, etc. They are ignored by the level system
+   * and must therefore be handled by each game individually.
+   */
+  meta: M;
   /** Layers to render this chunk. */
   layers: L[];
   /** Current loading state of the chunk. */
@@ -71,6 +127,9 @@ export class Level<P = unknown, T extends Tileset = Tileset> {
    */
   public readonly chunks: Chunk[] = [];
 
+  /** Contains all chunks that are currently loaded. */
+  public readonly loaded = new Set<Chunk>();
+
   /** Contains the tilesets with which tiles, objects etc. are rendered on this map. */
   public readonly tilesets = new LocalTilesetBag<T>();
 
@@ -89,6 +148,10 @@ export class Level<P = unknown, T extends Tileset = Tileset> {
     public readonly props: P
   ) {}
 
+  /**
+   * Returns the chunk that occupies the given cell `index` on the map's chunk
+   * {@link layout}, or `undefined` if there's no chunk at that location.
+   */
   public getChunk(index: number): Chunk | undefined {
     return this.chunks.find(chunk => chunk.index === index);
   }

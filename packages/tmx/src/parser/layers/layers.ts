@@ -1,14 +1,6 @@
-import { Grid } from '@heliks/tiles-engine';
-import { MapAssetChunkLayer, MapAssetChunkLayerType } from '../../level';
-import {
-  TmxInfiniteMap,
-  TmxInfiniteTileLayerData,
-  TmxLayerData,
-  TmxLayerTypeData,
-  TmxMapData,
-  TmxObjectLayerData,
-  TmxTileLayerData
-} from '../../tmx';
+import { Grid, Rectangle } from '@heliks/tiles-engine';
+import { ChunkEntityLayer, ChunkLayer, ChunkLayerProps, ChunkLayerType } from '../../level';
+import { TmxInfiniteMap, TmxInfiniteTileLayerData, TmxLayerTypeData, TmxObjectLayerData } from '../../tmx';
 import { getCustomProps, HasProperties } from '../props';
 import { parseObjectData, TmxObject } from '../tmx-object';
 import { TileChunk } from './tile-chunk';
@@ -92,16 +84,16 @@ export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
 }
 
 /**
- * Creates a {@link MapChunkTileLayer} for the chunk at the given location. This can
- * return `undefined` if the given `layer` data does not contain any tiles for that
- * particular chunk.
+ * Creates a {@link ChunkLayer} for the chunk at the given location. This can
+ * return `undefined` if the given `layer` data does not contain any tiles for
+ * that particular chunk.
  *
  * @param layer TMX Layer data from which tiles will be extracted.
  * @param layout The layout of a map chunk.
  * @param x Location of the chunk on the map grid along x-axis.
  * @param y Location of the chunk on the map grid along y-axis.
  */
-export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, x: number, y: number): MapAssetChunkLayer | undefined {
+export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, x: number, y: number): ChunkLayer | undefined {
   // Find the equivalent chunk in the tile layer. Tiled stores the chunk position as
   // a pixel position rather than a grid location, so we need to convert it first.
   const chunk = layer.chunks.find(chunk =>
@@ -109,118 +101,70 @@ export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, 
     chunk.y / layout.rows === y
   );
 
+  const props = getCustomProps<ChunkLayerProps>(layer);
+
   if (chunk) {
     return {
-      type: MapAssetChunkLayerType.Tiles,
+      layerId: props.$layer,
+      type: ChunkLayerType.Tiles,
       data: chunk.data,
-      props: getCustomProps(layer),
+      name: layer.name,
+      props,
     };
   }
 }
 
-export function parseLayers2(map: TmxInfiniteMap, layout: Grid, x: number, y: number): MapAssetChunkLayer[] {
+/**
+ * @param map
+ * @param layout
+ * @param x Coordinate along the x-axis of the chunk.
+ * @param y Coordinate along the y-axis of the chunk.
+ */
+export function parseLayers2(map: TmxInfiniteMap, layout: Grid, x: number, y: number): ChunkLayer[] {
   const layers = [];
+
+  const cx = x * layout.width;
+  const cy = y * layout.height;
+
+  const bounds = new Rectangle(layout.width, layout.height, cx, cy);
 
   for (const data of map.layers) {
     switch (data.type) {
       case TmxLayerTypeData.Tiles:
         const layer = createChunkTiles(data, layout, x, y);
 
-        // Important: Extracting a tile layer can fail if the layer data did not have
-        // any tiles for our particular chunk.
+        // Important: Extracting a tile layer can return undefined if the layer data did
+        // not have any tiles for our particular chunk. In that case, skip the layer.
         if (layer) {
           layers.push(layer);
         }
 
         break;
+      case TmxLayerTypeData.Objects:
+        const objects = [];
+
+        for (const item of data.objects) {
+          if (bounds.contains(item.x, item.y)) {
+            objects.push(parseObjectData(item));
+          }
+        }
+
+        const props = getCustomProps<ChunkLayerProps>(data);
+
+        layers.push({
+          layerId: props.$layer,
+          type: ChunkLayerType.Entities,
+          data: objects,
+          name: data.name,
+          props,
+        } as ChunkEntityLayer);
+
+        break;
+      default:
+        console.warn(`Layer type not supported: ${data.type}`);
     }
   }
 
   return layers;
 }
 
-/**
- * Parses a TMX tile `layer`.
- *
- * @param layer Layer data that should be parsed.
- * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
- *  Required to parse tile layers.
- * @see TmxTileLayer
- */
-export function parseTileLayerOld(layer: TmxTileLayerData, chunkTileGrid: Grid): TmxTileLayer {
-  const chunks = [];
-
-  if (layer.chunks) {
-    for (const chunk of layer.chunks) {
-      chunks.push(new TileChunk(
-        chunkTileGrid,
-        chunk.data,
-        chunk.x,
-        chunk.y
-      ));
-    }
-  }
-  else {
-    chunks.push(new TileChunk(chunkTileGrid, layer.data, 0, 0));
-  }
-
-  return {
-    name: layer.name,
-    data: chunks,
-    isVisible: layer.visible,
-    properties: getCustomProps(layer),
-    type: layer.class,
-    kind: TmxLayerKind.Tiles
-  };
-}
-
-/**
- * Parses a TMX `layer`.
- *
- * @param map Map data that contains the `layer`.
- * @param layer Layer data that should be parsed.
- * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
- *  Required to parse tile layers.
- */
-export function parseLayer(map: TmxMapData, layer: TmxLayerData, chunkTileGrid: Grid): TmxLayer {
-  switch (layer.type) {
-    case TmxLayerTypeData.Tiles:
-      return parseTileLayerOld(layer, chunkTileGrid);
-    case TmxLayerTypeData.Objects:
-      return parseObjectLayer(layer);
-    case TmxLayerTypeData.Group:
-      const layers = layer.layers.map(item => parseLayer(
-        map,
-        item,
-        chunkTileGrid
-      ));
-
-      return {
-        name: layer.name,
-        data: layers,
-        isVisible: layer.visible,
-        properties: getCustomProps(layer),
-        type: layer.class,
-        kind: TmxLayerKind.Group
-      };
-  }
-}
-
-/**
- * @param data Tilemap data.
- * @param chunkTileGrid Grid that determines how tiles should be arranged in chunks.
- *  Required to parse tile layers.
- */
-export function parseLayers(data: TmxMapData, chunkTileGrid: Grid): TmxLayer[] {
-  const layers = [];
-
-  for (const layer of data.layers) {
-    layers.push(parseLayer(
-      data,
-      layer,
-      chunkTileGrid
-    ));
-  }
-
-  return layers;
-}
