@@ -10,7 +10,6 @@
     "lib/*"
   ],
   "scripts": {
-    "test": "jest --config ./jest.config.js",
     "build": "tsc",
     "build:watch": "tsc -w"
   },
