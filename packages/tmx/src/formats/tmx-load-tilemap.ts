@@ -1,8 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Rectangle, Vec2 } from '@heliks/tiles-engine';
+import { ChunkState, Level, Tileset } from '@heliks/tiles-level';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { ChunkState, Level } from '../level';
-import { Tileset } from '../level/tileset';
 import { extractMetaLayers, getCustomProps, parseLayers, ParserConfig } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 

@@ -76,7 +76,7 @@ export function createRigidBody(geometries: Geometry<PhysicsProps>[], scale: num
  * @param index Index of the tile for which the geometry is returned.
  */
 export function getTileGeometry(local: LocalTileset, index: number): Geometry<PhysicsProps>[] | undefined {
-  const tile = local.tileset.tile<CustomTile<unknown, PhysicsProps>>(index);
+  const tile = local.tileset.tile<CustomTile<{}, PhysicsProps>>(index);
 
   if (tile && tile.shapes && tile.shapes.length > 0) {
     return tile.shapes;

@@ -4,7 +4,8 @@ import { TmxLoadTilemap, TmxLoadTileset } from './formats';
 
 
 /**
- * Provides tools to load {@link Level levels} using the Tiled map format (TMX).
+ * Provides {@link AssetLoader} file formats to load {@link Level levels} using
+ * the Tiled map format (TMX).
  *
  * Latest tested TMX version: 1.10.2
  *

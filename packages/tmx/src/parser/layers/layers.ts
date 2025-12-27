@@ -6,7 +6,7 @@ import {
   ChunkLayerType,
   ChunkMetaLayers,
   ChunkTileLayer
-} from '../../level';
+} from '@heliks/tiles-level';
 import { TmxInfiniteMap, TmxInfiniteTileLayerData, TmxLayerTypeData, TmxObjectLayerData } from '../../tmx';
 import { ParserConfig } from '../config';
 import { getCustomProps, HasProperties } from '../props';

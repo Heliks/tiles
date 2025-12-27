@@ -1,5 +1,5 @@
+import { CustomTile, Tileset } from '@heliks/tiles-level';
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
-import { CustomTile, Tileset } from '../level/tileset';
 import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
 import { getCustomProps } from './props';
 

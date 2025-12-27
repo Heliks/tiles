@@ -1,6 +1,6 @@
 import { Circle, Rectangle } from '@heliks/tiles-engine';
+import { Geometry } from '@heliks/tiles-level';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { Geometry } from '../level';
 import { TmxGeometryData } from '../tmx';
 import { ParserConfig } from './config';
 import { parseCustomType } from './custom-type';

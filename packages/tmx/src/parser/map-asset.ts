@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
+import { Tileset } from '@heliks/tiles-level';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
-import { Tileset } from '../level/tileset';
 import { TmxLayer } from './layers';
 
 
