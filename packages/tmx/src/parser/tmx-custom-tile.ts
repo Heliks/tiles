@@ -1,5 +1,5 @@
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
-import { CustomTile, TmxTileset } from '../level/tmx-tileset';
+import { CustomTile, Tileset } from '../level/tileset';
 import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
 import { getCustomProps } from './props';
 
@@ -28,8 +28,12 @@ function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrame
 }
 
 /** Parses {@link TmxTileData}. */
-export function parseTileData(tileset: TmxTileset, data: TmxTileData): CustomTile {
-  const tile = new CustomTile<{}>(data.id, getCustomProps(data));
+export function parseTileData(tileset: Tileset, data: TmxTileData): CustomTile {
+  const tile: CustomTile = {
+    index: data.id,
+    props: getCustomProps(data)
+  };
+
 
   // Parse animation, if any.
   if (data.animation) {

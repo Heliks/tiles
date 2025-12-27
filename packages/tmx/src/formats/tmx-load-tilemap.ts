@@ -2,7 +2,7 @@ import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Rectangle, Vec2 } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
 import { ChunkState, Level } from '../level';
-import { TmxTileset } from '../level/tmx-tileset';
+import { Tileset } from '../level/tileset';
 import { extractMetaLayers, getCustomProps, parseLayers, ParserConfig } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
@@ -113,7 +113,7 @@ function getChunkGrid(data: TmxMapData): Grid {
 }
 
 /** @internal */
-async function parseLocalTileset(loader: AssetLoader, file: string, data: TmxLocalTilesetData): Promise<LocalTileset<TmxTileset>> {
+async function parseLocalTileset(loader: AssetLoader, file: string, data: TmxLocalTilesetData): Promise<LocalTileset<Tileset>> {
   // Note: As of now, there is no way to serialize sprites that are created from assets
   // without a source location. Therefore, we can not spawn objects that use sprites
   // from embedded tilesets without completely breaking serialization.
@@ -121,13 +121,13 @@ async function parseLocalTileset(loader: AssetLoader, file: string, data: TmxLoc
     throw new Error('Embedded Tilesets are not supported.');
   }
 
-  const tileset = await loader.fetch<TmxTileset>(getDirectory(file, data.source));
+  const tileset = await loader.fetch<Tileset>(getDirectory(file, data.source));
 
   return new LocalTileset(tileset, data.firstgid);
 }
 
 /** @internal */
-function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData): Promise<LocalTileset<TmxTileset>[]> {
+function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData): Promise<LocalTileset<Tileset>[]> {
   return Promise.all(
     data.tilesets.map(
       tilesetData => parseLocalTileset(loader, file, tilesetData)

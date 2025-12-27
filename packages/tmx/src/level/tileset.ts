@@ -1,24 +1,24 @@
 import { Handle } from '@heliks/tiles-assets';
 import { Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteAnimationFrames, SpriteSheet } from '@heliks/tiles-pixi';
-import { CustomTile as BaseCustomTile, Tileset } from '@heliks/tiles-tilemap';
+import { CustomTile as BaseCustomTile, Tileset as BaseTileset } from '@heliks/tiles-tilemap';
 import { Geometry } from './geometry';
 
 
 /** @inheritDoc */
-export class CustomTile<P = {}, S = unknown> extends BaseCustomTile<P> {
+export interface CustomTile<P = {}, S = unknown> extends BaseCustomTile<P> {
 
   /**
    * If this tile is animated, contains the {@link SpriteAnimationFrames} required to
    * build the animation.
    */
-  public animation?: SpriteAnimationFrames;
+  animation?: SpriteAnimationFrames;
 
   /**
    * Contains {@link TmxGeometry geometry} that is extracted from custom shapes added to
    * the tile via the tiled collision editor.
    */
-  public shapes?: Geometry<S>[];
+  shapes?: Geometry<S>[];
 
 }
 
@@ -47,8 +47,8 @@ export interface TmxTilesetProps {
 
 }
 
-/** @inheritDoc */
-export class TmxTileset<P = unknown, T extends CustomTile = CustomTile> extends Tileset<T> {
+/** Tilesets that are used by tilemaps inside that are created by the level system. */
+export class Tileset<P = unknown, T extends CustomTile = CustomTile> extends BaseTileset<T> {
 
   /**
    * When an object is using a sprite from this tileset, this {@link Pivot} should be

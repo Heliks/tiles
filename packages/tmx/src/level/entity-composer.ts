@@ -6,7 +6,7 @@ import { EntityFactory } from './entity-factory';
 import { isPointGeometry } from './geometry';
 import { Chunk, ChunkEntityLayer, Level } from './level';
 import { createRigidBody, getTileGeometry } from './physics';
-import { TmxTileset } from './tmx-tileset';
+import { Tileset } from './tileset';
 
 
 /**
@@ -82,7 +82,7 @@ export class EntityComposer implements EntityFactory {
   }
 
   /** Returns the size of the sprite matching `spriteId` in world units. */
-  public getSpriteSize(tileset: TmxTileset, spriteId: SpriteId): Vec2 {
+  public getSpriteSize(tileset: Tileset, spriteId: SpriteId): Vec2 {
     return this.assets
       .resolve(tileset.spritesheet)
       .getSpriteSize(spriteId)

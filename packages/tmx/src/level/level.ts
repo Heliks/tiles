@@ -2,7 +2,7 @@ import { Entity, Grid, Rectangle } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
 import { LevelEntity } from './entities';
-import { TmxTileset } from './tmx-tileset';
+import { Tileset } from './tileset';
 
 
 /** Available types of chunk layers. */
@@ -120,7 +120,7 @@ export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
  * @template `P`: Custom properties.
  * @template `T`: Tilesets that are used by this level.
  */
-export class Level<P = {}, T extends TmxTileset = TmxTileset> {
+export class Level<P = {}, T extends Tileset = Tileset> {
 
   /**
    * Index of the chunk from where the levels' render distance is measured. Chunks

@@ -1,6 +1,6 @@
 import { Grid } from '@heliks/tiles-engine';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
-import { TmxTileset } from '../level/tmx-tileset';
+import { Tileset } from '../level/tileset';
 import { TmxLayer } from './layers';
 
 
@@ -11,7 +11,7 @@ import { TmxLayer } from './layers';
  * @template `L`: Type of layer found on this asset.
  * @template `T`: Type of tileset found on this asset.
  */
-export class MapAsset<P = unknown, L extends TmxLayer = TmxLayer, T extends TmxTileset = TmxTileset> {
+export class MapAsset<P = unknown, L extends TmxLayer = TmxLayer, T extends Tileset = Tileset> {
 
   /** Contains the tilesets with which tiles, objects etc. are rendered on this map. */
   public readonly tilesets = new LocalTilesetBag<T>();

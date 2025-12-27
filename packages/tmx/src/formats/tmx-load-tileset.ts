@@ -2,7 +2,7 @@ import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { TmxTileset, TmxTilesetProps } from '../level/tmx-tileset';
+import { Tileset, TmxTilesetProps } from '../level/tileset';
 import { getCustomProps, ParserConfig, parseTileData } from '../parser';
 import { TmxTilesetData } from '../tmx';
 
@@ -56,7 +56,7 @@ function createSpriteGrid(grid: Grid, texture: Texture, props: TmxTilesetProps):
  *
  * @see TmxLoadTilemap
  */
-export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
+export class TmxLoadTileset implements Format<TmxTilesetData, Tileset> {
 
   /** @inheritDoc */
   public readonly extensions = ['tsj'];
@@ -64,7 +64,7 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
   constructor(public readonly config: ParserConfig) {}
 
   /** Creates a `Tileset` from `data`. */
-  public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<TmxTileset> {
+  public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<Tileset> {
     const grid = new Grid(
       Math.floor(data.imagewidth / data.tilewidth),
       Math.floor(data.imageheight / data.tileheight),
@@ -77,7 +77,7 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
     const spritesheet = createSpriteGrid(grid, texture, props)
     const handle = loader.insert('/tmx/' + file, spritesheet).handle();
 
-    const tileset = new TmxTileset(handle, grid.size, file, props);
+    const tileset = new Tileset(handle, grid.size, file, props);
 
     tileset.name = data.name;
     tileset.pivot = parsePivot(data);

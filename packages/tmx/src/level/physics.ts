@@ -1,7 +1,7 @@
 import { Collider, RigidBody } from '@heliks/tiles-physics';
 import { LocalTileset } from '@heliks/tiles-tilemap';
 import { Geometry } from './geometry';
-import { CustomTile } from './tmx-tileset';
+import { CustomTile } from './tileset';
 
 
 /**
