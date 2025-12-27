@@ -231,7 +231,7 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
           layers,
           state: ChunkState.Pending,
           x,
-          y,
+          y
         });
       }
     }

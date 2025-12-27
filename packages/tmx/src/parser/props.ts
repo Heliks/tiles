@@ -3,15 +3,6 @@ import { TmxHasPropertyData } from '../tmx';
 
 
 /**
- * Helper type that indicates a structure carries custom properties.
- * @deprecated
- */
-export interface HasProperties<P = unknown> {
-  /** Custom properties. */
-  readonly properties: P;
-}
-
-/**
  * Parses custom properties of `data`.
  *
  * - `P`: Expected custom properties.

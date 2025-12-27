@@ -1,4 +1,4 @@
-import { Grid } from 'engine/src';
+import { Grid } from '@heliks/tiles-engine';
 import { getCellsFromDistance } from '../utils';
 
 

@@ -53,7 +53,7 @@ export function createPhysicsCollider(geometry: Geometry<PhysicsProps>, scale: n
   return collider;
 }
 
-export function createRigidBody(geometries: Geometry<PhysicsProps>[], scale: number) {
+export function createRigidBody(geometries: Geometry<PhysicsProps>[], scale: number): RigidBody {
   const body = new RigidBody();
 
   for (const geometry of geometries) {
