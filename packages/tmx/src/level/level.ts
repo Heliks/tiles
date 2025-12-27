@@ -1,7 +1,8 @@
-import { Entity, Grid } from '@heliks/tiles-engine';
+import { Entity, Grid, Rectangle } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
-import { LocalTilesetBag, Tileset } from '@heliks/tiles-tilemap';
-import { TmxObject } from '../parser';
+import { LocalTilesetBag } from '@heliks/tiles-tilemap';
+import { LevelEntity } from './entities';
+import { TmxTileset } from './tmx-tileset';
 
 
 /** Available types of chunk layers. */
@@ -19,8 +20,6 @@ export interface ChunkLayerProps {
 }
 
 interface BaseLayer<P extends ChunkLayerProps = ChunkLayerProps> {
-  /** ID of the renderer layer on which this layer should be rendered. */
-  layerId?: LayerId;
   /** Custom properties. */
   props: P;
   name: string;
@@ -49,7 +48,7 @@ export interface ChunkTileLayer<P extends ChunkLayerProps = ChunkLayerProps> ext
  * @template `P`: Custom properties.
  */
 export interface ChunkEntityLayer<P extends ChunkLayerProps = ChunkLayerProps> extends BaseLayer<P> {
-  data: TmxObject[];
+  data: LevelEntity[];
   type: ChunkLayerType.Entities;
 }
 
@@ -67,6 +66,10 @@ export enum ChunkState {
   Loaded
 }
 
+/**
+ * Key-value map that stores the meta-layers of a chunk.
+ * @see Chunk.meta
+ */
 export interface ChunkMetaLayers<L = ChunkLayer> {
   [name: string]: L;
 }
@@ -75,9 +78,21 @@ export interface ChunkMetaLayers<L = ChunkLayer> {
  * @template L - The type of layer associated with the chunk.
  */
 export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
+  /** Defines the chunks' outer boundaries in world units.*/
+  bounds: Rectangle;
   /** When the chunk is loaded, this will contain the root entity. */
   entity?: Entity;
-  /** Contains the chunks' tile grid. */
+  /**
+   * Contains all entities in this chunk that will be destroyed when the chunk is
+   * culled. This list is managed automatically by the level system.
+   */
+  entities: Entity[];
+  /**
+   * Defines how tiles are arranged in this chunk.
+   *
+   * Columns and rows define the number of tiles in each direction. The cell size
+   * defines the size of each tile.
+   */
   grid: Grid;
   /** Grid index of this chunk. */
   index: number;
@@ -105,7 +120,7 @@ export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
  * @template `P`: Custom properties.
  * @template `T`: Tilesets that are used by this level.
  */
-export class Level<P = unknown, T extends Tileset = Tileset> {
+export class Level<P = {}, T extends TmxTileset = TmxTileset> {
 
   /**
    * Index of the chunk from where the levels' render distance is measured. Chunks

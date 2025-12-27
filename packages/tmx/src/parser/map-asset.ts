@@ -1,7 +1,7 @@
 import { Grid } from '@heliks/tiles-engine';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
+import { TmxTileset } from '../level/tmx-tileset';
 import { TmxLayer } from './layers';
-import { TmxTileset } from './tmx-tileset';
 
 
 /**

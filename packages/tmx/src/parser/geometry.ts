@@ -1,31 +1,11 @@
 import { Circle, Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
+import { Geometry } from '../level';
 import { TmxGeometryData } from '../tmx';
-import { HasCustomType, parseCustomType } from './custom-type';
-import { getCustomProps, HasCustomProps } from './props';
+import { ParserConfig } from './config';
+import { parseCustomType } from './custom-type';
+import { getCustomProps } from './props';
 
-
-/**
- * Defines a geometry.
- *
- * For example: Colliders attached to a tile, shapes placed on object layers, etc.
- *
- * - `P`: Custom properties.
- * - `S`: Geometric shape.
- * - `T`: Allowed value for "type" property.
- */
-export interface TmxGeometry<P = {}, S extends ColliderShape = ColliderShape, T extends string = string> extends HasCustomProps<P>, HasCustomType<T> {
-
-  /** Unique identifier. */
-  readonly id: number;
-
-  /** Custom name. */
-  readonly name: string;
-
-  /** Geometrical shape. */
-  readonly shape: S;
-
-}
 
 /** @internal */
 function createShape(data: TmxGeometryData): ColliderShape {
@@ -50,7 +30,12 @@ function createShape(data: TmxGeometryData): ColliderShape {
 }
 
 /** Parses {@link TmxGeometryData geometry data}. */
-export function parseGeometryData(data: TmxGeometryData): TmxGeometry {
+export function parseGeometry(data: TmxGeometryData, config: ParserConfig): Geometry {
+  const shape = createShape(data).shrink(config.unitSize);
+
+  shape.x /= config.unitSize;
+  shape.y /= config.unitSize;
+
   return {
     id: data.id,
     name: data.name,

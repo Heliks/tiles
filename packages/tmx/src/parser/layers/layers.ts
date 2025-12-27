@@ -1,6 +1,14 @@
 import { Grid, Rectangle } from '@heliks/tiles-engine';
-import { ChunkEntityLayer, ChunkLayer, ChunkLayerProps, ChunkLayerType } from '../../level';
+import {
+  ChunkEntityLayer,
+  ChunkLayer,
+  ChunkLayerProps,
+  ChunkLayerType,
+  ChunkMetaLayers,
+  ChunkTileLayer
+} from '../../level';
 import { TmxInfiniteMap, TmxInfiniteTileLayerData, TmxLayerTypeData, TmxObjectLayerData } from '../../tmx';
+import { ParserConfig } from '../config';
 import { getCustomProps, HasProperties } from '../props';
 import { parseObjectData, TmxObject } from '../tmx-object';
 import { TileChunk } from './tile-chunk';
@@ -61,51 +69,84 @@ export type TmxLayer<P = {}> = TmxLayerGroup<P> | TmxObjectLayer<P> | TmxTileLay
 
 
 /**
- * Parses a TMX tile `layer`.
+ * Extracts meta-layers from an array of chunk layers.
  *
- * @param layer Layer data that should be parsed.
- * @see TmxObjectLayer
+ * Each meta-layer is stored using its own `name`. Subsequently, every name must be
+ * unique or this function will throw an error.
+ *
+ * @remarks
+ * This modifies the original `layers` input by removing the extracted meta-layers.
  */
-export function parseObjectLayer(layer: TmxObjectLayerData): TmxObjectLayer {
+export function extractMetaLayers(layers: ChunkLayer[]): ChunkMetaLayers {
+  const meta: ChunkMetaLayers = {};
+
+  for (let i = layers.length - 1; i >= 0; i--) {
+    const layer = layers[i];
+
+    if (layer.props.$meta) {
+      if (meta[layer.name]) {
+        throw new Error(`Name for meta layers must be unique: ${layer.name}`);
+      }
+
+      meta[ layer.name ] = layer;
+
+      // Remove from the map array.
+      layers.splice(i, 1);
+    }
+  }
+
+  return meta;
+}
+
+/**
+ * Creates a {@link ChunkEntityLayer} from all objects on the given object `layer` that
+ * fall within the specified boundaries. Objects are parsed in the process.
+ *
+ * @param layer Layer data that should be parsed
+ * @param bounds Boundaries in pixels that determine which objects will be included
+ * @param config Parser config
+ */
+export function createEntityLayer(layer: TmxObjectLayerData, bounds: Rectangle, config: ParserConfig): ChunkEntityLayer {
   const objects = [];
 
   for (const item of layer.objects) {
-    objects.push(parseObjectData(item));
+    if (bounds.contains(item.x, item.y)) {
+      objects.push(parseObjectData(item, config));
+    }
   }
 
+  const props = getCustomProps<ChunkLayerProps>(layer);
+
   return {
-    name: layer.name,
+    type: ChunkLayerType.Entities,
     data: objects,
-    isVisible: layer.visible,
-    properties: getCustomProps(layer),
-    type: layer.class,
-    kind: TmxLayerKind.Objects
+    name: layer.name,
+    props,
   };
 }
 
 /**
- * Creates a {@link ChunkLayer} for the chunk at the given location. This can
- * return `undefined` if the given `layer` data does not contain any tiles for
- * that particular chunk.
+ * Creates a {@link ChunkTileLayer} for the chunk at the given location. This can
+ * return `undefined` if the given `layer` data does not contain any tiles for that
+ * particular chunk.
  *
- * @param layer TMX Layer data from which tiles will be extracted.
- * @param layout The layout of a map chunk.
- * @param x Location of the chunk on the map grid along x-axis.
- * @param y Location of the chunk on the map grid along y-axis.
+ * @param layer TMX Layer data from which tiles will be extracted
+ * @param grid Tile grid of a chunk
+ * @param x Location of the chunk on the map grid along x-axis
+ * @param y Location of the chunk on the map grid along y-axis
  */
-export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, x: number, y: number): ChunkLayer | undefined {
+export function createTileLayer(layer: TmxInfiniteTileLayerData, grid: Grid, x: number, y: number): ChunkTileLayer | undefined {
   // Find the equivalent chunk in the tile layer. Tiled stores the chunk position as
   // a pixel position rather than a grid location, so we need to convert it first.
   const chunk = layer.chunks.find(chunk =>
-    chunk.x / layout.cols === x &&
-    chunk.y / layout.rows === y
+    chunk.x / grid.cols === x &&
+    chunk.y / grid.rows === y
   );
 
   const props = getCustomProps<ChunkLayerProps>(layer);
 
   if (chunk) {
     return {
-      layerId: props.$layer,
       type: ChunkLayerType.Tiles,
       data: chunk.data,
       name: layer.name,
@@ -115,49 +156,37 @@ export function createChunkTiles(layer: TmxInfiniteTileLayerData, layout: Grid, 
 }
 
 /**
- * @param map
- * @param layout
- * @param x Coordinate along the x-axis of the chunk.
- * @param y Coordinate along the y-axis of the chunk.
+ * @param map Map data from which layers are parsed
+ * @param grid Tile grid of a chunk
+ * @param x Chunk coordinate along the x-axis
+ * @param y Chunk coordinate along the y-axis
+ * @param config Parser config
  */
-export function parseLayers2(map: TmxInfiniteMap, layout: Grid, x: number, y: number): ChunkLayer[] {
+export function parseLayers(map: TmxInfiniteMap, grid: Grid, x: number, y: number, config: ParserConfig): ChunkLayer[] {
   const layers = [];
 
-  const cx = x * layout.width;
-  const cy = y * layout.height;
-
-  const bounds = new Rectangle(layout.width, layout.height, cx, cy);
+  // Boundaries from where objects are extracted on object layers.
+  const bounds = new Rectangle(
+    grid.width,
+    grid.height,
+    grid.width * x,
+    grid.height * y
+  );
 
   for (const data of map.layers) {
     switch (data.type) {
       case TmxLayerTypeData.Tiles:
-        const layer = createChunkTiles(data, layout, x, y);
+        const layer = createTileLayer(data, grid, x, y);
 
-        // Important: Extracting a tile layer can return undefined if the layer data did
-        // not have any tiles for our particular chunk. In that case, skip the layer.
+        // Important: Creating the tile layer can return undefined if the layer data did
+        // not have any tiles for our particular chunk. In that case, skip it.
         if (layer) {
           layers.push(layer);
         }
 
         break;
       case TmxLayerTypeData.Objects:
-        const objects = [];
-
-        for (const item of data.objects) {
-          if (bounds.contains(item.x, item.y)) {
-            objects.push(parseObjectData(item));
-          }
-        }
-
-        const props = getCustomProps<ChunkLayerProps>(data);
-
-        layers.push({
-          layerId: props.$layer,
-          type: ChunkLayerType.Entities,
-          data: objects,
-          name: data.name,
-          props,
-        } as ChunkEntityLayer);
+        layers.push(createEntityLayer(data, bounds, config));
 
         break;
       default:

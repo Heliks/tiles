@@ -23,4 +23,11 @@ export class Circle implements Shape {
     return this;
   }
 
+  /** @inheritDoc */
+  public shrink(factor: number): this {
+    this.radius /= factor;
+
+    return this;
+  }
+
 }

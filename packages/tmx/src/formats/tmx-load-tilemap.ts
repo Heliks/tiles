@@ -1,37 +1,35 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
-import { Grid, Vec2 } from '@heliks/tiles-engine';
+import { Grid, Rectangle, Vec2 } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { ChunkLayer, ChunkMetaLayers, ChunkState, Level } from '../level';
-import { getCustomProps, MapAsset, parseLayers2, TmxTileset } from '../parser';
+import { ChunkState, Level } from '../level';
+import { TmxTileset } from '../level/tmx-tileset';
+import { extractMetaLayers, getCustomProps, parseLayers, ParserConfig } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
 
 /**
- * Default value for the amount of tiles that a chunk occupies. Will be used as a
- * fallback if editor-settings are not available in the provided format.
+ * Default value for the number of tiles that a chunk occupies. Will be used as a
+ * fallback if this is not specified on the loaded map.
  *
  * @internal
  */
 const TMX_DEFAULT_CHUNK_SIZE = 16;
 
 /**
- * Returns the size of the given tmx map `data` (amount of columns on x axis and
- * amount of columns on y axis).
- *
- * This also returns the size of "infinite maps" which according to the tiled format
- * would have a width and height of `0`.
+ * Returns the total number of columns and rows on the given `map`. This also works for
+ * infinite maps, which, according to the TMX specification, have a size of `0`
  *
  * @internal
  */
-function getMapSize(data: TmxMapData): Vec2 {
-  const size = new Vec2(data.width, data.height);
+function getMapSize(map: TmxMapData): Vec2 {
+  const size = new Vec2(map.width, map.height);
 
-  if (! data.infinite) {
+  if (! map.infinite) {
     return size;
   }
 
   // Determine size of infinite maps by finding the largest layer.
-  for (const layer of data.layers) {
+  for (const layer of map.layers) {
     if (layer.width > size.x) {
       size.x = layer.width;
     }
@@ -44,16 +42,14 @@ function getMapSize(data: TmxMapData): Vec2 {
   return size;
 }
 
-
 /**
- * Returns a `Grid` that describes the layout in which chunks should be arranged on the
- * given tilemap `data`.
+ * Creates a {@link Grid} that defines how chunks are arranged on a level.
  *
- * Columns and rows determine amount of chunks in each direction, cell size determines
- * amount of tiles in each chunk.
+ * Columns and rows define the number of chunks in each direction. The cell size
+ * defines the number of tiles in each chunk.
  *
- * Maps that are not "infinite" will always only have a single chunk that covers the
- * size of the whole map.
+ * Finite maps that don't have chunks will have a single chunk that covers the
+ * entire size of the map.
  *
  * @internal
  */
@@ -81,35 +77,36 @@ function getChunkLayout(data: TmxMapData): Grid {
 }
 
 /**
- * Creates a {@link Grid} that defines the layout of a chunk on a tilemap. Columns and
- * rows define the number of tiles in each direction. The cell size determines the size
- * of each tile.
+ * Creates a {@link Grid} that defines how tiles are arranged on a chunk.
  *
- * If the map is finite and therefore doesn't have chunks, the grid returned will cover
- * the entire size of the map.
+ * Columns and rows define the number of tiles in each direction. The cell size
+ * defines the size of each tile.
+ *
+ * Finite maps that don't have chunks will have a single chunk that covers the
+ * entire size of the map.
  *
  * @internal
  */
 function getChunkGrid(data: TmxMapData): Grid {
-  let tilesX = TMX_DEFAULT_CHUNK_SIZE;
-  let tilesY = TMX_DEFAULT_CHUNK_SIZE;
+  let tilesW = TMX_DEFAULT_CHUNK_SIZE;
+  let tilesH = TMX_DEFAULT_CHUNK_SIZE;
 
   if (data.infinite) {
     if (data.editorsettings?.chunksize) {
-      tilesX = data.editorsettings.chunksize.width;
-      tilesY = data.editorsettings.chunksize.height;
+      tilesW = data.editorsettings.chunksize.width;
+      tilesH = data.editorsettings.chunksize.height;
     }
   }
   else {
     const size = getMapSize(data);
 
-    tilesX = size.x;
-    tilesY = size.y;
+    tilesW = size.x;
+    tilesH = size.y;
   }
 
   return new Grid(
-    tilesX,
-    tilesY,
+    tilesW,
+    tilesH,
     data.tilewidth,
     data.tileheight
   );
@@ -136,51 +133,6 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData)
       tilesetData => parseLocalTileset(loader, file, tilesetData)
     )
   );
-}
-
-/** @internal */
-function parseTilemap<P = unknown>(file: string, data: TmxMapData): MapAsset<P> {
-  return new MapAsset<P>(
-    file,
-    new Grid(
-      data.width,
-      data.height,
-      data.tilewidth,
-      data.tileheight
-    ),
-    getChunkLayout(data),
-    getCustomProps<P>(data)
-  );
-}
-
-/**
- * Extracts meta-layers from an array of chunk layers.
- *
- * Each meta-layer is stored using its own `name`. Subsequently, every name must be
- * unique or this function will throw an error.
- *
- * @remarks
- * This modifies the original `layers` input by removing the extracted meta-layers.
- */
-export function extractMetaLayers(layers: ChunkLayer[]): ChunkMetaLayers {
-  const meta: ChunkMetaLayers = {};
-
-  for (let i = layers.length - 1; i >= 0; i--) {
-    const layer = layers[i];
-
-    if (layer.props.$meta) {
-      if (meta[layer.name]) {
-        throw new Error(`Name for meta layers must be unique: ${layer.name}`);
-      }
-
-      meta[ layer.name ] = layer;
-
-      // Remove from the map array.
-      layers.splice(i, 1);
-    }
-  }
-
-  return meta;
 }
 
 
@@ -231,14 +183,30 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
   /** @inheritDoc */
   public readonly extensions = ['tmj'];
 
+  constructor(public readonly config: ParserConfig) {}
+
+  /**
+   * Calculates the physical boundaries of a chunk at a given location.
+   *
+   * @param grid The chunks' tile grid.
+   * @param x Grid location of the chunk along the x-axis.
+   * @param y Grid location of the chunk along the y-axis.
+   */
+  public getChunkBounds(grid: Grid, x: number, y: number): Rectangle {
+    const cx = (x * grid.cols * grid.cellWidth);
+    const cy = (y * grid.rows * grid.cellHeight);
+
+    return new Rectangle(grid.width, grid.height, cx, cy).divide(this.config.unitSize);
+  }
+
   /** @inheritDoc */
   public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<Level<P>> {
     if (! data.infinite) {
       throw new Error('Todo');
     }
 
-    // Create the layout of each individual chunk. We need this to parse tile layers.
-    const chunkTileGrid = getChunkGrid(data);
+    // Create the layout of each chunk. We need this to parse tile layers.
+    const chunkGrid = getChunkGrid(data);
 
     const grid = new Grid(
       data.width,
@@ -251,14 +219,14 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
     const props = getCustomProps<P>(data);
     const level = new Level(grid, layout, props);
 
-    console.log('Chunk layout', layout)
-
     for (let x = 0; x < level.layout.cols; x++) {
       for (let y = 0; y < level.layout.rows; y++) {
-        const layers = parseLayers2(data, chunkTileGrid, x, y);
+        const layers = parseLayers(data, chunkGrid, x, y, this.config);
 
         level.chunks.push({
-          grid: chunkTileGrid,
+          entities: [],
+          bounds: this.getChunkBounds(chunkGrid, x, y),
+          grid: chunkGrid,
           index: layout.getIndex(x, y),
           meta: extractMetaLayers(layers),
           layers,

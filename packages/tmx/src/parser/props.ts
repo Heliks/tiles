@@ -2,16 +2,13 @@ import { Struct } from '@heliks/tiles-engine';
 import { TmxHasPropertyData } from '../tmx';
 
 
-/** Helper type that indicates a structure carries custom properties. */
+/**
+ * Helper type that indicates a structure carries custom properties.
+ * @deprecated
+ */
 export interface HasProperties<P = unknown> {
   /** Custom properties. */
   readonly properties: P;
-}
-
-/** Types that implement this interface carry custom properties. */
-export interface HasCustomProps<P = {}> {
-  /** Custom properties. */
-  readonly props: P;
 }
 
 /**

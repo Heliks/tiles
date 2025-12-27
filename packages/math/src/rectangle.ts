@@ -1,5 +1,4 @@
 import { Shape } from './shape';
-import { XY } from './vec2';
 
 
 /** Dimensions of a rectangular box. */
@@ -71,15 +70,28 @@ export class Rectangle implements Shape, Box {
   }
 
   /** @inheritDoc */
-  public scale(factor: number | XY): this {
-    if (typeof factor === 'number') {
-      this.width *= factor;
-      this.height *= factor;
-    }
-    else {
-      this.width *= factor.x;
-      this.height *= factor.y;
-    }
+  public scale(factor: number): this {
+    this.width *= factor;
+    this.height *= factor;
+
+    return this;
+  }
+
+  /** @inheritDoc */
+  public shrink(factor: number): this {
+    this.width /= factor;
+    this.height /= factor;
+
+    return this;
+  }
+
+  /** Divides the rectangle size and position by the given `divisor`. */
+  public divide(divisor: number): this {
+    this.width /= divisor;
+    this.height /= divisor;
+
+    this.x /= divisor;
+    this.y /= divisor;
 
     return this;
   }

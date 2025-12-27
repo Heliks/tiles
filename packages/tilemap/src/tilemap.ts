@@ -203,6 +203,13 @@ export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapDa
     return this;
   }
 
+  /** Copies the tilesets of the given `bag` to this tilemap. */
+  public setTilesets(bag: LocalTilesetBag<T>): this {
+    this.tilesets.copy(bag);
+
+    return this;
+  }
+
   /**
    * Returns the tile ID that occupies a `cell` index. Returns `0` if `cell` is outside
    * the boundaries of the tilemap grid, or if that cell is not occupied by any tile.

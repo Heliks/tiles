@@ -2,7 +2,8 @@ import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Pivot, PivotPreset } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
-import { getCustomProps, parseTileData, TmxTileset, TmxTilesetProps } from '../parser';
+import { TmxTileset, TmxTilesetProps } from '../level/tmx-tileset';
+import { getCustomProps, ParserConfig, parseTileData } from '../parser';
 import { TmxTilesetData } from '../tmx';
 
 
@@ -59,6 +60,8 @@ export class TmxLoadTileset implements Format<TmxTilesetData, TmxTileset> {
 
   /** @inheritDoc */
   public readonly extensions = ['tsj'];
+
+  constructor(public readonly config: ParserConfig) {}
 
   /** Creates a `Tileset` from `data`. */
   public async process(data: TmxTilesetData, file: string, loader: AssetLoader): Promise<TmxTileset> {

@@ -1,27 +1,8 @@
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
-import { CustomTile } from '@heliks/tiles-tilemap';
+import { CustomTile, TmxTileset } from '../level/tmx-tileset';
 import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
 import { getCustomProps } from './props';
-import { parseGeometryData, TmxGeometry } from './tmx-geometry';
-import { TmxTileset } from './tmx-tileset';
 
-
-/** @inheritDoc */
-export class TmxCustomTile<P = unknown, S = unknown> extends CustomTile<P> {
-
-  /**
-   * If this tile is animated, contains the {@link SpriteAnimationFrames} required to
-   * build the animation.
-   */
-  public animation?: SpriteAnimationFrames;
-
-  /**
-   * Contains {@link TmxGeometry geometry} that is extracted from custom shapes added to
-   * the tile via the tiled collision editor.
-   */
-  public shapes?: TmxGeometry<S>[];
-
-}
 
 /** @internal */
 function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrames {
@@ -47,8 +28,8 @@ function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrame
 }
 
 /** Parses {@link TmxTileData}. */
-export function parseTileData(tileset: TmxTileset, data: TmxTileData): TmxCustomTile {
-  const tile = new TmxCustomTile(data.id, getCustomProps(data));
+export function parseTileData(tileset: TmxTileset, data: TmxTileData): CustomTile {
+  const tile = new CustomTile<{}>(data.id, getCustomProps(data));
 
   // Parse animation, if any.
   if (data.animation) {
@@ -57,7 +38,7 @@ export function parseTileData(tileset: TmxTileset, data: TmxTileData): TmxCustom
 
   // Parse shapes, if any.
   if (data.objectgroup) {
-    tile.shapes = data.objectgroup.objects.map(item => parseGeometryData(item));
+    // tile.shapes = data.objectgroup.objects.map(item => parseGeometry(item));
   }
 
   return tile;

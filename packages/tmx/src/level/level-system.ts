@@ -1,6 +1,7 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import {
   Hierarchy,
+  Inject,
   Injectable,
   Parent,
   ProcessingSystem,
@@ -12,10 +13,17 @@ import {
 } from '@heliks/tiles-engine';
 import { Camera, RendererConfig } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { ChunkLayerType, ChunkState, Level } from './level';
+import { EntityFactory } from './entity-factory';
+import { Chunk, ChunkEntityLayer, ChunkLayerType, ChunkState, Level } from './level';
 import { LevelConfig } from './level-config';
 import { getCellsFromDistance } from './utils';
 
+
+/**
+ * Token used by the service container to inject the {@link EntityFactory} that is
+ * used by the level system.
+ */
+export const LEVEL_ENTITY_FACTORY = Symbol('LEVEL_ENTITY_FACTORY');
 
 @Injectable()
 export class LevelSystem extends ProcessingSystem {
@@ -27,6 +35,8 @@ export class LevelSystem extends ProcessingSystem {
   private scratch2 = [];
 
   constructor(
+    @Inject(LEVEL_ENTITY_FACTORY)
+    public readonly factory: EntityFactory,
     public readonly assets: AssetStorage,
     public readonly camera: Camera,
     public readonly config: LevelConfig,
@@ -39,6 +49,150 @@ export class LevelSystem extends ProcessingSystem {
   /** @inheritDoc */
   public build(query: QueryBuilder): Query {
     return query.contains(Level).contains(Transform).build();
+  }
+
+  /** @inheritDoc */
+  public update(world: World): void {
+    for (const entity of this.query.entities) {
+      const level = world.storage(Level).get(entity);
+
+      // Translate camera position to a grid position.
+      level.chunk = level.layout.getIndexAt(
+        this.camera.world.x,
+        this.camera.world.y
+      );
+
+      if (level.chunk !== level._chunk) {
+        this.cull(world, level);
+
+        const indexes = this.getChunksInRange(level, level.chunk, this.config.renderDistance);
+
+        for (const index of indexes) {
+          const chunk = level.getChunk(index);
+
+          if (chunk && chunk.state === ChunkState.Pending) {
+            void this.load(world, level, chunk);
+          }
+        }
+
+        level._chunk = level.chunk;
+      }
+    }
+  }
+
+  /**
+   * Unloads all chunks of a `level` that are outside the given unload `distance`.
+   *
+   * @param world Entity world
+   * @param level Level from which to unload chunks
+   */
+  public cull(world: World, level: Level): void {
+    // Get all chunks that are allowed to remain loaded. If a chunk is not part of
+    // that result, it will be unloaded.
+    const indexes = this.getChunksInRange(level, level.chunk, this.config.unloadDistance);
+
+    for (const chunk of level.loaded) {
+      // Chunks that are partially loaded can't be unloaded. Skip them for now. We could
+      // optimize this later by canceling the loading process, but this is fine for now.
+      if (! indexes.includes(chunk.index) && chunk.state === ChunkState.Loaded) {
+        this.unload(world, level, chunk);
+      }
+    }
+  }
+
+  /**
+   * Unloads a chunk from the given `level`.
+   *
+   * @remarks
+   * The chunk must be {@link ChunkState.Loaded}. Otherwise, there might be race
+   * conditions that cause the chunk to not unload fully.
+   *
+   * @param world Entity world
+   * @param level Level from where chunk is unloaded
+   * @param chunk The chunk to unload
+   */
+  public unload(world: World, level: Level, chunk: Chunk): void {
+    if (chunk.entity) {
+      this.hierarchy.destroy(world, chunk.entity);
+    }
+
+    for (const entity of chunk.entities) {
+      world.destroy(entity);
+    }
+
+    chunk.entity = undefined;
+    chunk.entities.length = 0;
+    chunk.state = ChunkState.Pending;
+
+    level.loaded.delete(chunk);
+  }
+
+  /**
+   * Loads a chunk on the given level.
+   *
+   * @remarks
+   * The chunk must be {@link ChunkState.Pending} before it is loaded. Otherwise,
+   * previous artifacts of the chunk might not unload properly.
+   *
+   * @param world Entity world
+   * @param level Level that loads the chunk
+   * @param chunk The chunk to load
+   */
+  public async load(world: World, level: Level, chunk: Chunk): Promise<void> {
+    if (chunk.state !== ChunkState.Pending) {
+      throw new Error(`Chunk ${chunk.index} is already loaded.`);
+    }
+
+    chunk.entity = world.insert();
+    chunk.state = ChunkState.Loading;
+
+    // Entity layers are created async.
+    const promises = [];
+
+    for (const layer of chunk.layers) {
+      const transform = new Transform(
+        chunk.bounds.x,
+        chunk.bounds.y
+      );
+
+      switch (layer.type) {
+        case ChunkLayerType.Tiles:
+          const tilemap = new Tilemap(chunk.grid, layer.props.$layer);
+
+          tilemap.setTilesets(level.tilesets);
+          tilemap.setAll(layer.data);
+
+          world
+            .create()
+            .use(new Parent(chunk.entity))
+            .use(tilemap)
+            .use(transform)
+            .build();
+
+          break;
+        case ChunkLayerType.Entities:
+          promises.push(
+            this.spawnEntityLayer(world, level, chunk, layer)
+          );
+
+          break;
+      }
+    }
+
+    await Promise.all(promises);
+
+    chunk.state = ChunkState.Loaded;
+    level.loaded.add(chunk);
+  }
+
+  private async spawnEntityLayer(world: World, level: Level, chunk: Chunk, layer: ChunkEntityLayer): Promise<void> {
+    const promises = [];
+
+    for (const data of layer.data) {
+      promises.push(this.factory.create(world, level, chunk, layer, data));
+    }
+
+    chunk.entities.push(...await Promise.all(promises));
   }
 
   /**
@@ -57,97 +211,6 @@ export class LevelSystem extends ProcessingSystem {
       distance,
       this.scratch2
     );
-  }
-
-  /**
-   * Unloads all chunks of a `level` that are outside the given unload `distance`.
-   *
-   * @param world Entity world.
-   * @param level Level from which to unload chunks.
-   * @param distance Distance after which loaded chunks will be culled.
-   */
-  public cull(world: World, level: Level, distance: number): void {
-    // Get all chunks that are allowed to remain loaded. If a chunk is not part of
-    // that result, it will be unloaded.
-    const indexes = this.getChunksInRange(level, level.chunk, distance);
-
-    for (const chunk of level.loaded) {
-      if (indexes.includes(chunk.index)) {
-        continue;
-      }
-
-      if (chunk.entity) {
-        this.hierarchy.destroy(world, chunk.entity);
-      }
-
-      chunk.entity = undefined;
-      chunk.state = ChunkState.Pending;
-
-      level.loaded.delete(chunk);
-    }
-  }
-
-  /** @inheritDoc */
-  public update(world: World): void {
-    for (const entity of this.query.entities) {
-      const level = world.storage(Level).get(entity);
-
-      // Width and height factors to translate tile sizes into world units.
-      const cw = this.renderer.unitSize / level.grid.cellWidth;
-      const ch = this.renderer.unitSize / level.grid.cellHeight;
-
-      // Translate camera position to a grid position.
-      level.chunk = level.layout.getIndexAt(
-        this.camera.world.x * cw,
-        this.camera.world.y * ch
-      );
-
-      if (level.chunk !== level._chunk) {
-        this.cull(world, level, this.config.unloadDistance);
-
-        const indexes = this.getChunksInRange(level, level.chunk, this.config.renderDistance);
-
-        for (const index of indexes) {
-          const chunk = level.getChunk(index);
-
-          // Chunks are allowed to be left empty. If this is one of these cases, or
-          // if the chunk is not unloaded, skip it entirely.
-          if (! chunk || chunk.state !== ChunkState.Pending) {
-            continue;
-          }
-
-          chunk.entity = world.insert();
-
-          for (const layer of chunk.layers) {
-            const transform = new Transform(
-              chunk.x * (level.layout.cellWidth / cw),
-              chunk.y * (level.layout.cellHeight / ch)
-            );
-
-            if (layer.type === ChunkLayerType.Tiles) {
-              const tilemap = new Tilemap(chunk.grid, layer.layerId);
-
-              tilemap.tilesets.copy(level.tilesets);
-              tilemap.setAll(layer.data);
-
-              world
-                .create()
-                .use(tilemap)
-                .use(new Parent(chunk.entity))
-                .use(transform)
-                .build();
-            }
-
-            chunk.state = ChunkState.Loaded;
-            level.loaded.add(chunk);
-
-            console.log(chunk)
-          }
-        }
-
-        level._chunk = level.chunk;
-      }
-    }
   }
 
 }
