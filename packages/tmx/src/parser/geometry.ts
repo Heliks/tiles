@@ -40,7 +40,7 @@ export function parseGeometry(data: TmxGeometryData, config: ParserConfig): Geom
     id: data.id,
     name: data.name,
     props: getCustomProps(data),
-    shape: createShape(data),
+    shape,
     type: parseCustomType(data)
   };
 }

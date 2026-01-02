@@ -152,7 +152,7 @@ export class Level<P = {}, T extends Tileset = Tileset> {
    * @param grid Grid that defines the dimensions of the entire tilemap. The cell size
    *  defines the size of an individual tile. Columns and rows how many tiles there are
    *  in total in each direction.
-   * @param layout Grid that defines the layout of individual map chunks. Columns and
+   * @param layout Grid that defines the layout of how chunks are laid out. Columns and
    *  rows determine the number of chunks in each direction. The cell size determines
    *  the number of tiles contained in each chunk.
    * @param props Custom properties.

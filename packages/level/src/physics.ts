@@ -28,7 +28,7 @@ export interface PhysicsProps {
  * @param scale Scale in which the collider is created.
  * @param us Unit size.
  */
-export function createPhysicsCollider(geometry: Geometry<PhysicsProps>, scale: number): Collider {
+export function createPhysicsCollider(geometry: Geometry<PhysicsProps>, scale = 1): Collider {
   const collider = new Collider(
     geometry
       .shape

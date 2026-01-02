@@ -1,11 +1,12 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
+import { RigidBody } from '@heliks/tiles-physics';
 import { RendererConfig, SpriteId, SpriteRender } from '@heliks/tiles-pixi';
 import { isTileEntity, LevelEntity, TileEntity } from './entities';
 import { EntityFactory } from './entity-factory';
 import { isPointGeometry } from './geometry';
 import { Chunk, ChunkEntityLayer, Level } from './level';
-import { createRigidBody, getTileGeometry } from './physics';
+import { createPhysicsCollider, createRigidBody, getTileGeometry } from './physics';
 import { Tileset } from './tileset';
 
 
@@ -41,8 +42,14 @@ export class EntityComposer implements EntityFactory {
       // Point geometry has a size of 0/0, if we don't ignore it, there will be a bunch
       // of invisible colliders scattered around the world.
       if (! isPointGeometry(data)) {
-        // Todo: Broken positions.
-        world.attach(entity, createRigidBody([ data ], 1));
+        const collider = createPhysicsCollider(data);
+
+        // We need to reset the position of the collider shape here because the geometry
+        // is the body itself. The body will be positioned by a transform component.
+        collider.shape.x = 0;
+        collider.shape.y = 0;
+
+        world.attach(entity, new RigidBody().attach(collider));
       }
     }
 
