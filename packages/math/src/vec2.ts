@@ -96,6 +96,11 @@ export class Vec2 implements XY {
     return this;
   }
 
+  /** Calculates the dot product between the vector and the given point. */
+  public dot(point: XY): number {
+    return (this.x * point.x) + (this.y * point.y);
+  }
+
   /** Compares the given `point` with the components of this vector. */
   public equals(point: XY): boolean {
     return this.x === point.x && this.y === point.y;
