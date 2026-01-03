@@ -1,4 +1,4 @@
-import { Circle, Entity, EventQueue, Ignore, Rectangle, TrackedValue, TypeId, Vec2 } from '@heliks/tiles-engine';
+import { Circle, Entity, EventQueue, Ignore, Rectangle, TrackedValue, TypeId, Vec2, XY } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -43,11 +43,25 @@ export class RigidBody {
   public readonly contacts: ColliderContact[] = [];
 
   /**
+   * Optional movement constraint applied before each physics step, restricting the bodys
+   * motion to a specified direction vector.
+   *
+   * When defined, the bodys linear velocity is projected onto the constraint direction,
+   * removing any perpendicular motion. This affects all sources of movement (impulses,
+   * forces, collisions).
+   *
+   * The constraint vector must be normalized (length = 1). Projection math assumes a
+   * unit direction; using a non-normalized vector will scale the resulting velocity
+   * and may cause exponential acceleration.
+   */
+  public constraint?: XY;
+
+  /**
    * Linear damping (drag in fluid dynamics) is a force that acts opposite to the
    * direction of motion of the rigid body. Essentially, it increases the natural
    * decay of velocity over time. Higher values mean faster decay.
    *
-   * For games with zero-gravity environments (aE. orthogonal games) where velocity
+   * For games with zero-gravity environments (e.g., orthogonal games) where velocity
    * does not decrease naturally, bodies must be damped manually to prevent them from
    * moving forever.
    */
@@ -60,7 +74,10 @@ export class RigidBody {
   @Ignore()
   public dirty = true;
 
-  // Todo: Document
+  /**
+   * Enables or disables participation in the physics simulation. Disabled bodies are
+   * ignored entirely.
+   */
   public enabled = true;
 
   /**
@@ -214,7 +231,7 @@ export class RigidBody {
 
   /** Returns a vector that contains the bodies current world position. */
   public getPosition(): Vec2 {
-    return this._velocity.value;
+    return this._position.value;
   }
 
   /** Applies a force to the body. */
@@ -248,7 +265,13 @@ export class RigidBody {
     return false;
   }
 
-  /** If the body is asleep, it will be woken up. */
+  /**
+   * Wakes the body if it is currently asleep.
+   *
+   * @remarks
+   * This is currently implemented by applying a tiny velocity and is intended as a
+   * temporary solution until physics backends are unified.
+   */
   public wake(): this {
     // Fixme: This is not optimal, but works. There is no point implementing this
     //  properly until the planned merge of physics and physics-box2d package.
