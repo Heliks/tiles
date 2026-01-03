@@ -18,6 +18,7 @@ import {
   AddValue,
   Task
 } from './tasks';
+import { Ticker } from './ticker';
 
 
 /** Callback for {@link AppBuilder.run} tasks. */
@@ -36,6 +37,13 @@ export class AppBuilder implements Builder {
 
   /** Contains the task queue. */
   public readonly tasks: Task[] = [];
+
+  /**
+   * Contains the user defined {@link Ticker}, if any.
+   *
+   * @internal
+   */
+  private _ticker?: Ticker;
 
   /**
    * @param container Service container used by the app. All providers, systems,
@@ -58,12 +66,12 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Adds an ECS system to the dispatcher.
+   * Adds a {@link System} to the game.
    *
-   * The schedule to which the system will be added to can be specified via the given
-   * schedule {@link ScheduleId id}. The system can either be an instance or a class
-   * type. If it is the latter, the system will be instantiated using the service
-   * container before it is added.
+   * If the system is a type, it will be instantiated via the service container.
+   *
+   * The system will be executed according to the specified schedule. If no schedule
+   * is provided, it will run in {@link AppSchedule.Update} by default.
    */
   public system(system: TypeLike<System>, schedule: ScheduleId = AppSchedule.Update): this {
     this.tasks.push(new AddSystem(system, schedule));
@@ -72,44 +80,50 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Adds a system {@link ScheduleId schedule} to the dispatcher.
+   * Adds a system schedule to the dispatcher.
    *
+   * @example
    * ```ts
-   *  const CUSTOM_SCHEDULE = Symbol();
+   *  enum Schedules {
+   *    Physics = 'physics',
+   *    Render = 'render'
+   *  }
    *
-   *  class Foo implements System {
+   *  class PhysicsSystem implements System {
    *    // ...
    *  }
    *
-   *  dispatcher
-   *    .schedule(CUSTOM_SCHEDULE)      // Add the custom schedule
-   *    .system(Foo, CUSTOM_SCHEDULE)   // Add system to custom schedule.
+   *  class RenderSystem implements System {
+   *    // ...
+   *  }
+   *
+   * runtime()
+   *   .schedule(Schedules.Physics)
+   *   .schedule(Schedules.Render)
+   *   .system(PhysicsSystem, PHYSICS_SCHEDULE)
+   *   .system(RenderSystem, RENDER_SCHEDULE);
    * ```
    */
   public schedule(schedule: ScheduleId): AppBuilder;
 
   /**
-   * Adds a system {@link ScheduleId schedule} to the dispatcher.
+   * Returns a {@link ScheduleBuilder} that allows the insertion of a new system
+   * schedule at a specified relative position.
    *
-   * The position where the new schedule should be inserted can be controlled with the
-   * returned {@link ScheduleBuilder}.
-   *
-   * ```ts
+   * @example
+   *  ```ts
+   *  // Define custom schedule IDs
    *  enum CustomSchedule {
-   *    Foo,
-   *    Bar
+   *    A = 'a',
+   *    B = 'b',
+   *    C = 'c'
    *  }
    *
-   *  // Add "CustomSchedule.Bar" schedule after `AppSchedule.Update`.
-   *  dispatcher
-   *    .schedule()
-   *    .after(CustomSchedule.Bar, AppSchedule.Update);
-   *
-   *  // Add "CustomSchedule.Foo" schedule before `CustomSchedule.Bar`.
-   *  dispatcher
-   *    .schedule()
-   *    .before(CustomSchedule.Foo, CustomSchedule.Bar);
-   * ```
+   *  // Configure multiple schedules with relative ordering
+   *  runtime()
+   *    .schedule().before(CustomSchedule.A, AppSchedule.Update)
+   *    .schedule().after(CustomSchedule.B, CustomSchedule.A);
+   *  ```
    */
   public schedule(): ScheduleBuilder<AppBuilder>;
 
@@ -119,12 +133,10 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Registers a {@link ValueFactory singleton} on the game's service container.
+   * Registers a singleton on the service container.
    *
-   * The singleton will be called when the service container attempts to resolve the
-   * {@link InjectorToken token} to which it is bound to for the first time. The value
-   * that it returns will be injected. Further attempts to resolve that token will inject
-   * the same value that was returned on that first call.
+   * A singleton will call the given `factory` method once when the `token` is resolved
+   * for the first time. Further injections of that token will re-use that result.
    */
   public singleton(token: InjectorToken, factory: ValueFactory<unknown, Container>): this {
     this.tasks.push(new AddFactory(token, true, factory));
@@ -133,11 +145,10 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Registers a {@link ValueFactory factory} on the game's service container.
+   * Registers a factory on the service container.
    *
-   * The factory will be called every time when the service container attempts to
-   * resolve the {@link InjectorToken token} to which they are bound to. The value
-   * they return, is the value the container will inject.
+   * The service container will call the factory every time the given `token` is
+   * being injected. Unlike {@link singleton}, the result will not be re-used.
    */
   public factory(token: InjectorToken, factory: ValueFactory<unknown, Container>): this {
     this.tasks.push(new AddFactory(token, false, factory));
@@ -157,31 +168,27 @@ export class AppBuilder implements Builder {
   }
 
   /**
-   * Instantiates the given class type of a resource and registers it on the game's
-   * service container.
+   * Creates a new instance of `type` and registers it on the service container, using
+   * its own class type as the injector token.
    *
-   * This can be used to create global services or data structs that can be accessed
-   * by other systems or resources.
-   *
+   * @example
    * ```ts
-   *  class TimePassed {
-   *    public ms = 0;
-   *  }
+   *  class Foo {}
    *
-   *  class CountTime implements System {
-   *    public update(world: World): void {
-   *      world.get(TimePassed).ms += world.get(Ticker).delta;
-   *    }
-   *  }
+   *  // Instantiate Foo and register it on the service container using its own class
+   *  // type as the token.
+   *  const app = runtime().provide(Foo).build();
    *
-   *  const app = new AppBuilder().provide(TimePassed).system(CountTime).build();
+   *  // Retrieve a global instance of "Foo" from the service container.
+   *  app.world.get(Foo);
    * ```
    */
-  public provide(resource: Type): this;
+  public provide(type: Type): this;
 
   /**
    * Binds the given `value` to `token` on the game's service container.
    *
+   * @example
    * ```ts
    *  const app = new AppBuilder().provide('foo', 'bar').build();
    *  const msg = app.world.get('foo');
@@ -208,6 +215,7 @@ export class AppBuilder implements Builder {
    * The engine indexes objects using a type ID. This is usually assigned by using the
    * `@TypeId` decorator on a class declaration.
    *
+   * @example
    * ```ts
    *  @TypeId('foo')
    *  class Foo {}
@@ -239,6 +247,22 @@ export class AppBuilder implements Builder {
     this.tasks.push(
       new AddType(type, id)
     );
+
+    return this;
+  }
+
+  /**
+   * Defines which {@link Ticker} should be used by the {@link App} to execute the game
+   * loop. By default, the game will use the {@link FrameTicker}.
+   *
+   * Available tickers are:
+   *  - {@link FrameTicker} - Uses the browsers' animation frame to tick the game. Most
+   *    suited for actual games.
+   *  - {@link IntervalTicker} - Ticks the game at a fixed interval. Most suited for
+   *    servers and other node applications.
+   */
+  public ticker(ticker: Ticker): this {
+    this._ticker = ticker;
 
     return this;
   }
@@ -289,7 +313,16 @@ export class AppBuilder implements Builder {
 
   /** Builds the app. */
   public build(): App {
-    const app = new App(this.container);
+    const app = new App(this.container, this._ticker);
+
+    // Add app bindings to the service container.
+    this.container
+      .instance(app.dispatcher)
+      .instance(app.state)
+      .instance(app.types)
+      .instance(app.world);
+
+    this.container.bind(Ticker, app.ticker);
 
     this.exec(app);
     this.init(app.world);
@@ -298,9 +331,3 @@ export class AppBuilder implements Builder {
   }
 
 }
-
-
-
-
-
-

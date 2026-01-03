@@ -17,7 +17,7 @@ export class PackedSpriteSheet extends SpriteSheet<number> {
   /**
    * @param source Source texture from which sprite textures will be created.
    */
-  constructor(private readonly source: Texture) {
+  constructor(public readonly source: Texture) {
     super();
   }
 

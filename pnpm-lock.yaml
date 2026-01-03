@@ -81,6 +81,18 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  packages/cursor:
+    devDependencies:
+      '@heliks/tiles-engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@heliks/tiles-pixi':
+        specifier: workspace:^
+        version: link:../pixi
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
   packages/engine:
     dependencies:
       '@heliks/ecs':

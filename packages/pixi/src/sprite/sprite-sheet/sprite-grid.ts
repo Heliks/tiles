@@ -6,10 +6,7 @@ import { SpriteSheet } from './sprite-sheet';
 
 /**
  * A {@link SpriteSheet} that arranges sprites in a grid on a source texture. The ID of
- * each individual sprite is equivalent to the index of the grid cell that it occupies.
- *
- * The size of each sprite in the grid has the same size. For spritesheets that require
- * inconsistent sprite sizes, a {@link SpriteSlices} spritesheet can be used.
+ * each sprite is equivalent to the index of the grid cell that it occupies.
  */
 export class SpriteGrid extends SpriteSheet<number> {
 

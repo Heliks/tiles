@@ -21,6 +21,11 @@ export class Vec2 implements XY {
     return Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y);
   }
 
+  /** Calculates the dot product between two vectors. */
+  public static dot(v1: XY, v2: XY): number {
+    return (v1.x * v2.x) + (v1.y * v2.y);
+  }
+
   /** Creates a unit vector from `radians`. */
   public static fromRadians(radians: number): Vec2 {
     return new Vec2(
@@ -94,6 +99,11 @@ export class Vec2 implements XY {
     this.y -= point.y;
 
     return this;
+  }
+
+  /** Calculates the dot product between the vector and the given point. */
+  public dot(point: XY): number {
+    return (this.x * point.x) + (this.y * point.y);
   }
 
   /** Compares the given `point` with the components of this vector. */

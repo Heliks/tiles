@@ -1,0 +1,25 @@
+{
+  "name": "@heliks/tiles-cursor",
+  "version": "0.0.3",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Felix Wolf",
+  "license": "MIT",
+  "files": [
+    "lib/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^"
+  }
+}
