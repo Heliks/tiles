@@ -1,4 +1,4 @@
-import { createPackedArray, Grid } from '@heliks/tiles-engine';
+import { Grid } from '@heliks/tiles-engine';
 import { Tilemap } from '../tilemap';
 
 
@@ -9,7 +9,7 @@ describe('Tilemap', () => {
     tilemap = new Tilemap(new Grid(10, 10, 16, 16));
   });
 
-  describe('when setting a tile id', () => {
+  describe('set()', () => {
     it('should return true if data was changed', () => {
       expect(tilemap.set(10, 5)).toBeTruthy();
     });
@@ -26,7 +26,7 @@ describe('Tilemap', () => {
       -1,
       100,
       101
-    ])('should not change data for out of bounds cell %i', cell => {
+    ])('should ignore out of bounds cell %i', cell => {
       expect(tilemap.set(cell, 1)).toBeFalsy();
     });
 
@@ -37,9 +37,9 @@ describe('Tilemap', () => {
     });
   });
 
-  describe('when overwriting tile data', () => {
-    it('should overwrite tile data', () => {
-      const data = createPackedArray(100, 5);
+  describe('setAll()', () => {
+    it('should overwrite existing data', () => {
+      const data = new Array(100).fill(5);
 
       tilemap.setAll(data);
 
@@ -47,14 +47,16 @@ describe('Tilemap', () => {
     });
 
     it('should mark tilemap as dirty', () => {
-      tilemap.setAll(createPackedArray(100, 0));
+      const data = new Array(100).fill(0);
+
+      tilemap.setAll(data);
 
       expect(tilemap.dirty).toBeTruthy();
     });
 
-    it('should throw if new data is not equal to the size of the tilemap', () => {
+    it('should throw if there are not enough tiles to fill the entire map', () => {
       expect(() => {
-        tilemap.setAll(createPackedArray(5, 0));
+        tilemap.setAll(new Array(5).fill(0));
       }).toThrow();
     });
   });
