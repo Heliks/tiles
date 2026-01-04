@@ -37,6 +37,7 @@ export type TmxInfiniteMapDataLayers =
 
 /** @internal */
 interface TmxBaseMap extends TmxHasPropertyData {
+  backgroundcolor?: string;
   editorsettings?: TmxEditorSettingsData;
   height: number;
   tileheight: number;

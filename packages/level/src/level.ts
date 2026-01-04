@@ -123,6 +123,13 @@ export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
 export class Level<P = {}, T extends Tileset = Tileset> {
 
   /**
+   * The background color of the level, represented as a hexadecimal number. If defined,
+   * this color will be applied to the renderer's background when the level is spawned
+   * into the world.
+   */
+  public bgColor?: number;
+
+  /**
    * Index of the chunk from where the levels' render distance is measured. Chunks
    * within that distance will be loaded. Chunks that are outside will be unloaded
    * if needed.

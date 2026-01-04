@@ -1,6 +1,7 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
 import { Grid, Rectangle, Vec2 } from '@heliks/tiles-engine';
 import { ChunkState, Level, Tileset } from '@heliks/tiles-level';
+import { hex2int } from '@heliks/tiles-pixi';
 import { LocalTileset } from '@heliks/tiles-tilemap';
 import { extractMetaLayers, getCustomProps, parseLayers, ParserConfig } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
@@ -138,43 +139,6 @@ function parseLocalTilesets(loader: AssetLoader, file: string, data: TmxMapData)
 /**
  * Asset loader format to parse Tiled `.tmj` files.
  *
- * ## Usage
- *
- * Add the `TmxLoadTilemap` and `TmxLoadTileset` formats to your asset loader:
- *
- * ```ts
- *  runtime()
- *    .bundle(
- *      new AssetsBundle()
- *        .use(new TmxLoadTilemap())
- *        .use(new TmxLoadTileset())
- *    )
- *  // ...
- * ```
- *
- * ### Requirements
- *
- * - {@link PhysicsBundle}
- * - {@link TilemapBundle}
- *
- * ## Tilesets
- *
- * Tilesets that are attached to the map will be loaded automatically.
- *
- * See: {@link TmxLoadTileset}
- *
- * ## Shapes
- *
- * The position of shapes (Tiled Collision Editor shapes, Shape objects, etc.) will be
- * converted to have their pivot point at their center. This makes it easier to re-use
- * these shapes for the physics engine.
- *
- * ### Ellipses
- *
- * The physics engine doesn't support elliptic shapes, hence why they will be converted
- * to circles. The radius of the circle is determined based on the larger of the two
- * sides of the ellipsis.
- *
  * - `P`: Expected custom properties.
  */
 export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>> {
@@ -240,6 +204,10 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
 
     for (const tileset of tilesets) {
       level.tilesets.set(tileset);
+    }
+
+    if (data.backgroundcolor) {
+      level.bgColor = hex2int(data.backgroundcolor);
     }
 
     return level;

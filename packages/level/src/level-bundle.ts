@@ -3,6 +3,7 @@ import { EntityComposer } from './entity-composer';
 import { EntityFactory } from './entity-factory';
 import { Level } from './level';
 import { LevelConfig } from './level-config';
+import { LevelSetup } from './level-setup';
 import { LEVEL_ENTITY_FACTORY, LevelSystem } from './level-system';
 
 
@@ -29,6 +30,7 @@ export class LevelBundle implements Bundle {
       .component(Level)
       .singleton(LEVEL_ENTITY_FACTORY, container => container.make(factory))
       .provide(LevelConfig)
+      .system(LevelSetup)
       .system(LevelSystem);
   }
 
