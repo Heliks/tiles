@@ -2,7 +2,7 @@
 import { B2Body, B2World } from '@heliks/box2d';
 import { Entity, Inject, Injectable, Transform, Vec2, World, XY } from '@heliks/tiles-engine';
 import { ContactEvents, Physics, Ray, RigidBody } from '@heliks/tiles-physics';
-import { syncBodyForce, syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
+import { syncBodyForce, syncBodyGroupId, syncBodyPosition, syncBodyRotation, syncBodyVelocity } from './body';
 import { Box2dBodyFactory } from './box2d-body-factory';
 import { Box2dContactListener } from './box2d-contact-listener';
 import { Box2dRaycaster } from './box2d-raycaster';
@@ -79,8 +79,10 @@ export class Box2dWorld extends Physics {
       return;
     }
 
+
     body.SetEnabled(component.enabled);
 
+    syncBodyGroupId(body, component);
     syncBodyPosition(body, component, transform);
     syncBodyRotation(body, component, transform);
     syncBodyForce(body, component);

@@ -1,7 +1,7 @@
 import { AppBuilder, Bundle, getTypeName, Type, World } from '@heliks/tiles-engine';
 import { Element } from '@heliks/tiles-ui';
 import { getResourceMetadata, ResourceType } from './metadata';
-import { Div, Fill, SlicePlane, Span, Sprite, Text, Texture } from './nodes';
+import { Col, Div, Fill, SlicePlane, Span, Sprite, Text, Texture } from './nodes';
 import { TagRegistry } from './tag-registry';
 import { UiComponent } from './ui-component';
 import { UiElementRenderer } from './ui-element-renderer';
@@ -25,6 +25,7 @@ export class UiComponentsBundle implements Bundle {
   /** Contains declarations that are added to this bundle by default. */
   private readonly default: UiResourceDeclarations = {
     nodes: [
+      Col,
       Div,
       Fill,
       SlicePlane,

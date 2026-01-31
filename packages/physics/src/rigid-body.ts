@@ -89,6 +89,28 @@ export class RigidBody {
   public group = 0x0001;
 
   /**
+   * Allows you to specify a collision override between bodies.
+   *
+   * Rules:
+   * - If two bodies have the **same positive groupId**, they always collide, regardless
+   *   of their category and mask.
+   * - If two bodies have the **same negative groupId**, they never collide, regardless
+   *   of their category and mask.
+   * - If bodies have different groupIds, normal collision rules apply.
+   *
+   * @example
+   *
+   * - `1` and `1`: always collide
+   * - `1` and `2`: normal collision rules.
+   * - `1` and `-1`: normal collision rules.
+   * - `-1` and `-1`: never collide
+   */
+  public groupId = 0;
+
+  /** @internal */
+  public _groupId = 0;
+
+  /**
    * Enables continuous collision detection on all colliders which prevents small
    * colliders (like bullets would usually have) from passing through thin bodies when
    * travelling at high velocity.

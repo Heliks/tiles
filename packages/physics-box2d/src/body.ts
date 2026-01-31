@@ -64,3 +64,17 @@ export function syncBodyForce(body: B2Body, component: RigidBody): void {
 
   body.ApplyForceToCenter(force, true);
 }
+
+export function syncBodyGroupId(body: B2Body, component: RigidBody): void {
+  if (component.groupId !== component._groupId) {
+    for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
+      const filter = fixture.GetFilterData().Clone();
+
+      filter.groupIndex = component.groupId;
+
+      fixture.SetFilterData(filter);
+    }
+
+    component._groupId = component.groupId;
+  }
+}
