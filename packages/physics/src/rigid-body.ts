@@ -111,9 +111,9 @@ export class RigidBody {
   public _groupId = 0;
 
   /**
-   * Enables continuous collision detection on all colliders which prevents small
-   * colliders (like bullets would usually have) from passing through thin bodies when
-   * travelling at high velocity.
+   * Enables continuous collision detection on all colliders of this body. This prevents
+   * small colliders (like bullets would usually have) from passing through thin bodies
+   * when traveling at high velocity.
    */
   public isBullet = false;
 
@@ -140,6 +140,10 @@ export class RigidBody {
   /** @internal */
   @Ignore()
   public readonly _force = new TrackedValue(new Vec2());
+
+  /** @internal */
+  @Ignore()
+  public readonly _impulse = new TrackedValue(new Vec2());
 
   /** @internal */
   @Ignore()
@@ -261,6 +265,26 @@ export class RigidBody {
     this._force.value.x = x;
     this._force.value.y = y;
     this._force.dirty = true;
+
+    return this;
+  }
+
+  /**
+   * Applies an impulse to the body.
+   *
+   * Unlike forces that act gradually over time, impulses change the bodies' velocity
+   * immediately.
+   *
+   * If multiple impulses are applied to the body within the same physics tick by
+   * calling this function, their effects are accumulated before they're applied.
+   * 
+   * @param x Impulse strength to apply along the bodies x-axis.
+   * @param y Impulse strength to apply along the bodies y-axis.
+   */
+  public impulse(x: number, y: number): this {
+    this._impulse.value.x += x;
+    this._impulse.value.y += y;
+    this._impulse.dirty = true;
 
     return this;
   }
