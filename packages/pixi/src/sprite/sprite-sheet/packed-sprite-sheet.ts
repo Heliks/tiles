@@ -1,18 +1,25 @@
 import { Vec2 } from '@heliks/tiles-engine';
-import { Rectangle as PxRectangle, Texture } from 'pixi.js';
-import { PackedSprite } from './packed-sprite';
-import { SpriteSheet } from './sprite-sheet';
+import { Rectangle as PxRect, Texture } from 'pixi.js';
+import { SpriteId, SpriteSheet } from './sprite-sheet';
 
+
+export interface PackedSprite {
+  /** Defines the sprites region on the source texture. */
+  region: PxRect;
+  /** If this sprite is trimmed, contains the original dimensions of the sprite. */
+  orig?: PxRect;
+}
 
 /**
- * A {@link SpriteSheet} that contains sprites packed together to their lowest possible
- * size on a source texture. When sprites are created, their textures are cut from that
- * source texture and their original, unpacked size will be restored.
+ * A spritesheet that contains sprites packed together on a single source texture.
+ *
+ * Sprites can be individually trimmed to further reduce texture size. When a trimmed
+ * sprite is created, its texture will restore the original untrimmed size.
  */
-export class PackedSpriteSheet extends SpriteSheet<number> {
+export class PackedSpriteSheet<I extends SpriteId = SpriteId> extends SpriteSheet<I> {
 
   /** @internal */
-  private readonly sprites = new Map<number, PackedSprite>();
+  private readonly sprites = new Map<I, PackedSprite>();
 
   /**
    * @param source Source texture from which sprite textures will be created.
@@ -33,14 +40,14 @@ export class PackedSpriteSheet extends SpriteSheet<number> {
    * @see sprite()
    * @see texture()
    */
-  public setPackedSprite(spriteId: number, sprite: PackedSprite): this {
+  public setPackedSprite(spriteId: I, sprite: PackedSprite): this {
     this.sprites.set(spriteId, sprite);
 
     return this;
   }
 
   /** @internal */
-  private _getPackedSprite(spriteId: number): PackedSprite {
+  private _getPackedSprite(spriteId: I): PackedSprite {
     const sprite = this.sprites.get(spriteId);
 
     if (! sprite) {
@@ -51,36 +58,39 @@ export class PackedSpriteSheet extends SpriteSheet<number> {
   }
 
   /** @inheritDoc */
-  protected _texture(spriteId: number): Texture {
+  protected _texture(spriteId: I): Texture {
     // Todo: getFrame is a hard error which makes this inconsistent with how sprite
     //  grids work. Maybe an empty frame should be used here instead?
-    const frame = this._getPackedSprite(spriteId);
+    const pack = this._getPackedSprite(spriteId);
+
+    let orig;
+    let trim;
+
+    if (pack.orig) {
+      orig = new PxRect(0, 0, pack.orig.width, pack.orig.height);
+      trim = new PxRect(
+        pack.orig.x,
+        pack.orig.y,
+        pack.region.width,
+        pack.region.height
+      );
+    }
 
     return new Texture(
       this.source.baseTexture,
-      frame,
-      new PxRectangle(
-        0,
-        0,
-        frame.source.width,
-        frame.source.height
-      ),
-      new PxRectangle(
-        frame.source.x,
-        frame.source.y,
-        frame.width,
-        frame.height
-      )
+      pack.region,
+      orig,
+      trim
     );
   }
 
   /** @inheritDoc */
-  public getSpriteSize(spriteId: number): Vec2 {
+  public getSpriteSize(spriteId: I): Vec2 {
     const packed = this._getPackedSprite(spriteId);
 
     return new Vec2(
-      packed.width,
-      packed.height
+      packed.region.width,
+      packed.region.height
     );
   }
 

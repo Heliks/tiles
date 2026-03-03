@@ -1,8 +1,9 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid, Rectangle } from '@heliks/tiles-engine';
-import { Texture } from 'pixi.js';
+import { Rectangle as PxRect, Texture } from 'pixi.js';
+import { PackedSpriteSheet } from './packed-sprite-sheet';
 import { SpriteGrid } from './sprite-grid';
-import { SliceId, SpriteAnimationFrames } from './sprite-sheet';
+import { SliceId, SpriteAnimationFrames, SpriteSheet } from './sprite-sheet';
 
 
 /** @internal */
@@ -41,12 +42,47 @@ export interface SpriteSheetData {
    */
   slices?: SpriteSheetSliceData;
 
-  /** Width of each sprite on the sheet in px. */
+  /**
+   * Width of each sprite in px.
+   *
+   * If both this and {@link spriteHeight} are defined, the resulting spritesheet
+   * will be a {@link SpriteGrid}.
+   */
   spriteWidth?: number;
 
-  /** Height of each sprite on the sheet in px. */
+  /**
+   * Height of each sprite in px.
+   *
+   * If both this and {@link spriteWidth} are defined, the resulting spritesheet
+   * will be a {@link SpriteGrid}.
+   */
   spriteHeight?: number;
 
+}
+
+function parseSpritesheetSlices(spritesheet: SpriteSheet, data: SpriteSheetData): void {
+  if (data.slices) {
+    for (const id in data.slices) {
+      const slice = data.slices[id];
+
+      spritesheet.setSliceRegion(id, new Rectangle(
+        slice.w,
+        slice.h,
+        slice.x,
+        slice.y
+      ));
+    }
+  }
+}
+
+function parseSpritesheetAnimations(spritesheet: SpriteSheet, data: SpriteSheetData): void {
+  if (data.animations) {
+    for (const name in data.animations) {
+      if (data.animations.hasOwnProperty(name)) {
+        spritesheet.setAnimation(name, data.animations[name]);
+      }
+    }
+  }
 }
 
 /**
@@ -56,7 +92,7 @@ export interface SpriteSheetData {
  *  - `.spritesheet`
  *  - `.spritesheet.json`
  */
-export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteGrid> {
+export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
 
   /** @inheritDoc */
   public readonly extensions = ['spritesheet', 'spritesheet.json'];
@@ -64,45 +100,69 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteGrid> {
   /** @inheritDoc */
   public readonly type = LoadType.Json;
 
-  /** @inheritDoc */
-  public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteGrid> {
-    const texturePath = getDirectory(file, data.image);
-    const texture = await loader.fetch<Texture>(texturePath);
+  /**
+   * Creates a {@link PackedSpriteSheet} from the given spritesheet `data`.
+   *
+   * @param texture Spritesheet texture.
+   * @param data Spritesheet data.
+   */
+  public packed(texture: Texture, data: SpriteSheetData): PackedSpriteSheet {
+    const spritesheet = new PackedSpriteSheet(texture);
 
-    const sw = data.spriteWidth ?? data.imageWidth;
-    const sh = data.spriteHeight ?? data.imageHeight;
+    parseSpritesheetAnimations(spritesheet, data);
+    parseSpritesheetSlices(spritesheet, data);
 
-    const grid = new Grid(
-      Math.floor(data.imageWidth / sw),
-      Math.floor(data.imageHeight / sh),
-      sw,
-      sh
-    );
-
-    const spritesheet = new SpriteGrid(grid, texture, texturePath);
-
-    if (data.animations) {
-      for (const name in data.animations) {
-        if (data.animations.hasOwnProperty(name)) {
-          spritesheet.setAnimation(name, data.animations[name]);
-        }
-      }
-    }
-
-    if (data.slices) {
-      for (const id in data.slices) {
-        const slice = data.slices[id];
-
-        spritesheet.setSliceRegion(id, new Rectangle(
-          slice.w,
-          slice.h,
-          slice.x,
-          slice.y
-        ));
-      }
+    for (const [id, region] of spritesheet.slices) {
+      spritesheet.setPackedSprite(id, {
+        region: new PxRect(
+          region.x,
+          region.y,
+          region.width,
+          region.height
+        )
+      });
     }
 
     return spritesheet;
+  }
+
+  /**
+   * Creates a {@link SpriteGrid} from the given spritesheet `data`.
+   *
+   * @param texture Spritesheet texture.
+   * @param file File path to the spritesheet texture.
+   * @param sw Sprite width in px.
+   * @param sh Sprite height in px.
+   * @param data Spritesheet data.
+   */
+  public grid(texture: Texture, file: string, sw: number, sh: number, data: SpriteSheetData): SpriteGrid {
+    const gw = Math.floor(data.imageWidth / sw);
+    const gh = Math.floor(data.imageHeight / sh);
+
+    const spritesheet = new SpriteGrid(new Grid(gw, gh, sw, sh), texture, file);
+
+    parseSpritesheetAnimations(spritesheet, data);
+    parseSpritesheetSlices(spritesheet, data);
+
+    return spritesheet;
+  }
+
+  /** @inheritDoc */
+  public async process(data: SpriteSheetData, file: string, loader: AssetLoader): Promise<SpriteSheet> {
+    const texturePath = getDirectory(file, data.image);
+    const texture = await loader.fetch<Texture>(texturePath);
+
+    if (data.spriteWidth && data.spriteHeight) {
+      return this.grid(
+        texture,
+        texturePath,
+        data.spriteWidth,
+        data.spriteHeight,
+        data
+      );
+    }
+
+    return this.packed(texture, data);
   }
 
 }

@@ -1,25 +1,25 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { PackedSprite, PackedSpriteSheet } from '@heliks/tiles-pixi';
-import { Texture } from 'pixi.js';
+import { Rectangle, Texture } from 'pixi.js';
 import { AsepriteData, AsepriteFrameData } from './file-format';
 
 
 /** @internal */
 function createPackedSprite(data: AsepriteFrameData): PackedSprite {
-  const frame = new PackedSprite(
-    data.frame.x,
-    data.frame.y,
-    data.frame.w,
-    data.frame.h
-  );
-
-  frame.source.x = data.spriteSourceSize.x;
-  frame.source.y = data.spriteSourceSize.y;
-
-  frame.source.height = data.sourceSize.h;
-  frame.source.width = data.sourceSize.w;
-
-  return frame;
+  return {
+    region: new Rectangle(
+      data.frame.x,
+      data.frame.y,
+      data.frame.w,
+      data.frame.h
+    ),
+    orig: new Rectangle(
+      data.spriteSourceSize.x,
+      data.spriteSourceSize.y,
+      data.sourceSize.w,
+      data.sourceSize.h
+    )
+  }
 }
 
 /**

@@ -42,7 +42,7 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
   public readonly animations = new Map<string, SpriteAnimationFrames>();
 
   /** Contains the spritesheets slices. */
-  private readonly slices = new Map<SliceId, Rectangle>();
+  public readonly slices = new Map<SliceId, Rectangle>();
 
   /** @internal */
   private readonly cache = new Map<I, PIXI.Texture>();

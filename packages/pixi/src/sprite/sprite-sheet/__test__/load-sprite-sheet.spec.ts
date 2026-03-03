@@ -2,6 +2,7 @@ import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
 import { runtime, World } from '@heliks/tiles-engine';
 import { Texture } from 'pixi.js';
 import { LoadSpriteSheet, SpriteSheetData } from '../load-sprite-sheet';
+import { PackedSpriteSheet } from '../packed-sprite-sheet';
 import { SpriteGrid } from '../sprite-grid';
 import { SpriteSheet } from '../sprite-sheet';
 
@@ -24,22 +25,34 @@ describe('LoadSpriteSheet', () => {
     loader.fetch = jest.fn().mockReturnValue(Texture.WHITE);
   });
 
-  function load(data: SpriteSheetData): Promise<SpriteGrid> {
-    return format.process(data, 'foo.spritesheet', loader);
+  function load<T extends SpriteSheet>(data: SpriteSheetData): Promise<T> {
+    return format.process(data, 'foo.spritesheet', loader) as Promise<T>;
   }
 
-  it('should create a spritesheet', async () => {
-    const spritesheet = await load({
+  it('should create a sprite grid', async () => {
+    const spritesheet = await load<PackedSpriteSheet>({
       image: 'foo.png',
       imageWidth: 100,
-      imageHeight: 100
+      imageHeight: 100,
+      spriteWidth: 5,
+      spriteHeight: 5
     });
 
-    expect(spritesheet).toBeInstanceOf(SpriteSheet);
+    expect(spritesheet).toBeInstanceOf(SpriteGrid);
+  });
+
+  it('should create a packed spritesheet', async () => {
+    const spritesheet = await load<PackedSpriteSheet>({
+      image: 'foo.png',
+      imageWidth: 100,
+      imageHeight: 150
+    });
+
+    expect(spritesheet).toBeInstanceOf(PackedSpriteSheet);
   });
 
   it('should parse sprite size', async () => {
-    const spritesheet = await load({
+    const spritesheet = await load<SpriteGrid>({
       image: 'foo.png',
       imageWidth: 100,
       imageHeight: 100,
@@ -52,19 +65,6 @@ describe('LoadSpriteSheet', () => {
       cellHeight: 50
     });
   })
-
-  it('should use image size if sprite size is undefined', async () => {
-    const spritesheet = await load({
-      image: 'foo.png',
-      imageWidth: 100,
-      imageHeight: 150
-    });
-
-    expect(spritesheet.grid).toMatchObject({
-      cellWidth: 100,
-      cellHeight: 150
-    });
-  });
 
   it('should parse slices', async () => {
     const spritesheet = await load({
