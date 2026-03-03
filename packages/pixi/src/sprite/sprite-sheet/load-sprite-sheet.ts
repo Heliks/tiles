@@ -1,8 +1,8 @@
 import { AssetLoader, Format, getDirectory, LoadType } from '@heliks/tiles-assets';
 import { Grid, Rectangle } from '@heliks/tiles-engine';
 import { Rectangle as PxRect, Texture } from 'pixi.js';
-import { PackedSpriteSheet } from './packed-sprite-sheet';
 import { SpriteGrid } from './sprite-grid';
+import { SpritePack } from './sprite-pack';
 import { SliceId, SpriteAnimationFrames, SpriteSheet } from './sprite-sheet';
 
 
@@ -101,13 +101,13 @@ export class LoadSpriteSheet implements Format<SpriteSheetData, SpriteSheet> {
   public readonly type = LoadType.Json;
 
   /**
-   * Creates a {@link PackedSpriteSheet} from the given spritesheet `data`.
+   * Creates a {@link SpritePack} from the given spritesheet `data`.
    *
    * @param texture Spritesheet texture.
    * @param data Spritesheet data.
    */
-  public packed(texture: Texture, data: SpriteSheetData): PackedSpriteSheet {
-    const spritesheet = new PackedSpriteSheet(texture);
+  public packed(texture: Texture, data: SpriteSheetData): SpritePack {
+    const spritesheet = new SpritePack(texture);
 
     parseSpritesheetAnimations(spritesheet, data);
     parseSpritesheetSlices(spritesheet, data);

@@ -2,8 +2,8 @@ import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
 import { runtime, World } from '@heliks/tiles-engine';
 import { Texture } from 'pixi.js';
 import { LoadSpriteSheet, SpriteSheetData } from '../load-sprite-sheet';
-import { PackedSpriteSheet } from '../packed-sprite-sheet';
 import { SpriteGrid } from '../sprite-grid';
+import { SpritePack } from '../sprite-pack';
 import { SpriteSheet } from '../sprite-sheet';
 
 
@@ -30,7 +30,7 @@ describe('LoadSpriteSheet', () => {
   }
 
   it('should create a sprite grid', async () => {
-    const spritesheet = await load<PackedSpriteSheet>({
+    const spritesheet = await load<SpritePack>({
       image: 'foo.png',
       imageWidth: 100,
       imageHeight: 100,
@@ -42,13 +42,13 @@ describe('LoadSpriteSheet', () => {
   });
 
   it('should create a packed spritesheet', async () => {
-    const spritesheet = await load<PackedSpriteSheet>({
+    const spritesheet = await load<SpritePack>({
       image: 'foo.png',
       imageWidth: 100,
       imageHeight: 150
     });
 
-    expect(spritesheet).toBeInstanceOf(PackedSpriteSheet);
+    expect(spritesheet).toBeInstanceOf(SpritePack);
   });
 
   it('should parse sprite size', async () => {

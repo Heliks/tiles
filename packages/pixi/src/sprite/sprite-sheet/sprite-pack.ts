@@ -16,7 +16,7 @@ export interface PackedSprite {
  * Sprites can be individually trimmed to further reduce texture size. When a trimmed
  * sprite is created, its texture will restore the original untrimmed size.
  */
-export class PackedSpriteSheet<I extends SpriteId = SpriteId> extends SpriteSheet<I> {
+export class SpritePack<I extends SpriteId = SpriteId> extends SpriteSheet<I> {
 
   /** @internal */
   private readonly sprites = new Map<I, PackedSprite>();
