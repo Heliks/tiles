@@ -1,6 +1,8 @@
-import { CustomTile, Tileset } from '@heliks/tiles-level';
+import { CustomTile, Geometry, Tileset } from '@heliks/tiles-level';
 import { SpriteAnimationFrames } from '@heliks/tiles-pixi';
-import { TmxTileAnimationFrame, TmxTileData } from '../tmx';
+import { TmxGeometryData, TmxTileAnimationFrame, TmxTileData } from '../tmx';
+import { ParserConfig } from './config';
+import { parseGeometry } from './geometry';
 import { getCustomProps } from './props';
 
 
@@ -27,22 +29,52 @@ function parseTileAnimation(data: TmxTileAnimationFrame[]): SpriteAnimationFrame
   };
 }
 
+/**
+ * Parses geometry that is found on a tile.
+ *
+ * Tile geometry is different from other geometry because its position is always
+ * calculated from the top left corner of the tile. This function converts it to
+ * be relative to the tile pivot instead.
+ *
+ * @param tileset Source tileset.
+ * @param tw Width of the geometries source tile.
+ * @param th Height of the geometries source tile.
+ * @param config Parser config.
+ * @param data Geometry data.
+ *
+ * @internal
+ */
+function parseTileGeometry(tileset: Tileset, tw: number, th: number, config: ParserConfig, data: TmxGeometryData[]): Geometry[] {
+  const result = [];
+
+  const ox = (tw * tileset.pivot.x) / config.unitSize;
+  const oy = (th * tileset.pivot.y) / config.unitSize;
+
+  for (const item of data) {
+    const geometry = parseGeometry(item, config);
+
+    geometry.shape.x -= ox;
+    geometry.shape.y -= oy;
+
+    result.push(geometry);
+  }
+
+  return result;
+}
+
 /** Parses {@link TmxTileData}. */
-export function parseTileData(tileset: Tileset, data: TmxTileData): CustomTile {
+export function parseTileData(tileset: Tileset, tw: number, th: number, config: ParserConfig, data: TmxTileData): CustomTile {
   const tile: CustomTile = {
     index: data.id,
     props: getCustomProps(data)
   };
 
-
-  // Parse animation, if any.
   if (data.animation) {
     tile.animation = parseTileAnimation(data.animation);
   }
 
-  // Parse shapes, if any.
   if (data.objectgroup) {
-    // tile.shapes = data.objectgroup.objects.map(item => parseGeometry(item));
+    tile.shapes = parseTileGeometry(tileset, tw, th, config, data.objectgroup.objects);
   }
 
   return tile;

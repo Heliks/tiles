@@ -57,13 +57,7 @@ export function createRigidBody(geometries: Geometry<PhysicsProps>[], scale: num
   const body = new RigidBody();
 
   for (const geometry of geometries) {
-    const collider = createPhysicsCollider(geometry, scale);
-
-    // Position shape based on tile pivot.
-    // collider.shape.x = (geometry.shape.x - (width * pivot.x)) / this.config.unitSize;
-    // collider.shape.y = (geometry.shape.y - (height * pivot.y)) / this.config.unitSize;
-
-    body.attach(collider);
+    body.attach(createPhysicsCollider(geometry, scale));
   }
 
   return body;

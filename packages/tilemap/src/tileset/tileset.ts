@@ -42,8 +42,8 @@ export class Tileset<C extends CustomTile = CustomTile> {
 
   /**
    * @param spritesheet Handle to the {@link SpriteSheet} used by this tileset.
-   * @param size Total amount of tiles that are contained in this tileset.
-   * @param file Path to the source file from which the tileset was loaded.
+   * @param size Number of tiles contained in this tileset.
+   * @param file Path to the source file from where the tileset was loaded.
    */
   constructor(
     public readonly spritesheet: Handle<SpriteSheet>,

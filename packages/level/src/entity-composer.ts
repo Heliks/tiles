@@ -1,7 +1,7 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
-import { RendererConfig, SpriteId, SpriteRender } from '@heliks/tiles-pixi';
+import { RendererConfig, SpriteAnimation, SpriteId, SpriteRender } from '@heliks/tiles-pixi';
 import { isTileEntity, LevelEntity, TileEntity } from './entities';
 import { EntityFactory } from './entity-factory';
 import { isPointGeometry } from './geometry';
@@ -76,8 +76,6 @@ export class EntityComposer implements EntityFactory {
     sprite.scale.y = data.shape.height / size.y;
 
     const entity = world.insert(sprite);
-
-    // Add physics, if any.
     const shapes = getTileGeometry(local, index);
 
     if (shapes) {
@@ -85,7 +83,13 @@ export class EntityComposer implements EntityFactory {
       world.attach(entity, createRigidBody(shapes, 1));
     }
 
-    return world.insert(sprite);
+    const animation = local.tileset.getAnimationName(index);
+
+    if (animation) {
+      world.attach(entity, new SpriteAnimation().play(animation));
+    }
+
+    return entity;
   }
 
   /** Returns the size of the sprite matching `spriteId` in world units. */
