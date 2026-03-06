@@ -1,5 +1,6 @@
 import { Type } from '@heliks/tiles-engine';
 import { Style } from '@heliks/tiles-ui';
+import { OneWayBinding } from './bind';
 import { Ref } from './ref';
 import { UiComponent } from './ui-component';
 
@@ -29,7 +30,7 @@ import { UiComponent } from './ui-component';
  * - If the condition is a function, it will be directly bound as value to the template
  *   expression.
  */
-export type JsxTemplateCondition = string | (() => boolean);
+export type JsxTemplateCondition = unknown | OneWayBinding;
 
 /** Default attributes that can be assigned to any {@link JsxNode}. */
 export type Attributes = {
@@ -58,34 +59,34 @@ export type Attributes = {
    *
    * Conditional nodes are wrapped in a {@link TemplateElement}.
    *
-   * - If the condition is a string, it will be treated as the name of a property on the
-   *   nodes host context to which the template expression is bound.
-   *
    * ```tsx
    *  class MyComponent implements UiComponent {
    *
    *    public foo = false;
    *
-   *    public render() {
-   *      // This node will only be rendered when `MyComponent.foo` is truthy. Otherwise,
-   *      // it will be removed from the document entirely.
-   *      return <div if="foo">Hello World</div>
+   *    public render(): JsxNode {
+   *      // This node will only be rendered when `MyComponent.foo` is truthy at the time
+   *      // of the component being rendered. If it's falsy, it will be removed from the
+   *      // document entirely.
+   *      return <div if={this.foo}>Hello World</div>
    *    }
    *
    *  }
    * ```
    *
-   * - If the condition is a function, it is bound as value to the template expression.
+   * The condition can receive a binding that will be evaluated per game tick.
    *
    * ```tsx
    *  class MyComponent implements UiComponent {
    *
    *    public foo = false;
    *
-   *    public render() {
-   *      // This works the same as the example above and checks `MyComponent.foo` once
-   *      // per game tick.
-   *      return <div if={() => this.foo}>Hello World</div>
+   *    public render(): JsxNode {
+   *      const isFoo = bind(() => this.foo);
+   *
+   *      // This node will be rendered when the binding returns a `truthy` value and
+   *      // hidden if not.
+   *      return <div if={isFoo}>Hello World</div>
    *    }
    *
    *  }

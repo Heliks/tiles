@@ -177,11 +177,11 @@ export function createTemplateFromJsxNode(world: World, node: JsxNode, condition
   const uiNode = new UiNode();
   const entity = world.insert(uiNode, element);
 
-  if (typeof condition === 'string') {
-    element.bind('expression', condition);
+  if (isBinding(condition)) {
+    element.bind('expression', condition.$$get);
   }
   else {
-    element.value('expression', condition)
+    element.value('expression', condition);
   }
 
   assignJsxAttributes(world, entity, uiNode, node.attributes);
