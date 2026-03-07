@@ -7,14 +7,18 @@ import { UiEvent } from './ui-event';
 
 /** Possible interactions with {@link UiNode ui nodes}. */
 export enum UiNodeInteraction {
-  /** User is currently not interacting with this node. */
+  /** Player is not interacting with this node. */
   None = 'none',
-  /** Node is pressed down (e.g. mouse down, touch down) */
+  /** Player has pressed the pointer on the node. */
   Down = 'down',
-  /** Node was released this frame (e.g. mouse up, touch up). */
+  /** Player has released the pointer on the node. */
   Up = 'up',
-  /** Triggered when the user presses down for a certain period of time. */
-  LongPress = 'lp'
+  /** Player held down the pointer for a certain period of time. */
+  LongPress = 'long_press',
+  /** Player started to hover the node with their pointer. */
+  HoverIn = 'hover_in',
+  /** Player stopped to hover the node with their pointer.*/
+  HoverOut = 'hover_out'
 }
 
 export type UiLayout = Node;

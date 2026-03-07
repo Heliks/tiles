@@ -53,7 +53,7 @@ describe('EventSystem', () => {
       const subscriber = node.onInteract.subscribe();
 
       system
-        .down(entity)
+        .push(entity, UiNodeInteraction.Down)
         .update(world);
 
       // Fetch event that is supposed to be bubble up the chain.
@@ -113,7 +113,7 @@ describe('EventSystem', () => {
     });
 
     it('should start a long-press timer when a DOWN event is consumed', () => {
-      system.down(origin);
+      system.push(origin, UiNodeInteraction.Down);
       system.consumeQueuedInteraction(origin);
 
       expect(system.longPress).toMatchObject({
@@ -128,7 +128,7 @@ describe('EventSystem', () => {
         timer: 0
       };
 
-      system.up(origin);
+      system.push(origin, UiNodeInteraction.Up);
       system.consumeQueuedInteraction(origin);
 
       expect(system.longPress).toBeUndefined();
