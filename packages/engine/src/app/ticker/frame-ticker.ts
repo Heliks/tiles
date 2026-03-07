@@ -14,12 +14,7 @@ export class FrameTicker extends Ticker {
   private requestId?: number;
 
   /** Timestamp of the last frame the ticker ran. */
-  private lastTick = -1;
-
-  /** Returns `true` if a new animation frame can be requested. */
-  public canRequestFrame(): boolean {
-    return this.started && !this.requestId;
-  }
+  private lastTick = 0;
 
   /** Updates delta times and calls each `ListenerFn`.  */
   public update(currentTime: number): void {
@@ -42,23 +37,25 @@ export class FrameTicker extends Ticker {
    * @internal
    */
   private tick = (currentTime: number): void => {
-    this.requestId = undefined;
+    if (! this.started) {
+      this.requestId = undefined;
 
-    if (this.started) {
-      this.update(currentTime);
-
-      // Side effects could've changed the state
-      if (this.canRequestFrame()) {
-        this.requestId = requestAnimationFrame(this.tick);
-      }
+      return;
     }
+
+    // If the game tick even takes a few ms too long, we can miss the compositors'
+    // next scheduling window. This can cause dropped frames. To avoid this, request
+    // the next animation frame immediately.
+    this.requestId = requestAnimationFrame(this.tick);
+
+    this.update(currentTime);
   };
 
   /** @inheritDoc */
   public start(): void {
-    // Only start the ticker if it isn't already running.
-    if (!this.started) {
+    if (! this.started) {
       this.started = true;
+      this.lastTick = performance.now();
       this.requestId = requestAnimationFrame(this.tick);
     }
   }
@@ -71,6 +68,7 @@ export class FrameTicker extends Ticker {
       // If a frame is already requested, cancel it.
       if (this.requestId) {
         cancelAnimationFrame(this.requestId);
+
         this.requestId = undefined;
       }
     }
