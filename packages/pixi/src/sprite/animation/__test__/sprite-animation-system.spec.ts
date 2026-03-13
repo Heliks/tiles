@@ -11,7 +11,7 @@ describe('SpriteAnimationSystem', () => {
   let world: World;
 
   let spritesheet: SpriteSheet;
-  let spritesheetHandle: Handle<SpriteSheet>;
+  let handle: Handle<SpriteSheet>;
 
   beforeEach(() => {
     world = runtime()
@@ -23,39 +23,54 @@ describe('SpriteAnimationSystem', () => {
     system = world.get(SpriteAnimationSystem);
 
     spritesheet = new SpriteGrid(new Grid(5, 5, 16, 16), Texture.WHITE);
-    spritesheetHandle = world.get(AssetLoader).insert('',  spritesheet).handle();
+    spritesheet.getAnimation = jest.fn();
+
+    handle = world
+      .get(AssetLoader)
+      .insert('',  spritesheet)
+      .handle();
   });
 
-  describe('apply()', () => {
+  describe('transform()', () => {
     let animation: SpriteAnimation;
 
     beforeEach(() => {
       animation = new SpriteAnimation();
+      animation.setAnimation = jest.fn();
     });
 
-    it('should apply animation frames', () => {
-      const frames = [4, 3, 2, 1, 0];
+    it('should transform animation', () => {
+      animation.play('foo');
 
-      spritesheet.setAnimation('foo', {
-        frames: [
-          4, 3, 2, 1, 0
-        ]
-      })
+      system.transform(animation, handle);
 
-      system.apply(animation, spritesheetHandle, 'foo');
-
-      expect(animation.frames).toEqual(frames);
+      expect(animation.setAnimation).toHaveBeenCalled()
+      expect(animation.playing).toBe('foo');
     });
 
-    it('should apply animation duration', () => {
-      spritesheet.setAnimation('foo', {
-        frameDuration: 150,
-        frames: [0]
-      })
+    it('should transform animation with preserve', () => {
+      // Dummy for animation data.
+      const data = Symbol();
 
-      system.apply(animation, spritesheetHandle, 'foo');
+      spritesheet.getAnimation = jest.fn().mockReturnValue(data);
 
-      expect(animation.frameDuration).toBe(150);
+      animation.play('foo', true, true);
+
+      system.transform(animation, handle);
+
+      expect(animation.setAnimation).toHaveBeenCalledWith(data, true);
+    });
+
+    it('should do nothing if spritesheet cannot be resolved', () => {
+      system.transform(animation, new Handle('invalid', 'invalid'));
+
+      expect(animation.setAnimation).not.toHaveBeenCalled();
+    });
+
+    it('should deactivate the animation transform', () => {
+      system.transform(animation, handle);
+
+      expect(animation.transform.active).toBe(false);
     });
   });
 });

@@ -2,11 +2,17 @@ import { SpriteAnimation } from '../sprite-animation';
 
 
 describe('SpriteAnimation', () => {
+  let animation: SpriteAnimation;
+
+  beforeEach(() => {
+    animation = new SpriteAnimation();
+  });
+
   describe('isComplete()', () => {
     let animation: SpriteAnimation;
 
     beforeEach(() => {
-      animation = new SpriteAnimation([1, 2, 3, 4])
+      animation = new SpriteAnimation([1, 2, 3, 4]);
     });
 
     it('should return true when animation is on its last frame', () => {
@@ -19,19 +25,13 @@ describe('SpriteAnimation', () => {
       const animation = new SpriteAnimation([5, 4, 1, 8, 7]);
 
       animation.frame = 3;
-      animation.transform = 'foo';
+      animation.transform.active = true;
 
       expect(animation.isComplete()).toBeFalsy();
     });
   });
 
   describe('getNextFrame()', () => {
-    let animation: SpriteAnimation;
-
-    beforeEach(() => {
-      animation = new SpriteAnimation();
-    });
-
     it('should return 0 if animation has no frames', () => {
       expect(animation.getNextFrame()).toBe(0);
     });
@@ -63,6 +63,77 @@ describe('SpriteAnimation', () => {
       animation.elapsedTime = 1050;
 
       expect(animation.getNextFrame()).toBe(2);
+    });
+  });
+
+  describe('getFrameProgress()', () => {
+    it.each([
+      {
+        elapsed: 200,
+        result: 0
+      },
+      {
+        elapsed: 50,
+        result: 0.5
+      },
+      {
+        elapsed: 150,
+        result: 0.5
+      },
+      {
+        elapsed: 299,
+        result: 0.99
+      }
+    ])('should return $result when elapsed time is $elapsed ms', data => {
+      animation.frameDuration = 100;
+      animation.elapsedTime = data.elapsed;
+
+      const result = animation.getFrameProgress();
+
+      expect(result).toBe(data.result);
+    });
+  });
+
+  describe('setAnimation()', () => {
+    it('should set the animation data', () => {
+      const frames = [1, 2, 3, 4];
+      const frameDuration = 150;
+
+      animation.setAnimation({
+        frames,
+        frameDuration
+      });
+
+      expect(animation.frames).toEqual(frames);
+      expect(animation.frameDuration).toEqual(frameDuration);
+    });
+
+    it('should reset the current animation', () => {
+      animation.reset = jest.fn();
+      animation.setAnimation({
+        frames: []
+      });
+
+      expect(animation.reset).toHaveBeenCalled();
+    });
+
+    it('should preserve frame progress between animations', () => {
+      const start = 2;
+
+      // Frame progress is 0.5
+      animation.frame = start;
+      animation.elapsedTime = 250;
+      animation.frameDuration = 100;
+
+      const frames = [1, 2, 3, 4];
+      const frameDuration = 150;
+
+      animation.setAnimation({ frames, frameDuration }, true);
+
+      expect(animation).toMatchObject({
+        frame: start,
+        elapsedTime: 375
+      });
     });
   });
 

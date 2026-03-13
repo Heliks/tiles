@@ -1,4 +1,5 @@
-import { TypeId } from '@heliks/tiles-engine';
+import { Ignore, TypeId } from '@heliks/tiles-engine';
+import { SpriteAnimationFrames } from '../sprite-sheet';
 
 
 /** Component to animate a `SpriteDisplay` component. */
@@ -36,13 +37,13 @@ export class SpriteAnimation {
   /** Name of the animation that is currently playing, if any. */
   public playing?: string;
 
-  /**
-   * Name of the animation that should be played next. Don't modify this directly and
-   * use {@link play()} to properly switch to a different animation.
-   *
-   * @internal
-   */
-  public transform?: string;
+  /** @internal */
+  @Ignore()
+  public readonly transform = {
+    active: false,
+    animation: '',
+    preserve: false
+  };
 
   /**
    * @param frames Contains the sprite IDs of each animation frame.
@@ -84,6 +85,44 @@ export class SpriteAnimation {
   }
 
   /**
+   * Plays the given `animation`.
+   *
+   * When `preserve` is enabled, the current frame and frame progress are copied to the
+   * new animation. This allows smooth transitions between animations that share
+   * compatible frame strips.
+   *
+   * @param animation Sprite animation to play.
+   * @param preserve If `true`, the current frame and frame progress are preserved when
+   *  switching animations.
+   */
+  public setAnimation(animation: SpriteAnimationFrames, preserve = false): this {
+    const frame = this.frame;
+    const fraction = this.getFrameProgress();
+
+    this.reset();
+
+    // Don't copy a reference here, otherwise editing the animation frames would also
+    // edit the original `AnimationData`.
+    this.frames = [
+      ...animation.frames
+    ];
+
+    if (animation.frameDuration) {
+      this.frameDuration = animation.frameDuration;
+    }
+
+    if (preserve) {
+      // The current frame is based on elapsed time. Therefore, fast-forward to where
+      // the previous frame index should be on the new animation. Also take its progress
+      // into account to not extend the duration of this frame.
+      this.elapsedTime = this.frameDuration * (frame + fraction);
+      this.frame = frame;
+    }
+
+    return this;
+  }
+
+  /**
    * Flips the animation frames.
    *
    * @param x If `true`, frames are flipped along the x-axis.
@@ -97,39 +136,53 @@ export class SpriteAnimation {
   }
 
   /**
-   * Plays the animation with the given `name`. The animation data is derived from
-   * the {@link SpriteRender} component attached to the owner of this animation.
+   * Plays the animation with the given `name`.
    *
-   * @param name Name of the animation that should be played. This should correspond
-   *  to a valid animation defined in the {@link SpriteRender} spritesheet that is
-   *  attached to the owner of this component.
-   * @param loop (optional) If enabled, the animation will play in a continuous loop. If
-   *  disabled, the animation will play once and then remain on its last frame.
+   * Animation data is resolved from the {@link SpriteRender} component attached to the
+   * owner of this animation.
+   *
+   * When `preserve` is enabled, the current frame and frame progress are copied to the
+   * new animation. This allows smooth transitions between animations that share
+   * compatible frame strips.
+   *
+   * @param name Name of the animation to play.
+   * @param loop If `true`, the animation will repeat continuously. If `false`, it will
+   *  stop on the final frame.
+   * @param preserve If `true`, the current frame and frame progress are preserved when
+   *  switching animations.
    */
-  public play(name: string, loop = true): this {
+  public play(name: string, loop = true, preserve = false): this {
     // Only start playing the animation if we aren't playing it already.
     if (this.playing !== name) {
+      this.transform.active = true;
+      this.transform.animation = name;
+      this.transform.preserve = preserve;
+
       this.loop = loop;
-      this.transform = name;
       this.flipX = false;
       this.flipY = false;
     }
-    else if (this.transform && this.transform !== name) {
+    else if (this.transform.active && this.transform.animation !== name) {
       // The user has most likely called play() a second time before the transform was
       // applied. If we don't reset this here, this would "change" the animation to the
       // one that is actually playing right now.
-      this.transform = undefined;
+      this.transform.active = false
     }
 
     return this;
   }
 
   /**
-   * Checks if the given animation `name` is currently {@link playing} or about to be
-   * played on the next game tick.
+   * Checks if an animation is currently playing or is about to be played on the next
+   * game tick.
    */
   public isPlaying(name: string): boolean {
-    return this.playing === name || this.transform === name;
+    return this.playing === name || this.hasTransform(name);
+  }
+
+  /** Checks if the animation has a pending transform to the given animation name. */
+  public hasTransform(name: string): boolean {
+    return this.transform.active && this.transform.animation === name;
   }
 
   /**
@@ -141,7 +194,7 @@ export class SpriteAnimation {
    * be transformed.
    */
   public isComplete(): boolean {
-    return this.transform === undefined && this.frame === this.frames.length - 1;
+    return ! this.transform.active && this.frame === this.frames.length - 1;
   }
 
   /**
@@ -149,7 +202,19 @@ export class SpriteAnimation {
    * duration and the {@link elapsedTime elapsed time}.
    */
   public getNextFrame(): number {
-    return (this.elapsedTime / (this.frameDuration / this.speed)) % this.frames.length | 0;
+    return (this.elapsedTime / this.getFrameDuration()) % this.frames.length | 0;
+  }
+
+  /** Calculates the progress of the current animation frame. */
+  public getFrameProgress(): number {
+    const duration = this.getFrameDuration();
+
+    return (this.elapsedTime % duration) / duration;
+  }
+
+  /** Returns the duration of each frame, taking the {@link speed} into account. */
+  public getFrameDuration(): number {
+    return this.frameDuration / this.speed;
   }
 
   /**

@@ -112,7 +112,7 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
 
       console.error(`Available animations:\n\n${names}`);
 
-      throw new Error(`Unknown animation ${name}.`);
+      throw new Error(`Unknown animation "${name}"`);
     }
 
     return animation;

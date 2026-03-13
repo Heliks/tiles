@@ -12,10 +12,7 @@ export class SpriteAnimationSystem extends ProcessingSystem {
    * @param assets {@see AssetStorage}
    * @param ticker {@see Ticker}
    */
-  constructor(
-    private readonly assets: AssetStorage,
-    private readonly ticker: Ticker
-  ) {
+  constructor(private readonly assets: AssetStorage, private readonly ticker: Ticker) {
     super();
   }
 
@@ -25,39 +22,26 @@ export class SpriteAnimationSystem extends ProcessingSystem {
   }
 
   /**
-   * Applies animation data of the given `spritesheet` to a sprite `animation`.
+   * Transforms the given `animation` according to its own transform data, regardless
+   * if it is active or not.
    *
-   * @param animation Sprite animation to which animation data should be applied.
-   * @param spritesheet Asset handle for the sprite-sheet from which the animation data
-   *  will be resolved. Applying the animation will fail if this is not fully loaded.
-   * @param name Name of the animation data, defined on the given `sprite-sheet`.
-   *
-   * @returns A boolean indicating if the animation was successfully changed. This can
-   *  fail if the provided sprite-sheet is not fully loaded.
+   * @param animation Animation component to transform.
+   * @param handle Asset handle for the spritesheet from where animation data will be resolved.
    */
-  public apply(animation: SpriteAnimation, spritesheet: Handle<SpriteSheet>, name: string): boolean {
-    const sheet = this.assets.get(spritesheet);
+  public transform(animation: SpriteAnimation, handle: Handle<SpriteSheet>): void {
+    const spritesheet = this.assets.get(handle);
 
-    if (! sheet) {
-      return false;
+    if (! spritesheet) {
+      return;
     }
 
-    const data = sheet.getAnimation(name);
+    animation.setAnimation(
+      spritesheet.getAnimation(animation.transform.animation),
+      animation.transform.preserve
+    );
 
-    animation.reset();
-    animation.playing = name;
-
-    // Don't copy a reference here, otherwise editing the animation frames would also
-    // edit the original `AnimationData`.
-    animation.frames = [
-      ...data.frames
-    ];
-
-    if (data.frameDuration) {
-      animation.frameDuration = data.frameDuration;
-    }
-
-    return true;
+    animation.playing = animation.transform.animation;
+    animation.transform.active = false;
   }
 
   /** @inheritDoc */
@@ -69,9 +53,8 @@ export class SpriteAnimationSystem extends ProcessingSystem {
       const animation = animations.get(entity);
       const display = displays.get(entity);
 
-      // Apply animation transform if necessary.
-      if (animation.transform && this.apply(animation, display.spritesheet, animation.transform)) {
-        animation.transform = undefined;
+      if (animation.transform.active) {
+        this.transform(animation, display.spritesheet);
       }
 
       display.flipX = animation.flipX;
