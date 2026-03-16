@@ -22,9 +22,6 @@ export class CursorSystem implements System {
   /** Contains the last known screen position. */
   private readonly screen = new Vec2();
 
-  /** Indicates if the cursors' world position must be recalculated. */
-  private screenIsDirty = false;
-
   constructor(
     private readonly camera: Camera,
     private readonly cursor: Cursor,
@@ -51,24 +48,24 @@ export class CursorSystem implements System {
   public setScreenPosition(x: number, y: number): void {
     if (this.screen.x !== x || this.screen.y !== y) {
       this.screen.set(x, y);
-      this.screenIsDirty = true;
     }
   }
 
   /** @internal */
   private onMouseMove(event: MouseEvent): void {
-    this.setScreenPosition(event.offsetX, event.offsetY);
+    console.log('move')
+    this.screen.set(event.offsetX, event.offsetY);
   }
 
   /** @internal */
   private onMouseDown(event: MouseEvent): void {
-    this.setScreenPosition(event.offsetX, event.offsetY);
+    this.screen.set(event.offsetX, event.offsetY);
     this.down.add(this.getCursorButton(event.button));
   }
 
   /** @internal */
   private onMouseUp(event: MouseEvent): void {
-    this.setScreenPosition(event.offsetX, event.offsetY);
+    this.screen.set(event.offsetX, event.offsetY);
     this.up.add(this.getCursorButton(event.button));
   }
 
@@ -99,17 +96,8 @@ export class CursorSystem implements System {
     this.down.clear();
     this.up.clear();
 
-    if (this.screenIsDirty) {
-      this.cursor.screen.set(this.screen.x, this.screen.y);
-
-      this.camera.screenToWorld(
-        this.screen.x,
-        this.screen.y,
-        this.cursor.world
-      );
-
-      this.screenIsDirty = false;
-    }
+    this.cursor.screen.set(this.screen.x, this.screen.y);
+    this.camera.screenToWorld(this.screen.x, this.screen.y, this.cursor.world);
   }
 
 }
