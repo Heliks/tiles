@@ -34,6 +34,11 @@ export class Vec2 implements XY {
     );
   }
 
+  /** Creates a vector from the given `point`. */
+  public static point(point: XY): Vec2 {
+    return new Vec2(point.x, point.y);
+  }
+
   /** Updates the `x` and `y` position of the vector. */
   public set(x: number, y: number): this {
     this.x = x;
