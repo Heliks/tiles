@@ -53,7 +53,6 @@ export class CursorSystem implements System {
 
   /** @internal */
   private onMouseMove(event: MouseEvent): void {
-    console.log('move')
     this.screen.set(event.offsetX, event.offsetY);
   }
 
