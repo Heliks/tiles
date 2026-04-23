@@ -19,7 +19,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "uuid": "8.3.2",
+    "uuid": "14.0.0",
     "@heliks/ecs": "0.3.4-rc08",
     "@heliks/ecs-hierarchy": "0.3.4-rc08",
     "@heliks/ecs-transform": "0.3.4-rc08",
