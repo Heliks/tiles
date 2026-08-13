@@ -1,6 +1,7 @@
 import { AppBuilder, AppSchedule, Bundle } from '@heliks/tiles-engine';
 import { RendererSchedule } from '@heliks/tiles-pixi';
 import { Host } from './context';
+import { Fonts } from './fonts';
 import { Document, EventLifecycle } from './providers';
 import {
   DrawUi,
@@ -51,6 +52,7 @@ export class UiBundle implements Bundle {
       .provide(Document)
       .provide(EventLifecycle)
       .provide(UiFocus)
+      .provide(Fonts)
       .provide(TextFactory)
       // The element manager will also maintain layouts in case the document becomes
       // dirty during its update, hence why this needs to be declared first.
