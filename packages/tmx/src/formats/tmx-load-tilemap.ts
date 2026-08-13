@@ -164,10 +164,6 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
 
   /** @inheritDoc */
   public async process(data: TmxMapData, file: string, loader: AssetLoader): Promise<Level<P>> {
-    if (! data.infinite) {
-      throw new Error('Todo');
-    }
-
     // Create the layout of each chunk. We need this to parse tile layers.
     const chunkGrid = getChunkGrid(data);
 

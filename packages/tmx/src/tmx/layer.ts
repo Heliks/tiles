@@ -22,7 +22,7 @@ interface TmxBaseLayerData extends TmxHasPropertyData {
   y: number;
 }
 
-interface TmxChunkData {
+export interface TmxChunkData {
   data: number[];
   height: number;
   width: number;
@@ -37,7 +37,6 @@ export interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
 }
 
 export interface TmxFiniteTileLayerData extends TmxBaseLayerData {
-  chunks: undefined;
   data: number[];
   type: TmxLayerTypeData.Tiles;
 }
