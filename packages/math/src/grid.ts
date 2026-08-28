@@ -117,4 +117,14 @@ export class Grid {
     return new Grid(this.cols, this.rows, this.cellWidth, this.cellHeight);
   }
 
+  /** Copies the values of the given `grid`. */
+  public copy(grid: Grid): this {
+    this.cols = grid.cols;
+    this.rows = grid.rows;
+    this.cellWidth = grid.cellWidth;
+    this.cellHeight = grid.cellHeight;
+
+    return this;
+  }
+
 }

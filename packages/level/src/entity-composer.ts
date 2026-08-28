@@ -77,10 +77,9 @@ export class EntityComposer implements EntityFactory {
 
     const entity = world.insert(sprite);
     const shapes = getTileGeometry(local, index);
-
+    
     if (shapes) {
-      // Todo: Broken positions.
-      world.attach(entity, createRigidBody(shapes, 1));
+      world.attach(entity, createRigidBody(shapes, 1, data.props.$body));
     }
 
     const animation = local.tileset.getAnimationName(index);

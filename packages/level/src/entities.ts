@@ -1,7 +1,17 @@
 import { Rectangle } from '@heliks/tiles-engine';
-import { ColliderShape } from '@heliks/tiles-physics';
+import { ColliderShape, RigidBodyType } from '@heliks/tiles-physics';
 import { Geometry } from './geometry';
+import { PhysicsProps } from './physics';
 
+
+export interface EntityBodyConfig {
+  damping: number;
+  type: RigidBodyType;
+}
+
+export interface EntityProps extends PhysicsProps {
+  $body?: EntityBodyConfig;
+}
 
 /**
  * Defines an entity that renders a tile.
@@ -16,7 +26,7 @@ import { Geometry } from './geometry';
  * @template `P`: Custom properties
  * @template `T`: Custom type.
  */
-export interface TileEntity<P = {}, T extends string = string> extends Geometry<P, Rectangle, T> {
+export interface TileEntity<P = EntityProps, T extends string = string> extends Geometry<P, Rectangle, T> {
   /** If set to `true`, the sprite of the object will be flipped along its x-axis. */
   flipX: boolean;
   /** If set to `true`, the sprite of the object will be flipped along its y-axis. */
@@ -31,7 +41,7 @@ export interface TileEntity<P = {}, T extends string = string> extends Geometry<
  * @template `P`: Custom properties
  * @template `T`: Custom type.
  */
-export type LevelEntity<P = {}, T extends string = string> = Geometry<P, ColliderShape, T> | TileEntity<P, T>;
+export type LevelEntity<P = EntityProps, T extends string = string> = Geometry<P, ColliderShape, T> | TileEntity<P, T>;
 
 /** Returns `true` if the given entity `data` is that of a geometry. */
 export function isTileEntity<P = {}>(data: LevelEntity<P>): data is TileEntity<P> {
