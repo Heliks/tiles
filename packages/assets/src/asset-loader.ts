@@ -1,4 +1,4 @@
-import { Injectable, ltrim, noIndent, Type, uuid } from '@heliks/tiles-engine';
+import { Injectable, noIndent, Type, uuid } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
 import { Format, Fs } from './fs';
 import { getExtension, join, normalize } from './utils';
@@ -49,7 +49,8 @@ export class AssetLoader {
 
   /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
   public getPath(path: string): string {
-    return join(this.root, ltrim(path, '/'))
+    // Don't add root directory if given path is absolute.
+    return path.startsWith('/') || path.startsWith('~') ? path : join(this.root, path);
   }
 
   /** @internal */
@@ -92,7 +93,7 @@ export class AssetLoader {
     const full = this.getPath(file);
     const data = await this.fs.load(full, format);
 
-    return format.process(data, file, this);
+    return format.process(data, full, this);
   }
 
   /**

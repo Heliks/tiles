@@ -1,6 +1,7 @@
 import { AssetStorage, Handle, Load } from '../asset';
 import { AssetLoader } from '../asset-loader';
 import { Fetch } from '../fs';
+import { join } from '../utils';
 
 
 describe('AssetLoader', () => {
@@ -70,6 +71,30 @@ describe('AssetLoader', () => {
       const asset = loader.assets.get(handle);
 
       expect(asset).not.toBeUndefined();
+    });
+  });
+
+
+  describe('getPath()', () => {
+    beforeEach(() => {
+      loader.root = './assets';
+    });
+
+    it('should add root directory when path is relative', () => {
+      expect(loader.getPath('images/foo.png')).toBe(join('./assets', 'images/foo.png'));
+    });
+
+    it('should not add root directory when path is absolute', () => {
+      expect(loader.getPath('/images/foo.png')).toBe('/images/foo.png');
+    });
+
+    it('should not add root directory when path is relative to home', () => {
+      expect(loader.getPath('~/images/foo.png')).toBe('~/images/foo.png');
+    });
+
+    it('should return path when no root directory is set', () => {
+      loader.root = './';
+      expect(loader.getPath('foo/bar')).toBe(join('./', 'foo/bar'));
     });
   });
 });
