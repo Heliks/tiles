@@ -18,4 +18,35 @@ describe('Rectangle', () => {
       height: 50
     });
   });
+
+  describe('intersects()', () => {
+    it('should return true when two rectangles overlap', () => {
+      const rect1 = new Rectangle(10, 10, 0, 0);
+      const rect2 = { width: 5, height: 5, x: 5, y: 5 };
+
+      expect(rect1.intersects(rect2)).toBe(true);
+    });
+
+    it('should return false when two rectangles do not overlap', () => {
+      const rect1 = new Rectangle(10, 10, 0, 0);
+      const rect2 = { width: 5, height: 5, x: 15, y: 15 };
+
+      expect(rect1.intersects(rect2)).toBe(false);
+    });
+
+    it('should return true when one rectangle is fully contained within the other', () => {
+      const rect1 = new Rectangle(10, 10, 0, 0);
+      const rect2 = { width: 5, height: 5, x: 2, y: 2 };
+
+      expect(rect1.intersects(rect2)).toBe(true);
+    });
+
+    it('should return true when two rectangles touch at the edge', () => {
+      const rect1 = new Rectangle(10, 10, 0, 0);
+      const rect2 = { width: 5, height: 5, x: 10, y: 0 };
+
+      expect(rect1.intersects(rect2)).toBe(true);
+    });
+  });
 });
+

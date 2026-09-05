@@ -101,4 +101,16 @@ export class Rectangle implements Shape, Box {
     return Rectangle.contains(x, y, this.x, this.y, this.width, this.height);
   }
 
+  /**
+   * Returns `true` if the rectangle intersects with the given `box`. This check is
+   * inclusive, which means if the rectangle touches an edge of the box, it will
+   * count as an intersection.
+   */
+  public intersects(rect: Box): boolean {
+    return (
+      this.x <= rect.x + rect.width && this.x + this.width >= rect.x &&
+      this.y <= rect.y + rect.height && this.y + this.height >= rect.y
+    );
+  }
+
 }
