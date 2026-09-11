@@ -4,10 +4,11 @@ import { Format, Fs } from './fs';
 import { getExtension, join, normalize } from './utils';
 
 
-/**
- * Can contain any {@link Format}.
- */
+/** Can contain any {@link Format}.  */
 type AnyFormat<L> = Format<unknown, unknown, L>;
+
+/** Regex to determine if a path is absolute. */
+const REGEX_IS_ABSOLUTE_PATH = /^(?:[A-Za-z]:[\\/]|[\\/]|~)/;
 
 /**
  * Loads assets via the fetch API.
@@ -49,8 +50,8 @@ export class AssetLoader {
 
   /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
   public getPath(path: string): string {
-    // Don't add root directory if given path is absolute.
-    return path.startsWith('/') || path.startsWith('~') ? path : join(this.root, path);
+    // Don't add the root directory if the given path is absolute.
+    return REGEX_IS_ABSOLUTE_PATH.test(path) ? path : join(this.root, path);
   }
 
   /** @internal */

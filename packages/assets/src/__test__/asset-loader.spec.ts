@@ -80,12 +80,20 @@ describe('AssetLoader', () => {
       loader.root = './assets';
     });
 
-    it('should add root directory when path is relative', () => {
+    it.each([
+      'assets/image.png',
+      './assets/image.png'
+    ])('should add root directory to relative path %p', () => {
       expect(loader.getPath('images/foo.png')).toBe(join('./assets', 'images/foo.png'));
     });
 
-    it('should not add root directory when path is absolute', () => {
-      expect(loader.getPath('/images/foo.png')).toBe('/images/foo.png');
+    it.each([
+      '/foo/bar',
+      '~/foo/bar',
+      'C:/foo/bar',
+      'C:\\foo\\bar'
+    ])('should not add root directory to absolute path %p', path => {
+      expect(loader.getPath(path)).toBe(path);
     });
 
     it('should not add root directory when path is relative to home', () => {
