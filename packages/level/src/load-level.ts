@@ -1,7 +1,8 @@
 import { AssetLoader, Format, getDirectory } from '@heliks/tiles-assets';
-import { Grid, Rectangle } from '@heliks/tiles-engine';
+import { Grid, Injectable, Rectangle } from '@heliks/tiles-engine';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { ChunkLayer, ChunkState, Level } from './level';
+import { Layer, LayerData, LayerDataMap } from './layers';
+import { ChunkState, Level } from './level';
 import { Tileset } from './tileset';
 
 
@@ -19,28 +20,38 @@ export type RectangleData = [
   height: number
 ];
 
-export interface LocalTilesetData {
+export interface LevelFormatTilesetData {
+  /** Start of the tilesets ID range. */
   firstId: number;
+  /** Path to the tileset file, relative to the level file. */
   path: string;
 }
 
-export interface ChunkData<M extends object = {}> {
+export interface LevelFormatChunkLayer<D extends LayerData = LayerData> {
+  /** Layer specific data.  */
+  data: D;
+  /** ID of the {@link Layer} for which this data belongs to.*/
+  layerId: number;
+}
+
+export interface LevelFormatChunkData {
   bounds: RectangleData;
   index: number;
-  layers: ChunkLayer[];
-  meta: M;
+  layers: LevelFormatChunkLayer[];
   x: number;
   y: number;
 }
 
-export interface LevelData {
+export interface LevelFormatData {
   grid: GridData;
   layout: GridData;
-  tilesets: LocalTilesetData[];
-  chunks: ChunkData[];
+  tilesets: LevelFormatTilesetData[];
+  chunks: LevelFormatChunkData[];
+  layers: Layer[];
 }
 
-function parseLevelChunks(level: Level, data: LevelData): void {
+
+function parseLevelChunks(level: Level, data: LevelFormatData): void {
   const grid = new Grid(
     level.layout.cellWidth,
     level.layout.cellHeight,
@@ -54,15 +65,20 @@ function parseLevelChunks(level: Level, data: LevelData): void {
       chunk.bounds[3],
       chunk.bounds[0],
       chunk.bounds[1],
-    )
+    );
+
+    const layers: LayerDataMap = {};
+
+    for (const layer of chunk.layers) {
+      layers[layer.layerId] = layer.data;
+    }
 
     level.chunks.push({
       bounds,
       grid,
+      layers,
       entities: [],
       index: chunk.index,
-      meta: chunk.meta,
-      layers: chunk.layers,
       state: ChunkState.Pending,
       x: chunk.x,
       y: chunk.y
@@ -70,20 +86,20 @@ function parseLevelChunks(level: Level, data: LevelData): void {
   }
 }
 
-async function _load(data: LocalTilesetData, file: string, loader: AssetLoader) {
+async function _load(data: LevelFormatTilesetData, file: string, loader: AssetLoader) {
   const tileset = await loader.fetch<Tileset>(getDirectory(file, data.path));
 
    return new LocalTileset(tileset, data.firstId);
 }
 
-
-export class LevelFormat implements Format<LevelData, Level> {
+@Injectable()
+export class LoadLevel implements Format<LevelFormatData, Level> {
 
   /** @inheritDoc */
   public readonly extensions = ['level', 'level.json'];
 
   /** @inheritDoc */
-  public async process(data: LevelData, file: string, loader: AssetLoader): Promise<Level> {
+  public async process(data: LevelFormatData, file: string, loader: AssetLoader): Promise<Level> {
     const tilesets = await Promise.all(
       data.tilesets.map(
         tileset => _load(tileset, file, loader)
@@ -105,6 +121,8 @@ export class LevelFormat implements Format<LevelData, Level> {
     );
 
     const level = new Level(grid, layout, {});
+
+    level.layers.push(...data.layers);
 
     for (const tileset of tilesets) {
       level.tilesets.set(tileset);

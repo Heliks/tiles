@@ -1,15 +1,16 @@
 import { AppBuilder, Bundle, Type } from '@heliks/tiles-engine';
-import { EntityComposer } from './entity-composer';
-import { EntityFactory } from './entity-factory';
+import { ChunkLoader } from './chunk-loader';
 import { Level } from './level';
 import { LevelConfig } from './level-config';
 import { LevelSetup } from './level-setup';
 import { LEVEL_ENTITY_FACTORY, LevelSystem } from './level-system';
+import { ObjectsComposer } from './objects-composer';
+import { ObjectsFactory } from './objects-factory';
 
 
 /** Configuration options for the {@link LevelBundle}. */
 export interface LevelBundleConfig {
-  factory?: Type<EntityFactory>;
+  factory?: Type<ObjectsFactory>;
 }
 
 /**
@@ -24,12 +25,13 @@ export class LevelBundle implements Bundle {
 
   /** @inheritDoc */
   public build(app: AppBuilder): void {
-    const factory = this.config.factory ?? EntityComposer;
+    const factory = this.config.factory ?? ObjectsComposer;
 
     app
       .component(Level)
       .singleton(LEVEL_ENTITY_FACTORY, container => container.make(factory))
       .provide(LevelConfig)
+      .provide(ChunkLoader)
       .system(LevelSetup)
       .system(LevelSystem);
   }

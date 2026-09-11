@@ -1,5 +1,6 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import {
+  EntitySerializer,
   Hierarchy,
   Inject,
   Injectable,
@@ -11,16 +12,20 @@ import {
   Vec2,
   World
 } from '@heliks/tiles-engine';
-import { Camera, RendererConfig } from '@heliks/tiles-pixi';
+import { Camera, RendererConfig, SpriteRender } from '@heliks/tiles-pixi';
 import { Tilemap } from '@heliks/tiles-tilemap';
-import { EntityFactory } from './entity-factory';
-import { Chunk, ChunkEntityLayer, ChunkLayerType, ChunkState, Level } from './level';
+import { ChunkLoader } from './chunk-loader';
+import { EntityMetadata } from './entity-metadata';
+import { EntityLayerData, Layer, LayerType } from './layers';
+import { Chunk, ChunkState, Level, LevelEventType } from './level';
 import { LevelConfig } from './level-config';
+import { LevelObject } from './objects';
+import { ObjectsFactory } from './objects-factory';
 import { getCellsFromDistance } from './utils';
 
 
 /**
- * Token used by the service container to inject the {@link EntityFactory} that is
+ * Token used by the service container to inject the {@link ObjectsFactory} that is
  * used by the level system.
  */
 export const LEVEL_ENTITY_FACTORY = Symbol('LEVEL_ENTITY_FACTORY');
@@ -36,12 +41,14 @@ export class LevelSystem extends ProcessingSystem {
 
   constructor(
     @Inject(LEVEL_ENTITY_FACTORY)
-    public readonly factory: EntityFactory,
+    public readonly factory: ObjectsFactory,
     public readonly assets: AssetStorage,
     public readonly camera: Camera,
     public readonly config: LevelConfig,
     public readonly hierarchy: Hierarchy,
-    public readonly renderer: RendererConfig
+    public readonly renderer: RendererConfig,
+    public readonly entitySerializer: EntitySerializer,
+    public readonly chunkLoader: ChunkLoader
   ) {
     super();
   }
@@ -77,6 +84,16 @@ export class LevelSystem extends ProcessingSystem {
 
         level._chunk = level.chunk;
       }
+
+      for (const chunk of level.loaded) {
+        if (chunk.dirty) {
+          this.chunkLoader.unload(world, level, chunk);
+
+          void this.load(world, level, chunk);
+
+          chunk.dirty = false;
+        }
+      }
     }
   }
 
@@ -95,36 +112,9 @@ export class LevelSystem extends ProcessingSystem {
       // Chunks that are partially loaded can't be unloaded. Skip them for now. We could
       // optimize this later by canceling the loading process, but this is fine for now.
       if (! indexes.includes(chunk.index) && chunk.state === ChunkState.Loaded) {
-        this.unload(world, level, chunk);
+        this.chunkLoader.unload(world, level, chunk);
       }
     }
-  }
-
-  /**
-   * Unloads a chunk from the given `level`.
-   *
-   * @remarks
-   * The chunk must be {@link ChunkState.Loaded}. Otherwise, there might be race
-   * conditions that cause the chunk to not unload fully.
-   *
-   * @param world Entity world
-   * @param level Level from where chunk is unloaded
-   * @param chunk The chunk to unload
-   */
-  public unload(world: World, level: Level, chunk: Chunk): void {
-    if (chunk.entity) {
-      this.hierarchy.destroy(world, chunk.entity);
-    }
-
-    for (const entity of chunk.entities) {
-      world.destroy(entity);
-    }
-
-    chunk.entity = undefined;
-    chunk.entities.length = 0;
-    chunk.state = ChunkState.Pending;
-
-    level.loaded.delete(chunk);
   }
 
   /**
@@ -149,18 +139,22 @@ export class LevelSystem extends ProcessingSystem {
     // Entity layers are created async.
     const promises = [];
 
-    for (const layer of chunk.layers) {
-      const transform = new Transform(
-        chunk.bounds.x,
-        chunk.bounds.y
-      );
+    for (const layer of level.layers) {
+      const data = chunk.layers[layer.id];
+
+      // Chunk may not own any data for this layer.
+      if (! data) {
+        continue;
+      }
+
+      const transform = new Transform(chunk.bounds.x, chunk.bounds.y);
 
       switch (layer.type) {
-        case ChunkLayerType.Tiles:
-          const tilemap = new Tilemap(chunk.grid, layer.props.$layer);
+        case LayerType.Tiles:
+          const tilemap = new Tilemap(chunk.grid, layer.renderTo);
 
           tilemap.setTilesets(level.tilesets);
-          tilemap.setAll(layer.data);
+          tilemap.setAll(data as number[]);
 
           world
             .create()
@@ -168,11 +162,13 @@ export class LevelSystem extends ProcessingSystem {
             .use(tilemap)
             .use(transform)
             .build();
-
           break;
-        case ChunkLayerType.Entities:
+        case LayerType.Entities:
+          this.createEntityLayerEntities(world, chunk, layer, data as any);
+          break;
+        case LayerType.Objects:
           promises.push(
-            this.spawnEntityLayer(world, level, chunk, layer)
+            this.createObjectsLayerEntities(world, level, chunk, layer, data as LevelObject[])
           );
 
           break;
@@ -182,14 +178,34 @@ export class LevelSystem extends ProcessingSystem {
     await Promise.all(promises);
 
     chunk.state = ChunkState.Loaded;
+
     level.loaded.add(chunk);
+    level.events.push({ type: LevelEventType.ChunkLoaded, chunk });
   }
 
-  private async spawnEntityLayer(world: World, level: Level, chunk: Chunk, layer: ChunkEntityLayer): Promise<void> {
+  public createEntityLayerEntities(world: World, chunk: Chunk, layer: Layer, layerData: EntityLayerData): void {
+    const sprites = world.storage(SpriteRender);
+    const meta = world.storage(EntityMetadata);
+
+    for (const data of layerData) {
+      const entity = this.entitySerializer.deserialize(world, data);
+
+      meta.set(entity, new EntityMetadata(layer.id));
+
+      // If the entity has a sprite, force the level layers renderer layer.
+      if (sprites.has(entity)) {
+        sprites.get(entity).layer = layer.renderTo;
+      }
+
+      chunk.entities.push(entity);
+    }
+  }
+
+  private async createObjectsLayerEntities(world: World, level: Level, chunk: Chunk, layer: Layer, data: LevelObject[]): Promise<void> {
     const promises = [];
 
-    for (const data of layer.data) {
-      promises.push(this.factory.create(world, level, chunk, layer, data));
+    for (const item of data) {
+      promises.push(this.factory.create(world, level, chunk, layer, item));
     }
 
     chunk.entities.push(...await Promise.all(promises));

@@ -2,21 +2,22 @@ import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Transform, Vec2, World } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 import { RendererConfig, SpriteAnimation, SpriteId, SpriteRender } from '@heliks/tiles-pixi';
-import { isTileEntity, LevelEntity, TileEntity } from './entities';
-import { EntityFactory } from './entity-factory';
 import { isPointGeometry } from './geometry';
-import { Chunk, ChunkEntityLayer, Level } from './level';
+import { Layer } from './layers';
+import { Chunk, Level } from './level';
+import { isTileObject, LevelObject, TileObject } from './objects';
+import { ObjectsFactory } from './objects-factory';
 import { createPhysicsCollider, createRigidBody, getTileGeometry } from './physics';
 import { Tileset } from './tileset';
 
 
 /**
- * This is the default {@link EntityFactory} used by the level system to create
+ * This is the default {@link ObjectsFactory} used by the level system to create
  * entities. For custom handling of custom objects, this class can be overwritten
  * by setting a factory in the {@link LevelBundle}.
  */
 @Injectable()
-export class EntityComposer implements EntityFactory {
+export class ObjectsComposer implements ObjectsFactory {
 
   /**
    * @param assets {@see AssetStorage}
@@ -30,10 +31,10 @@ export class EntityComposer implements EntityFactory {
   }
 
   /** @inheritDoc */
-  public create(world: World, level: Level, chunk: Chunk, layer: ChunkEntityLayer, data: LevelEntity): Entity {
+  public create(world: World, level: Level, chunk: Chunk, layer: Layer, data: LevelObject): Entity {
     let entity;
 
-    if (isTileEntity(data)) {
+    if (isTileObject(data)) {
       entity = this.createTileEntity(world, level, layer, data);
     }
     else {
@@ -59,11 +60,11 @@ export class EntityComposer implements EntityFactory {
     return entity;
   }
 
-  public createTileEntity(world: World, level: Level, layer: ChunkEntityLayer, data: TileEntity): Entity {
+  public createTileEntity(world: World, level: Level, layer: Layer, data: TileObject): Entity {
     const local = level.tilesets.getFromGlobalId(data.tileId);
     const index = local.getLocalIndex(data.tileId);
 
-    const sprite = new SpriteRender(local.tileset.spritesheet, index, layer.props.$layer);
+    const sprite = new SpriteRender(local.tileset.spritesheet, index, layer.renderTo);
 
     sprite.flip(data.flipX, data.flipY);
     sprite.setAnchor(local.tileset.pivot.x, local.tileset.pivot.y);

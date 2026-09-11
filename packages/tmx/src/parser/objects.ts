@@ -1,5 +1,5 @@
 import { Rectangle } from '@heliks/tiles-engine';
-import { LevelEntity } from '@heliks/tiles-level';
+import { LevelObject } from '@heliks/tiles-level';
 import { TmxObjectData } from '../tmx';
 import { ParserConfig } from './config';
 import { parseCustomType } from './custom-type';
@@ -8,8 +8,8 @@ import { hasFlag, parseGID, TmxGIDFlag } from './gid';
 import { getCustomProps } from './props';
 
 
-/** Parses {@link TmxObjectData} and produces a {@link LevelEntity}. */
-export function parseObjectData(data: TmxObjectData, config: ParserConfig): LevelEntity {
+/** Parses {@link TmxObjectData} and produces a {@link LevelObject}. */
+export function parseObjectData(data: TmxObjectData, config: ParserConfig): LevelObject {
   if (! data.gid) {
     return parseGeometry(data, config);
   }

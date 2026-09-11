@@ -3,7 +3,7 @@ import { Grid, Rectangle, Vec2 } from '@heliks/tiles-engine';
 import { ChunkState, Level, Tileset } from '@heliks/tiles-level';
 import { hex2int } from '@heliks/tiles-pixi';
 import { LocalTileset } from '@heliks/tiles-tilemap';
-import { extractMetaLayers, getCustomProps, parseLayers, ParserConfig } from '../parser';
+import { getCustomProps, parseChunkLayerData, parseLayers, ParserConfig } from '../parser';
 import { isLocalTilesetExternal, TmxLocalTilesetData, TmxMapData } from '../tmx';
 
 
@@ -178,20 +178,25 @@ export class TmxLoadTilemap<P = unknown> implements Format<TmxMapData, Level<P>>
     const props = getCustomProps<P>(data);
     const level = new Level(grid, layout, props);
 
-    for (let x = 0; x < level.layout.cols; x++) {
-      for (let y = 0; y < level.layout.rows; y++) {
-        const layers = parseLayers(data, chunkGrid, x, y, this.config);
+    // Create the level layers.
+    level.layers.push(...parseLayers(data));
+
+    // Populate level chunks with data from layers.
+    for (let cx = 0; cx < level.layout.cols; cx++) {
+      for (let cy = 0; cy < level.layout.rows; cy++) {
+        const bounds = this.getChunkBounds(chunkGrid, cx, cy);
+        const index = layout.getIndex(cx, cy);
+        const layers = parseChunkLayerData(data, chunkGrid, cx, cy, this.config);
 
         level.chunks.push({
           entities: [],
-          bounds: this.getChunkBounds(chunkGrid, x, y),
           grid: chunkGrid,
-          index: layout.getIndex(x, y),
-          meta: extractMetaLayers(layers),
-          layers,
           state: ChunkState.Pending,
-          x,
-          y
+          bounds,
+          index,
+          layers,
+          x: cx,
+          y: cy
         });
       }
     }

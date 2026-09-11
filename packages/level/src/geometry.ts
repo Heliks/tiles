@@ -1,5 +1,5 @@
+import { Rectangle } from '@heliks/tiles-engine';
 import { ColliderShape } from '@heliks/tiles-physics';
-import { Rectangle } from 'pixi.js';
 
 
 /**

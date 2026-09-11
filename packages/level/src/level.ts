@@ -1,61 +1,8 @@
-import { Entity, Grid, Rectangle } from '@heliks/tiles-engine';
-import { LayerId } from '@heliks/tiles-pixi';
+import { Entity, EventQueue, Grid, Rectangle, Vec2, XY } from '@heliks/tiles-engine';
 import { LocalTilesetBag } from '@heliks/tiles-tilemap';
-import { LevelEntity } from './entities';
+import { Layer, LayerDataMap } from './layers';
 import { Tileset } from './tileset';
 
-
-/** Available types of chunk layers. */
-export enum ChunkLayerType {
-  Tiles,
-  Entities
-}
-
-/** Default properties for chunk layers that are used by the level system. */
-export interface ChunkLayerProps {
-  /** Defines the renderer layer where this Tiled layer should be rendered. */
-  $layer?: LayerId;
-  /** If enabled, this layer will be treated as a meta-layer. */
-  $meta?: boolean;
-}
-
-interface BaseLayer<P extends ChunkLayerProps = ChunkLayerProps> {
-  /** Custom properties. */
-  props: P;
-  name: string;
-}
-
-/**
- * This layer type stores an array of tile IDs that define which tiles are placed
- * in the chunk's grid. Each number in the `data` array corresponds to a specific
- * tile in one of the tileset present on the tilemap.
- *
- * @template `P`: Custom properties.
- */
-export interface ChunkTileLayer<P extends ChunkLayerProps = ChunkLayerProps> extends BaseLayer<P> {
-  data: number[];
-  type: ChunkLayerType.Tiles;
-}
-
-/**
- * This layer type contains objects (such as shapes, entities) that are spawned
- * with this chunk. 
- *
- * During gameplay, entities may leave the boundaries of this chunk, and therefore,
- * the entities that are spawned and de-spawned when the chunk is unloaded may be
- * different.
- *
- * @template `P`: Custom properties.
- */
-export interface ChunkEntityLayer<P extends ChunkLayerProps = ChunkLayerProps> extends BaseLayer<P> {
-  data: LevelEntity[];
-  type: ChunkLayerType.Entities;
-}
-
-/**
- * @template `P`: Custom properties.
- */
-export type ChunkLayer<P extends ChunkLayerProps = ChunkLayerProps> = ChunkTileLayer<P> | ChunkEntityLayer<P>;
 
 export enum ChunkState {
   /** Chunk is waiting to be loaded. */
@@ -66,22 +13,13 @@ export enum ChunkState {
   Loaded
 }
 
-/**
- * Key-value map that stores the meta-layers of a chunk.
- * @see Chunk.meta
- */
-export interface ChunkMetaLayers<L = ChunkLayer> {
-  [name: string]: L;
-}
-
-/**
- * @template L - The type of layer associated with the chunk.
- */
-export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
+export interface Chunk {
   /** Defines the chunks' outer boundaries in world units.*/
   bounds: Rectangle;
   /** When the chunk is loaded, this will contain the root entity. */
   entity?: Entity;
+  /** If set to `true`, the chunk will be re-rendered. */
+  dirty?: boolean;
   /**
    * Contains all entities in this chunk that will be destroyed when the chunk is
    * culled. This list is managed automatically by the level system.
@@ -97,13 +35,13 @@ export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
   /** Grid index of this chunk. */
   index: number;
   /**
-   * Meta-layers are special layers that typically contain game-specific information
-   * like collision data, terrain types, etc. They are ignored by the level system
-   * and must therefore be handled by each game individually.
+   * Chunk-local data for {@link LevelLayer level layers} mapped to the ID of the layer
+   * to which it belongs.
+   *
+   * A chunk may not store data for every layer. The order of entries is not guaranteed
+   * to be stable. The canonical layer order is defined by {@link Level.layers}.
    */
-  meta: M;
-  /** Layers to render this chunk. */
-  layers: L[];
+  layers: LayerDataMap;
   /** Current loading state of the chunk. */
   state: ChunkState;
   /** Grid location of this chunk along the x-axis. */
@@ -112,10 +50,30 @@ export interface Chunk<L = ChunkLayer, M = ChunkMetaLayers> {
   y: number;
 }
 
+
+export enum LevelEventType {
+  /** Event that is emitted when a chunk has been successfully loaded. */
+  ChunkLoaded,
+  /** Event that is emitted when a chunk has been successfully unloaded. */
+  ChunkUnloaded
+}
+
+export interface LevelChunkEvent {
+  type: LevelEventType.ChunkLoaded | LevelEventType.ChunkUnloaded;
+  chunk: Chunk;
+}
+
+export type LevelEvent = LevelChunkEvent;
+
+
+/** @internal */
+const SCRATCH_GRID = new Grid(0, 0, 0, 0);
+
+/** @internal */
+const SCRATCH_VEC2 = new Vec2();
+
 /**
  * Component that spawns a level.
- *
- * Levels render {@link MapAsset map assets}.
  *
  * @template `P`: Custom properties.
  * @template `T`: Tilesets that are used by this level.
@@ -149,6 +107,15 @@ export class Level<P = {}, T extends Tileset = Tileset> {
    */
   public readonly chunks: Chunk[] = [];
 
+  public readonly events = new EventQueue<LevelEvent>();
+
+  /**
+   * Defines the layers available to this level. Each entry describes the shape of a
+   * layer. The actual data is stored per chunk. This array only contains the layer
+   * definitions used by the level system.
+   */
+  public readonly layers: Layer[] = [];
+
   /** Contains all chunks that are currently loaded. */
   public readonly loaded = new Set<Chunk>();
 
@@ -176,6 +143,118 @@ export class Level<P = {}, T extends Tileset = Tileset> {
    */
   public getChunk(index: number): Chunk | undefined {
     return this.chunks.find(chunk => chunk.index === index);
+  }
+
+  /**
+   * Returns the {@link Chunk} at the given position, if any.
+   *
+   * @param x Position along x-axis relative to the level grid, in px.
+   * @param y Position along y-axis relative to the level grid, in px.
+   */
+  public getChunkAt(x: number, y: number): Chunk | undefined {
+    return this.getChunk(this.getChunkIndexAt(x, y));
+  }
+
+  /**
+   * Returns the chunk index at the given px position.
+   *
+   * @param x Position along x-axis relative to the level grid, in px.
+   * @param y Position along y-axis relative to the level grid, in px.
+   */
+  public getChunkIndexAt(x: number, y: number): number {
+    const location = this.grid.getLocation(this.grid.getIndexAt(x, y), SCRATCH_VEC2);
+
+    return this.layout.getIndexAt(
+      location.x,
+      location.y
+    );
+  }
+
+  public createChunk(index: number, unitSize: number): Chunk {
+    if (this.getChunk(index)) {
+      throw new Error(`A chunk at index ${index} already exists.`);
+    }
+
+    // Calculate size in world units.
+    const w = this.grid.cellWidth * this.layout.cellWidth / unitSize;
+    const h = this.grid.cellHeight * this.layout.cellHeight / unitSize;
+
+    // Get chunk grid coordinates.
+    const { x, y } = this.layout.getLocation(index, SCRATCH_VEC2);
+
+    const grid = new Grid(
+      this.layout.cellWidth,
+      this.layout.cellHeight,
+      this.grid.cellWidth,
+      this.grid.cellHeight
+    );
+
+    const chunk = {
+      bounds: new Rectangle(w, h, x * w, y * h),
+      entities: [],
+      layers: {},
+      meta: {},
+      state: ChunkState.Pending,
+      grid,
+      index,
+      x,
+      y
+    }
+
+    this.chunks.push(chunk);
+
+    return chunk;
+  }
+
+
+
+  /**
+   * Expands the level {@link layout} to accommodate the specified coordinates. The
+   * layout is expanded on a per-chunk basis.
+   *
+   * @param x - The x-axis position in pixels. Relative to the grid.
+   * @param y - The y-axis position in pixels. Relative to the grid.
+   */
+  public growToPos(x: number, y: number): void {
+    if (x < 0 || y < 0) {
+      return;
+    }
+
+    const { layout, grid } = this;
+
+    // Store the current state of the grid in our scratch. We'll need these values
+    // later to re-arrange the grid.
+    SCRATCH_GRID.copy(layout);
+
+    const cols = layout.cellWidth;
+    const rows = layout.cellHeight;
+
+    const chunkCol = Math.floor(x / (grid.cellWidth * cols));
+    const chunkRow = Math.floor(y / (grid.cellHeight * rows));
+
+    layout.cols = Math.max(layout.cols, chunkCol + 1);
+    layout.rows = Math.max(layout.rows, chunkRow + 1);
+
+    grid.cols = Math.max(grid.cols, layout.cols * cols);
+    grid.rows = Math.max(grid.rows, layout.rows * rows);
+
+    this.reindex(SCRATCH_GRID);
+  }
+  
+  /**
+   * Re-indexes {@link chunks} after the dimensions of the level have been changed.
+   *
+   * @param prev The old chunk layout.
+   */
+  public reindex(prev: Grid): void {
+    if (prev.cols !== this.layout.cols) {
+      let pos: XY;
+
+      for (const chunk of this.chunks) {
+        pos = prev.getLocation(chunk.index, SCRATCH_VEC2);
+        chunk.index = this.layout.getIndex(pos.x, pos.y);
+      }
+    }
   }
 
 }
