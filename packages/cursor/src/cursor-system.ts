@@ -1,6 +1,6 @@
 import { Injectable, System, Vec2 } from '@heliks/tiles-engine';
 import { Camera, Renderer } from '@heliks/tiles-pixi';
-import { Cursor, CursorButton } from './cursor';
+import { Cursor, CursorButton, PointerType } from './cursor';
 
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button */
@@ -9,6 +9,7 @@ const enum MouseButton {
   Auxiliary = 1,
   Secondary = 2,
 }
+
 
 @Injectable()
 export class CursorSystem implements System {
@@ -21,6 +22,9 @@ export class CursorSystem implements System {
 
   /** Contains the last known screen position. */
   private readonly screen = new Vec2();
+
+  /** @internal */
+  private type = PointerType.Mouse;
 
   constructor(
     private readonly camera: Camera,
@@ -57,9 +61,10 @@ export class CursorSystem implements System {
   }
 
   /** @internal */
-  private onMouseDown(event: MouseEvent): void {
+  private onMouseDown(event: PointerEvent): void {
     this.screen.set(event.offsetX, event.offsetY);
     this.down.add(this.getCursorButton(event.button));
+    this.type = event.pointerType as PointerType;
   }
 
   /** @internal */
@@ -72,14 +77,16 @@ export class CursorSystem implements System {
   public boot(): void {
     const element = this.renderer.element();
 
-    element.addEventListener('mousemove', this.onMouseMove.bind(this));
-    element.addEventListener('mousedown', this.onMouseDown.bind(this));
-    element.addEventListener('mouseup', this.onMouseUp.bind(this));
+    element.addEventListener('pointermove', this.onMouseMove.bind(this));
+    element.addEventListener('pointerdown', this.onMouseDown.bind(this));
+    element.addEventListener('pointerup', this.onMouseUp.bind(this));
   }
 
   /** @inheritDoc */
   public update(): void {
     this.cursor.downNow.clear();
+    this.cursor.type = this.type;
+
     this.cursor.up.clear();
 
     for (const button of this.down) {
