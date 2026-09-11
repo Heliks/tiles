@@ -2,7 +2,7 @@ import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks
 import {
   ContextRef,
   Element,
-  PassByReference,
+  PassByFunction,
   PassByValue,
   TemplateElement,
   UiElement,
@@ -13,7 +13,6 @@ import { bind } from '../bind';
 import { createJsxNode, JsxNode } from '../jsx-node';
 import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
 import { TagRegistry } from '../tag-registry';
-import { UiComponent } from '../ui-component';
 import { UiNodeRenderer } from '../ui-node-renderer';
 
 
@@ -152,15 +151,6 @@ describe('JsxRenderer', () => {
     });
   });
 
-  class NoopComponent implements UiComponent {
-
-    /** @inheritDoc */
-    public render(): JsxNode {
-      return createJsxNode('noop');
-    }
-
-  }
-
   describe('createTemplateFromJsxNode()', () => {
     let node: JsxNode;
 
@@ -168,27 +158,21 @@ describe('JsxRenderer', () => {
       node = createJsxNode('noop');
     });
 
-    it('should bind string condition as host property to template expression', () => {
+    it('should bind value to template expression', () => {
       const entity = createTemplateFromJsxNode(world, node, 'foo');
-
-      const binding = getUiElement(entity).bindings[0] as PassByReference;
-
-      expect(binding).toBeInstanceOf(PassByReference);
-      expect(binding.local).toBe('expression');
-      expect(binding.host).toEqual(['foo']);
-    });
-
-    it('should bind function condition as value to template expression', () => {
-      const condition = jest.fn();
-
-      const entity = createTemplateFromJsxNode(world, node, condition);
       const binding = getUiElement(entity).bindings[0];
 
       expect(binding).toBeInstanceOf(PassByValue);
-      expect(binding).toMatchObject({
-        local: 'expression',
-        value: condition
-      });
+      expect(binding).toMatchObject({ local: 'expression', value: 'foo' });
+    });
+
+    it('should bind one way binding to template expression', () => {
+      const getter = jest.fn();
+      const entity = createTemplateFromJsxNode(world, node, bind(getter));
+      const binding = getUiElement(entity).bindings[0];
+
+      expect(binding).toBeInstanceOf(PassByFunction);
+      expect(binding).toMatchObject({ local: 'expression', fn: getter });
     });
 
     it('should wrap node in JsxTemplate', () => {
@@ -216,106 +200,4 @@ describe('JsxRenderer', () => {
       });
     });
   });
-
-
-  /*
-  describe('when rendering JSX node', () => {
-    let renderer: JsxRenderer;
-
-    beforeEach(() => {
-      renderer = new JsxRenderer(NoopComponent);
-    });
-
-    it('should apply style attribute', () => {
-      const style = {
-        grow: 999
-      };
-
-      const entity = renderer.foo(world, {
-        attributes: {
-          style
-        },
-        children: [],
-        tag: 'noop'
-      });
-
-      expect(
-        world
-          .storage(UiNode)
-          .get(entity)
-          .layout
-          .style
-      ).toMatchObject(style);
-    });
-  });
-
-  // Todo: Idk, should prolly redo these tests as they depend too much on createText()
-  describe('when rendering JSX node text children', () => {
-    let renderer: JsxRenderer;
-    let onCreateText: jest.SpyInstance;
-
-    beforeEach(() => {
-      renderer = new JsxRenderer(NoopComponent);
-      onCreateText = jest.spyOn(JsxRenderer, 'createText');
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should apply text style rule', () => {
-      const style = new TextStyle();
-
-      renderer.foo(world, {
-        attributes: {
-          style: {
-            text: style
-          }
-        },
-        children: [
-          'foobar'
-        ],
-        tag: 'noop'
-      });
-
-      // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][2];
-
-      expect(applied).toBe(style);
-    });
-
-    it('should inherit text style from parent', () => {
-      const style = new TextStyle(0xFFF000);
-
-      renderer.foo(world, {
-        attributes: {
-          style: {
-            text: style
-          }
-        },
-        children: [
-          {
-            attributes: {},
-            children: [
-              {
-                attributes: {},
-                children: [
-                  'foobar'
-                ],
-                tag: 'noop'
-              }
-            ],
-            tag: 'noop'
-          }
-        ],
-        tag: 'noop'
-      });
-
-      // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][2];
-
-      expect(applied).toBe(style);
-    });
-  });
-   */
 });

@@ -2,7 +2,7 @@ import { App, runtime, World } from '@heliks/tiles-engine';
 import { Script } from '../script';
 import { ScriptSystem } from '../script-system';
 import * as SETUP from '../setup';
-import { start, stop } from '../setup';
+import { start } from '../setup';
 
 
 describe('ScriptSystem', () => {
@@ -43,21 +43,19 @@ describe('ScriptSystem', () => {
 
   describe('onEntityRemoved()', () => {
     it('should invoke stop() callback on running script', () => {
-      jest.spyOn(SETUP, 'stop')
-
       const component = new Script({
-        update: jest.fn()
+        update: jest.fn(),
+        stop: jest.fn()
       });
 
       const entity = world.insert(component);
 
+      // Entity needs to be added first so that the system can properly track it
+      // for destruction.
+      system.onEntityAdded(world, entity);
       system.onEntityRemoved(world, entity);
 
-      expect(stop).toHaveBeenCalledWith(
-        world,
-        entity,
-        component
-      );
+      expect(component.script.stop).toHaveBeenCalledWith(world, entity);
     });
   });
 

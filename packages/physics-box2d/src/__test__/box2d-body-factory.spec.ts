@@ -33,7 +33,7 @@ describe('Box2dBodyFactory', () => {
     });
 
     it('should inherit material properties', () => {
-      const material = new Material('test', 5, 6, 7);
+      const material = new Material(5, 6, 7);
       const fixture = factory.getFixtureDef(new Collider(new Rectangle(0, 0), material));
 
       expect(fixture).toMatchObject({
