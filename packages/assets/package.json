@@ -5,7 +5,9 @@
     "@heliks/tiles-engine": "workspace:^",
     "typescript": "^5.4.5"
   },
-  "files": ["lib/*"],
+  "files": [
+    "lib/*"
+  ],
   "license": "MIT",
   "main": "./lib/index.js",
   "name": "@heliks/tiles-assets",
@@ -18,5 +20,5 @@
     "test": "jest --config ./jest.config.js"
   },
   "typings": "./lib/index.d.ts",
-  "version": "0.0.3"
+  "version": "0.0.4-0"
 }

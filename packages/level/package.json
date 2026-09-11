@@ -2,7 +2,7 @@
   "author": "Felix Wolf",
   "description": "Tiled level system.",
   "name": "@heliks/tiles-level",
-  "version": "0.0.3",
+  "version": "0.0.4-0",
   "peerDependencies": {
     "@heliks/tiles-assets": "workspace:^",
     "@heliks/tiles-engine": "workspace:^",
