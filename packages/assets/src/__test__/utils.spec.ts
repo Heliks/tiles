@@ -56,7 +56,40 @@ describe('getExtension()', () => {
 });
 
 describe('normalize()', () => {
-  it('should resolve ".." segments', () => {
-    expect(normalize('foo/bar/../foobar')).toBe('foo/foobar');
+  it.each([
+    {
+      path: 'foo/bar/../foobar',
+      result: 'foo/foobar'
+    },
+    {
+      path: 'dir0/dir1/dir2/../dir3/../../dir4',
+      result: 'dir0/dir4'
+    },
+    {
+      path: 'C:/dir0/../dir1/dir2',
+      result: 'C:/dir1/dir2'
+    }
+  ])('should resolve ".." segments in $path', data => {
+    expect(normalize(data.path)).toBe(data.result);
+  });
+
+  it('should normalize paths with leading "/"', () => {
+    expect(normalize('/foo/bar')).toBe('/foo/bar');
+  });
+
+  it('should normalize paths with trailing "/"', () => {
+    expect(normalize('foo/bar/')).toBe('foo/bar');
+  });
+
+  it('should ignore empty segments', () => {
+    expect(normalize('foo///bar')).toBe('foo/bar');
+  });
+
+  it('should ignore "." segments', () => {
+    expect(normalize('foo/./bar')).toBe('foo/bar');
+  });
+
+  it('should handle empty string input', () => {
+    expect(normalize('')).toBe('');
   });
 });
