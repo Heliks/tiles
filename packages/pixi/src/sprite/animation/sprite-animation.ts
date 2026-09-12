@@ -40,10 +40,10 @@ export class SpriteAnimation {
   /** @internal */
   @Ignore()
   public readonly transform = {
-    active: false,
-    animation: '',
-    preserve: false
-  };
+      active: false,
+      animation: '',
+      preserve: false
+    };
 
   /**
    * @param frames Contains the sprite IDs of each animation frame.

@@ -32,7 +32,7 @@ export class IntervalTicker extends Ticker {
    * This is defined as an anonymous function because it's faster to call this directly
    * rather than to `bind()` the function.
    */
-  private tick = () => {
+  private tick = (): void => {
     const now = Date.now();
 
     this.delta = now - this.timestamp;

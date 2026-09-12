@@ -164,7 +164,7 @@ export class LevelSystem extends ProcessingSystem {
             .build();
           break;
         case LayerType.Entities:
-          this.createEntityLayerEntities(world, chunk, layer, data as any);
+          this.createEntityLayerEntities(world, chunk, layer, data as EntityLayerData);
           break;
         case LayerType.Objects:
           promises.push(

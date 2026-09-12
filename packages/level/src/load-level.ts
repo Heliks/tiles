@@ -64,7 +64,7 @@ function parseLevelChunks(level: Level, data: LevelFormatData): void {
       chunk.bounds[2],
       chunk.bounds[3],
       chunk.bounds[0],
-      chunk.bounds[1],
+      chunk.bounds[1]
     );
 
     const layers: LayerDataMap = {};
@@ -86,10 +86,10 @@ function parseLevelChunks(level: Level, data: LevelFormatData): void {
   }
 }
 
-async function _load(data: LevelFormatTilesetData, file: string, loader: AssetLoader) {
+async function _load(data: LevelFormatTilesetData, file: string, loader: AssetLoader): Promise<LocalTileset<Tileset>> {
   const tileset = await loader.fetch<Tileset>(getDirectory(file, data.path));
 
-   return new LocalTileset(tileset, data.firstId);
+  return new LocalTileset(tileset, data.firstId);
 }
 
 @Injectable()

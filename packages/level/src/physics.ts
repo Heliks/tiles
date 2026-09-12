@@ -83,7 +83,7 @@ export function createPhysicsCollider2(geometry: Geometry<PhysicsColliderProps>,
   collider.material = {
     density,
     friction,
-    restitution,
+    restitution
   }
 
   return collider;

@@ -79,7 +79,7 @@ export function syncBodyGroupId(body: B2Body, component: RigidBody): void {
   }
 }
 
-export function syncBodyImpulse(body: B2Body, component: RigidBody) {
+export function syncBodyImpulse(body: B2Body, component: RigidBody): void {
   if (component._impulse.read()) {
     body.ApplyLinearImpulseToCenter(component._impulse.value);
 
