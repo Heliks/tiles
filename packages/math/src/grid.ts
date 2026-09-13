@@ -49,7 +49,7 @@ export class Grid {
   }
 
   /** Returns the top-left corner position of the given `cell` index. */
-  public getPosition(cell: number, out = new Vec2()): XY {
+  public getPosition(cell: number, out: XY = new Vec2()): XY {
     const loc = this.getLocation(cell, out);
 
     loc.x *= this.cellWidth;
