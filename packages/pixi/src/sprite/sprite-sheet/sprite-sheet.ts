@@ -50,6 +50,9 @@ export abstract class SpriteSheet<I extends SpriteId = SpriteId> {
   /** Returns the total number of sprites. */
   public abstract size(): number;
 
+  /** Returns `true` if the given sprite `id` exists on this tileset. */
+  public abstract exists(id: I): boolean;
+
   /**
    * Returns the size of the sprite matching `id`. Throws an error if `id` does not
    * match any sprites.

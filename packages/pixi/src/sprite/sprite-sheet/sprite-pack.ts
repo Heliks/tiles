@@ -33,6 +33,11 @@ export class SpritePack<I extends SpriteId = SpriteId> extends SpriteSheet<I> {
     return this.sprites.size;
   }
 
+  /** @inheritDoc */
+  public exists(id: I): boolean {
+    return this.sprites.has(id);
+  }
+
   /**
    * Registers a packed `sprite` using the given `spriteId`. The packed sprite will be
    * un-packed when it is created via `sprite()` or `texture()`.

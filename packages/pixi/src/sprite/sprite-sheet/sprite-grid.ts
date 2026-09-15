@@ -30,6 +30,11 @@ export class SpriteGrid extends SpriteSheet<number> {
   }
 
   /** @inheritDoc */
+  public exists(id: number): boolean {
+    return id >= 0 && id < this.grid.size;
+  }
+
+  /** @inheritDoc */
   protected _texture(index: number): Texture {
     return cropTexture(
       this.source,
