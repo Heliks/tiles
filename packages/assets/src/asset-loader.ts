@@ -1,14 +1,11 @@
 import { Injectable, noIndent, Type, uuid } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
 import { Format, Fs } from './fs';
-import { getExtension, join, normalize } from './utils';
+import { getExtension, normalize } from './utils';
 
 
 /** Can contain any {@link Format}.  */
 type AnyFormat<L> = Format<unknown, unknown, L>;
-
-/** Regex to determine if a path is absolute. */
-const REGEX_IS_ABSOLUTE_PATH = /^(?:[A-Za-z]:[\\/]|[\\/]|~)/;
 
 /**
  * Loads assets via the fetch API.
@@ -48,12 +45,6 @@ export class AssetLoader {
    */
   constructor(public readonly assets: AssetStorage, public readonly fs: Fs) {}
 
-  /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
-  public getPath(path: string): string {
-    // Don't add the root directory if the given path is absolute.
-    return REGEX_IS_ABSOLUTE_PATH.test(path) ? path : join(this.root, path);
-  }
-
   /** @internal */
   private match(extension: string): AnyFormat<AssetLoader> | undefined {
     for (const format of this.formats) {
@@ -91,10 +82,10 @@ export class AssetLoader {
   public async fetch<T>(file: string): Promise<T> {
     const format = this.getFormat<T>(file);
 
-    const full = this.getPath(file);
+    const full = this.fs.normalize(this.root, file);
     const data = await this.fs.load(full, format);
 
-    return format.process(data, full, this);
+    return format.process(data, file, this);
   }
 
   /**
