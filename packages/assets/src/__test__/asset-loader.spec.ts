@@ -12,18 +12,40 @@ describe('AssetLoader', () => {
     loader = new AssetLoader(storage, new Fetch());
   });
 
-  it('should load collections', () => {
+  describe('collection()', () => {
     class Foo {
-      @Load('foo.png')
-      public foo!: Handle;
+      @Load('foo.png') public foo!: Handle;
     }
 
-    // Do not actually load the assets.
-    loader.load = jest.fn().mockImplementation(() => Handle.from('foo.png'));
+    beforeEach(() => {
+      // Do not load the assets.
+      loader.load = jest.fn().mockImplementation(() => Handle.from('foo.png'));
+    });
 
-    const collection = loader.collection(Foo);
+    it('should load collection from class type', () => {
+      const collection = loader.collection(Foo);
 
-    expect(collection.data.foo).toBeInstanceOf(Handle);
+      expect(collection.data.foo).toBeInstanceOf(Handle);
+      expect(collection.data.foo).toMatchObject({
+        file: 'foo.png',
+      });
+    });
+
+    it('should load collection from class instance', () => {
+      const collection = loader.collection(new Foo());
+
+      expect(collection.data.foo).toBeInstanceOf(Handle);
+      expect(collection.data.foo).toMatchObject({
+        file: 'foo.png',
+      });
+    });
+
+    it('should not create new object instance when collection source is instance', () => {
+      const instance = new Foo();
+      const collection = loader.collection(instance);
+
+      expect(collection.data).toBe(instance);
+    });
   });
 
   describe('when loading assets', () => {
