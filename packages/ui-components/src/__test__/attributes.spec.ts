@@ -1,11 +1,13 @@
 import { Entity, runtime, World } from '@heliks/tiles-engine';
 import { UiElement, UiNode } from '@heliks/tiles-ui';
 import {
+  applyStyleRules,
   assignJsxAttributes,
   AttributeContextBindingKeyword,
   getAttributeContextBindingParams,
   setContextBinding
 } from '../attributes';
+import { clearRules, setRule } from '../rules';
 import { NoopElement } from './noop-element';
 
 
@@ -97,6 +99,72 @@ describe('attributes', () => {
       });
 
       expect(node.interactive).toBe(result);
+    });
+  });
+
+  describe('applyStyleRules()', () => {
+    let node: UiNode;
+
+    beforeEach(() => {
+      node = new UiNode();
+    });
+
+    afterEach(() => {
+      clearRules();
+    });
+
+    it('should apply class styles', () => {
+      setRule('foo', {
+        wrap: true
+      });
+
+      applyStyleRules(node, {
+        class: 'foo'
+      });
+
+      expect(node.layout.style.wrap).toBe(true);
+    });
+
+    it('should apply multiple class styles', () => {
+      setRule('foo', {
+        shrink: 0,
+        wrap: true
+      });
+
+      setRule('bar', {
+        grow: 1,
+        shrink: 1
+      });
+
+      applyStyleRules(node, {
+        class: 'foo bar'
+      });
+
+      expect(node.layout.style).toMatchObject({
+        grow: 1,
+        shrink: 1,
+        wrap: true
+      });
+    });
+
+    it('should overwrite class styles with local styles', () => {
+      setRule('foo', {
+        wrap: true,
+        grow: 5
+      })
+
+      applyStyleRules(node, {
+        class: 'foo',
+        style: {
+          wrap: false,
+          grow: 6
+        }
+      });
+
+      expect(node.layout.style).toMatchObject({
+        wrap: false,
+        grow: 6
+      })
     });
   });
 });

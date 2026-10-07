@@ -36,6 +36,26 @@ export type JsxTemplateCondition = unknown | OneWayBinding;
 export type Attributes = {
 
   /**
+   * Defines a list of class names separated by whitespace.
+   *
+   * Classes allow the renderer to apply styles without having to apply them manually
+   * to each node.
+   *
+   * When multiple class names are present, later class names take precedent over
+   * earlier ones.
+   *
+   * @example
+   * ```tsx
+   *  // Applies all style rules from the "foo" class.
+   *  <div class="foo" />
+   *
+   *  // Style rules from the class "bar" will overwrite "foo".
+   *  <div class="foo bar" />
+   * ```
+   */
+  readonly class?: string;
+
+  /**
    * If set, assigns a {@link Data} component to the entity of this node, using the
    * value of this attribute as data.
    */

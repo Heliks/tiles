@@ -61,6 +61,7 @@ export class JsxTemplate implements TemplateRenderer {
  * Contains the keys of all default {@link Attributes}.
  */
 const DEFAULT_ATTRIBUTE_NAMES: Set<keyof Attributes> = new Set([
+  'class',
   'data',
   'events',
   'bubble',
