@@ -11,7 +11,7 @@ import {
 } from '@heliks/tiles-ui';
 import { bind } from '../bind';
 import { createJsxNode, JsxNode } from '../jsx-node';
-import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
+import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate, renderStaticText } from '../jsx-renderer';
 import { TagRegistry } from '../tag-registry';
 import { UiNodeRenderer } from '../ui-node-renderer';
 
@@ -124,7 +124,7 @@ describe('JsxRenderer', () => {
     return children;
   }
 
-  describe('createText()', () => {
+  describe('renderStaticText()', () => {
     let root: Entity;
 
     beforeEach(() => {
@@ -132,17 +132,17 @@ describe('JsxRenderer', () => {
     });
 
     it('should return an entity', () => {
-      expect(JsxRenderer.createText(world, '')).not.toBeUndefined();
+      expect(renderStaticText(world, '')).not.toBeUndefined();
     });
 
     it('should attach UiNode component to text entity', () => {
-      const entity = JsxRenderer.createText(world, '');
+      const entity = renderStaticText(world, '');
 
       expect(world.storage(UiNode).has(entity)).toBeTruthy();
     });
 
     it('should attach UiElement component with UiText element to text entity', () => {
-      const entity = JsxRenderer.createText(world, 'foobar');
+      const entity = renderStaticText(world, 'foobar');
       const element = world.storage(UiElement).get(entity);
 
       // Make sure the UiElement used by the text node is a UiText using "bar" as text.

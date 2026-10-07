@@ -18,7 +18,7 @@ import {
   UiText
 } from '@heliks/tiles-ui';
 import { assignJsxAttributes } from './attributes';
-import { isBinding } from './bind';
+import { isBinding, OneWayBinding } from './bind';
 import { Attributes, isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
 import { getResourceMetadata, ResourceType } from './metadata';
 import { TagRegistry } from './tag-registry';
@@ -190,6 +190,30 @@ export function createTemplateFromJsxNode(world: World, node: JsxNode, condition
   return entity
 }
 
+export function renderDynamicText(world: World, value: OneWayBinding, style?: TextStyle): Entity {
+  const element = new UiElement(new UiText(''));
+
+  element.bind('text', value.$$get);
+
+  return world.insert(
+    element,
+    new UiNode({
+      text: style
+    })
+  );
+}
+
+export function renderStaticText(world: World, text: string, style?: TextStyle): Entity {
+  return world.insert(
+    new UiElement(
+      new UiText(text)
+    ),
+    new UiNode({
+      text: style
+    })
+  );
+}
+
 /**
  * Converts the given JSX `child` into a string.
  *
@@ -287,15 +311,18 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       if (isJsxNode(item)) {
         child = JsxRenderer.render(world, item, textStyle, true);
       }
+      else if (isBinding(item)) {
+        child = renderDynamicText(world, item, textStyle);
+      }
       else {
         const text = stringifyUnknownJsxChild(item);
 
-        // Don't create text nodes for empty strings.
+        // Skip this node if the text is empty.
         if (text.trim().length === 0) {
           continue;
         }
 
-        child = JsxRenderer.createText(world, text, textStyle);
+        child = renderStaticText(world, text, textStyle);
       }
 
       // Attach the rendered node as a parent to all of its children.
@@ -303,17 +330,6 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     }
 
     return entity;
-  }
-
-  public static createText(world: World, text: string, style?: TextStyle): Entity {
-    const element = new UiText(text);
-
-    return world.insert(
-      new UiNode({
-        text: style
-      }),
-      new UiElement(element)
-    );
   }
 
   /** @inheritDoc */
