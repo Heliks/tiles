@@ -3,6 +3,7 @@ import { RendererSchedule } from '@heliks/tiles-pixi';
 import { Host } from './context';
 import { Fonts } from './fonts';
 import { Document, EventLifecycle } from './providers';
+import { TextStyle } from './style';
 import {
   DrawUi,
   ElementManager,
@@ -13,7 +14,6 @@ import {
   UpdateLayouts,
   UpdateNodes
 } from './systems';
-import { TextFactory } from './text-factory';
 import { UiElement } from './ui-element';
 import { UiFocus } from './ui-focus';
 import { UiNode } from './ui-node';
@@ -36,10 +36,18 @@ export enum UiSchedule {
   
 }
 
+/** Configuration of application UI defaults. */
+export interface UiBundleOptions {
+  /** Bitmap text defaults. Fonts must be installed before initializing text elements. */
+  text?: TextStyle;
+}
+
 /**
- * Bunde that provides UI functionality.
+ * Bundle that provides UI functionality.
  */
 export class UiBundle implements Bundle {
+
+  constructor(public readonly options: UiBundleOptions = {}) {}
 
   /** @inheritDoc */
   public build(app: AppBuilder): void {
@@ -52,8 +60,9 @@ export class UiBundle implements Bundle {
       .provide(Document)
       .provide(EventLifecycle)
       .provide(UiFocus)
-      .provide(Fonts)
-      .provide(TextFactory)
+      .provide(Fonts, new Fonts({
+        ...this.options.text
+      }))
       // The element manager will also maintain layouts in case the document becomes
       // dirty during its update, hence why this needs to be declared first.
       .system(MaintainLayouts, UiSchedule.Compute)

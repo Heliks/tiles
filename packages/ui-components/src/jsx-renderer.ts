@@ -288,16 +288,13 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       return createTemplateFromJsxNode(world, node, node.attributes.if);
     }
 
-    // If the node declares its own text style, overwrite the inherited one. We will also
-    // pass down this new style from now on.
-    if (node.attributes.style?.text) {
-      textStyle = node.attributes.style.text;
-    }
-
     const entity = createJsxElement(world, node, textStyle);
     const uiNode = world.storage<UiNode>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
+
+    // Inherit the resolved text style, including class rules and inline overrides.
+    textStyle = uiNode.style.text ?? textStyle;
 
     for (const _item of node.children) {
       if (_item === undefined) {

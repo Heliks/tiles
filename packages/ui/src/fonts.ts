@@ -1,44 +1,72 @@
-import { Text, TextStyle } from 'pixi.js';
+import { BitmapFont, BitmapText } from 'pixi.js';
+import { TextStyle } from './style';
 
 
-export type FontConfig = Partial<TextStyle>;
+export interface ResolvedTextStyle {
+  fontName: string;
+  fontSize: number;
+  tint: number;
+  align: 'left';
+  letterSpacing: number;
+  maxWidth: number;
+}
 
+
+/** Application text defaults and resolution of installed bitmap fonts. */
 export class Fonts {
 
   /**
-   * Contains the name of the font used as default when none is specified when
-   * creating text.
+   * @param defaults 
    */
-  public default = 'default';
+  constructor(public defaults: TextStyle = {}) {}
 
-  private readonly fonts = new Map<string, FontConfig>();
+  /**
+   * Returns a font used to render text. If no `name` is provided, the applications'
+   * default font will be returned.
+   */
+  private font(name?: string): BitmapFont {
+    const family = name ?? this.defaults.fontFamily;
 
-  public text(text: string, family?: string): Text {
-    const view = new Text(text, this.font(family ?? this.default));
-
-    // Todo: This is probably higher than we need for most scale factors. If we
-    //  adjust this dynamically we can save a little bit of performance.
-    view.resolution = 4;
-
-    return view;
-  }
-
-  public set(family: string, config: FontConfig): this {
-    this.fonts.set(family, config);
-
-    return this;
-  }
-
-  /** Returns the text style definition for the given font `family`. */
-  public font(family: string): FontConfig {
-    const style = this.fonts.get(family);
-
-    if (! style) {
-      throw new Error(`Invalid font "${family}".`);
+    if (! family) {
+      throw new Error('No font is loaded.');
     }
 
-    return style;
+    const font = BitmapFont.available[family];
+
+    if (! font) {
+      throw new Error(`Font "${family}" is not loaded.`);
+    }
+
+    return font;
   }
 
+  /** Resolves a style for initial creation. Allocates one style object. */
+  public resolve(style?: TextStyle): ResolvedTextStyle {
+    const font = this.font(style?.fontFamily);
+
+    return {
+      fontName: font.font,
+      fontSize: style?.fontSize ?? this.defaults.fontSize ?? font.size,
+      tint: style?.color ?? this.defaults.color ?? 0xffffff,
+      align: 'left',
+      letterSpacing: 0,
+      maxWidth: 0
+    };
+  }
+
+  /** Applies current defaults and node style without allocating a style object. */
+  public apply(target: BitmapText, style: TextStyle = this.defaults): void {
+    const font = this.font(style.fontFamily);
+
+    // Pixi's setters already ignore unchanged values.
+    target.fontName = font.font;
+    target.fontSize = style.fontSize ?? this.defaults.fontSize ?? font.size;
+    target.tint = style.color ?? this.defaults.color ?? 0xffffff;
+  }
+
+  /** Creates bitmap text using this application's defaults. */
+  public text(value: string, style?: TextStyle): BitmapText {
+    return new BitmapText(value, this.resolve(style));
+  }
 
 }

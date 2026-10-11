@@ -2,6 +2,7 @@ import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks
 import {
   ContextRef,
   Element,
+  Fonts,
   PassByFunction,
   PassByValue,
   TemplateElement,
@@ -12,6 +13,7 @@ import {
 import { bind } from '../bind';
 import { createJsxNode, JsxNode } from '../jsx-node';
 import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate, renderStaticText } from '../jsx-renderer';
+import { clearRules, setRule } from '../rules';
 import { TagRegistry } from '../tag-registry';
 import { UiNodeRenderer } from '../ui-node-renderer';
 
@@ -90,6 +92,7 @@ describe('JsxRenderer', () => {
     app = runtime()
       .bundle(new TransformBundle())
       .provide(TagRegistry)
+      .provide(Fonts)
       .build();
 
     app.start({
@@ -107,6 +110,7 @@ describe('JsxRenderer', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    clearRules();
   });
 
   function getUiElement<T extends Element = TemplateElement>(entity: Entity): UiElement<{}, T> {
@@ -125,12 +129,6 @@ describe('JsxRenderer', () => {
   }
 
   describe('renderStaticText()', () => {
-    let root: Entity;
-
-    beforeEach(() => {
-      root = world.insert();
-    });
-
     it('should return an entity', () => {
       expect(renderStaticText(world, '')).not.toBeUndefined();
     });
@@ -185,6 +183,73 @@ describe('JsxRenderer', () => {
   });
 
   describe('render', () => {
+    describe('text', () => {
+      beforeEach(() => {
+        setRule('foo', {
+          text: {
+            color: 0x123456
+          }
+        });
+      });
+
+      afterEach(() => {
+        clearRules();
+      });
+
+      it('should pass down class styles through nested nodes', () => {
+        const jsx0 = createJsxNode('noop', {}, ['Hello']);
+        const jsx1 = createJsxNode('noop', { class: 'foo' }, [ jsx0 ]);
+
+        const root = JsxRenderer.render(world, jsx1);
+
+        app.update();
+
+        // Find the entity of the text node inside jsx1
+        const entity1 = getChildren(root)[0];
+        const entity0 = getChildren(entity1)[0];
+
+        const style = world
+          .storage(UiNode)
+          .get(entity0)
+          .style;
+
+        expect(style).toMatchObject({
+          text: {
+            color: 0x123456
+          }
+        })
+      });
+
+      it('should allow inline styles to override inherited colors', () => {
+        const node = createJsxNode('noop', {
+          class: 'foo',
+          style: {
+            text: {
+              color: 0x555555
+            }
+          }
+        }, ['Hello']);
+
+        const root = JsxRenderer.render(world, node, {
+          color: 0xffffff
+        });
+
+        app.update();
+
+        // Find the text node inside of node
+        const style = world
+          .storage(UiNode)
+          .get(getChildren(root)[0])
+          .style;
+
+        expect(style).toMatchObject({
+          text: {
+            color: 0x555555
+          }
+        })
+      });
+    });
+
     describe('when rendering functions', () => {
       it('should render return value', () => {
         const node0 = createJsxNode('noop');
