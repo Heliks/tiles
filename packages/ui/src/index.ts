@@ -25,7 +25,6 @@ export * from './fonts';
 export * from './input';
 export * from './lifecycle';
 export * from './style';
-export * from './text-factory';
 export * from './ui-bundle';
 export * from './ui-element';
 export * from './ui-event';

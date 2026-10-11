@@ -221,6 +221,7 @@ export class AssetLoader {
       throw new Error('Class type is not an asset collection.');
     }
 
+    // eslint-disable-next-line new-cap
     const collection = isType(source) ? new source() : source;
 
     for (const item of meta.properties) {

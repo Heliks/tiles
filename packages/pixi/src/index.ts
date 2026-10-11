@@ -8,6 +8,7 @@ export * from './sprite';
 export * from './config';
 export * from './debug-draw';
 export * from './load-texture';
+export * from './load-font';
 export * from './pixi-bundle';
 export * from './renderer';
 export * from './update-renderer';
