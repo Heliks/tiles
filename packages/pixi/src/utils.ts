@@ -1,6 +1,6 @@
 import { XY } from '@heliks/tiles-engine';
-import * as PIXI from 'pixi.js'
-import { Rectangle, Texture } from 'pixi.js'
+import * as PIXI from 'pixi.js';
+import { Rectangle, Texture } from 'pixi.js';
 
 
 /** Crops a texture. */
@@ -29,5 +29,18 @@ export function rgb2hex(r: number, g: number, b: number): number {
  */
 export function hex2rgb(hex: number): [number, number, number] {
   return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
+}
+
+/**
+ * Converts a `hex` string into a number.
+ *
+ * @example
+ * ```ts
+ * hex2int('#FF0000'); // -> 0xFF0000
+ * hex2int('#00FF00'); // -> 0x00FF00
+ * ```
+ */
+export function hex2int(hex: string): number {
+  return parseInt(hex.replace('#', ''), 16);
 }
 

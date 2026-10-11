@@ -1,9 +1,10 @@
 import { AssetLoader, AssetsBundle } from '@heliks/tiles-assets';
 import { runtime, World } from '@heliks/tiles-engine';
 import { Texture } from 'pixi.js';
-import { LoadSpriteSheet } from '../load-sprite-sheet';
+import { LoadSpriteSheet, SpriteSheetData } from '../load-sprite-sheet';
 import { SpriteGrid } from '../sprite-grid';
-import { SpriteSlices } from '../sprite-slices';
+import { SpritePack } from '../sprite-pack';
+import { SpriteSheet } from '../sprite-sheet';
 
 
 describe('LoadSpriteSheet', () => {
@@ -24,26 +25,52 @@ describe('LoadSpriteSheet', () => {
     loader.fetch = jest.fn().mockReturnValue(Texture.WHITE);
   });
 
-  it('should parse "slices" spritesheet', async () => {
-    const data = {
+  function load<T extends SpriteSheet>(data: SpriteSheetData): Promise<T> {
+    return format.process(data, 'foo.spritesheet', loader) as Promise<T>;
+  }
+
+  it('should create a sprite grid', async () => {
+    const spritesheet = await load<SpritePack>({
       image: 'foo.png',
       imageWidth: 100,
       imageHeight: 100,
-      type: 'slices' as const,
-      slices: {}
-    };
+      spriteWidth: 5,
+      spriteHeight: 5
+    });
 
-    const spritesheet = await format.process(data, 'foo.spritesheet', loader);
-
-    expect(spritesheet).toBeInstanceOf(SpriteSlices);
+    expect(spritesheet).toBeInstanceOf(SpriteGrid);
   });
 
-  it('should parse slices', async () => {
-    const data = {
+  it('should create a packed spritesheet', async () => {
+    const spritesheet = await load<SpritePack>({
+      image: 'foo.png',
+      imageWidth: 100,
+      imageHeight: 150
+    });
+
+    expect(spritesheet).toBeInstanceOf(SpritePack);
+  });
+
+  it('should parse sprite size', async () => {
+    const spritesheet = await load<SpriteGrid>({
       image: 'foo.png',
       imageWidth: 100,
       imageHeight: 100,
-      type: 'slices' as const,
+      spriteWidth: 25,
+      spriteHeight: 50
+    });
+
+    expect(spritesheet.grid).toMatchObject({
+      cellWidth: 25,
+      cellHeight: 50
+    });
+  })
+
+  it('should parse slices', async () => {
+    const spritesheet = await load({
+      image: 'foo.png',
+      imageWidth: 100,
+      imageHeight: 100,
       slices: {
         'foo': {
           w: 20,
@@ -52,31 +79,15 @@ describe('LoadSpriteSheet', () => {
           y: 0
         }
       }
-    };
+    });
 
-    const spritesheet = await format.process(data, 'foo.spritesheet', loader);
-    const sliceRegion = spritesheet.getSliceRegion('foo');
+    const slice = spritesheet.getSliceRegion('foo');
 
-    expect(sliceRegion).toMatchObject({
+    expect(slice).toMatchObject({
       width: 20,
       height: 10,
       x: 5,
       y: 0
     });
-  });
-
-  it('should parse "grid" spritesheet', async () => {
-    const data = {
-      image: 'foo.png',
-      imageWidth: 100,
-      imageHeight: 100,
-      spriteWidth: 16,
-      spriteHeight: 16,
-      type: 'grid' as const
-    };
-
-    const spritesheet = await format.process(data, 'foo.spritesheet', loader);
-
-    expect(spritesheet).toBeInstanceOf(SpriteGrid);
   });
 });

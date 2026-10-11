@@ -10,7 +10,7 @@ export interface Ray {
    *
    * Raycasts report intersections in any order, regardless of how close they are to
    * the origin of the ray. This behavior can be controlled by returning a float number
-   * in the range of `0-1` to adjust the ray length while its in progress.
+   * in the range of `0-1` to adjust the ray length while it's in progress.
    *
    * - Returning `0` means the ray is reduced to 0.
    * - Returning `1` means the ray length doesn't change.

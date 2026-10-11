@@ -1,12 +1,10 @@
-import { Injectable, ltrim, noIndent, Type, uuid } from '@heliks/tiles-engine';
+import { getType, Injectable, isType, noIndent, TypeLike, uuid } from '@heliks/tiles-engine';
 import { Asset, AssetCollection, AssetState, AssetStorage, getCollectionMetadata, Handle } from './asset';
 import { Format, Fs } from './fs';
-import { getExtension, join, normalize } from './utils';
+import { getExtension, normalize } from './utils';
 
 
-/**
- * Can contain any {@link Format}.
- */
+/** Can contain any {@link Format}.  */
 type AnyFormat<L> = Format<unknown, unknown, L>;
 
 /**
@@ -47,11 +45,6 @@ export class AssetLoader {
    */
   constructor(public readonly assets: AssetStorage, public readonly fs: Fs) {}
 
-  /** Returns the absolute path of `file` by joining it with the {@link root} URL. */
-  public getPath(path: string): string {
-    return join(this.root, ltrim(path, '/'))
-  }
-
   /** @internal */
   private match(extension: string): AnyFormat<AssetLoader> | undefined {
     for (const format of this.formats) {
@@ -89,7 +82,7 @@ export class AssetLoader {
   public async fetch<T>(file: string): Promise<T> {
     const format = this.getFormat<T>(file);
 
-    const full = this.getPath(file);
+    const full = this.fs.normalize(this.root, file);
     const data = await this.fs.load(full, format);
 
     return format.process(data, file, this);
@@ -202,8 +195,7 @@ export class AssetLoader {
   }
 
   /**
-   * Creates an instance of the given asset collection `type` and autoloads all
-   * appropriate asset handles.
+   * Creates a {@link AssetCollection} and autoloads all defined asset handles.
    *
    * ```ts
    * class MyCollection {
@@ -222,15 +214,15 @@ export class AssetLoader {
    *
    * @see AssetCollection
    */
-  public collection<C>(type: Type<C>): AssetCollection<C> {
-    const meta = getCollectionMetadata(type);
+  public collection<C extends object>(source: TypeLike<C>): AssetCollection<C> {
+    const meta = getCollectionMetadata(getType(source));
 
     if (! meta) {
       throw new Error('Class type is not an asset collection.');
     }
 
     // eslint-disable-next-line new-cap
-    const collection = new type();
+    const collection = isType(source) ? new source() : source;
 
     for (const item of meta.properties) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

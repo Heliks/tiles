@@ -60,7 +60,10 @@ export class Box2dBodyFactory {
     for (const collider of body.colliders) {
       this.getFixtureDef(collider, bFixtureDef);
 
-      // Assign "Collider" to created fixture for later backtracking.
+      // This is always inherited from the body itself.
+      bFixtureDef.filter.groupIndex = body.groupId;
+
+      // Assign "Collider" to the created fixture for later backtracking.
       bBody
         .CreateFixture(bFixtureDef)
         .SetUserData({
@@ -79,6 +82,9 @@ export class Box2dBodyFactory {
     // Enables continuous collision detection on the body which prevents small fixtures
     // (like bullets) from passing through thin fixtures.
     bBody.SetBullet(body.isBullet);
+
+    // We already created the body with the correct group ID.
+    body._groupId = body.groupId;
 
     return bBody;
   }

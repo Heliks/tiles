@@ -10,6 +10,7 @@ export enum TmxLayerTypeData {
 }
 
 interface TmxBaseLayerData extends TmxHasPropertyData {
+  id: number;
   class?: string;
   width: number;
   height: number;
@@ -22,7 +23,7 @@ interface TmxBaseLayerData extends TmxHasPropertyData {
   y: number;
 }
 
-interface TmxChunkData {
+export interface TmxChunkData {
   data: number[];
   height: number;
   width: number;
@@ -30,14 +31,13 @@ interface TmxChunkData {
   y: number;
 }
 
-interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
+export interface TmxInfiniteTileLayerData extends TmxBaseLayerData {
   chunks: TmxChunkData[];
   data: undefined;
   type: TmxLayerTypeData.Tiles;
 }
 
-interface TmxFiniteTileLayerData extends TmxBaseLayerData {
-  chunks: undefined;
+export interface TmxFiniteTileLayerData extends TmxBaseLayerData {
   data: number[];
   type: TmxLayerTypeData.Tiles;
 }

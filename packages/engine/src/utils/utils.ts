@@ -13,24 +13,6 @@ export function containsAll<T = unknown>(target: T[], items: T[]): boolean {
   return items.every(i => target.includes(i));
 }
 
-/**
- * Creates an array with a length of `size` and pre-fills it with the given `value`.
- *
- * ```ts
- * // ['bar', 'bar', 'bar']
- * const foo = createPackedArray(3, 'bar');
- * ```
- */
-export function createPackedArray<T>(size: number, value: T): T[] {
-  const data: T[] = [];
-
-  for (let i = 0, l = size; i < l; i++) {
-    data.push(value);
-  }
-
-  return data;
-}
-
 /** Randomizes the contents of an array. */
 export function shuffle<T>(array: T[]): T[] {
   let r;

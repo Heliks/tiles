@@ -3,7 +3,7 @@ import { TypeStore } from '@heliks/ecs-serialize';
 import { Container } from '@heliks/tiles-injector';
 import { World } from '../ecs';
 import { State, StateMachine } from './state';
-import { Ticker } from './ticker';
+import { FrameTicker, Ticker } from './ticker';
 
 
 /**
@@ -62,9 +62,6 @@ export class App {
   /** State machine that executes the game state. */
   public readonly state: StateMachine<World>;
 
-  /** Ticker that executes the game loop. */
-  public readonly ticker = new Ticker();
-
   /** Stores known class types. */
   public readonly types = new TypeStore();
 
@@ -72,10 +69,14 @@ export class App {
   public readonly world: World;
 
   /**
-   * @param container Global service container. All modules and services will have
-   *  access to this.
+   * @param container The applications global service container.
+   * @param ticker The ticker that executes the game loop. If not provided, the
+   *  {@link FrameTicker} is used by default.
    */
-  constructor(public readonly container: Container = new Container()) {
+  constructor(
+    public readonly container: Container = new Container(),
+    public readonly ticker: Ticker = new FrameTicker()
+  ) {
     this.world = new World(this.container);
     this.state = new StateMachine(this.world);
 
@@ -85,14 +86,6 @@ export class App {
 
     // Register game loop on ticker.
     this.ticker.add(this.update.bind(this));
-
-    // Add required bindings to service container.
-    container
-      .instance(this.dispatcher)
-      .instance(this.state)
-      .instance(this.ticker)
-      .instance(this.types)
-      .instance(this.world);
   }
 
   /**

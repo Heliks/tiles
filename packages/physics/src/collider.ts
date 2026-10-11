@@ -9,24 +9,31 @@ export type ColliderShape = Circle | Rectangle;
 export interface ColliderData {
 
   /**
-   * Material that is used by this collider. 
+   * Material that defines physical properties such as friction and restitution.
+   *
+   * If not defined, the material may be inherited from the body to which this
+   * collider is attached to.
    */
   material?: Material;
 
   /**
-   * If set to `true` the collider will act as a sensor. Sensors detect collisions but
-   * don't produce a collision response. They can only collide when one of the colliding
-   * {@link RigidBody bodies} is {@link RigidBodyType.Dynamic dynamic}. This means that
-   * when attached to a {@link RigidBodyType.Kinematic kinematic} body, the sensor will
-   * not detect collisions with {@link RigidBodyType.Static} or other kinematic bodies.
+   * If set to `true`, the collider will act as a sensor.
+   *
+   * Sensors participate in collision detection and contact events but do not produce a
+   * physical collision response.
+   *
+   * A sensor can only collide with bodies that are {@link RigidBodyType.Dynamic}. When
+   * a sensor is attached to a {@link RigidBodyType.Kinematic} body, it will not detect
+   * collisions with {@link RigidBodyType.Static} or other kinematic bodies.
    */
   sensor: boolean;
 
 }
 
+
 /**
- * Colliders are the shapes of rigid bodies that are actually colliding (e.g. the body
- * parts) with each other.
+ * Defines the physical shape and collision properties of a body part that will be
+ * attached to a {@link RigidBody}.
  */
 @TypeId('tiles_physics_collider')
 export class Collider<T extends ColliderShape = ColliderShape> implements ColliderData {
@@ -38,25 +45,18 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   public dirty = false;
 
   /**
-   * Bitmask that contains the bits of collision groups that this collider is a part
-   * of. If not set, this will be inherited when the collider is attached to a rigid
-   * body.
+   * Bitmask defining the collision groups this collider belongs to.
    *
-   * Don't update this directly. Use {@link setFilterData()} instead.
-   *
-   * @see RigidBody.group
+   * If not set, the group will be inherited from the attached rigid body.
+   * Use {@link setGroup} to modify this value.
    */
   public group?: number;
 
   /**
-   * Bitmask that contains the bits of collision groups that are allowed to collide with
-   * this collider. If not set, this will be inherited when the collider is attached to
-   * a rigid body.
+   * Bitmask defining which collision groups this collider can collide with.
    *
-   * Don't update this directly. Use {@link setFilterData()} instead.
-   *
-   * @see group
-   * @see RigidBody.mask
+   * If not set, the mask will be inherited from the attached rigid body.
+   * Use {@link setMask} to modify this value.
    */
   public mask?: number;
 
@@ -64,19 +64,24 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
   public sensor = false;
 
   /**
-   * Bitmask that contains all tags that are currently set. The amount of maximum
-   * available tags is limited to 32.
+   * Bitmask containing application-defined tags associated with this collider.
+   *
+   * Tags can be used for lightweight categorization, filtering, or gameplay
+   * logic (e.g. "enemy", "ground", "trigger"). A maximum of 32 tags is supported.
    */
   public tags = 0;
 
   /**
-   * @param shape Physical shape of the collider.
+   * @param shape Physical shape of the collider. Modifying the shape after the collider
+   *  has been attached may require the rigid body or collider to be rebuilt by the
+   *  physics engine.
    * @param material (optional) The colliders material.
    */
   constructor(public shape: T, public material?: Material) {}
 
   /**
    * Creates a collider with a `Rectangle` shape.
+   *
    * @see Rectangle
    */
   public static rect(width: number, height: number, x?: number, y?: number): Collider<Rectangle> {
@@ -85,6 +90,7 @@ export class Collider<T extends ColliderShape = ColliderShape> implements Collid
 
   /**
    * Creates a collider with a `Circle` shape.
+   *
    * @see Circle
    */
   public static circle(radius: number, x?: number, y?: number): Collider<Circle> {

@@ -1,16 +1,25 @@
 /* eslint-disable new-cap */
-
 import { B2Body } from '@heliks/box2d';
-import { Transform } from '@heliks/tiles-engine';
+import { Transform, Vec2 } from '@heliks/tiles-engine';
 import { RigidBody } from '@heliks/tiles-physics';
 
 
 export function syncBodyVelocity(body: B2Body, component: RigidBody): void {
   const velocity = body.GetLinearVelocity();
 
-
   if (component._velocity.read()) {
+    // If user has manually set the velocity.
     body.SetLinearVelocity(component.getVelocity());
+  }
+  else if (component.constraint) {
+    const dot = Vec2.dot(velocity, component.constraint);
+
+    velocity.Set(
+      component.constraint.x * dot,
+      component.constraint.y * dot
+    );
+
+    body.SetLinearVelocity(velocity);
   }
 
   component._velocity.value.x = velocity.x;
@@ -35,5 +44,46 @@ export function syncBodyRotation(body: B2Body, component: RigidBody, transform: 
   }
   else {
     body.SetAngle(transform.rotation);
+  }
+}
+
+export function syncBodyForce(body: B2Body, component: RigidBody): void {
+  if (! component._force.read()) {
+    return;
+  }
+
+  const force = component._force.value;
+
+  if (component.constraint) {
+    const dot = force.dot(component.constraint);
+
+    force
+      .copy(component.constraint)
+      .scale(dot);
+  }
+
+  body.ApplyForceToCenter(force, true);
+}
+
+export function syncBodyGroupId(body: B2Body, component: RigidBody): void {
+  if (component.groupId !== component._groupId) {
+    for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
+      const filter = fixture.GetFilterData().Clone();
+
+      filter.groupIndex = component.groupId;
+
+      fixture.SetFilterData(filter);
+    }
+
+    component._groupId = component.groupId;
+  }
+}
+
+export function syncBodyImpulse(body: B2Body, component: RigidBody): void {
+  if (component._impulse.read()) {
+    body.ApplyLinearImpulseToCenter(component._impulse.value);
+
+    component._impulse.value.x = 0;
+    component._impulse.value.y = 0;
   }
 }

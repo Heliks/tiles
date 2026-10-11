@@ -1,8 +1,15 @@
 import { Handle } from '@heliks/tiles-assets';
 import { SpriteSheet } from '@heliks/tiles-pixi';
-import { CustomTile } from './custom-tile';
 import { Terrain } from './terrain';
 
+
+/** Contains custom data defined for a specific tile on a {@link Tileset}. */
+export interface CustomTile<P = {}> {
+  /** Index that the tile occupies on the tileset. */
+  index: number;
+  /** Custom properties. */
+  props: P;
+}
 
 /**
  * A collection of tiles
@@ -35,8 +42,8 @@ export class Tileset<C extends CustomTile = CustomTile> {
 
   /**
    * @param spritesheet Handle to the {@link SpriteSheet} used by this tileset.
-   * @param size Total amount of tiles that are contained in this tileset.
-   * @param file Path to the source file from which the tileset was loaded.
+   * @param size Number of tiles contained in this tileset.
+   * @param file Path to the source file from where the tileset was loaded.
    */
   constructor(
     public readonly spritesheet: Handle<SpriteSheet>,

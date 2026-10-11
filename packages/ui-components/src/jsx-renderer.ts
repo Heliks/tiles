@@ -18,7 +18,7 @@ import {
   UiText
 } from '@heliks/tiles-ui';
 import { assignJsxAttributes } from './attributes';
-import { isBinding } from './bind';
+import { isBinding, OneWayBinding } from './bind';
 import { Attributes, isJsxNode, JsxNode, JsxTemplateCondition } from './jsx-node';
 import { getResourceMetadata, ResourceType } from './metadata';
 import { TagRegistry } from './tag-registry';
@@ -61,6 +61,7 @@ export class JsxTemplate implements TemplateRenderer {
  * Contains the keys of all default {@link Attributes}.
  */
 const DEFAULT_ATTRIBUTE_NAMES: Set<keyof Attributes> = new Set([
+  'class',
   'data',
   'events',
   'bubble',
@@ -177,16 +178,40 @@ export function createTemplateFromJsxNode(world: World, node: JsxNode, condition
   const uiNode = new UiNode();
   const entity = world.insert(uiNode, element);
 
-  if (typeof condition === 'string') {
-    element.bind('expression', condition);
+  if (isBinding(condition)) {
+    element.bind('expression', condition.$$get);
   }
   else {
-    element.value('expression', condition)
+    element.value('expression', condition);
   }
 
   assignJsxAttributes(world, entity, uiNode, node.attributes);
 
   return entity
+}
+
+export function renderDynamicText(world: World, value: OneWayBinding, style?: TextStyle): Entity {
+  const element = new UiElement(new UiText(''));
+
+  element.bind('text', value.$$get);
+
+  return world.insert(
+    element,
+    new UiNode({
+      text: style
+    })
+  );
+}
+
+export function renderStaticText(world: World, text: string, style?: TextStyle): Entity {
+  return world.insert(
+    new UiElement(
+      new UiText(text)
+    ),
+    new UiNode({
+      text: style
+    })
+  );
 }
 
 /**
@@ -263,16 +288,13 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       return createTemplateFromJsxNode(world, node, node.attributes.if);
     }
 
-    // If the node declares its own text style, overwrite the inherited one. We will also
-    // pass down this new style from now on.
-    if (node.attributes.style?.text) {
-      textStyle = node.attributes.style.text;
-    }
-
     const entity = createJsxElement(world, node, textStyle);
     const uiNode = world.storage<UiNode>(UiNode).get(entity);
 
     assignJsxAttributes(world, entity, uiNode, node.attributes);
+
+    // Inherit the resolved text style, including class rules and inline overrides.
+    textStyle = uiNode.style.text ?? textStyle;
 
     for (const _item of node.children) {
       if (_item === undefined) {
@@ -286,15 +308,18 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
       if (isJsxNode(item)) {
         child = JsxRenderer.render(world, item, textStyle, true);
       }
+      else if (isBinding(item)) {
+        child = renderDynamicText(world, item, textStyle);
+      }
       else {
         const text = stringifyUnknownJsxChild(item);
 
-        // Don't create text nodes for empty strings.
+        // Skip this node if the text is empty.
         if (text.trim().length === 0) {
           continue;
         }
 
-        child = JsxRenderer.createText(world, text, textStyle);
+        child = renderStaticText(world, text, textStyle);
       }
 
       // Attach the rendered node as a parent to all of its children.
@@ -302,17 +327,6 @@ export class JsxRenderer<T extends UiComponent = UiComponent> implements Element
     }
 
     return entity;
-  }
-
-  public static createText(world: World, text: string, style?: TextStyle): Entity {
-    const element = new UiText(text);
-
-    return world.insert(
-      new UiNode({
-        text: style
-      }),
-      new UiElement(element)
-    );
   }
 
   /** @inheritDoc */

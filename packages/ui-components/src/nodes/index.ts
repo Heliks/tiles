@@ -1,3 +1,4 @@
+export * from './col';
 export * from './div';
 export * from './fill';
 export * from './slice-plane';

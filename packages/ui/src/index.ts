@@ -15,16 +15,16 @@ export {
 } from '@heliks/flex';
 
 // Directories.
+export * from './context';
 export * from './elements';
 export * from './providers';
 
 // Files.
-export * from './context';
 export * from './element';
+export * from './fonts';
 export * from './input';
 export * from './lifecycle';
 export * from './style';
-export * from './text-factory';
 export * from './ui-bundle';
 export * from './ui-element';
 export * from './ui-event';

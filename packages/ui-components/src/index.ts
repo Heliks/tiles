@@ -11,6 +11,7 @@ export * from './jsx-node';
 export * from './jsx-renderer';
 export * from './metadata';
 export * from './ref';
+export * from './rules';
 export * from './tag-registry';
 export * from './ui-node-renderer';
 export * from './ui-component';

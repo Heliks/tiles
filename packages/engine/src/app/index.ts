@@ -30,6 +30,17 @@ export interface Bundle extends BaseBundle<AppBuilder> {}
  *  // Start the game!
  *  game.start();
  * ```
+ *
+ * ### Providers
+ *
+ * Providers are services, resources or data structures that are globally accessible by
+ * other parts of the runtime via the service container.
+ *
+ * There are multiple ways to add a provider, each with their own unique behavior:
+ *
+ * - {@link AppBuilder.provide}
+ * - {@link AppBuilder.singleton}
+ * - {@link AppBuilder.factory}
  */
 export function runtime(): AppBuilder {
   return new AppBuilder();

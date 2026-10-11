@@ -49,7 +49,7 @@ export class Grid {
   }
 
   /** Returns the top-left corner position of the given `cell` index. */
-  public getPosition(cell: number, out = new Vec2()): XY {
+  public getPosition(cell: number, out: XY = new Vec2()): XY {
     const loc = this.getLocation(cell, out);
 
     loc.x *= this.cellWidth;
@@ -115,6 +115,16 @@ export class Grid {
   /** Returns a new {@link Grid} that is identical to this one. */
   public clone(): Grid {
     return new Grid(this.cols, this.rows, this.cellWidth, this.cellHeight);
+  }
+
+  /** Copies the values of the given `grid`. */
+  public copy(grid: Grid): this {
+    this.cols = grid.cols;
+    this.rows = grid.rows;
+    this.cellWidth = grid.cellWidth;
+    this.cellHeight = grid.cellHeight;
+
+    return this;
   }
 
 }

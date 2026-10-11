@@ -11,6 +11,15 @@ import { start, stop } from './setup';
 @Injectable()
 export class ScriptSystem extends ReactiveSystem {
 
+  /**
+   * References to script components are additionally stored here because we need
+   * to call the `stop()` lifecycle on scripts when the component is removed from
+   * an entity.
+   *
+   * @internal.
+   */
+  private readonly components = new Map<Entity, Script>();
+
   /** @inheritDoc */
   public build(builder: QueryBuilder): Query {
     return builder.contains(Script).build();
@@ -19,6 +28,8 @@ export class ScriptSystem extends ReactiveSystem {
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const component = world.storage(Script).get(entity);
+
+    this.components.set(entity, component);
 
     start(
       world,
@@ -30,7 +41,15 @@ export class ScriptSystem extends ReactiveSystem {
 
   /** @inheritDoc */
   public onEntityRemoved(world: World, entity: Entity): void {
-    stop(world, entity, world.storage(Script).get(entity));
+    const component = this.components.get(entity);
+
+    if (! component) {
+      return;
+    }
+
+    this.components.delete(entity);
+
+    stop(world, entity, component);
   }
 
   /** @inheritDoc */
@@ -59,4 +78,5 @@ export class ScriptSystem extends ReactiveSystem {
       component._running.update(world, entity);
     }
   }
+
 }

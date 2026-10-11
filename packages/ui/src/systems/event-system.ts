@@ -77,20 +77,6 @@ export class EventSystem extends ReactiveSystem {
     }
   }
 
-  /** Queues a {@link UiNodeInteraction.Down} interaction on the given `target` entity. */
-  public down(target: Entity): this {
-    this.queue[target] = UiNodeInteraction.Down
-
-    return this;
-  }
-
-  /** Queues a {@link UiNodeInteraction.Up} interaction on the given `target` entity. */
-  public up(target: Entity): this {
-    this.queue[target] = UiNodeInteraction.Up
-
-    return this;
-  }
-
   /** @inheritDoc */
   public onEntityAdded(world: World, entity: Entity): void {
     const node = this.nodes.get(entity);
@@ -104,8 +90,10 @@ export class EventSystem extends ReactiveSystem {
 
     if (node.interactive) {
       node.container
-        .on('pointerdown', () => this.down(entity))
-        .on('pointerup', () => this.up(entity));
+        .on('pointerdown', () => this.push(entity, UiNodeInteraction.Down))
+        .on('pointerup', () => this.push(entity, UiNodeInteraction.Up))
+        .on('pointerover', () => this.push(entity, UiNodeInteraction.HoverIn))
+        .on('pointerout', () => this.push(entity, UiNodeInteraction.HoverOut));
     }
   }
 
@@ -189,6 +177,16 @@ export class EventSystem extends ReactiveSystem {
         this.pushInteractionEvent(entity, node, new UiEvent(entity, interaction));
       }
     }
+  }
+
+  /**
+   * Queues an `interaction` for the given `entity`. This will overwrite previous
+   * interactions not yet consumed by the event system.
+   */
+  public push(entity: Entity, interaction: UiNodeInteraction): this {
+    this.queue[entity] = interaction;
+
+    return this;
   }
 
 }

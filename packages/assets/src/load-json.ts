@@ -11,6 +11,12 @@ export class LoadJSON implements Format<object, object> {
   /** @inheritDoc */
   public readonly extensions = ['json'];
 
+  constructor(extensions?: string[]) {
+    if (extensions) {
+      this.extensions.push(...extensions);
+    }
+  }
+
   /** @inheritDoc */
   public process(data: object): object {
     return data;

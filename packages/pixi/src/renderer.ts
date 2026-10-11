@@ -117,8 +117,6 @@ export class Renderer {
   public setAutoResize(value: boolean): this {
     this.isAutoResizeEnabled = value;
 
-    // If it was enabled we have to resize as it is not guaranteed that the renderer
-    // had the correct size before.
     if (value) {
       this.resizeToParent();
     }
@@ -133,13 +131,20 @@ export class Renderer {
     }
   }
 
-  /** Appends the renderer as <canvas> element to `target`. */
-  public appendTo(target: Element): this {
-    target.append(this.renderer.view);
+  /** Appends the renderer to a DOM `element`. */
+  public appendTo(element: Element): this {
+    element.append(this.renderer.view);
 
     if (this.isAutoResizeEnabled) {
       this.resizeToParent();
     }
+
+    return this;
+  }
+
+  /** Removes the renderer from its parent DOM element. */
+  public remove(): this {
+    this.renderer.view.remove();
 
     return this;
   }

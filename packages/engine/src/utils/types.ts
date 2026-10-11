@@ -10,7 +10,7 @@ export type Ctor<T = any> = Type<T> | Function;
 export type AbstractType<T = any> = abstract new (...params: any[]) => T;
 
 /** Either a {@link Type} of `T` or an instance of `T`. */
-export type TypeLike<T> = Type<T> | T;
+export type TypeLike<T = unknown> = Type<T> | T;
 
 /** Typed class decorator. */
 export type ClassDecoratorType<T = unknown> = (ctor: Type<T>) => void;
