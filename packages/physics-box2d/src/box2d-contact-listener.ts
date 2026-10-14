@@ -13,17 +13,27 @@ export class Box2dContactListener extends B2ContactListener {
     super();
   }
 
-  /** Removes the {@link ColliderContact} between the given `body` and `collider`. */
-  public static remove(body: RigidBody, collider: Collider): void {
-    const index = body.contacts.findIndex(item => item.colliderB.id === collider.id);
-
-    if (~index) {
+  /**
+   * Removes the contact between two opposing collider instances.
+   *
+   * @param body The rigid body that owns the local collider.
+   * @param local The local collider.
+   * @param other The other collider.
+   */
+  public static remove(body: RigidBody, local: Collider, other: Collider): void {
+    for (let index = 0; index < body.contacts.length; index++) {
       const contact = body.contacts[index];
+
+      if (contact.colliderA !== local || contact.colliderB !== other) {
+        continue;
+      }
 
       body.contacts.splice(index, 1);
 
       // Push event to onContactEnd queue if available.
       body.onContact?.push({ contact, type: ContactEventType.End });
+
+      break;
     }
   }
 
@@ -65,10 +75,10 @@ export class Box2dContactListener extends B2ContactListener {
     const dataA = contact.GetFixtureA().GetUserData();
     const dataB = contact.GetFixtureB().GetUserData();
 
-    Box2dContactListener.remove(dataA.body, dataB.collider);
-    Box2dContactListener.remove(dataB.body, dataA.collider);
+    Box2dContactListener.remove(dataA.body, dataA.collider, dataB.collider);
+    Box2dContactListener.remove(dataB.body, dataB.collider, dataA.collider);
     
-    this.push(dataA, dataB, ContactEventType.Begin);
+    this.push(dataA, dataB, ContactEventType.End);
   }
 
 }
