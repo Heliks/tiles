@@ -6,6 +6,7 @@ import { LevelSetup } from './level-setup';
 import { LEVEL_ENTITY_FACTORY, LevelSystem } from './level-system';
 import { ObjectsComposer } from './objects-composer';
 import { ObjectsFactory } from './objects-factory';
+import { Persistent } from './persistent';
 
 
 /** Configuration options for the {@link LevelBundle}. */
@@ -29,6 +30,7 @@ export class LevelBundle implements Bundle {
 
     app
       .component(Level)
+      .type(Persistent)
       .singleton(LEVEL_ENTITY_FACTORY, container => container.make(factory))
       .provide(LevelConfig)
       .provide(ChunkLoader)

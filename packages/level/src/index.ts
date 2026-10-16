@@ -12,3 +12,4 @@ export * from './load-level';
 export * from './level-system';
 export * from './physics';
 export * from './tileset';
+export * from './persistent';
