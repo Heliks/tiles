@@ -12,6 +12,8 @@ import { Persistent } from './persistent';
 /** Configuration options for the {@link LevelBundle}. */
 export interface LevelBundleConfig {
   factory?: Type<ObjectsFactory>;
+  /** Chunk loader used by all level systems. */
+  loader?: Type<ChunkLoader>;
 }
 
 /**
@@ -27,13 +29,14 @@ export class LevelBundle implements Bundle {
   /** @inheritDoc */
   public build(app: AppBuilder): void {
     const factory = this.config.factory ?? ObjectsComposer;
+    const loader = this.config.loader ?? ChunkLoader;
 
     app
       .component(Level)
       .type(Persistent)
       .singleton(LEVEL_ENTITY_FACTORY, container => container.make(factory))
       .provide(LevelConfig)
-      .provide(ChunkLoader)
+      .singleton(ChunkLoader, container => container.make(loader))
       .system(LevelSetup)
       .system(LevelSystem);
   }
