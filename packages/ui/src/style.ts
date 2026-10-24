@@ -13,36 +13,14 @@ export enum DisplayContext {
 
 export interface TextStyle {
 
-  /** Defines the color of the text border. */
-  borderColor?: number;
+  /** Tint applied to the bitmap glyphs. Defaults to white. */
+  color?: number;
 
-  /** Defines the width of the text border */
-  borderWidth?: number;
-
-  /**
-   * Color in which the text is filled. Can be filled with a gradient by specifying
-   * multiple colors.
-   */
-  color?: number | number[];
-
-  /**
-   * Defines the points where the text {@link color colors} will fade into each other
-   * when multiple colors are specified.
-   */
-  colorStops?: number[];
-
-  /** Text size in px. */
+  /** Rendered size in px. Omit to use the selected bitmap font's native size. */
   fontSize?: number;
 
-  /** Name of the font family that should be used to render this text. */
+  /** Name of an installed bitmap font. */
   fontFamily?: string;
-
-  /**
-   * Device pixel ratio of the canvas where the text is being rendered. This is set
-   * automatically to match the renderer resolution by default, but can be overwritten
-   * by setting it manually. The default resolution is `1`.
-   */
-  resolution?: number;
 
   /**
    * If enabled, the text will wrap when it takes more space than available.

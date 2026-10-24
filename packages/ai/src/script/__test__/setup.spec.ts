@@ -10,7 +10,7 @@ describe('Script setup', () => {
     world = runtime().build().world;
   });
 
-  describe('run()', () => {
+  describe('start()', () => {
     let component: Script;
     let entity: Entity;
 

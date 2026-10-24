@@ -19,7 +19,7 @@ describe('RigidBody', () => {
       const body = new RigidBody();
       const coll = Collider.rect(0, 0);
 
-      const material = new Material('foo', 1, 2, 3);
+      const material = new Material(1, 2, 3);
 
       body.material = material;
       body.attach(coll);

@@ -1,5 +1,5 @@
 import { AssetLoader } from '@heliks/tiles-assets';
-import { createPackedArray, Grid, Serialize, TypeId, Vec2, World } from '@heliks/tiles-engine';
+import { Grid, Serialize, TypeId, Vec2, World } from '@heliks/tiles-engine';
 import { LayerId } from '@heliks/tiles-pixi';
 import { AnimatedSprite, Container } from 'pixi.js';
 import { LocalTileset, LocalTilesetBag, Tileset } from './tileset';
@@ -126,7 +126,7 @@ export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapDa
    * @param layer (optional) Renderer layer ID.
    */
   constructor(public readonly grid: Grid, public readonly layer?: LayerId) {
-    this.data = createPackedArray(grid.size, 0);
+    this.data = new Array(grid.size).fill(0);
   }
 
   /** @internal */
@@ -199,6 +199,13 @@ export class Tilemap<T extends Tileset = Tileset> implements Serialize<TilemapDa
     this.data.push(...data);
 
     this.dirty = true;
+
+    return this;
+  }
+
+  /** Copies the tilesets of the given `bag` to this tilemap. */
+  public setTilesets(bag: LocalTilesetBag<T>): this {
+    this.tilesets.copy(bag);
 
     return this;
   }

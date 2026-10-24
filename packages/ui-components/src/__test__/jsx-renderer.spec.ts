@@ -2,7 +2,8 @@ import { App, Entity, Hierarchy, runtime, TransformBundle, World } from '@heliks
 import {
   ContextRef,
   Element,
-  PassByReference,
+  Fonts,
+  PassByFunction,
   PassByValue,
   TemplateElement,
   UiElement,
@@ -11,9 +12,9 @@ import {
 } from '@heliks/tiles-ui';
 import { bind } from '../bind';
 import { createJsxNode, JsxNode } from '../jsx-node';
-import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate } from '../jsx-renderer';
+import { bindAttrs, createTemplateFromJsxNode, JsxRenderer, JsxTemplate, renderStaticText } from '../jsx-renderer';
+import { clearRules, setRule } from '../rules';
 import { TagRegistry } from '../tag-registry';
-import { UiComponent } from '../ui-component';
 import { UiNodeRenderer } from '../ui-node-renderer';
 
 
@@ -91,6 +92,7 @@ describe('JsxRenderer', () => {
     app = runtime()
       .bundle(new TransformBundle())
       .provide(TagRegistry)
+      .provide(Fonts)
       .build();
 
     app.start({
@@ -108,6 +110,7 @@ describe('JsxRenderer', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    clearRules();
   });
 
   function getUiElement<T extends Element = TemplateElement>(entity: Entity): UiElement<{}, T> {
@@ -125,25 +128,19 @@ describe('JsxRenderer', () => {
     return children;
   }
 
-  describe('createText()', () => {
-    let root: Entity;
-
-    beforeEach(() => {
-      root = world.insert();
-    });
-
+  describe('renderStaticText()', () => {
     it('should return an entity', () => {
-      expect(JsxRenderer.createText(world, '')).not.toBeUndefined();
+      expect(renderStaticText(world, '')).not.toBeUndefined();
     });
 
     it('should attach UiNode component to text entity', () => {
-      const entity = JsxRenderer.createText(world, '');
+      const entity = renderStaticText(world, '');
 
       expect(world.storage(UiNode).has(entity)).toBeTruthy();
     });
 
     it('should attach UiElement component with UiText element to text entity', () => {
-      const entity = JsxRenderer.createText(world, 'foobar');
+      const entity = renderStaticText(world, 'foobar');
       const element = world.storage(UiElement).get(entity);
 
       // Make sure the UiElement used by the text node is a UiText using "bar" as text.
@@ -152,15 +149,6 @@ describe('JsxRenderer', () => {
     });
   });
 
-  class NoopComponent implements UiComponent {
-
-    /** @inheritDoc */
-    public render(): JsxNode {
-      return createJsxNode('noop');
-    }
-
-  }
-
   describe('createTemplateFromJsxNode()', () => {
     let node: JsxNode;
 
@@ -168,27 +156,21 @@ describe('JsxRenderer', () => {
       node = createJsxNode('noop');
     });
 
-    it('should bind string condition as host property to template expression', () => {
+    it('should bind value to template expression', () => {
       const entity = createTemplateFromJsxNode(world, node, 'foo');
-
-      const binding = getUiElement(entity).bindings[0] as PassByReference;
-
-      expect(binding).toBeInstanceOf(PassByReference);
-      expect(binding.local).toBe('expression');
-      expect(binding.host).toEqual(['foo']);
-    });
-
-    it('should bind function condition as value to template expression', () => {
-      const condition = jest.fn();
-
-      const entity = createTemplateFromJsxNode(world, node, condition);
       const binding = getUiElement(entity).bindings[0];
 
       expect(binding).toBeInstanceOf(PassByValue);
-      expect(binding).toMatchObject({
-        local: 'expression',
-        value: condition
-      });
+      expect(binding).toMatchObject({ local: 'expression', value: 'foo' });
+    });
+
+    it('should bind one way binding to template expression', () => {
+      const getter = jest.fn();
+      const entity = createTemplateFromJsxNode(world, node, bind(getter));
+      const binding = getUiElement(entity).bindings[0];
+
+      expect(binding).toBeInstanceOf(PassByFunction);
+      expect(binding).toMatchObject({ local: 'expression', fn: getter });
     });
 
     it('should wrap node in JsxTemplate', () => {
@@ -201,6 +183,73 @@ describe('JsxRenderer', () => {
   });
 
   describe('render', () => {
+    describe('text', () => {
+      beforeEach(() => {
+        setRule('foo', {
+          text: {
+            color: 0x123456
+          }
+        });
+      });
+
+      afterEach(() => {
+        clearRules();
+      });
+
+      it('should pass down class styles through nested nodes', () => {
+        const jsx0 = createJsxNode('noop', {}, ['Hello']);
+        const jsx1 = createJsxNode('noop', { class: 'foo' }, [ jsx0 ]);
+
+        const root = JsxRenderer.render(world, jsx1);
+
+        app.update();
+
+        // Find the entity of the text node inside jsx1
+        const entity1 = getChildren(root)[0];
+        const entity0 = getChildren(entity1)[0];
+
+        const style = world
+          .storage(UiNode)
+          .get(entity0)
+          .style;
+
+        expect(style).toMatchObject({
+          text: {
+            color: 0x123456
+          }
+        })
+      });
+
+      it('should allow inline styles to override inherited colors', () => {
+        const node = createJsxNode('noop', {
+          class: 'foo',
+          style: {
+            text: {
+              color: 0x555555
+            }
+          }
+        }, ['Hello']);
+
+        const root = JsxRenderer.render(world, node, {
+          color: 0xffffff
+        });
+
+        app.update();
+
+        // Find the text node inside of node
+        const style = world
+          .storage(UiNode)
+          .get(getChildren(root)[0])
+          .style;
+
+        expect(style).toMatchObject({
+          text: {
+            color: 0x555555
+          }
+        })
+      });
+    });
+
     describe('when rendering functions', () => {
       it('should render return value', () => {
         const node0 = createJsxNode('noop');
@@ -216,106 +265,4 @@ describe('JsxRenderer', () => {
       });
     });
   });
-
-
-  /*
-  describe('when rendering JSX node', () => {
-    let renderer: JsxRenderer;
-
-    beforeEach(() => {
-      renderer = new JsxRenderer(NoopComponent);
-    });
-
-    it('should apply style attribute', () => {
-      const style = {
-        grow: 999
-      };
-
-      const entity = renderer.foo(world, {
-        attributes: {
-          style
-        },
-        children: [],
-        tag: 'noop'
-      });
-
-      expect(
-        world
-          .storage(UiNode)
-          .get(entity)
-          .layout
-          .style
-      ).toMatchObject(style);
-    });
-  });
-
-  // Todo: Idk, should prolly redo these tests as they depend too much on createText()
-  describe('when rendering JSX node text children', () => {
-    let renderer: JsxRenderer;
-    let onCreateText: jest.SpyInstance;
-
-    beforeEach(() => {
-      renderer = new JsxRenderer(NoopComponent);
-      onCreateText = jest.spyOn(JsxRenderer, 'createText');
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should apply text style rule', () => {
-      const style = new TextStyle();
-
-      renderer.foo(world, {
-        attributes: {
-          style: {
-            text: style
-          }
-        },
-        children: [
-          'foobar'
-        ],
-        tag: 'noop'
-      });
-
-      // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][2];
-
-      expect(applied).toBe(style);
-    });
-
-    it('should inherit text style from parent', () => {
-      const style = new TextStyle(0xFFF000);
-
-      renderer.foo(world, {
-        attributes: {
-          style: {
-            text: style
-          }
-        },
-        children: [
-          {
-            attributes: {},
-            children: [
-              {
-                attributes: {},
-                children: [
-                  'foobar'
-                ],
-                tag: 'noop'
-              }
-            ],
-            tag: 'noop'
-          }
-        ],
-        tag: 'noop'
-      });
-
-      // Extract the style sheet with which the text is created.
-      const applied = onCreateText.mock.calls[0][2];
-
-      expect(applied).toBe(style);
-    });
-  });
-   */
 });

@@ -1,9 +1,9 @@
 import { AssetStorage } from '@heliks/tiles-assets';
 import { Entity, Injectable, Query, QueryBuilder, ReactiveSystem, Transform, World } from '@heliks/tiles-engine';
 import { Sprite } from 'pixi.js';
-import { SpriteRender } from '.';
 import { RendererConfig } from '../../config';
 import { Stage } from '../../layer';
+import { SpriteRender } from './sprite-render';
 
 
 @Injectable()
@@ -42,12 +42,10 @@ export class SpriteRenderer extends ReactiveSystem {
   /** @internal */
   private insert(sprite: SpriteRender): void {
     sprite._layer = this.stage.add(sprite._sprite, sprite.layer);
-    sprite._layerId = sprite.layer;
   }
 
   /** @internal */
   private updateLayer(sprite: SpriteRender): void {
-    // Remove from current container.
     sprite._sprite.parent.removeChild(sprite._sprite);
 
     this.insert(sprite);
@@ -57,7 +55,6 @@ export class SpriteRenderer extends ReactiveSystem {
   public onEntityAdded(world: World, entity: Entity): void {
     const render = world.storage(SpriteRender).get(entity);
 
-    // Add to render group if necessary.
     this.insert(render);
     this.sprites.set(entity, render._sprite);
   }
@@ -74,7 +71,6 @@ export class SpriteRenderer extends ReactiveSystem {
   /** @internal */
   private updateMaterial(render: SpriteRender): void {
     if (render.material !== render._material) {
-      // If no material is applied, reset the sprite filters.
       render._sprite.filters = render.material ? render.material.filters() : [];
       render._material = render.material;
     }
@@ -87,9 +83,28 @@ export class SpriteRenderer extends ReactiveSystem {
     render._sprite.y = transform.world.y * render._layer.cameraTransformMultiplier * this.config.unitSize;
   }
 
+  /**
+   * Renders the given `sprite`.
+   *
+   * Returns a boolean that indicates if the sprite was updated in the process.
+   */
+  public render(sprite: SpriteRender): boolean {
+    if (sprite.isDirty()) {
+      const spritesheet = this.storage.get(sprite.spritesheet);
+
+      if (spritesheet) {
+        sprite._sprite.texture = spritesheet.texture(sprite.spriteId);
+        sprite._spriteId = sprite.spriteId;
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /** @inheritDoc */
   public update(world: World): void {
-    // Update events from reactive system.
     super.update(world);
 
     const displays = world.storage(SpriteRender);
@@ -98,20 +113,12 @@ export class SpriteRenderer extends ReactiveSystem {
     // Update sprites.
     for (const entity of this.query.entities) {
       const render = displays.get(entity);
-      const sprite = render._sprite;
 
-      const spritesheet = this.storage.get(render.spritesheet);
-
-      // Switch render group.
-      if (render.layer !== render._layerId) {
+      if (render.layer !== render._layer.id) {
         this.updateLayer(render);
       }
 
-      // Update sprite texture.
-      if (spritesheet && render.spriteId !== render._spriteId) {
-        sprite.texture = spritesheet.texture(render.spriteId);
-        render._spriteId = render.spriteId;
-      }
+      this.render(render);
 
       render._sprite.scale.x = render.flipX ? -render.scale.x : render.scale.x;
       render._sprite.scale.y = render.flipY ? -render.scale.y : render.scale.y;

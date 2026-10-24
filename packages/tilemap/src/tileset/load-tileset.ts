@@ -3,7 +3,6 @@ import { Grid } from '@heliks/tiles-engine';
 import { SpriteGrid } from '@heliks/tiles-pixi';
 import { Texture } from 'pixi.js';
 import { CustomPropertiesData, extractCustomProperties } from '../properties';
-import { CustomTile } from './custom-tile';
 import { Terrain, TerrainBit, TerrainId } from './terrain';
 import { Tileset } from './tileset';
 
@@ -197,10 +196,10 @@ export class LoadTileset implements Format<TilesetData, Tileset> {
 
     if (data.tiles) {
       for (const tileData of data.tiles) {
-        tileset.tiles.set(tileData.index, new CustomTile(
-          tileData.index,
-          extractCustomProperties(tileData)
-        ));
+        tileset.tiles.set(tileData.index, {
+          index: tileData.index,
+          props: extractCustomProperties(tileData)
+        })
       }
     }
 

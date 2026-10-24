@@ -35,24 +35,24 @@ export function join(...segments: string[]): string {
 
 /** Normalizes a `path`. */
 export function normalize(path: string): string {
-  const segments = path.split('/');
-  const normalized = [];
+  const absolute = path.startsWith('/');
+  const segments = [];
 
-  for (const segment of segments) {
-    // Ignore empty segments.
-    if (segment.length === 0 || segment === '.') {
-      continue;
+  for (const segment of path.split('/')) {
+    switch (segment) {
+      case '..':
+        if (segments.length > 0) {
+          segments.pop();
+        }
+        break;
+      // Skip empty segments.
+      case '':
+      case '.':
+        continue;
+      default:
+        segments.push(segment);
     }
-
-    // Remove last segment.
-    if (segment === '..') {
-      normalized.pop();
-
-      continue;
-    }
-
-    normalized.push(segment);
   }
 
-  return normalized.join('/');
+  return `${absolute ? '/' : ''}${segments.join('/')}`;
 }

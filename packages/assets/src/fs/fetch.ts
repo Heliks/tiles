@@ -3,7 +3,7 @@ import { Fs } from './fs';
 
 
 /** Asset loader file-system that uses the Web Fetch-API. */
-export class Fetch implements Fs {
+export class Fetch extends Fs {
 
   /** @inheritDoc */
   public load<T = unknown>(file: string, format: Format<unknown, unknown>): Promise<T> {

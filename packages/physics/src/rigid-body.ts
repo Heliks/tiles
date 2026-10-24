@@ -1,4 +1,4 @@
-import { Entity, EventQueue, Ignore, TrackedValue, TypeId, Vec2 } from '@heliks/tiles-engine';
+import { Circle, Entity, EventQueue, Ignore, Rectangle, TrackedValue, TypeId, Vec2, XY } from '@heliks/tiles-engine';
 import { Collider, ColliderData, ColliderShape } from './collider';
 import { ColliderContact } from './collider-contact';
 import { ContactEvent } from './events';
@@ -13,14 +13,14 @@ export enum RigidBodyType {
    */
   Static,
   /**
-   * Dynamic bodies react to external forces (e.g. impulses, collisions etc.) and can
-   * be moved by applying velocity. They collide with all other body types.
+   * Dynamic bodies react to external forces (impulses, collisions, etc.) and can be
+   * moved by applying velocity. They collide with all other body types.
    */
   Dynamic,
   /**
-   * Kinematic bodies do not react to external forces like impulses but unlike static
-   * bodies they can be moved with velocity. Kinematic bodies only collide with static or
-   * other kinematic bodies.
+   * Kinematic bodies don't react to external forces like impulses. Unlike static bodies,
+   * they can be moved with velocity. Kinematic bodies only collide with static or other
+   * kinematic bodies.
    */
   Kinematic
 }
@@ -33,19 +33,37 @@ export class RigidBody {
   public colliders: Collider[] = [];
 
   /**
-   * Contains `ColliderContact` for each physical contact a collider attached to this
-   * rigid body. The `entityA` (`colliderA`...) properties is guaranteed to contain the
-   * information to this body.
+   * Contains the current physical contacts with other rigid bodies and their colliders.
+   *
+   * For each contact:
+   * - `entityA` and `colliderA` refer to this rigid body and its collider.
+   * - `entityB` and `colliderB` refer to the other body and collider.
    */
   @Ignore()
   public readonly contacts: ColliderContact[] = [];
 
   /**
-   * Linear damping. Determines how much the velocity of the body decays over time in
-   * relation to the world gravity.
+   * Optional movement constraint applied before each physics step, restricting the bodys
+   * motion to a specified direction vector.
    *
-   * In zero-gravity worlds (a.E. top-down games) this needs to be set manually for
-   * velocity to decay at all.
+   * When defined, the bodys linear velocity is projected onto the constraint direction,
+   * removing any perpendicular motion. This affects all sources of movement (impulses,
+   * forces, collisions).
+   *
+   * The constraint vector must be normalized (length = 1). Projection math assumes a
+   * unit direction; using a non-normalized vector will scale the resulting velocity
+   * and may cause exponential acceleration.
+   */
+  public constraint?: XY;
+
+  /**
+   * Linear damping (drag in fluid dynamics) is a force that acts opposite to the
+   * direction of motion of the rigid body. Essentially, it increases the natural
+   * decay of velocity over time. Higher values mean faster decay.
+   *
+   * For games with zero-gravity environments (e.g., orthogonal games) where velocity
+   * does not decrease naturally, bodies must be damped manually to prevent them from
+   * moving forever.
    */
   public damping = 0;
 
@@ -56,7 +74,10 @@ export class RigidBody {
   @Ignore()
   public dirty = true;
 
-  // Todo: Document
+  /**
+   * Enables or disables participation in the physics simulation. Disabled bodies are
+   * ignored entirely.
+   */
   public enabled = true;
 
   /**
@@ -68,9 +89,31 @@ export class RigidBody {
   public group = 0x0001;
 
   /**
-   * Enables continuous collision detection on all colliders which prevents small
-   * colliders (like bullets would usually have) from passing through thin bodies when
-   * travelling at high velocity.
+   * Allows you to specify a collision override between bodies.
+   *
+   * Rules:
+   * - If two bodies have the **same positive groupId**, they always collide, regardless
+   *   of their category and mask.
+   * - If two bodies have the **same negative groupId**, they never collide, regardless
+   *   of their category and mask.
+   * - If bodies have different groupIds, normal collision rules apply.
+   *
+   * @example
+   *
+   * - `1` and `1`: always collide
+   * - `1` and `2`: normal collision rules.
+   * - `1` and `-1`: normal collision rules.
+   * - `-1` and `-1`: never collide
+   */
+  public groupId = 0;
+
+  /** @internal */
+  public _groupId = 0;
+
+  /**
+   * Enables continuous collision detection on all colliders of this body. This prevents
+   * small colliders (like bullets would usually have) from passing through thin bodies
+   * when traveling at high velocity.
    */
   public isBullet = false;
 
@@ -97,6 +140,10 @@ export class RigidBody {
   /** @internal */
   @Ignore()
   public readonly _force = new TrackedValue(new Vec2());
+
+  /** @internal */
+  @Ignore()
+  public readonly _impulse = new TrackedValue(new Vec2());
 
   /** @internal */
   @Ignore()
@@ -162,6 +209,29 @@ export class RigidBody {
     return this;
   }
 
+  /**
+   * Attaches a rectangular collider to the rigid body.
+   *
+   * @param width Rectangle width in meters.
+   * @param height Rectangle height in meters.
+   * @param x Position along x-axis in meters.
+   * @param y Position along y-axis in meters.
+   */
+  public rect(width: number, height: number, x?: number, y?: number): this {
+    return this.attach(new Collider(new Rectangle(width, height, x, y)));
+  }
+
+  /**
+   * Attaches a circular collider to the rigid body.
+   *
+   * @param radius Circle radius in meters.
+   * @param x Position along x-axis in meters.
+   * @param y Position along y-axis in meters.
+   */
+  public circle(radius: number, x?: number, y?: number): this {
+    return this.attach(new Collider(new Circle(radius, x, y)));
+  }
+
   /** Sets the bodies linear velocity. */
   public setVelocity(x: number, y: number): this {
     this._velocity.value.x = x;
@@ -176,7 +246,7 @@ export class RigidBody {
     return this._velocity.value;
   }
 
-  /** Sets the bodies world position.. */
+  /** Sets the bodies world position. */
   public setPosition(x: number, y: number): this {
     this._position.value.x = x;
     this._position.value.y = y;
@@ -187,7 +257,7 @@ export class RigidBody {
 
   /** Returns a vector that contains the bodies current world position. */
   public getPosition(): Vec2 {
-    return this._velocity.value;
+    return this._position.value;
   }
 
   /** Applies a force to the body. */
@@ -200,10 +270,26 @@ export class RigidBody {
   }
 
   /**
-   * Updates the linear damping. This flags the body as dirty.
-   * @see damping
-   * @see dirty
+   * Applies an impulse to the body.
+   *
+   * Unlike forces that act gradually over time, impulses change the bodies' velocity
+   * immediately.
+   *
+   * If multiple impulses are applied to the body within the same physics tick by
+   * calling this function, their effects are accumulated before they're applied.
+   * 
+   * @param x Impulse strength to apply along the bodies x-axis.
+   * @param y Impulse strength to apply along the bodies y-axis.
    */
+  public impulse(x: number, y: number): this {
+    this._impulse.value.x += x;
+    this._impulse.value.y += y;
+    this._impulse.dirty = true;
+
+    return this;
+  }
+
+  /** Updates the bodies' linear {@link damping}. */
   public dampen(value: number): this {
     this.damping = value;
     this.dirty = true;
@@ -212,9 +298,8 @@ export class RigidBody {
   }
 
   /**
-   * Returns `true` if any {@link colliders collider} collides with a collider that
-   * belongs to the given `entity`. This does not work if this body has no colliders
-   * that can physically collide with the rigid body of that entity.
+   * Checks if any {@link colliders collider} of this body has contact with any collider
+   * that belongs to the given `entity`.
    */
   public hasContactWith(entity: Entity): boolean {
     for (const contact of this.contacts) {
@@ -226,7 +311,13 @@ export class RigidBody {
     return false;
   }
 
-  /** If the body is asleep, it will be woken up. */
+  /**
+   * Wakes the body if it is currently asleep.
+   *
+   * @remarks
+   * This is currently implemented by applying a tiny velocity and is intended as a
+   * temporary solution until physics backends are unified.
+   */
   public wake(): this {
     // Fixme: This is not optimal, but works. There is no point implementing this
     //  properly until the planned merge of physics and physics-box2d package.

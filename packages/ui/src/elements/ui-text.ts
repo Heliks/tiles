@@ -1,21 +1,16 @@
 import { Node, rect } from '@heliks/flex';
 import { Entity, World } from '@heliks/tiles-engine';
-import { Text } from 'pixi.js';
+import { BitmapText } from 'pixi.js';
 import { Element } from '../element';
 import { Input } from '../input';
-import { OnInit } from '../lifecycle';
+import { Fonts } from '../fonts';
+import { OnBeforeInit, OnDestroy } from '../lifecycle';
+import { UiNode } from '../ui-node';
 import { Style } from '../style';
-import { TextFactory } from '../text-factory';
 
 
-/** Displays text. */
-export class UiText implements Element, OnInit {
-
-  /**
-   * Name of the default font that should be used for new {@link UiText} elements. The
-   * font can be set individually on each element.
-   */
-  public static defaultFont = 'serif';
+/** Displays text using an installed bitmap font. */
+export class UiText implements Element, OnBeforeInit, OnDestroy {
 
   /** The text that is displayed by this element. */
   @Input()
@@ -25,41 +20,32 @@ export class UiText implements Element, OnInit {
   public readonly size = rect(0);
 
   /** @inheritDoc */
-  public readonly view = new Text('', {
-    align: 'left'
-  });
+  public view!: BitmapText;
 
-  /** @internal */
-  private _parser!: TextFactory;
-
-  /**
-   * @param value The text that should be rendered.
-   * @param color Color in which the text should be rendered.
-   * @param size Font size in px.
-   * @param family Font family
-   */
-  constructor(value: string, color = 0x000000, size = 10, family?: string) {
+  /** Stores text without requiring fonts to be loaded until UI initialization. */
+  constructor(value: string) {
     this.text = value;
-    this.view.style.fontSize = size;
-    this.view.style.fill = color;
-    this.view.style.fontFamily = family ?? UiText.defaultFont;
-    this.view.resolution = 2;
   }
 
-  /** @inheritDoc */
-  public onInit(world: World): void {
-    this._parser = world.get(TextFactory);
+  /** Creates the view before the element manager attaches it to the node. */
+  public onBeforeInit(world: World, entity: Entity): void {
+    const node = world.storage(UiNode).get(entity);
+
+    this.view = new BitmapText(this.text, world.get(Fonts).resolve(node.style.text));
+  }
+
+  /** Releases glyph display objects; shared bitmap font textures remain installed. */
+  public onDestroy(): void {
+    this.view.destroy({children: true});
   }
 
   /** @inheritDoc */
   public update(world: World, entity: Entity, layout: Node<Style>): void {
-    if (layout.style.text) {
-      this._parser.parse(layout.style.text, this.view.style);
-    }
+    world.get(Fonts).apply(this.view, layout.style.text);
 
     this.view.text = this.text;
-    this.size.width.value  = this.view.width;
-    this.size.height.value = this.view.height;
+    this.size.width.value  = this.view.textWidth;
+    this.size.height.value = this.view.textHeight;
   }
 
   /** @inheritDoc */
@@ -69,10 +55,9 @@ export class UiText implements Element, OnInit {
     //  to wrap into, but breaking text into multiple lines can also affect the layout
     //  if the node that contains it has a dynamic height (auto, percentage). Therefore,
     //  this code causes the wrapping to take effect one frame too late.
-    if (layout.style.text?.wrap && layout.parent) {
-      this.view.style.wordWrap = true;
-      this.view.style.wordWrapWidth = layout.parent.size.width;
-    }
+    this.view.maxWidth = (layout.style.text?.wrap ?? world.get(Fonts).defaults.wrap) && layout.parent
+      ? layout.parent.size.width
+      : 0;
   }
 
 }

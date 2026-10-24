@@ -1,0 +1,37 @@
+{
+  "author": "Felix Wolf",
+  "description": "Tiled level system.",
+  "name": "@heliks/tiles-level",
+  "version": "0.0.4-2",
+  "peerDependencies": {
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-tilemap": "workspace:^",
+    "pixi.js": "^5.3.3"
+  },
+  "devDependencies": {
+    "@heliks/tiles-assets": "workspace:^",
+    "@heliks/tiles-engine": "workspace:^",
+    "@heliks/tiles-physics": "workspace:^",
+    "@heliks/tiles-pixi": "workspace:^",
+    "@heliks/tiles-tilemap": "workspace:^",
+    "@types/node": "^20.9.0",
+    "pixi.js": "^5.3.3",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^5.4.5"
+  },
+  "files": [
+    "lib/*"
+  ],
+  "keywords": [],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "test": "jest --config ./jest.config.js"
+  },
+  "typings": "./lib/index.d.ts"
+}

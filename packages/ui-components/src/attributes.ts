@@ -3,6 +3,7 @@ import { UiElement, UiNode } from '@heliks/tiles-ui';
 import { Rectangle } from 'pixi.js';
 import { Data } from './data';
 import { Attributes } from './jsx-node';
+import { getRule } from './rules';
 import { kebabToCamel } from './utils';
 
 
@@ -93,6 +94,33 @@ export function setContextBindingsFromJsxAttributes(element: UiElement, attribut
 }
 
 /**
+ * Applies the style to the given UI node.
+ *
+ * If a `class` attribute is provided, the registered stylesheet rule for that class
+ * is applied. If a `style` attribute is provided, it will overwrite the style applied
+ * by the class name rule.
+ */
+export function applyStyleRules(node: UiNode, attributes: Attributes): void {
+  if (attributes.class) {
+    const names = attributes.class.split(' ');
+
+    for (const name of names) {
+      const rule = getRule(name);
+
+      if (rule) {
+        Object.assign(node.layout.style, rule);
+      }
+    }
+  }
+
+  // Apply local style, if any. Local styles overwrite the style defined by the
+  // nodes' class name.
+  if (attributes.style) {
+    Object.assign(node.layout.style, attributes.style);
+  }
+}
+
+/**
  * Assigns the given JSX `attributes` to a UI `node`.
  *
  * Default attributes like `style` or `events` will be used as documented. Context
@@ -100,14 +128,11 @@ export function setContextBindingsFromJsxAttributes(element: UiElement, attribut
  * component. All other attributes are discarded.
  */
 export function assignJsxAttributes(world: World, owner: Entity, node: UiNode, attributes: Attributes): void {
-  // If node has the style attribute, assign it to the nodes original style.
-  if (attributes.style) {
-    Object.assign(node.layout.style, attributes.style);
-  }
-
   if (attributes.events) {
     node.interactive = true;
   }
+
+  applyStyleRules(node, attributes);
 
   node.name = attributes.name;
 

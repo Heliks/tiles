@@ -1,5 +1,4 @@
 import { Shape } from './shape';
-import { XY } from './vec2';
 
 
 /** Dimensions of a rectangular box. */
@@ -71,15 +70,28 @@ export class Rectangle implements Shape, Box {
   }
 
   /** @inheritDoc */
-  public scale(factor: number | XY): this {
-    if (typeof factor === 'number') {
-      this.width *= factor;
-      this.height *= factor;
-    }
-    else {
-      this.width *= factor.x;
-      this.height *= factor.y;
-    }
+  public scale(factor: number): this {
+    this.width *= factor;
+    this.height *= factor;
+
+    return this;
+  }
+
+  /** @inheritDoc */
+  public shrink(factor: number): this {
+    this.width /= factor;
+    this.height /= factor;
+
+    return this;
+  }
+
+  /** Divides the rectangle size and position by the given `divisor`. */
+  public divide(divisor: number): this {
+    this.width /= divisor;
+    this.height /= divisor;
+
+    this.x /= divisor;
+    this.y /= divisor;
 
     return this;
   }
@@ -87,6 +99,18 @@ export class Rectangle implements Shape, Box {
   /** Checks if `x` and `y` are inside the boundaries of this rectangle. */
   public contains(x: number, y: number): boolean {
     return Rectangle.contains(x, y, this.x, this.y, this.width, this.height);
+  }
+
+  /**
+   * Returns `true` if the rectangle intersects with the given `box`. This check is
+   * inclusive, which means if the rectangle touches an edge of the box, it will
+   * count as an intersection.
+   */
+  public intersects(rect: Box): boolean {
+    return (
+      this.x <= rect.x + rect.width && this.x + this.width >= rect.x &&
+      this.y <= rect.y + rect.height && this.y + this.height >= rect.y
+    );
   }
 
 }

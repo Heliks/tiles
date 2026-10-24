@@ -5,7 +5,6 @@
 export class Material {
 
   /**
-   * @param id Unique identifier. Must be unique across all materials.
    * @param density Density of the collider measured in kilograms per square meter. A
    *  higher density means a heavier collider and therefore a heavier rigid body. For
    *  example a collider with a size 2x2m and a density of `80` will have a total
@@ -17,7 +16,6 @@ export class Material {
    *  collider should be, closer  to 0 is less bouncy, closer to 1 more.
    */
   constructor(
-    public readonly id: string,
     public readonly density = 0,
     public readonly friction = 0,
     public readonly restitution = 0
